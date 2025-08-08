@@ -5,6 +5,8 @@ const maristProject = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png
 const kfcProject = "/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png";
 const maristCTProject = "/lovable-uploads/de3c5edc-ea87-4242-bbb0-8782b25a22ec.png";
 import officeProject from "@/assets/office-project.jpg";
+const pelicanImage = "/lovable-uploads/f345d1c0-6383-4a5c-9188-81c8ae221932.png";
+const campusKeyImage = "/lovable-uploads/7c314536-73bf-4ae1-b7e3-ccceee5d640e.png";
 
 const Projects = () => {
   const projects = [
