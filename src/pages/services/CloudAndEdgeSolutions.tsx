@@ -3,11 +3,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import heroImage from "@/assets/hero-bg.jpg";
+import schoolProject from "@/assets/school-project.jpg";
 
 const CloudAndEdgeSolutions = () => {
   useEffect(() => {
     const title = "Cloud & Edge Solutions | Siyakha";
-    const description = "Migrations, backups, and resilient cloud platforms that enable secure, collaborative work.";
+    const description = "Microsoft 365 & Google Workspace, migrations, backups, disaster recovery, Zero Trust and secure remote work.";
     document.title = title;
 
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
@@ -70,13 +72,23 @@ const CloudAndEdgeSolutions = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        <section className="py-12 md:py-16">
-          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
-            <h1 className="text-3xl md:text-4xl font-bold text-primary">Cloud & Edge Solutions</h1>
-            <p className="text-muted-foreground mt-3">Empowering remote work, cloud collaboration & data security.</p>
+        <section className="relative py-16 md:py-24 border-b border-border overflow-hidden">
+          <img src={heroImage} alt="Cloud collaboration and secure infrastructure" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+          <div className="absolute inset-0 bg-background/75" />
+          <div className="relative container mx-auto px-4 lg:px-6">
+            <h1 className="text-3xl md:text-5xl font-bold text-primary">Cloud & Edge Solutions</h1>
+            <p className="text-muted-foreground mt-3 max-w-3xl">Empowering remote work, cloud collaboration and data security — migrations, DR, and Zero Trust.</p>
+            <div className="mt-6 flex gap-3">
+              <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Quote</Button></Link>
+              <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
+            </div>
+          </div>
+        </section>
 
-            <section className="mt-8">
-              <h2 className="text-xl font-semibold text-primary">We Specialize In</h2>
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4 lg:px-6 grid lg:grid-cols-2 gap-10 items-center max-w-6xl">
+            <div>
+              <h2 className="text-2xl font-semibold text-primary">We Specialize In</h2>
               <ul className="list-disc pl-6 mt-4 text-muted-foreground space-y-2">
                 <li>Google Workspace & Microsoft 365 deployment</li>
                 <li>Cloud backups & disaster recovery</li>
@@ -84,13 +96,13 @@ const CloudAndEdgeSolutions = () => {
                 <li>Secure file‑sharing and remote access</li>
                 <li>Edge computing for real‑time processing</li>
               </ul>
-              <p className="mt-6 text-muted-foreground">Work smarter, safer, and from anywhere.</p>
-              <div className="mt-6">
-                <Link to="/contact#quote-form" className="inline-flex">
-                  <Button className="cta-primary">Request a Quote</Button>
-                </Link>
-              </div>
-            </section>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <img src={schoolProject} alt="Cloud adoption in education with collaboration tools" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/329436ed-9b85-46bd-9a90-9921225137c1.png"} alt="Secure remote access and Zero Trust architecture" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/702d31a8-30a3-4dc4-880f-1366edaf8911.png"} alt="Cloud backup and disaster recovery" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/4ce3794c-caeb-4109-b893-cf137d3054d1.png"} alt="Edge computing enabling real‑time processing" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+            </div>
           </div>
         </section>
 

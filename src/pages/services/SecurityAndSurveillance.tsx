@@ -3,11 +3,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import heroImage from "@/assets/hero-bg.jpg";
+import officeProject from "@/assets/office-project.jpg";
 
 const SecurityAndSurveillance = () => {
   useEffect(() => {
     const title = "Security & Surveillance | Siyakha";
-    const description = "CCTV, access control, and smart surveillance systems that protect your people and assets.";
+    const description = "CCTV, access control, alarm integration, smart analytics, and remote monitoring for schools and enterprises.";
     document.title = title;
 
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
@@ -70,13 +72,23 @@ const SecurityAndSurveillance = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        <section className="py-12 md:py-16">
-          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
-            <h1 className="text-3xl md:text-4xl font-bold text-primary">Security & Surveillance</h1>
-            <p className="text-muted-foreground mt-3">Safeguard your premises with smart security solutions.</p>
+        <section className="relative py-16 md:py-24 border-b border-border overflow-hidden">
+          <img src={heroImage} alt="Enterprise CCTV and access control monitoring" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+          <div className="absolute inset-0 bg-background/75" />
+          <div className="relative container mx-auto px-4 lg:px-6">
+            <h1 className="text-3xl md:text-5xl font-bold text-primary">Security & Surveillance</h1>
+            <p className="text-muted-foreground mt-3 max-w-3xl">Safeguard your premises with smart security solutions — CCTV, access control, alarms and analytics.</p>
+            <div className="mt-6 flex gap-3">
+              <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Quote</Button></Link>
+              <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
+            </div>
+          </div>
+        </section>
 
-            <section className="mt-8">
-              <h2 className="text-xl font-semibold text-primary">Solutions Include</h2>
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4 lg:px-6 grid lg:grid-cols-2 gap-10 items-center max-w-6xl">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-semibold text-primary">Solutions Include</h2>
               <ul className="list-disc pl-6 mt-4 text-muted-foreground space-y-2">
                 <li>CCTV installation & integration (IP & analog)</li>
                 <li>Remote access monitoring</li>
@@ -84,13 +96,13 @@ const SecurityAndSurveillance = () => {
                 <li>Access control (biometric & RFID)</li>
                 <li>Alarm system integration</li>
               </ul>
-              <p className="mt-6 text-muted-foreground">Modern security designed to give you peace of mind — 24/7.</p>
-              <div className="mt-6">
-                <Link to="/contact#quote-form" className="inline-flex">
-                  <Button className="cta-primary">Request a Quote</Button>
-                </Link>
-              </div>
-            </section>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <img src={"/lovable-uploads/de3c5edc-ea87-4242-bbb0-8782b25a22ec.png"} alt="Campus CCTV overhaul with fibre backbone" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={officeProject} alt="Access control and intercom network in office complex" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png"} alt="Secure retail surveillance and network segmentation" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/329436ed-9b85-46bd-9a90-9921225137c1.png"} alt="AI‑enabled monitoring and smart alerts" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+            </div>
           </div>
         </section>
 
