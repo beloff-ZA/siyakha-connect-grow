@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, MapPin, Wifi, Shield } from "lucide-react";
 const maristProject = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
+const kfcProject = "/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png";
 import officeProject from "@/assets/office-project.jpg";
 
 const Projects = () => {
@@ -23,6 +24,15 @@ const Projects = () => {
       icon: Shield,
       features: ["IP CCTV System", "Access Control", "Intercom Network", "Smart Gate Automation"],
       link: "/projects/corporate-office-complex"
+    },
+    {
+      title: "KFC – National Network Infrastructure Rollout",
+      location: "Nationwide, South Africa",
+      description: "In partnership with Exmile: nationwide Wi‑Fi and secure network deployment for KFC stores",
+      image: kfcProject,
+      icon: Wifi,
+      features: ["Nationwide rollout", "50+ firewalls", "1000+ devices & APs", "Enterprise compliance"],
+      link: "/projects/kfc-national-network-rollout"
     }
   ];
 
