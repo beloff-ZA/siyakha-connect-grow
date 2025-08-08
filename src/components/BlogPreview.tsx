@@ -6,13 +6,22 @@ import { Link } from "react-router-dom";
 const BlogPreview = () => {
   const articles = [
     {
+      title: "Understanding the Power of AI in Modern Business and Education",
+      excerpt: "AI is transforming work and learning. See how schools and businesses can safely harness AI for real impact.",
+      date: "January 22, 2025",
+      readTime: "6 min read",
+      category: "AI",
+      link: "/blog/understanding-the-power-of-ai-in-modern-business-and-education",
+      featured: true
+    },
+    {
       title: "5 Signs Your School Needs a Network Upgrade",
       excerpt: "In today’s digital learning environment, a reliable and secure network is essential. Here are 5 signs it’s time to upgrade.",
       date: "January 20, 2025",
       readTime: "6 min read",
       category: "Networking",
       link: "/blog/5-signs-your-school-needs-a-network-upgrade",
-      featured: true
+      featured: false
     },
     {
       title: "Why Every Growing Business Should Consider a Managed IT Service Provider (MSP)",
@@ -30,6 +39,33 @@ const BlogPreview = () => {
       readTime: "5 min read",
       category: "Wi‑Fi",
       link: "/blog/how-to-know-when-its-time-to-replace-your-wi-fi-system",
+      featured: false
+    },
+    {
+      title: "Why You Need to Upgrade Your Hardware Before It Slows You Down",
+      excerpt: "Old laptops and servers cost time and money. Here’s why upgrading hardware is an investment, not an expense.",
+      date: "January 21, 2025",
+      readTime: "5 min read",
+      category: "Hardware",
+      link: "/blog/why-you-need-to-upgrade-your-hardware-before-it-slows-you-down",
+      featured: false
+    },
+    {
+      title: "Understanding Cyber Vulnerabilities — and How to Protect Your Business",
+      excerpt: "From unpatched systems to phishing — learn key risks and practical steps to reduce cyber threats.",
+      date: "January 19, 2025",
+      readTime: "7 min read",
+      category: "Security",
+      link: "/blog/understanding-cyber-vulnerabilities-and-how-to-protect-your-business",
+      featured: false
+    },
+    {
+      title: "NComputing: The Smart, Affordable Solution for Schools",
+      excerpt: "Multiply classroom access to computers without multiplying costs using NComputing.",
+      date: "January 17, 2025",
+      readTime: "5 min read",
+      category: "EdTech",
+      link: "/blog/ncomputing-the-smart-affordable-solution-for-schools",
       featured: false
     }
   ];
