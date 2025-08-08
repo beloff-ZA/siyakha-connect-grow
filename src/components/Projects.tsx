@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, MapPin, Wifi, Shield } from "lucide-react";
-import schoolProject from "@/assets/school-project.jpg";
+const maristProject = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
 import officeProject from "@/assets/office-project.jpg";
 
 const Projects = () => {
@@ -10,7 +10,7 @@ const Projects = () => {
       title: "Marist Brothers Linmeyer",
       location: "Johannesburg, Gauteng",
       description: "Full Wi-Fi and data infrastructure for 22 classrooms",
-      image: schoolProject,
+      image: maristProject,
       icon: Wifi,
       features: ["Enterprise Wi-Fi 6", "Structured Cabling", "Network Security", "24/7 Monitoring"],
       link: "/projects/marist-brothers-linmeyer"
@@ -49,6 +49,8 @@ const Projects = () => {
                 <img 
                   src={project.image}
                   alt={project.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-primary/60 group-hover:bg-primary/40 transition-colors duration-300"></div>
