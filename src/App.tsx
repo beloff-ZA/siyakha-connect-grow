@@ -27,6 +27,12 @@ import PowerOfAI from "./pages/blog/PowerOfAI";
 import HardwareUpgrade from "./pages/blog/HardwareUpgrade";
 import CyberVulnerabilities from "./pages/blog/CyberVulnerabilities";
 import NComputing from "./pages/blog/NComputing";
+// Legal and misc
+import Careers from "./pages/Careers";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import LogACall from "./pages/LogACall";
+import SupportDeals from "./pages/SupportDeals";
 import WhatsAppContact from "./components/WhatsAppContact";
 
 const queryClient = new QueryClient();
@@ -42,6 +48,11 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<ProjectsIndex />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/log-a-call" element={<LogACall />} />
+          <Route path="/support-deals" element={<SupportDeals />} />
 
           {/* Services */}
           <Route path="/services/infrastructure-and-networking" element={<InfrastructureAndNetworking />} />

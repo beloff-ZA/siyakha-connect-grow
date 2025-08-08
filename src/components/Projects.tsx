@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, MapPin, Wifi, Shield, Camera, Printer } from "lucide-react";
+import { Link } from "react-router-dom";
 const maristProject = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
 const kfcProject = "/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png";
 const maristCTProject = "/lovable-uploads/de3c5edc-ea87-4242-bbb0-8782b25a22ec.png";
@@ -82,8 +83,7 @@ const Projects = () => {
           {projects.map((project, index) => (
             <Card 
               key={index}
-              className="overflow-hidden group hover:shadow-xl transition-all duration-300 cursor-pointer"
-              onClick={() => window.location.href = project.link}
+              className="overflow-hidden group hover:shadow-xl transition-all duration-300"
             >
               <div className="relative h-64 overflow-hidden">
                 <img 
@@ -126,13 +126,15 @@ const Projects = () => {
                   ))}
                 </div>
 
-                <Button 
-                  variant="ghost" 
-                  className="text-accent hover:text-accent-hover group/btn p-0 h-auto font-medium"
-                >
-                  View Project Details
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                </Button>
+                <Link to={project.link} className="inline-flex">
+                  <Button 
+                    variant="ghost" 
+                    className="text-accent hover:text-accent-hover group/btn p-0 h-auto font-medium"
+                  >
+                    View Project Details
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}
@@ -140,10 +142,12 @@ const Projects = () => {
 
         {/* All Projects CTA */}
         <div className="text-center mt-12">
-          <Button className="cta-secondary">
-            View All Projects
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+          <Link to="/projects" className="inline-flex">
+            <Button className="cta-secondary">
+              View All Projects
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
         </div>
 
         {/* Project Stats */}

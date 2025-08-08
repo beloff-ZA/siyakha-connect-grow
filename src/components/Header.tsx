@@ -79,6 +79,16 @@ const Header = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
+                <Link to="/support-deals" className="text-foreground hover:text-primary transition-colors font-medium">
+                  Support Deals
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link to="/log-a-call" className="text-foreground hover:text-primary transition-colors font-medium">
+                  Log a Call
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
                 <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
                   Contact
                 </Link>
@@ -134,6 +144,12 @@ const Header = () => {
               </Link>
               <Link to="/blog" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Blog
+              </Link>
+              <Link to="/support-deals" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+                Support Deals
+              </Link>
+              <Link to="/log-a-call" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+                Log a Call
               </Link>
               <Link to="/contact" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Contact

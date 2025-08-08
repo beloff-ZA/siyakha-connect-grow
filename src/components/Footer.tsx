@@ -54,9 +54,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="/careers" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/careers" className="text-white/80 hover:text-accent transition-colors">
                   Careers
-                </a>
+                </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-white/80 hover:text-accent transition-colors">
@@ -64,14 +64,14 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="/privacy" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/privacy" className="text-white/80 hover:text-accent transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/terms" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/terms" className="text-white/80 hover:text-accent transition-colors">
                   Terms of Service
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -101,9 +101,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="/support" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/support-deals" className="text-white/80 hover:text-accent transition-colors">
                   24/7 Support
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
