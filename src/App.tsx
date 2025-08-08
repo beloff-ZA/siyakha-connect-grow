@@ -36,6 +36,12 @@ import LogACall from "./pages/LogACall";
 import SupportDeals from "./pages/SupportDeals";
 import WhatsAppContact from "./components/WhatsAppContact";
 import ScrollToTop from "./components/ScrollToTop";
+// Localized Johannesburg pages
+import ItCompanyJohannesburg from "./pages/ItCompanyJohannesburg";
+import ManagedITSJohannesburg from "./pages/ManagedITSJohannesburg";
+import ITSupportJohannesburg from "./pages/ITSupportJohannesburg";
+import CybersecurityJohannesburg from "./pages/CybersecurityJohannesburg";
+import CloudServicesJohannesburg from "./pages/CloudServicesJohannesburg";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +88,12 @@ const App = () => (
           <Route path="/projects/kfc-national-network-rollout" element={<KFCExmileProject />} />
           <Route path="/projects/pelican-club-bahrain" element={<PelicanClubBahrainProject />} />
           <Route path="/projects/campuskey-network-overhaul" element={<CampusKeyProject />} />
+
+          <Route path="/it-company-johannesburg" element={<ItCompanyJohannesburg />} />
+          <Route path="/managed-it-services-johannesburg" element={<ManagedITSJohannesburg />} />
+          <Route path="/it-support-johannesburg" element={<ITSupportJohannesburg />} />
+          <Route path="/cybersecurity-services-johannesburg" element={<CybersecurityJohannesburg />} />
+          <Route path="/cloud-services-johannesburg" element={<CloudServicesJohannesburg />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

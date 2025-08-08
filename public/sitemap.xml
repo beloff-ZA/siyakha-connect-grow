@@ -25,4 +25,9 @@
   <url><loc>/projects/kfc-national-network-rollout</loc></url>
   <url><loc>/projects/pelican-club-bahrain</loc></url>
   <url><loc>/projects/campuskey-network-overhaul</loc></url>
+  <url><loc>/it-company-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/managed-it-services-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/it-support-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/cybersecurity-services-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/cloud-services-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

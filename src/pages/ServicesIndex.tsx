@@ -57,6 +57,21 @@ const ServicesIndex = () => {
         {/* Services List */}
         <Services />
 
+        {/* Johannesburg links */}
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 text-center">
+            <h2 className="text-2xl font-semibold text-foreground">Popular in Johannesburg</h2>
+            <p className="text-muted-foreground mt-2">Explore our dedicated local service pages for Johannesburg businesses.</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link to="/it-company-johannesburg"><Button variant="secondary">IT Company Johannesburg</Button></Link>
+              <Link to="/managed-it-services-johannesburg"><Button variant="secondary">Managed IT Services</Button></Link>
+              <Link to="/it-support-johannesburg"><Button variant="secondary">IT Support</Button></Link>
+              <Link to="/cybersecurity-services-johannesburg"><Button variant="secondary">Cybersecurity</Button></Link>
+              <Link to="/cloud-services-johannesburg"><Button variant="secondary">Cloud Services</Button></Link>
+            </div>
+          </div>
+        </section>
+
         {/* Cross-links */}
         <section className="py-12 md:py-16 border-t border-border">
           <div className="container mx-auto px-4 lg:px-6 text-center">

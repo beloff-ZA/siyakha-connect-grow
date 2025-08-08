@@ -115,7 +115,17 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Service Areas */}
+          <div>
+            <h3 className="text-lg font-semibold mb-6">Service Areas</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/it-company-johannesburg" className="text-white/80 hover:text-accent transition-colors">
+                  IT Company Johannesburg
+                </Link>
+              </li>
+            </ul>
+          </div>
           <div>
             <h3 className="text-lg font-semibold mb-6">Get in Touch</h3>
             <div className="space-y-4">
