@@ -56,6 +56,12 @@ const Header = () => {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="w-64 p-4">
+                    <Link
+                      to="/services"
+                      className="block px-4 py-2 mb-2 text-sm font-medium text-primary hover:text-accent hover:bg-muted rounded-md transition-colors"
+                    >
+                      All Services
+                    </Link>
                     {services.map((service) => (
                       <Link
                         key={service}
@@ -128,6 +134,9 @@ const Header = () => {
                   <ChevronDown size={16} />
                 </div>
                 <div className="pl-4 space-y-2">
+                    <Link to="/services" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+                      All Services
+                    </Link>
                     {services.map((service) => (
                       <Link
                         key={service}
