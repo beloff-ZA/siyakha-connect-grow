@@ -179,6 +179,31 @@ const SmartCollaborationTools = () => {
           </div>
         </section>
 
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-5xl">
+            <h2 className="text-xl font-semibold text-primary">Service Areas</h2>
+            <p className="text-muted-foreground mt-2">We implement and support collaboration solutions across these locations.</p>
+            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <Link to="/it-company-johannesburg" className="block rounded-lg border border-border p-5 bg-card hover:bg-accent transition-colors">
+                <h3 className="font-medium text-foreground">Johannesburg</h3>
+                <p className="text-sm text-muted-foreground mt-1">Local support, rapid response.</p>
+              </Link>
+              <Link to="/it-company-cape-town" className="block rounded-lg border border-border p-5 bg-card hover:bg-accent transition-colors">
+                <h3 className="font-medium text-foreground">Cape Town</h3>
+                <p className="text-sm text-muted-foreground mt-1">City-wide coverage and onsite help.</p>
+              </Link>
+              <Link to="/it-company-london" className="block rounded-lg border border-border p-5 bg-card hover:bg-accent transition-colors">
+                <h3 className="font-medium text-foreground">London</h3>
+                <p className="text-sm text-muted-foreground mt-1">Affordable packages for SMEs.</p>
+              </Link>
+              <Link to="/it-company-emea" className="block rounded-lg border border-border p-5 bg-card hover:bg-accent transition-colors">
+                <h3 className="font-medium text-foreground">EMEA</h3>
+                <p className="text-sm text-muted-foreground mt-1">Regional coverage across Europe, Middle East, Africa.</p>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section className="py-8 md:py-12 border-t border-border">
           <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
             <h2 className="text-xl font-semibold text-primary">Smart Collaboration FAQs</h2>
