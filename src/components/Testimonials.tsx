@@ -8,37 +8,50 @@ const Testimonials = () => {
 
   const testimonials = [
     {
-      name: "Lebo M.",
-      role: "Facilities Manager",
-      company: "Educational Institution",
-      content: "Siyakha transformed our office into a high-tech, secure space. The team was professional and responsive throughout the entire project.",
+      name: "Boikano Pule",
+      role: "Client",
+      company: "siyakhatechnology.co.za",
+      content:
+        "These folks turned our digital dreams into reality! Emails flowing smoothly, website looking slick. Seriously, they're the email and website superheroes we didn't know we needed. Highly recommend!",
       rating: 5,
-      avatar: "LM"
+      avatar: "BP",
     },
     {
-      name: "Ravi P.",
-      role: "School Administrator", 
-      company: "Private School",
-      content: "Fast Wi-Fi, seamless support, affordable pricing. Siyakha made IT easy for us and our students love the reliable connectivity.",
+      name: "Mandy Laing",
+      role: "Client",
+      company: "Siyakha Technology",
+      content:
+        "I've had so many bad experiences with tech companies. I must say Siyakha is the best company for all things technology and computers. They are efficient, reliable and professional. With great customer support. I highly recommend them.",
       rating: 5,
-      avatar: "RP"
+      avatar: "ML",
     },
     {
-      name: "Sarah K.",
-      role: "IT Director",
-      company: "Healthcare Group",
-      content: "The cloud migration was flawless. Zero downtime and our staff adapted quickly to the new systems. Excellent project management.",
+      name: "Emmy Trish",
+      role: "Client",
+      company: "The Pelican Club, Bahrain",
+      content:
+        "We had an urgent printer issue at The Pelican Club here in Bahrain and reached out to Siyakha Technology for help. Their team responded instantly — they connected remotely and resolved everything quickly and professionally. The support was smooth, efficient, and incredibly reassuring. It's great to work with a team that delivers results across borders.",
       rating: 5,
-      avatar: "SK"
+      avatar: "ET",
     },
     {
-      name: "Michael T.",
-      role: "Operations Manager",
-      company: "Manufacturing Company",
-      content: "Their security implementation gave us peace of mind. The CCTV system and access controls work perfectly. Highly recommend Siyakha.",
+      name: "Mfundo",
+      role: "School Administrator",
+      company: "Marist Brothers School",
+      content:
+        "Siyakha Technology has been a trusted partner for our major ICT needs at the school. Their expertise, responsiveness, and dedication give us confidence that our technology is in the best hands.",
       rating: 5,
-      avatar: "MT"
-    }
+      avatar: "M",
+    },
+    {
+      name: "Brian",
+      role: "Operations Lead",
+      company: "Zizwe DSD",
+      content:
+        "At Zizwe DSD, Siyakha has been instrumental in managing our complete IT ecosystem—networking, VoIP, internet support, antivirus, and Office 365 services. They also helped upgrade our website, ensuring everything runs smoothly and securely. We couldn’t ask for a more dependable ICT partner.",
+      rating: 5,
+      avatar: "B",
+    },
   ];
 
   const nextTestimonial = () => {
@@ -63,10 +76,10 @@ const Testimonials = () => {
       <div className="container mx-auto px-4 lg:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            What Our Clients Say
+            Client Testimonials
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Real feedback from businesses we've helped transform with technology.
+            Real feedback from clients across education, clubs, and businesses.
           </p>
         </div>
 
@@ -83,7 +96,11 @@ const Testimonials = () => {
                   </div>
                 </div>
 
-                <blockquote className="text-lg md:text-xl text-foreground leading-relaxed mb-8 italic">
+                <blockquote
+                  className="text-lg md:text-xl text-foreground leading-relaxed mb-8 italic min-h-28"
+                  aria-live="polite"
+                  role="status"
+                >
                   "{testimonials[currentIndex].content}"
                 </blockquote>
 
@@ -111,6 +128,7 @@ const Testimonials = () => {
                       size="sm"
                       onClick={prevTestimonial}
                       className="w-10 h-10 p-0"
+                      aria-label="Previous testimonial"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </Button>
@@ -119,6 +137,7 @@ const Testimonials = () => {
                       size="sm"
                       onClick={nextTestimonial}
                       className="w-10 h-10 p-0"
+                      aria-label="Next testimonial"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Button>
