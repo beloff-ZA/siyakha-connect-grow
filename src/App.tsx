@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import MaristBrothersProject from "./pages/projects/MaristBrothers";
 import KFCExmileProject from "./pages/projects/KFCExmile";
 import NotFound from "./pages/NotFound";
+import MaristCapeTownProject from "./pages/projects/MaristCapeTown";
 
 const queryClient = new QueryClient();
 

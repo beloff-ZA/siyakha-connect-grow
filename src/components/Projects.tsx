@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, MapPin, Wifi, Shield } from "lucide-react";
+import { ArrowRight, MapPin, Wifi, Shield, Camera } from "lucide-react";
 const maristProject = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
 const kfcProject = "/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png";
+const maristCTProject = "/lovable-uploads/de3c5edc-ea87-4242-bbb0-8782b25a22ec.png";
 import officeProject from "@/assets/office-project.jpg";
 
 const Projects = () => {
@@ -33,6 +34,15 @@ const Projects = () => {
       icon: Wifi,
       features: ["Nationwide rollout", "50+ firewalls", "1000+ devices & APs", "Enterprise compliance"],
       link: "/projects/kfc-national-network-rollout"
+    },
+    {
+      title: "St Joseph's Marist College – Campus CCTV Overhaul",
+      location: "Cape Town, Western Cape",
+      description: "55‑camera fibre network covering the entire campus with remote monitoring",
+      image: maristCTProject,
+      icon: Camera,
+      features: ["55 cameras", "Fibre backbone", "Full campus coverage", "Remote monitoring"],
+      link: "/projects/st-josephs-marist-cape-town-cctv"
     }
   ];
 
@@ -48,7 +58,7 @@ const Projects = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {projects.map((project, index) => (
             <Card 
               key={index}
