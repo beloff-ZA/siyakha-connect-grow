@@ -105,6 +105,10 @@ const SecurityAndSurveillance = () => {
               <img src={"/lovable-uploads/fd161cb0-9b62-4f8f-a559-c382b6a38986.png"} alt="Security operations center with video wall monitoring multiple cameras" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/f6656558-5e83-4d94-bedb-d5b758a12048.png"} alt="Dahua outdoor bullet CCTV camera installed on perimeter" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/b1175ccd-d6f1-41ea-a02b-19b1103318a7.png"} alt="Siyakha CCTV service van on school campus" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/12ae638a-a66f-4aa3-b0db-0453c63806ce.png"} alt="Hikvision site surveillance rendered overview by Siyakha" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/5c53be57-de20-455a-aa49-6ac211db9e73.png"} alt="Hikvision pole camera monitoring pool area render" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/366f9679-7dae-428e-b777-145a950070f9.png"} alt="Hikvision H.265+ network camera inventory boxes ready for installation" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/aa8cab58-dcd5-45b7-a7bd-05cdff749da5.png"} alt="Hikvision Authorized Installer certificate for Siyakha Tech Solutions" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
             </div>
           </div>
         </section>

@@ -114,6 +114,9 @@ const InfrastructureAndNetworking = () => {
               <img src={"/lovable-uploads/1bd456a5-cd99-42ff-9893-843a55d08814.png"} alt="Neatly wired rack with Netgear switch and patch panels" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/f9c1434a-ac22-41a1-8713-73e03a832b8d.png"} alt="Patch panel with labeled Cat6 cables in distribution rack" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/de7314d9-a55e-493e-8d71-b30badcab599.png"} alt="Organized rack with MikroTik switches and blue Cat6 jumpers" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/e34b216a-0325-45dd-996f-b6b727e542ee.png"} alt="Data room rack with structured cabling trunking and patch panels" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/c74a7f86-838a-46db-9d88-ac8b192d5941.png"} alt="Wall-mounted patch panels with neatly dressed blue Cat6 leads" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/5bd4b5cb-7c24-44d6-8df7-89a1f3a76c1f.png"} alt="Check Point security gateway firewall on network rack" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
             </div>
           </div>
         </section>

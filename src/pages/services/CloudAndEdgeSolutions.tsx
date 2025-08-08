@@ -97,11 +97,14 @@ const CloudAndEdgeSolutions = () => {
                 <li>Edge computing for real‑time processing</li>
               </ul>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <img src={schoolProject} alt="Cloud adoption in education with collaboration tools" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/329436ed-9b85-46bd-9a90-9921225137c1.png"} alt="Secure remote access and Zero Trust architecture" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/702d31a8-30a3-4dc4-880f-1366edaf8911.png"} alt="Cloud backup and disaster recovery" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/4ce3794c-caeb-4109-b893-cf137d3054d1.png"} alt="Edge computing enabling real‑time processing" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/908085b7-2411-4a24-8acc-a3515a6f1778.png"} alt="Microsoft rack servers powering private cloud infrastructure" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/5a56026a-1cff-4f03-85a4-7e78ec87c498.png"} alt="Microsoft storage nodes for high‑availability workloads" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/78863186-b345-495b-a0fb-54a33bee0268.png"} alt="HPE server rack cabinet prepared for datacenter deployment" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
             </div>
           </div>
         </section>
