@@ -8,10 +8,18 @@ const Footer = () => {
       <div className="container mx-auto px-4 lg:px-6">
         {/* Main Footer Content */}
         <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
           <div className="space-y-6">
-            <div className="text-2xl font-bold">
-              Siyakha<span className="text-accent">Tech</span>
+            <div className="flex items-center">
+              <img
+                src="/lovable-uploads/18df369d-304c-4290-97b8-53ae2aad27fb.png"
+                alt="Siyakha Technology logo"
+                width="199"
+                height="51"
+                className="h-8 w-auto"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="sr-only">Siyakha Technology</span>
             </div>
             <p className="text-white/80 leading-relaxed">
               Your trusted BEE Level 1 ICT partner, delivering innovative technology solutions 

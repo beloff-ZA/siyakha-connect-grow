@@ -23,11 +23,18 @@ const Header = () => {
     <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm">
       <div className="container mx-auto px-4 lg:px-6">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <div className="flex items-center">
-            <div className="text-2xl font-bold text-primary">
-              Siyakha<span className="text-accent">Tech</span>
-            </div>
+            <a href="/" aria-label="Siyakha Technology home" className="flex items-center">
+              <img
+                src="/lovable-uploads/18df369d-304c-4290-97b8-53ae2aad27fb.png"
+                alt="Siyakha Technology logo"
+                width="199"
+                height="51"
+                className="h-8 w-auto md:h-9"
+                decoding="async"
+              />
+              <span className="sr-only">Siyakha Technology</span>
+            </a>
           </div>
 
           {/* Desktop Navigation */}
