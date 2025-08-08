@@ -76,10 +76,6 @@ const LeadMagnet = () => {
                       </div>
                     </div>
 
-                    <div className="text-center p-4 bg-white/10 rounded-lg">
-                      <div className="text-sm opacity-90 mb-1">Next Available Slot:</div>
-                      <div className="font-semibold">Today at 2:00 PM</div>
-                    </div>
                   </div>
                 </div>
               </div>
