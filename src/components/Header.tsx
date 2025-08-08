@@ -71,14 +71,32 @@ const Header = () => {
                         {service}
                       </Link>
                     ))}
-                    <div className="mt-3 border-t border-border pt-3">
-                      <Link
-                        to="/it-company-johannesburg"
-                        className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
-                      >
-                        IT Company Johannesburg
-                      </Link>
-                    </div>
+<div className="mt-3 border-t border-border pt-3">
+  <Link
+    to="/it-company-johannesburg"
+    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
+  >
+    IT Company Johannesburg
+  </Link>
+  <Link
+    to="/it-company-cape-town"
+    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
+  >
+    IT Company Cape Town
+  </Link>
+  <Link
+    to="/it-company-london"
+    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
+  >
+    IT Company London
+  </Link>
+  <Link
+    to="/it-company-emea"
+    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
+  >
+    IT Company EMEA
+  </Link>
+</div>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -154,11 +172,20 @@ const Header = () => {
                         {service}
                       </Link>
                     ))}
-                    <div className="pt-2 border-t border-border">
-                      <Link to="/it-company-johannesburg" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
-                        IT Company Johannesburg
-                      </Link>
-                    </div>
+<div className="pt-2 border-t border-border">
+  <Link to="/it-company-johannesburg" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+    IT Company Johannesburg
+  </Link>
+  <Link to="/it-company-cape-town" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+    IT Company Cape Town
+  </Link>
+  <Link to="/it-company-london" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+    IT Company London
+  </Link>
+  <Link to="/it-company-emea" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+    IT Company EMEA
+  </Link>
+</div>
                 </div>
               </div>
               <Link to="/projects" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">

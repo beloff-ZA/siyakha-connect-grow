@@ -42,7 +42,10 @@ import ManagedITSJohannesburg from "./pages/ManagedITSJohannesburg";
 import ITSupportJohannesburg from "./pages/ITSupportJohannesburg";
 import CybersecurityJohannesburg from "./pages/CybersecurityJohannesburg";
 import CloudServicesJohannesburg from "./pages/CloudServicesJohannesburg";
-
+// Regional/City pages
+import ItCompanyEMEA from "./pages/ItCompanyEMEA";
+import ItCompanyCapeTown from "./pages/ItCompanyCapeTown";
+import ItCompanyLondon from "./pages/ItCompanyLondon";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -89,12 +92,14 @@ const App = () => (
           <Route path="/projects/pelican-club-bahrain" element={<PelicanClubBahrainProject />} />
           <Route path="/projects/campuskey-network-overhaul" element={<CampusKeyProject />} />
 
-          <Route path="/it-company-johannesburg" element={<ItCompanyJohannesburg />} />
-          <Route path="/managed-it-services-johannesburg" element={<ManagedITSJohannesburg />} />
-          <Route path="/it-support-johannesburg" element={<ITSupportJohannesburg />} />
-          <Route path="/cybersecurity-services-johannesburg" element={<CybersecurityJohannesburg />} />
-          <Route path="/cloud-services-johannesburg" element={<CloudServicesJohannesburg />} />
-
+<Route path="/it-company-johannesburg" element={<ItCompanyJohannesburg />} />
+<Route path="/managed-it-services-johannesburg" element={<ManagedITSJohannesburg />} />
+<Route path="/it-support-johannesburg" element={<ITSupportJohannesburg />} />
+<Route path="/cybersecurity-services-johannesburg" element={<CybersecurityJohannesburg />} />
+<Route path="/cloud-services-johannesburg" element={<CloudServicesJohannesburg />} />
+<Route path="/it-company-emea" element={<ItCompanyEMEA />} />
+<Route path="/it-company-cape-town" element={<ItCompanyCapeTown />} />
+<Route path="/it-company-london" element={<ItCompanyLondon />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
