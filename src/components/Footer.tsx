@@ -158,6 +158,15 @@ const Footer = () => {
                   2146, South Africa
                 </div>
               </div>
+              <div className="mt-4">
+                <iframe
+                  title="Siyakha Tech Solutions Sandton Map"
+                  src="https://www.google.com/maps?q=2nd%20Floor%2C%20Nelson%20Mandela%20Square%2C%20Maude%20Street%20West%20Tower%2C%20Sandton%2C%202146%2C%20South%20Africa&output=embed"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-40 md:h-48 rounded-lg border border-white/20"
+                />
+              </div>
             </div>
 
             {/* Business Hours */}

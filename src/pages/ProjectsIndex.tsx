@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Projects from "@/components/Projects";
 import heroImage from "@/assets/hero-bg.jpg";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 const ProjectsIndex = () => {
   useEffect(() => {
-    const title = "Projects | Siyakha Technology Solutions";
-    const description = "Explore featured ICT projects by Siyakha Technology Solutions including networking, security, cloud migrations, and more.";
+    const title = "Projects | Siyakha Technology Solutions — IT Company Johannesburg, Sandton MSP";
+    const description = "Projects by Siyakha: IT company in Johannesburg (Sandton MSP). Networking, CCTV, cloud, school IT support and more.";
     document.title = title;
 
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
@@ -47,6 +48,8 @@ const ProjectsIndex = () => {
     { src: "/lovable-uploads/4c8f615b-1c86-4be3-a8e4-17cd204ec541.png", alt: "Netgear switch cabinet with organized Cat6a patching" },
   ];
 
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -65,18 +68,35 @@ const ProjectsIndex = () => {
             <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-6">Project Gallery</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {gallery.map((img) => (
-                <img
+                <button
                   key={img.src}
-                  src={img.src}
-                  alt={img.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-40 object-cover rounded-lg border border-border"
-                />
+                  type="button"
+                  onClick={() => setLightbox(img)}
+                  className="relative group focus:outline-none"
+                  aria-label={`Open image: ${img.alt}`}
+                >
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-40 object-cover rounded-lg border border-border cursor-zoom-in"
+                  />
+                </button>
               ))}
             </div>
           </div>
         </section>
+        <Dialog open={!!lightbox} onOpenChange={(o) => !o && setLightbox(null)}>
+          <DialogContent className="max-w-5xl w-[92vw] p-0">
+            {lightbox && (
+              <div className="p-2">
+                <img src={lightbox.src} alt={lightbox.alt} className="max-h-[85vh] w-full object-contain" loading="eager" />
+                <p className="text-sm text-muted-foreground mt-2 px-2">{lightbox.alt}</p>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </main>
       <Footer />
     </div>
