@@ -8,8 +8,8 @@ import officeProject from "@/assets/office-project.jpg";
 
 const SecurityAndSurveillance = () => {
   useEffect(() => {
-    const title = "Security & Surveillance | Siyakha";
-    const description = "CCTV, access control, alarm integration, smart analytics, and remote monitoring for schools and enterprises.";
+    const title = "CCTV Security & Surveillance | Siyakha Technology";
+    const description = "We install CCTV, access control, alarms, and AI analytics nationwide. Certified Hikvision and Dahua partner. Free security assessment.";
     document.title = title;
 
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
@@ -53,17 +53,17 @@ const SecurityAndSurveillance = () => {
       {
         "@type": "Question",
         name: "Do you integrate with existing CCTV systems?",
-        acceptedAnswer: { "@type": "Answer", text: "Yes. We can upgrade analog to IP, integrate with existing NVRs, and unify multi-brand environments." }
+        acceptedAnswer: { "@type": "Answer", text: "Yes. We can upgrade analog to IP, integrate with your existing NVRs, and unify multi-brand environments into a single monitoring platform." }
       },
       {
         "@type": "Question",
         name: "Can we monitor cameras remotely?",
-        acceptedAnswer: { "@type": "Answer", text: "Absolutely. We set up secure remote access and alerts with role-based permissions." }
+        acceptedAnswer: { "@type": "Answer", text: "Absolutely. We configure secure remote access with role-based permissions, so staff only see the feeds they need." }
       },
       {
         "@type": "Question",
         name: "Do you offer maintenance SLAs?",
-        acceptedAnswer: { "@type": "Answer", text: "Yes, with preventative maintenance, health checks and priority response." }
+        acceptedAnswer: { "@type": "Answer", text: "Yes. Our SLAs include preventative maintenance, regular health checks, priority call-outs, and rapid hardware replacement if needed." }
       }
     ]
   }), []);
@@ -76,8 +76,9 @@ const SecurityAndSurveillance = () => {
           <img src={heroImage} alt="Enterprise CCTV and access control monitoring" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
           <div className="absolute inset-0 bg-background/75" />
           <div className="relative container mx-auto px-4 lg:px-6">
-            <h1 className="text-3xl md:text-5xl font-bold text-primary">Security & Surveillance</h1>
-            <p className="text-muted-foreground mt-3 max-w-3xl">Safeguard your premises with smart security solutions — CCTV, access control, alarms and analytics.</p>
+            <h1 className="text-3xl md:text-5xl font-bold text-primary">CCTV Security & Surveillance</h1>
+            <p className="text-muted-foreground mt-3 max-w-3xl">Safeguard your premises with smart, integrated security solutions — from CCTV and access control to alarms and AI-powered analytics.</p>
+            <p className="text-muted-foreground mt-3 max-w-3xl">At Siyakha Technology, we design and deploy reliable, high-performance surveillance systems that protect your people, property, and assets 24/7. Whether it’s a single-site retail store or a multi-building campus, our security solutions combine industry-leading technology, skilled installation, and smart monitoring to give you complete peace of mind.</p>
             <div className="mt-6 flex gap-3">
               <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Quote</Button></Link>
               <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
@@ -88,13 +89,13 @@ const SecurityAndSurveillance = () => {
         <section className="py-12 md:py-16">
           <div className="container mx-auto px-4 lg:px-6 grid lg:grid-cols-2 gap-10 items-center max-w-6xl">
             <div>
-              <h2 className="text-2xl md:text-3xl font-semibold text-primary">Solutions Include</h2>
+              <h2 className="text-2xl md:text-3xl font-semibold text-primary">What We Offer</h2>
               <ul className="list-disc pl-6 mt-4 text-muted-foreground space-y-2">
-                <li>CCTV installation & integration (IP & analog)</li>
-                <li>Remote access monitoring</li>
-                <li>Motion‑triggered alerts & smart analytics</li>
-                <li>Access control (biometric & RFID)</li>
-                <li>Alarm system integration</li>
+                <li><span className="font-medium text-foreground">CCTV Installation & Integration</span> — IP and analog systems, tailored to your environment</li>
+                <li><span className="font-medium text-foreground">Remote Access Monitoring</span> — View live feeds securely from anywhere, on any device</li>
+                <li><span className="font-medium text-foreground">Smart Alerts & AI Analytics</span> — Motion detection, perimeter breaches, facial recognition, and people counting</li>
+                <li><span className="font-medium text-foreground">Access Control Solutions</span> — Biometric, RFID card, and mobile credential systems</li>
+                <li><span className="font-medium text-foreground">Alarm System Integration</span> — Seamlessly connect alarms, CCTV, and access control into one security platform</li>
               </ul>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -113,22 +114,63 @@ const SecurityAndSurveillance = () => {
           </div>
         </section>
 
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">Our Track Record</h2>
+            <ul className="mt-4 list-disc pl-6 text-muted-foreground space-y-2">
+              <li><span className="font-medium text-foreground">Campus CCTV Overhauls</span> – Fibre backbone connectivity for large-scale, high-definition monitoring</li>
+              <li><span className="font-medium text-foreground">Retail Store Security</span> – Secure network segmentation for CCTV, POS, and Wi‑Fi</li>
+              <li><span className="font-medium text-foreground">AI-Powered Monitoring</span> – Smart alerts for motion, loitering, and restricted-area access</li>
+              <li><span className="font-medium text-foreground">Corporate Access Control</span> – Integrated intercoms, gates, and biometric scanners</li>
+              <li><span className="font-medium text-foreground">Security Operations Centres</span> – Multi-screen video walls for real-time incident management</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">Why Choose Siyakha Technology for Security</h2>
+            <ul className="mt-4 list-disc pl-6 text-muted-foreground space-y-2">
+              <li><span className="font-medium text-foreground">Certified Installers</span> — Hikvision Authorized Installer & certified Dahua partner</li>
+              <li><span className="font-medium text-foreground">End-to-End Service</span> — From design and supply to installation, training, and support</li>
+              <li><span className="font-medium text-foreground">Future-Ready Solutions</span> — AI analytics, remote access, and cloud storage options</li>
+              <li><span className="font-medium text-foreground">Minimal Downtime Installations</span> — Work scheduled around your business hours to reduce disruption</li>
+              <li><span className="font-medium text-foreground">Nationwide Coverage</span> — Projects completed in Gauteng, Western Cape, KwaZulu-Natal, and beyond</li>
+            </ul>
+          </div>
+        </section>
+
         <section className="py-8 md:py-12 border-t border-border">
           <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
             <h2 className="text-xl font-semibold text-primary">Security & Surveillance FAQs</h2>
             <div className="mt-4 space-y-4 text-muted-foreground">
               <div>
                 <h3 className="font-medium text-foreground">Do you integrate with existing CCTV systems?</h3>
-                <p>Yes. We can upgrade analog to IP, integrate with existing NVRs, and unify multi-brand environments.</p>
+                <p>Yes. We can upgrade analog to IP, integrate with your existing NVRs, and unify multi-brand environments into a single monitoring platform.</p>
               </div>
               <div>
                 <h3 className="font-medium text-foreground">Can we monitor cameras remotely?</h3>
-                <p>Absolutely. We set up secure remote access and alerts with role-based permissions.</p>
+                <p>Absolutely. We configure secure remote access with role-based permissions, so staff only see the feeds they need.</p>
               </div>
               <div>
                 <h3 className="font-medium text-foreground">Do you offer maintenance SLAs?</h3>
-                <p>Yes, with preventative maintenance, health checks and priority response.</p>
+                <p>Yes. Our SLAs include preventative maintenance, regular health checks, priority call-outs, and rapid hardware replacement if needed.</p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">Protect What Matters Most</h2>
+            <p className="text-muted-foreground mt-2">Request a Quote today or Log a Call with our security specialists to discuss your site’s needs.</p>
+            <div className="mt-6 flex gap-3">
+              <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Quote</Button></Link>
+              <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
+            </div>
+            <div className="mt-4 text-sm text-muted-foreground">
+              <p>📞 <a href="tel:+27815012993" className="underline underline-offset-4">081 501 2993</a></p>
+              <p>📧 <a href="mailto:info@siyakhatechnology.co.za" className="underline underline-offset-4">info@siyakhatechnology.co.za</a></p>
             </div>
           </div>
         </section>

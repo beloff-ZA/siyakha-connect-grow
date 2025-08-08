@@ -8,8 +8,8 @@ import schoolProject from "@/assets/school-project.jpg";
 
 const SmartCollaborationTools = () => {
   useEffect(() => {
-    const title = "Smart Collaboration Tools | Siyakha";
-    const description = "VoIP, video meetings, digital whiteboards, CRM/ERP integrations, and user training for effective teamwork.";
+    const title = "Smart Collaboration Tools | Siyakha Technology";
+    const description = "VoIP telephony, video conferencing, digital whiteboards, and platform integrations. Training and managed support for teams and classrooms.";
     document.title = title;
 
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
@@ -53,17 +53,17 @@ const SmartCollaborationTools = () => {
       {
         "@type": "Question",
         name: "Do you deploy VoIP and integrate with CRMs?",
-        acceptedAnswer: { "@type": "Answer", text: "Yes. We deliver on‑prem and cloud VoIP with integrations to leading CRM and ERP platforms." }
+        acceptedAnswer: { "@type": "Answer", text: "Yes. We can integrate your telephony with popular CRM and ERP systems for better customer tracking and reporting." }
       },
       {
         "@type": "Question",
         name: "Can you train our staff?",
-        acceptedAnswer: { "@type": "Answer", text: "We support adoption with end‑user training and best‑practice guides." }
+        acceptedAnswer: { "@type": "Answer", text: "Absolutely. We run live and remote training sessions and provide best-practice documentation to help your team hit the ground running." }
       },
       {
         "@type": "Question",
         name: "Do you provide managed support?",
-        acceptedAnswer: { "@type": "Answer", text: "Yes, with remote L1‑L3 support, monitoring and SLAs." }
+        acceptedAnswer: { "@type": "Answer", text: "Yes. Our managed services include remote monitoring, 24/7 fault reporting, and priority response under SLA." }
       }
     ]
   }), []);
@@ -77,7 +77,7 @@ const SmartCollaborationTools = () => {
           <div className="absolute inset-0 bg-background/75" />
           <div className="relative container mx-auto px-4 lg:px-6">
             <h1 className="text-3xl md:text-5xl font-bold text-primary">Smart Collaboration Tools</h1>
-            <p className="text-muted-foreground mt-3 max-w-3xl">Connect teams & classrooms with seamless digital tools — VoIP, video, whiteboards and more.</p>
+            <p className="text-muted-foreground mt-3 max-w-3xl">Empowering communication and teamwork with unified voice, video, and interactive solutions for offices, classrooms, and remote teams.</p>
             <div className="mt-6 flex gap-3">
               <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Quote</Button></Link>
               <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
@@ -106,22 +106,110 @@ const SmartCollaborationTools = () => {
           </div>
         </section>
 
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-5xl">
+            <h2 className="text-xl font-semibold text-primary">Our Collaboration Services</h2>
+            <div className="mt-4 grid md:grid-cols-2 gap-8 text-muted-foreground">
+              <div>
+                <h3 className="font-medium text-foreground">VoIP Telephony (On-Premise & Cloud-Hosted)</h3>
+                <ul className="list-disc pl-6 mt-2 space-y-1">
+                  <li>Enterprise-grade call clarity, advanced routing, call queues, and reporting</li>
+                  <li>Support for 3CX, Yealink, Poly, Cisco, and hosted PBX</li>
+                  <li>CRM integration (Salesforce, HubSpot, Zoho, SAP)</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Video Conferencing Setup</h3>
+                <ul className="list-disc pl-6 mt-2 space-y-1">
+                  <li>Zoom Rooms, Microsoft Teams Rooms, and Google Meet integration</li>
+                  <li>Multi-room conferencing with calendar scheduling and one-click join</li>
+                  <li>Bandwidth optimisation for smooth video</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Digital Whiteboards & Smart Displays</h3>
+                <ul className="list-disc pl-6 mt-2 space-y-1">
+                  <li>Touch-enabled collaboration screens for meetings and lessons</li>
+                  <li>Save and share annotations instantly with remote participants</li>
+                  <li>Ideal for classrooms, training centres, and boardrooms</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Unified Communication Platforms</h3>
+                <ul className="list-disc pl-6 mt-2 space-y-1">
+                  <li>Centralised messaging, file sharing, and video in one platform</li>
+                  <li>Cross-device access with built-in security</li>
+                  <li>Role-based permissions and encryption</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">End-User Support & Training</h3>
+                <ul className="list-disc pl-6 mt-2 space-y-1">
+                  <li>Tailored training programs for staff and educators</li>
+                  <li>Best-practice guides and video tutorials</li>
+                  <li>Managed SLAs with proactive monitoring and L1–L3 support</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">Where We Deliver Value</h2>
+            <ul className="mt-4 list-disc pl-6 text-muted-foreground space-y-2">
+              <li>Corporate Headquarters – Unified voice and video for hybrid workforces</li>
+              <li>Educational Institutions – Smart classrooms with digital whiteboards</li>
+              <li>Call Centres & Helpdesks – Cloud VoIP with live analytics and CRM integration</li>
+              <li>Multi-Site Businesses – Consistent systems across branches and countries</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">The Benefits of Smart Collaboration</h2>
+            <ul className="mt-4 list-disc pl-6 text-muted-foreground space-y-2">
+              <li>Boost productivity with fast, reliable connectivity</li>
+              <li>Improve customer experience with professional communication</li>
+              <li>Enhance learning outcomes with interactive tools</li>
+              <li>Reduce costs via cloud VoIP and virtual meeting tools</li>
+              <li>Future-proof your workplace as needs grow</li>
+            </ul>
+          </div>
+        </section>
+
         <section className="py-8 md:py-12 border-t border-border">
           <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
-            <h2 className="text-xl font-semibold text-primary">Collaboration Tools FAQs</h2>
+            <h2 className="text-xl font-semibold text-primary">Smart Collaboration FAQs</h2>
             <div className="mt-4 space-y-4 text-muted-foreground">
               <div>
                 <h3 className="font-medium text-foreground">Do you deploy VoIP and integrate with CRMs?</h3>
-                <p>Yes. We deliver on‑prem and cloud VoIP with integrations to leading CRM and ERP platforms.</p>
+                <p>Yes. We can integrate your telephony with popular CRM and ERP systems for better customer tracking and reporting.</p>
               </div>
               <div>
                 <h3 className="font-medium text-foreground">Can you train our staff?</h3>
-                <p>We support adoption with end‑user training and best‑practice guides.</p>
+                <p>Absolutely. We run live and remote training sessions and provide best-practice documentation to help your team hit the ground running.</p>
               </div>
               <div>
                 <h3 className="font-medium text-foreground">Do you provide managed support?</h3>
-                <p>Yes, with remote L1‑L3 support, monitoring and SLAs.</p>
+                <p>Yes. Our managed services include remote monitoring, 24/7 fault reporting, and priority response under SLA.</p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">Ready to Transform Communication?</h2>
+            <p className="text-muted-foreground mt-2">Let us help you create a collaboration environment that works anywhere — in the boardroom, the classroom, or remotely.</p>
+            <div className="mt-6 flex gap-3">
+              <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Quote</Button></Link>
+              <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
+            </div>
+            <div className="mt-4 text-sm text-muted-foreground">
+              <p>📞 <a href="tel:+27815012993" className="underline underline-offset-4">081 501 2993</a></p>
+              <p>📧 <a href="mailto:info@siyakhatechnology.co.za" className="underline underline-offset-4">info@siyakhatechnology.co.za</a></p>
             </div>
           </div>
         </section>
