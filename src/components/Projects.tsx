@@ -50,10 +50,19 @@ const Projects = () => {
       title: "The Pelican Club Bahrain – International Remote IT Support",
       location: "Manama, Bahrain",
       description: "Remote printer setup, troubleshooting, and desktop support ensuring uninterrupted operations.",
-      image: officeProject,
+      image: pelicanImage,
       icon: Printer,
       features: ["Remote printer fixes", "Driver & network setup", "Remote desktop support", "Optimized workflows"],
       link: "/projects/pelican-club-bahrain"
+    },
+    {
+      title: "CampusKey – National Network Infrastructure Overhaul",
+      location: "Cape Town • Stellenbosch • PE • Pretoria (+ remote Bloemfontein)",
+      description: "Multi-campus Cat6 cabling, fibre backbone, and 500+ AP deployment for high-speed student Wi‑Fi.",
+      image: campusKeyImage,
+      icon: Wifi,
+      features: ["500+ APs", "Fibre backbone", "Cat6 cabling", "Centralized management"],
+      link: "/projects/campuskey-network-overhaul"
     }
   ];
 
