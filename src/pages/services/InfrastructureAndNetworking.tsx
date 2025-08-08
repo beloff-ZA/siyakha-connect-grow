@@ -107,6 +107,13 @@ const InfrastructureAndNetworking = () => {
               <img src={"/lovable-uploads/54631fb6-cfcc-47a9-a9f2-ab6cda0bdba2.png"} alt="Siyakha Technology server rack with high‑performance network speed test" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/79459ad6-5d83-4a33-a297-5f08aa5afa73.png"} alt="Wall‑mounted patch panel and managed switch neatly cabled" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/9ed725e2-216a-460c-828c-7562bdacd359.png"} alt="Organised rack with labeled patch panels and coiled Cat6 leads" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/ccc37e11-63bf-47bc-9bad-e58225987ed1.png"} alt="Fortinet 48‑port switch unboxed for enterprise network upgrade" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/559aceef-edbc-4c53-89ae-d87c79764faf.png"} alt="Fortinet secure network appliance ready for configuration" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/b3544e80-a122-4b88-bec8-e0ccfe6052db.png"} alt="Server rack with switches, SFP modules and fiber patch panel" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/e0e8c61d-c893-4e54-a4ff-85c2f3d7793b.png"} alt="Fiber optic termination and MikroTik Cloud Core Router" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/1bd456a5-cd99-42ff-9893-843a55d08814.png"} alt="Neatly wired rack with Netgear switch and patch panels" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/f9c1434a-ac22-41a1-8713-73e03a832b8d.png"} alt="Patch panel with labeled Cat6 cables in distribution rack" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/de7314d9-a55e-493e-8d71-b30badcab599.png"} alt="Organized rack with MikroTik switches and blue Cat6 jumpers" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
             </div>
           </div>
         </section>

@@ -102,6 +102,9 @@ const SecurityAndSurveillance = () => {
               <img src={officeProject} alt="Access control and intercom network in office complex" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png"} alt="Secure retail surveillance and network segmentation" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/329436ed-9b85-46bd-9a90-9921225137c1.png"} alt="AI‑enabled monitoring and smart alerts" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/fd161cb0-9b62-4f8f-a559-c382b6a38986.png"} alt="Security operations center with video wall monitoring multiple cameras" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/f6656558-5e83-4d94-bedb-d5b758a12048.png"} alt="Dahua outdoor bullet CCTV camera installed on perimeter" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/b1175ccd-d6f1-41ea-a02b-19b1103318a7.png"} alt="Siyakha CCTV service van on school campus" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
             </div>
           </div>
         </section>
