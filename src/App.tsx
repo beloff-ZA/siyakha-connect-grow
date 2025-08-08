@@ -10,6 +10,10 @@ import NotFound from "./pages/NotFound";
 import MaristCapeTownProject from "./pages/projects/MaristCapeTown";
 import PelicanClubBahrainProject from "./pages/projects/PelicanClubBahrain";
 import CampusKeyProject from "./pages/projects/CampusKey";
+import About from "./pages/About";
+import ProjectsIndex from "./pages/ProjectsIndex";
+import BlogIndex from "./pages/BlogIndex";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +25,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/projects" element={<ProjectsIndex />} />
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/projects/marist-brothers-linmeyer" element={<MaristBrothersProject />} />
           <Route path="/projects/kfc-national-network-rollout" element={<KFCExmileProject />} />
           <Route path="/projects/pelican-club-bahrain" element={<PelicanClubBahrainProject />} />

@@ -8,7 +8,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-
+import { Link } from "react-router-dom";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -24,7 +24,7 @@ const Header = () => {
       <div className="container mx-auto px-4 lg:px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <a href="/" aria-label="Siyakha Technology home" className="flex items-center">
+            <Link to="/" aria-label="Siyakha Technology home" className="flex items-center">
               <img
                 src="/lovable-uploads/18df369d-304c-4290-97b8-53ae2aad27fb.png"
                 alt="Siyakha Technology logo"
@@ -34,21 +34,21 @@ const Header = () => {
                 decoding="async"
               />
               <span className="sr-only">Siyakha Technology</span>
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <NavigationMenu className="hidden lg:flex">
             <NavigationMenuList className="space-x-8">
               <NavigationMenuItem>
-                <a href="/" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/" className="text-foreground hover:text-primary transition-colors font-medium">
                   Home
-                </a>
+                </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <a href="/about" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/about" className="text-foreground hover:text-primary transition-colors font-medium">
                   About
-                </a>
+                </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-foreground hover:text-primary font-medium">
@@ -57,31 +57,31 @@ const Header = () => {
                 <NavigationMenuContent>
                   <div className="w-64 p-4">
                     {services.map((service) => (
-                      <a
+                      <Link
                         key={service}
-                        href={`/services/${service.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
+                        to={`/services/${service.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
                         className="block px-4 py-2 text-sm text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
                       >
                         {service}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <a href="/projects" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/projects" className="text-foreground hover:text-primary transition-colors font-medium">
                   Projects
-                </a>
+                </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <a href="/blog" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/blog" className="text-foreground hover:text-primary transition-colors font-medium">
                   Blog
-                </a>
+                </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <a href="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
                   Contact
-                </a>
+                </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -106,38 +106,38 @@ const Header = () => {
         {isMenuOpen && (
           <div className="lg:hidden border-t border-border bg-background">
             <div className="py-4 space-y-4">
-              <a href="/" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Home
-              </a>
-              <a href="/about" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/about" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 About
-              </a>
+              </Link>
               <div className="px-4">
                 <div className="flex items-center justify-between py-2 text-foreground">
                   <span>Services</span>
                   <ChevronDown size={16} />
                 </div>
                 <div className="pl-4 space-y-2">
-                  {services.map((service) => (
-                    <a
-                      key={service}
-                      href={`/services/${service.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
-                      className="block py-1 text-sm text-muted-foreground hover:text-accent transition-colors"
-                    >
-                      {service}
-                    </a>
-                  ))}
+                    {services.map((service) => (
+                      <Link
+                        key={service}
+                        to={`/services/${service.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
+                        className="block py-1 text-sm text-muted-foreground hover:text-accent transition-colors"
+                      >
+                        {service}
+                      </Link>
+                    ))}
                 </div>
               </div>
-              <a href="/projects" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/projects" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Projects
-              </a>
-              <a href="/blog" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/blog" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Blog
-              </a>
-              <a href="/contact" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/contact" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Contact
-              </a>
+              </Link>
               <div className="px-4 pt-2">
                 <Button className="cta-primary w-full">
                   Request a Quote
