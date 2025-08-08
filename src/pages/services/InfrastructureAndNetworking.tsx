@@ -6,11 +6,12 @@ import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.jpg";
 import officeProject from "@/assets/office-project.jpg";
 import schoolProject from "@/assets/school-project.jpg";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const InfrastructureAndNetworking = () => {
   useEffect(() => {
-    const title = "Infrastructure & Networking | Siyakha";
-    const description = "Structured cabling, Wi‑Fi 6, secure networks, office moves, server relocations, and multi‑site rollouts.";
+    const title = "Infrastructure & Networking | Siyakha Technology";
+    const description = "Powering reliable connectivity across campuses and enterprises — from cabling and Wi‑Fi to secure core networks, office moves, and future‑ready design.";
     document.title = title;
 
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
@@ -87,15 +88,26 @@ const InfrastructureAndNetworking = () => {
         </section>
 
         <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <p className="text-muted-foreground">
+              At Siyakha Technology, we understand that fast, secure, and dependable connectivity is the backbone of every modern business, school, and organisation. Over the years, we’ve delivered structured cabling, Wi‑Fi deployment, and network upgrades for clients nationwide — from small branch offices to multi‑campus enterprises.
+            </p>
+            <p className="text-muted-foreground mt-4">
+              Our team blends engineering precision with practical project experience, ensuring your infrastructure is built right the first time and ready to scale for the future.
+            </p>
+          </div>
+        </section>
+
+        <section className="py-12 md:py-16">
           <div className="container mx-auto px-4 lg:px-6 grid lg:grid-cols-2 gap-10 items-center max-w-6xl">
             <div>
               <h2 className="text-2xl md:text-3xl font-semibold text-primary">What We Offer</h2>
               <ul className="list-disc pl-6 mt-4 text-muted-foreground space-y-2">
-                <li>Structured cabling (Cat6, Cat6a, Fibre)</li>
-                <li>Network design & consulting</li>
-                <li>Switches, firewalls, and routers</li>
-                <li>Wi‑Fi planning and access point deployment</li>
-                <li>Ongoing network support and upgrades</li>
+                <li><strong>Structured Cabling —</strong> Cat6, Cat6a, and Fibre solutions for high‑performance, future‑proof networks</li>
+                <li><strong>Network Design & Consulting —</strong> Tailored architecture for offices, campuses, and multi‑site businesses</li>
+                <li><strong>Switches, Firewalls & Routers —</strong> Enterprise‑grade hardware from trusted brands like Fortinet, MikroTik, Cisco, and Netgear</li>
+                <li><strong>Wi‑Fi Planning & Access Point Deployment —</strong> Optimised coverage and seamless roaming for staff, students, and guests</li>
+                <li><strong>Ongoing Network Support & Upgrades —</strong> SLAs, proactive monitoring, and fast onsite assistance when you need it most</li>
               </ul>
               <p className="mt-6 text-muted-foreground">Ensure your connectivity is fast, secure, and built to scale.</p>
             </div>
@@ -121,15 +133,29 @@ const InfrastructureAndNetworking = () => {
           </div>
         </section>
 
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary">Our Track Record</h2>
+            <ul className="mt-4 list-disc pl-6 text-muted-foreground space-y-2">
+              <li>Structured cabling and rack builds for corporate offices</li>
+              <li>Campus Wi‑Fi deployment with a high‑capacity fibre backbone</li>
+              <li>Multi‑site student accommodation network upgrades</li>
+              <li>National retail branch network rollouts and Wi‑Fi coverage</li>
+              <li>Server rack installations with high‑performance switch configurations</li>
+              <li>Enterprise security gateway deployments for threat‑proof connectivity</li>
+            </ul>
+          </div>
+        </section>
+
         <section className="py-12 md:py-16 bg-muted/30 border-y border-border">
           <div className="container mx-auto px-4 lg:px-6 max-w-6xl">
             <h2 className="text-2xl md:text-3xl font-semibold text-primary">Move, Build, Upgrade</h2>
             <div className="grid lg:grid-cols-2 gap-8 mt-4 text-muted-foreground">
               <ul className="list-disc pl-6 space-y-2">
-                <li>Office moves and new‑build fit‑outs: server relocations, patching, and network cutovers</li>
-                <li>Network rebuilds: replace legacy switches, re‑cable and reconfigure with minimal downtime</li>
-                <li>Contractor partner: we assist construction and MEP contractors to deliver modern networks</li>
-                <li>New client onboarding: discovery, design, and rapid deployment playbooks</li>
+                <li>Office Moves & New‑Build Fit‑Outs – Server relocations, patching, and network cutovers handled end‑to‑end.</li>
+                <li>Network Rebuilds – Replace legacy switches, re‑cable, and reconfigure with minimal disruption.</li>
+                <li>Contractor Partnerships – We assist construction and MEP contractors in delivering modern, code‑compliant networks.</li>
+                <li>New Client Onboarding – Discovery, design, and deployment based on tried‑and‑tested playbooks.</li>
               </ul>
               <div className="prose prose-sm max-w-none text-muted-foreground">
                 <p>Whether you are expanding to a new building or consolidating sites, our team plans and executes changes with clear runbooks, after‑hours windows, and rollback strategies to protect business operations.</p>
@@ -142,22 +168,53 @@ const InfrastructureAndNetworking = () => {
           </div>
         </section>
 
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary">Why Choose Siyakha Technology?</h2>
+            <ul className="mt-4 list-disc pl-6 text-muted-foreground space-y-2">
+              <li>Nationwide Service — From Johannesburg to Cape Town to Durban, we deliver consistent quality everywhere.</li>
+              <li>Vendor-Certified Engineers — Skilled in Fortinet, MikroTik, Cisco, Ubiquiti, and more.</li>
+              <li>Minimal Downtime Approach — Strategic scheduling and precise execution keep your teams productive.</li>
+              <li>Future-Ready Design — Infrastructure built to scale with your business and support emerging technologies.</li>
+            </ul>
+          </div>
+        </section>
+
         <section className="py-8 md:py-12 border-t border-border">
           <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
             <h2 className="text-xl font-semibold text-primary">Infrastructure & Networking FAQs</h2>
-            <div className="mt-4 space-y-4 text-muted-foreground">
-              <div>
-                <h3 className="font-medium text-foreground">Do you work with schools and multi-site businesses?</h3>
-                <p>Yes. We design and deploy networks for schools, campuses and multi-branch organisations across South Africa and internationally.</p>
-              </div>
-              <div>
-                <h3 className="font-medium text-foreground">Can you upgrade our existing Wi‑Fi and cabling?</h3>
-                <p>We audit, redesign and upgrade legacy Wi‑Fi and cabling to modern, secure standards with minimal downtime.</p>
-              </div>
-              <div>
-                <h3 className="font-medium text-foreground">Do you provide ongoing maintenance?</h3>
-                <p>Yes, we offer SLAs with proactive monitoring, regular updates and rapid onsite support.</p>
-              </div>
+            <Accordion type="single" collapsible className="mt-4">
+              <AccordionItem value="q1">
+                <AccordionTrigger>Do you work with schools and multi-site businesses?</AccordionTrigger>
+                <AccordionContent>
+                  Yes. We design and deploy networks for schools, campuses and multi-branch organisations across South Africa and internationally.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="q2">
+                <AccordionTrigger>Can you upgrade our existing Wi‑Fi and cabling?</AccordionTrigger>
+                <AccordionContent>
+                  Absolutely. We audit, redesign and upgrade legacy Wi‑Fi and cabling to modern, secure standards — all with minimal downtime.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="q3">
+                <AccordionTrigger>Do you provide ongoing maintenance?</AccordionTrigger>
+                <AccordionContent>
+                  Yes. We offer Service Level Agreements (SLAs) with proactive monitoring, regular updates and rapid onsite support.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </section>
+
+        <section className="py-12 md:py-16 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary">Let’s Build Your Next Network</h2>
+            <p className="text-muted-foreground mt-2">Request a Quote today or Log a Call with our support team to discuss your project.</p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Quote</Button></Link>
+              <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
+              <a href="tel:+27815012993" className="inline-flex"><Button variant="secondary">Call 081 501 2993</Button></a>
+              <a href="mailto:info@siyakhatechnology.co.za" className="inline-flex"><Button variant="ghost">Email Us</Button></a>
             </div>
           </div>
         </section>
