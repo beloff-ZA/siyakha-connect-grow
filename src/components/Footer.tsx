@@ -124,6 +124,21 @@ const Footer = () => {
                   IT Company Johannesburg
                 </Link>
               </li>
+              <li>
+                <Link to="/it-company-cape-town" className="text-white/80 hover:text-accent transition-colors">
+                  IT Company Cape Town
+                </Link>
+              </li>
+              <li>
+                <Link to="/it-company-london" className="text-white/80 hover:text-accent transition-colors">
+                  IT Company London
+                </Link>
+              </li>
+              <li>
+                <Link to="/it-company-emea" className="text-white/80 hover:text-accent transition-colors">
+                  IT Company EMEA
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
@@ -167,15 +182,6 @@ const Footer = () => {
                   Maude Street West Tower, Sandton<br />
                   2146, South Africa
                 </div>
-              </div>
-              <div className="mt-4">
-                <iframe
-                  title="Siyakha Tech Solutions Sandton Map"
-                  src="https://www.google.com/maps?q=2nd%20Floor%2C%20Nelson%20Mandela%20Square%2C%20Maude%20Street%20West%20Tower%2C%20Sandton%2C%202146%2C%20South%20Africa&output=embed"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="w-full h-40 md:h-48 rounded-lg border border-white/20"
-                />
               </div>
             </div>
 

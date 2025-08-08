@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Camera } from "lucide-react";
+import { Link } from "react-router-dom";
 import { MapPin, ArrowLeft } from "lucide-react";
 
 const IMG_1 = "/lovable-uploads/329436ed-9b85-46bd-9a90-9921225137c1.png";
@@ -197,7 +198,7 @@ const MaristCapeTownProject = () => {
         <div className="container mx-auto px-4 lg:px-6 text-center">
           <h3 className="text-2xl md:text-3xl font-bold text-primary mb-4">Looking to modernize campus security?</h3>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">We design fibre‑ready, centrally managed CCTV tailored to your site's layout and risk profile.</p>
-          <Button className="cta-primary px-8 py-4">Book My Free Consultation</Button>
+          <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary px-8 py-4">Book My Free Consultation</Button></Link>
         </div>
       </section>
     </main>

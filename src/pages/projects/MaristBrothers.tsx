@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Link } from "react-router-dom";
 import { CheckCircle, MapPin, ArrowLeft, AlertTriangle, Cable, ShieldCheck, Headphones, Camera, Cloud, Globe2 } from "lucide-react";
 
 const MARIST_IMAGE = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
@@ -295,7 +296,7 @@ const MaristBrothersProject = () => {
             Book a free consultation and our team will tailor a solution to your
             needs.
           </p>
-          <Button className="cta-primary px-8 py-4">Book My Free Consultation</Button>
+          <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary px-8 py-4">Book My Free Consultation</Button></Link>
         </div>
       </section>
     </main>

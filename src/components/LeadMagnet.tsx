@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, CheckCircle, Users, Clock } from "lucide-react";
-
+import { Link } from "react-router-dom";
 const LeadMagnet = () => {
   const benefits = [
     "Free technology assessment",
@@ -42,10 +42,12 @@ const LeadMagnet = () => {
                     ))}
                   </div>
 
-                  <Button className="cta-primary text-lg px-8 py-4 w-full sm:w-auto group">
-                    <Calendar className="mr-2 h-5 w-5" />
-                    Book My Free Consultation
-                  </Button>
+                  <Link to="/contact#quote-form" className="inline-flex w-full sm:w-auto">
+                    <Button className="cta-primary text-lg px-8 py-4 w-full sm:w-auto group">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Book My Free Consultation
+                    </Button>
+                  </Link>
 
                   <p className="text-sm text-muted-foreground mt-4">
                     No spam, no sales pressure. Just expert advice tailored to your business.

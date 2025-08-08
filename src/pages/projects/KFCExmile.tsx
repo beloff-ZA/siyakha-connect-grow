@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Link } from "react-router-dom";
 import { Wifi, ShieldCheck, Router, Cable, Server, Wrench, CheckCircle, Globe2, Building2, ArrowLeft } from "lucide-react";
 
 const KFC_IMAGE = "/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png";
@@ -193,7 +194,7 @@ const KFCExmileProject = () => {
         <div className="container mx-auto px-4 lg:px-6 text-center">
           <h3 className="text-2xl md:text-3xl font-bold text-primary mb-4">Need a partner for nationwide rollouts?</h3>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">We manage planning, deployment, and support at scale—without disrupting business.</p>
-          <Button className="cta-primary px-8 py-4">Book My Free Consultation</Button>
+          <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary px-8 py-4">Book My Free Consultation</Button></Link>
         </div>
       </section>
     </main>
