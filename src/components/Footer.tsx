@@ -1,4 +1,5 @@
 import { Facebook, Linkedin, Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -48,9 +49,9 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-6">Company</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/about" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/about" className="text-white/80 hover:text-accent transition-colors">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="/careers" className="text-white/80 hover:text-accent transition-colors">
@@ -58,9 +59,9 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="/contact" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/contact" className="text-white/80 hover:text-accent transition-colors">
                   Contact
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="/privacy" className="text-white/80 hover:text-accent transition-colors">
@@ -80,24 +81,24 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-6">Services</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/services/infrastructure-networking" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/services/infrastructure-and-networking" className="text-white/80 hover:text-accent transition-colors">
                   Infrastructure & Networking
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services/security-surveillance" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/services/security-surveillance" className="text-white/80 hover:text-accent transition-colors">
                   Security & Surveillance
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services/cloud-edge-solutions" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/services/cloud-edge-solutions" className="text-white/80 hover:text-accent transition-colors">
                   Cloud & Edge Solutions
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services/smart-collaboration-tools" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/services/smart-collaboration-tools" className="text-white/80 hover:text-accent transition-colors">
                   Smart Collaboration
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="/support" className="text-white/80 hover:text-accent transition-colors">

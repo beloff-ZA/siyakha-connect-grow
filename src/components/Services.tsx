@@ -9,7 +9,7 @@ const Services = () => {
       title: "Infrastructure & Networking",
       description: "Data Cabling, Switches, Wi-Fi, Trunking",
       benefit: "Future-proof your business network with scalable Wi-Fi & cabling.",
-      link: "/services/infrastructure-networking",
+      link: "/services/infrastructure-and-networking",
       color: "text-blue-600"
     },
     {

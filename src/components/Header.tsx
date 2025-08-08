@@ -88,9 +88,9 @@ const Header = () => {
 
           {/* CTA Button & Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <Button className="cta-primary hidden sm:inline-flex">
-              Request a Quote
-            </Button>
+            <Link to="/contact" className="hidden sm:inline-flex">
+              <Button className="cta-primary">Request a Quote</Button>
+            </Link>
             
             {/* Mobile Menu Button */}
             <button
@@ -139,9 +139,9 @@ const Header = () => {
                 Contact
               </Link>
               <div className="px-4 pt-2">
-                <Button className="cta-primary w-full">
-                  Request a Quote
-                </Button>
+                <Link to="/contact" className="block w-full">
+                  <Button className="cta-primary w-full">Request a Quote</Button>
+                </Link>
               </div>
             </div>
           </div>

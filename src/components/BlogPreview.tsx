@@ -1,34 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Calendar, ArrowRight, Clock } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const BlogPreview = () => {
   const articles = [
     {
-      title: "5 Signs Your Business Needs a Wi-Fi Upgrade",
-      excerpt: "Is your current network holding back productivity? Learn the key indicators that it's time to modernize your wireless infrastructure.",
-      date: "January 15, 2025",
-      readTime: "5 min read",
+      title: "5 Signs Your School Needs a Network Upgrade",
+      excerpt: "In today’s digital learning environment, a reliable and secure network is essential. Here are 5 signs it’s time to upgrade.",
+      date: "January 20, 2025",
+      readTime: "6 min read",
       category: "Networking",
-      link: "/blog/5-signs-wifi-upgrade",
+      link: "/blog/5-signs-your-school-needs-a-network-upgrade",
       featured: true
     },
     {
-      title: "CCTV Compliance for Schools in 2025",
-      excerpt: "Navigate the latest security regulations and best practices for educational institutions with our comprehensive compliance guide.",
-      date: "January 12, 2025", 
-      readTime: "8 min read",
-      category: "Security",
-      link: "/blog/cctv-compliance-schools-2025",
+      title: "Why Every Growing Business Should Consider a Managed IT Service Provider (MSP)",
+      excerpt: "As your business scales, an MSP can cut costs, boost security, and keep systems running 24/7.",
+      date: "January 18, 2025",
+      readTime: "7 min read",
+      category: "Managed Services",
+      link: "/blog/why-every-growing-business-should-consider-a-managed-it-service-provider-msp",
       featured: false
     },
     {
-      title: "Affordable Cloud Solutions for SMEs",
-      excerpt: "Discover cost-effective cloud strategies that can transform your small business operations without breaking the budget.",
-      date: "January 10, 2025",
-      readTime: "6 min read",
-      category: "Cloud",
-      link: "/blog/affordable-cloud-solutions-smes",
+      title: "How to Know When It’s Time to Replace Your Wi‑Fi System",
+      excerpt: "Dead zones, slow speeds, and unstable connections are red flags. Here’s when to upgrade your Wi‑Fi.",
+      date: "January 16, 2025",
+      readTime: "5 min read",
+      category: "Wi‑Fi",
+      link: "/blog/how-to-know-when-its-time-to-replace-your-wi-fi-system",
       featured: false
     }
   ];
@@ -49,10 +50,9 @@ const BlogPreview = () => {
           {articles.map((article, index) => (
             <Card 
               key={index}
-              className={`group hover:shadow-xl transition-all duration-300 cursor-pointer ${
+              className={`group hover:shadow-xl transition-all duration-300 ${
                 article.featured ? 'lg:col-span-2 lg:row-span-1' : ''
               }`}
-              onClick={() => window.location.href = article.link}
             >
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between mb-3">
@@ -84,13 +84,15 @@ const BlogPreview = () => {
                   {article.excerpt}
                 </p>
 
-                <Button 
-                  variant="ghost" 
-                  className="text-accent hover:text-accent-hover group/btn p-0 h-auto font-medium"
-                >
-                  Read More
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                </Button>
+                <Link to={article.link} className="inline-flex">
+                  <Button 
+                    variant="ghost" 
+                    className="text-accent hover:text-accent-hover group/btn p-0 h-auto font-medium"
+                  >
+                    Read More
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}
@@ -98,10 +100,12 @@ const BlogPreview = () => {
 
         {/* Blog CTA */}
         <div className="text-center mt-12">
-          <Button className="cta-secondary">
-            View All Articles
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+          <Link to="/blog" className="inline-flex">
+            <Button className="cta-secondary">
+              View All Articles
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
         </div>
 
         {/* Newsletter Signup */}
