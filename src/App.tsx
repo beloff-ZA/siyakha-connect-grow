@@ -27,6 +27,7 @@ import PowerOfAI from "./pages/blog/PowerOfAI";
 import HardwareUpgrade from "./pages/blog/HardwareUpgrade";
 import CyberVulnerabilities from "./pages/blog/CyberVulnerabilities";
 import NComputing from "./pages/blog/NComputing";
+import WhatsAppContact from "./components/WhatsAppContact";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <WhatsAppContact />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

@@ -1,4 +1,4 @@
-import { Facebook, Linkedin, Phone, Mail, MapPin } from "lucide-react";
+import { Facebook, Linkedin, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -130,12 +130,25 @@ const Footer = () => {
                 </div>
               </div>
               
+              <div className="flex items-center space-x-3">
+                <MessageCircle className="w-5 h-5 text-accent flex-shrink-0" />
+                <div>
+                  <a
+                    href="https://wa.me/27815012993?text=Hi%20Siyakha%20Technology%2C%20I%27d%20like%20to%20chat%20about%20services."
+                    className="text-white/80 hover:text-accent transition-colors"
+                    aria-label="Chat with us on WhatsApp"
+                  >
+                    WhatsApp: +27 81 501 2993
+                  </a>
+                </div>
+              </div>
+
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
                 <div className="text-white/80">
-                  21 Foreman Road<br />
-                  Spartan, Gauteng<br />
-                  South Africa
+                  2nd Floor, Nelson Mandela Square<br />
+                  Maude Street West Tower, Sandton<br />
+                  2146, South Africa
                 </div>
               </div>
             </div>
