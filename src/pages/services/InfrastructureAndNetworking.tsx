@@ -99,11 +99,14 @@ const InfrastructureAndNetworking = () => {
               </ul>
               <p className="mt-6 text-muted-foreground">Ensure your connectivity is fast, secure, and built to scale.</p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <img src={officeProject} alt="Structured cabling and network rack in a corporate office" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={schoolProject} alt="Campus Wi‑Fi deployment and fibre backbone" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/7c314536-73bf-4ae1-b7e3-ccceee5d640e.png"} alt="Multi‑site student accommodation network upgrade" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png"} alt="National retail network rollout and Wi‑Fi" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/54631fb6-cfcc-47a9-a9f2-ab6cda0bdba2.png"} alt="Siyakha Technology server rack with high‑performance network speed test" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/79459ad6-5d83-4a33-a297-5f08aa5afa73.png"} alt="Wall‑mounted patch panel and managed switch neatly cabled" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+              <img src={"/lovable-uploads/9ed725e2-216a-460c-828c-7562bdacd359.png"} alt="Organised rack with labeled patch panels and coiled Cat6 leads" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
             </div>
           </div>
         </section>
