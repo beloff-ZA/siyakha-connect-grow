@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
 
 const services = [
   { value: "infrastructure-and-networking", label: "Infrastructure & Networking" },
@@ -25,11 +26,14 @@ const LogACall = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
   const [company, setCompany] = useState("");
   const [country, setCountry] = useState("");
   const [service, setService] = useState("");
   const [priority, setPriority] = useState("normal");
   const [issue, setIssue] = useState("");
+
+  const { toast } = useToast();
 
   useEffect(() => {
     const title = "Log a Call | Siyakha Technology";
@@ -76,8 +80,14 @@ const LogACall = () => {
     }
     const subject = encodeURIComponent(`[${priority.toUpperCase()}] Support Call: ${service} - ${company || fullName}`);
     const body = encodeURIComponent(
-      `Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nCompany: ${company}\nCountry: ${country}\nService: ${service}\nPriority: ${priority}\n\nIssue:\n${issue}`
+      `Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nWhatsApp: ${whatsapp || "(not provided)"}\nCompany: ${company}\nCountry: ${country}\nService: ${service}\nPriority: ${priority}\n\nIssue:\n${issue}`
     );
+
+    toast({
+      title: "Call logged",
+      description: "Your call has been logged and one of our engineers will be in touch with you shortly.",
+    });
+
     window.location.href = `mailto:nikita@siyakhatechnology.co.za,accounts@siyakhatechnology.co.za?subject=${subject}&body=${body}`;
   };
 
@@ -103,6 +113,10 @@ const LogACall = () => {
                 <div>
                   <Label htmlFor="phone">Contact Number</Label>
                   <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                </div>
+                <div>
+                  <Label htmlFor="whatsapp">WhatsApp Number (optional)</Label>
+                  <Input id="whatsapp" type="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="e.g. +27 81 501 2993" />
                 </div>
                 <div>
                   <Label htmlFor="company">Company (optional)</Label>
@@ -143,7 +157,17 @@ const LogACall = () => {
                   <Textarea id="issue" value={issue} onChange={(e) => setIssue(e.target.value)} rows={6} required />
                 </div>
               </div>
-              <Button type="submit" className="cta-primary">Submit</Button>
+              <div className="flex items-center gap-3">
+                <Button type="submit" className="cta-primary">Submit</Button>
+                <a
+                  href={`https://wa.me/27815012993?text=${encodeURIComponent(`Hi Siyakha, I just logged a support call for ${service || 'a service'}. My name is ${fullName}.`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Or chat via WhatsApp
+                </a>
+              </div>
             </form>
           </div>
         </section>

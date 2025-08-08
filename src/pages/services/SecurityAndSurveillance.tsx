@@ -44,6 +44,28 @@ const SecurityAndSurveillance = () => {
     areaServed: ["South Africa", "Angola", "Swaziland", "Bahrain", "California", "Europe", "Kazakhstan"],
   }), []);
 
+  const faqJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Do you integrate with existing CCTV systems?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. We can upgrade analog to IP, integrate with existing NVRs, and unify multi-brand environments." }
+      },
+      {
+        "@type": "Question",
+        name: "Can we monitor cameras remotely?",
+        acceptedAnswer: { "@type": "Answer", text: "Absolutely. We set up secure remote access and alerts with role-based permissions." }
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer maintenance SLAs?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes, with preventative maintenance, health checks and priority response." }
+      }
+    ]
+  }), []);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -71,9 +93,30 @@ const SecurityAndSurveillance = () => {
             </section>
           </div>
         </section>
+
+        <section className="py-8 md:py-12 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">Security & Surveillance FAQs</h2>
+            <div className="mt-4 space-y-4 text-muted-foreground">
+              <div>
+                <h3 className="font-medium text-foreground">Do you integrate with existing CCTV systems?</h3>
+                <p>Yes. We can upgrade analog to IP, integrate with existing NVRs, and unify multi-brand environments.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Can we monitor cameras remotely?</h3>
+                <p>Absolutely. We set up secure remote access and alerts with role-based permissions.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Do you offer maintenance SLAs?</h3>
+                <p>Yes, with preventative maintenance, health checks and priority response.</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
     </div>
   );
 };

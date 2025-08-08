@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Projects from "@/components/Projects";
-
+import heroImage from "@/assets/hero-bg.jpg";
 const ProjectsIndex = () => {
   useEffect(() => {
     const title = "Projects | Siyakha Technology Solutions";
@@ -38,10 +38,12 @@ const ProjectsIndex = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        <section className="py-12 md:py-16 border-b border-border">
-          <div className="container mx-auto px-4 lg:px-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-primary">Our Projects</h1>
-            <p className="text-muted-foreground mt-2">A selection of recent deployments and case studies.</p>
+        <section className="relative py-16 md:py-24 border-b border-border overflow-hidden">
+          <img src={"/src/assets/hero-bg.jpg"} alt="Showcase of successful ICT projects" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+          <div className="absolute inset-0 bg-background/75" />
+          <div className="relative container mx-auto px-4 lg:px-6">
+            <h1 className="text-3xl md:text-5xl font-bold text-primary">Our Projects</h1>
+            <p className="text-muted-foreground mt-3 max-w-2xl">A selection of recent deployments and case studies.</p>
           </div>
         </section>
         <Projects />

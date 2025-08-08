@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogPreview from "@/components/BlogPreview";
+import heroImage from "@/assets/hero-bg.jpg";
 
 const BlogIndex = () => {
   useEffect(() => {
@@ -38,10 +39,12 @@ const BlogIndex = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        <section className="py-12 md:py-16 border-b border-border">
-          <div className="container mx-auto px-4 lg:px-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-primary">Blog</h1>
-            <p className="text-muted-foreground mt-2">Latest articles and updates from our team.</p>
+        <section className="relative py-16 md:py-24 border-b border-border overflow-hidden">
+          <img src={heroImage} alt="Network and cloud technology background" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+          <div className="absolute inset-0 bg-background/70 backdrop-blur-sm" />
+          <div className="relative container mx-auto px-4 lg:px-6">
+            <h1 className="text-3xl md:text-5xl font-bold text-primary">Insights, Guides, and Case Studies</h1>
+            <p className="text-muted-foreground mt-3 max-w-2xl">Latest articles and updates from our team on networking, security, cloud, and collaboration.</p>
           </div>
         </section>
         <BlogPreview />

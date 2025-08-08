@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>/projects</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>/contact</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/careers</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>/log-a-call</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>/support-deals</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/services/infrastructure-and-networking</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/services/security-and-surveillance</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/services/cloud-and-edge-solutions</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/services/smart-collaboration-tools</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/blog</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>/blog/understanding-the-power-of-ai-in-modern-business-and-education</loc></url>
+  <url><loc>/blog/5-signs-your-school-needs-a-network-upgrade</loc></url>
+  <url><loc>/blog/why-every-growing-business-should-consider-a-managed-it-service-provider-msp</loc></url>
+  <url><loc>/blog/how-to-know-when-its-time-to-replace-your-wi-fi-system</loc></url>
+  <url><loc>/blog/why-you-need-to-upgrade-your-hardware-before-it-slows-you-down</loc></url>
+  <url><loc>/blog/understanding-cyber-vulnerabilities-and-how-to-protect-your-business</loc></url>
+  <url><loc>/blog/ncomputing-the-smart-affordable-solution-for-schools</loc></url>
+  <url><loc>/projects/marist-brothers-linmeyer</loc></url>
+  <url><loc>/projects/kfc-national-network-rollout</loc></url>
+  <url><loc>/projects/pelican-club-bahrain</loc></url>
+  <url><loc>/projects/campuskey-network-overhaul</loc></url>
+</urlset>

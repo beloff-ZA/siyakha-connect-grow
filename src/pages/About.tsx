@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import heroImage from "@/assets/hero-bg.jpg";
 
 const About = () => {
   // SEO setup
@@ -85,8 +86,10 @@ const About = () => {
 
       <main>
         {/* Hero */}
-        <section className="py-16 md:py-24 border-b border-border">
-          <div className="container mx-auto px-4 lg:px-6">
+        <section className="relative py-16 md:py-24 border-b border-border overflow-hidden">
+          <img src={heroImage} alt="Enterprise IT solutions background" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+          <div className="absolute inset-0 bg-background/75" />
+          <div className="relative container mx-auto px-4 lg:px-6">
             <header className="max-w-4xl">
               <p className="inline-block px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm mb-4">
                 About Siyakha Technology Solutions

@@ -1,4 +1,4 @@
-import { Facebook, Linkedin, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import { Facebook, Linkedin, Phone, Mail, MapPin, MessageCircle, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -33,6 +33,13 @@ const Footer = () => {
                 aria-label="Facebook"
               >
                 <Facebook className="w-5 h-5" />
+              </a>
+              <a 
+                href="https://www.instagram.com/siyakhatech/" 
+                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-accent transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5" />
               </a>
               <a 
                 href="https://linkedin.com/company/siyakhatechnology" 

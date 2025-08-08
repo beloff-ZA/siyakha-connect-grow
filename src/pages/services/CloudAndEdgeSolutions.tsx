@@ -44,6 +44,28 @@ const CloudAndEdgeSolutions = () => {
     areaServed: ["South Africa", "Angola", "Swaziland", "Bahrain", "California", "Europe", "Kazakhstan"],
   }), []);
 
+  const faqJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Do you migrate from on‑prem to cloud?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. We plan and execute secure migrations to Microsoft 365, Google Workspace and cloud backup platforms." }
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer disaster recovery?",
+        acceptedAnswer: { "@type": "Answer", text: "We implement 3‑2‑1 backups, immutable storage and rapid recovery procedures." }
+      },
+      {
+        "@type": "Question",
+        name: "Can you help with Zero Trust and secure remote work?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes, including MFA, conditional access and endpoint hardening across devices." }
+      }
+    ]
+  }), []);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -71,9 +93,30 @@ const CloudAndEdgeSolutions = () => {
             </section>
           </div>
         </section>
+
+        <section className="py-8 md:py-12 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">Cloud & Edge FAQs</h2>
+            <div className="mt-4 space-y-4 text-muted-foreground">
+              <div>
+                <h3 className="font-medium text-foreground">Do you migrate from on‑prem to cloud?</h3>
+                <p>Yes. We plan and execute secure migrations to Microsoft 365, Google Workspace and cloud backup platforms.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Do you offer disaster recovery?</h3>
+                <p>We implement 3‑2‑1 backups, immutable storage and rapid recovery procedures.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Can you help with Zero Trust and secure remote work?</h3>
+                <p>Yes, including MFA, conditional access and endpoint hardening across devices.</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
     </div>
   );
 };

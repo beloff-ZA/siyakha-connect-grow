@@ -44,6 +44,28 @@ const InfrastructureAndNetworking = () => {
     areaServed: ["South Africa", "Angola", "Swaziland", "Bahrain", "California", "Europe", "Kazakhstan"],
   }), []);
 
+  const faqJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Do you work with schools and multi-site businesses?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. We design and deploy networks for schools, campuses and multi-branch organisations across South Africa and internationally." }
+      },
+      {
+        "@type": "Question",
+        name: "Can you upgrade our existing Wi‑Fi and cabling?",
+        acceptedAnswer: { "@type": "Answer", text: "We audit, redesign and upgrade legacy Wi‑Fi and cabling to modern, secure standards with minimal downtime." }
+      },
+      {
+        "@type": "Question",
+        name: "Do you provide ongoing maintenance?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes, we offer SLAs with proactive monitoring, regular updates and rapid onsite support." }
+      }
+    ]
+  }), []);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -71,9 +93,30 @@ const InfrastructureAndNetworking = () => {
             </section>
           </div>
         </section>
+
+        <section className="py-8 md:py-12 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">Infrastructure & Networking FAQs</h2>
+            <div className="mt-4 space-y-4 text-muted-foreground">
+              <div>
+                <h3 className="font-medium text-foreground">Do you work with schools and multi-site businesses?</h3>
+                <p>Yes. We design and deploy networks for schools, campuses and multi-branch organisations across South Africa and internationally.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Can you upgrade our existing Wi‑Fi and cabling?</h3>
+                <p>We audit, redesign and upgrade legacy Wi‑Fi and cabling to modern, secure standards with minimal downtime.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Do you provide ongoing maintenance?</h3>
+                <p>Yes, we offer SLAs with proactive monitoring, regular updates and rapid onsite support.</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
     </div>
   );
 };

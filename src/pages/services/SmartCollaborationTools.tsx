@@ -44,6 +44,28 @@ const SmartCollaborationTools = () => {
     areaServed: ["South Africa", "Angola", "Swaziland", "Bahrain", "California", "Europe", "Kazakhstan"],
   }), []);
 
+  const faqJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Do you deploy VoIP and integrate with CRMs?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. We deliver on‑prem and cloud VoIP with integrations to leading CRM and ERP platforms." }
+      },
+      {
+        "@type": "Question",
+        name: "Can you train our staff?",
+        acceptedAnswer: { "@type": "Answer", text: "We support adoption with end‑user training and best‑practice guides." }
+      },
+      {
+        "@type": "Question",
+        name: "Do you provide managed support?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes, with remote L1‑L3 support, monitoring and SLAs." }
+      }
+    ]
+  }), []);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -71,9 +93,30 @@ const SmartCollaborationTools = () => {
             </section>
           </div>
         </section>
+
+        <section className="py-8 md:py-12 border-t border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+            <h2 className="text-xl font-semibold text-primary">Collaboration Tools FAQs</h2>
+            <div className="mt-4 space-y-4 text-muted-foreground">
+              <div>
+                <h3 className="font-medium text-foreground">Do you deploy VoIP and integrate with CRMs?</h3>
+                <p>Yes. We deliver on‑prem and cloud VoIP with integrations to leading CRM and ERP platforms.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Can you train our staff?</h3>
+                <p>We support adoption with end‑user training and best‑practice guides.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground">Do you provide managed support?</h3>
+                <p>Yes, with remote L1‑L3 support, monitoring and SLAs.</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
     </div>
   );
 };
