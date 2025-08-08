@@ -35,6 +35,7 @@ import Terms from "./pages/Terms";
 import LogACall from "./pages/LogACall";
 import SupportDeals from "./pages/SupportDeals";
 import WhatsAppContact from "./components/WhatsAppContact";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />

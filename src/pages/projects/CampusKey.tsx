@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Link } from "react-router-dom";
 
 const HERO_IMAGE = "/lovable-uploads/7c314536-73bf-4ae1-b7e3-ccceee5d640e.png";
 
@@ -135,7 +136,7 @@ const CampusKeyProject = () => {
                     <a href="#contact" aria-label="Request a consultation">Request a consultation</a>
                   </Button>
                   <Button asChild variant="outline">
-                    <a href="/" aria-label="Back to home">Back to home</a>
+                    <Link to="/" aria-label="Back to home">Back to home</Link>
                   </Button>
                 </div>
               </div>

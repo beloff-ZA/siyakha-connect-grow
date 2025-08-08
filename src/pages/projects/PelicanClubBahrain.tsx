@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Link } from "react-router-dom";
 
 const HERO_IMAGE = "/lovable-uploads/f345d1c0-6383-4a5c-9188-81c8ae221932.png";
 
@@ -137,7 +138,7 @@ const PelicanClubBahrainProject = () => {
                     <a href="#contact" aria-label="Request a consultation">Request a consultation</a>
                   </Button>
                   <Button asChild variant="outline">
-                    <a href="/" aria-label="Back to home">Back to home</a>
+                    <Link to="/" aria-label="Back to home">Back to home</Link>
                   </Button>
                 </div>
               </div>
