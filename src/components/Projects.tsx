@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, MapPin, Wifi, Shield, Camera } from "lucide-react";
+import { ArrowRight, MapPin, Wifi, Shield, Camera, Printer } from "lucide-react";
 const maristProject = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
 const kfcProject = "/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png";
 const maristCTProject = "/lovable-uploads/de3c5edc-ea87-4242-bbb0-8782b25a22ec.png";
@@ -43,6 +43,15 @@ const Projects = () => {
       icon: Camera,
       features: ["55 cameras", "Fibre backbone", "Full campus coverage", "Remote monitoring"],
       link: "/projects/st-josephs-marist-cape-town-cctv"
+    },
+    {
+      title: "The Pelican Club Bahrain – International Remote IT Support",
+      location: "Manama, Bahrain",
+      description: "Remote printer setup, troubleshooting, and desktop support ensuring uninterrupted operations.",
+      image: officeProject,
+      icon: Printer,
+      features: ["Remote printer fixes", "Driver & network setup", "Remote desktop support", "Optimized workflows"],
+      link: "/projects/pelican-club-bahrain"
     }
   ];
 

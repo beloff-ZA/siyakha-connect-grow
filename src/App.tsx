@@ -8,6 +8,7 @@ import MaristBrothersProject from "./pages/projects/MaristBrothers";
 import KFCExmileProject from "./pages/projects/KFCExmile";
 import NotFound from "./pages/NotFound";
 import MaristCapeTownProject from "./pages/projects/MaristCapeTown";
+import PelicanClubBahrainProject from "./pages/projects/PelicanClubBahrain";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/projects/marist-brothers-linmeyer" element={<MaristBrothersProject />} />
           <Route path="/projects/kfc-national-network-rollout" element={<KFCExmileProject />} />
+          <Route path="/projects/pelican-club-bahrain" element={<PelicanClubBahrainProject />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
