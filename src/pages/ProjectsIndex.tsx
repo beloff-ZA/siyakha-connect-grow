@@ -34,6 +34,19 @@ const ProjectsIndex = () => {
     canonical.setAttribute("href", `${window.location.origin}/projects`);
   }, []);
 
+  const gallery = [
+    { src: "/lovable-uploads/d0d561bc-eb6e-4495-86ed-ef27147f2ba7.png", alt: "School computer lab deployment with desktop PCs and headsets" },
+    { src: "/lovable-uploads/7ece805f-8460-412e-940f-6dcd049dae2d.png", alt: "Retail POS network with payment terminals and barcode scanners" },
+    { src: "/lovable-uploads/bdeb1ff0-b433-4f7e-81e4-74b548b53871.png", alt: "Desktop rollout staging area with HP desktops prepared for deployment" },
+    { src: "/lovable-uploads/20b05504-4a1c-4678-b6ab-6a94216b63de.png", alt: "Interactive classroom display installation by Siyakha" },
+    { src: "/lovable-uploads/9608ab6f-4906-42bb-9c2d-29ed733d19bb.png", alt: "Digital signage kiosk setup with COVID-19 information" },
+    { src: "/lovable-uploads/802e7b64-5c69-4376-a3d3-33b379205fb4.png", alt: "Structured cabling patch panels with neatly dressed blue Cat6 leads" },
+    { src: "/lovable-uploads/33161a8a-1aec-45a5-8a2b-a26ec1af6c80.png", alt: "Data center network configuration session in server room" },
+    { src: "/lovable-uploads/dfdcf468-60c2-4f7c-8f51-8ac52f9789ae.png", alt: "Back-office rack with SFP patching, switches and labeled cabling" },
+    { src: "/lovable-uploads/6c70ec7d-f786-4aee-8762-c5d34b30c103.png", alt: "Industrial control room multi-screen operations center" },
+    { src: "/lovable-uploads/4c8f615b-1c86-4be3-a8e4-17cd204ec541.png", alt: "Netgear switch cabinet with organized Cat6a patching" },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -47,6 +60,23 @@ const ProjectsIndex = () => {
           </div>
         </section>
         <Projects />
+        <section className="py-16 bg-background border-t border-border" aria-label="Project Gallery">
+          <div className="container mx-auto px-4 lg:px-6">
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-6">Project Gallery</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {gallery.map((img) => (
+                <img
+                  key={img.src}
+                  src={img.src}
+                  alt={img.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-40 object-cover rounded-lg border border-border"
+                />
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
     </div>
