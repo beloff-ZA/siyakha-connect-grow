@@ -45,8 +45,10 @@ const App = () => (
           {/* Services */}
           <Route path="/services/infrastructure-and-networking" element={<InfrastructureAndNetworking />} />
           <Route path="/services/infrastructure-networking" element={<Navigate to="/services/infrastructure-and-networking" replace />} />
-          <Route path="/services/security-surveillance" element={<SecurityAndSurveillance />} />
-          <Route path="/services/cloud-edge-solutions" element={<CloudAndEdgeSolutions />} />
+          <Route path="/services/security-and-surveillance" element={<SecurityAndSurveillance />} />
+          <Route path="/services/security-surveillance" element={<Navigate to="/services/security-and-surveillance" replace />} />
+          <Route path="/services/cloud-and-edge-solutions" element={<CloudAndEdgeSolutions />} />
+          <Route path="/services/cloud-edge-solutions" element={<Navigate to="/services/cloud-and-edge-solutions" replace />} />
           <Route path="/services/smart-collaboration-tools" element={<SmartCollaborationTools />} />
 
           {/* Blog */}

@@ -22,7 +22,7 @@ const SecurityAndSurveillance = () => {
     ensureMeta("property", "og:title", title);
     ensureMeta("property", "og:description", description);
     ensureMeta("property", "og:type", "website");
-    ensureMeta("property", "og:url", `${window.location.origin}/services/security-surveillance`);
+    ensureMeta("property", "og:url", `${window.location.origin}/services/security-and-surveillance`);
 
     let canonical = document.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
     if (!canonical) {
@@ -30,7 +30,7 @@ const SecurityAndSurveillance = () => {
       canonical.setAttribute("rel", "canonical");
       document.head.appendChild(canonical);
     }
-    canonical.setAttribute("href", `${window.location.origin}/services/security-surveillance`);
+    canonical.setAttribute("href", `${window.location.origin}/services/security-and-surveillance`);
   }, []);
 
   return (

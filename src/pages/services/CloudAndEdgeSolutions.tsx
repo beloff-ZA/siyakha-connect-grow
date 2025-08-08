@@ -22,7 +22,7 @@ const CloudAndEdgeSolutions = () => {
     ensureMeta("property", "og:title", title);
     ensureMeta("property", "og:description", description);
     ensureMeta("property", "og:type", "website");
-    ensureMeta("property", "og:url", `${window.location.origin}/services/cloud-edge-solutions`);
+    ensureMeta("property", "og:url", `${window.location.origin}/services/cloud-and-edge-solutions`);
 
     let canonical = document.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
     if (!canonical) {
@@ -30,7 +30,7 @@ const CloudAndEdgeSolutions = () => {
       canonical.setAttribute("rel", "canonical");
       document.head.appendChild(canonical);
     }
-    canonical.setAttribute("href", `${window.location.origin}/services/cloud-edge-solutions`);
+    canonical.setAttribute("href", `${window.location.origin}/services/cloud-and-edge-solutions`);
   }, []);
 
   return (

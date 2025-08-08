@@ -17,7 +17,7 @@ const Services = () => {
       title: "Security & Surveillance",
       description: "CCTV, Access Control, Intercoms, Smart Gates",
       benefit: "Protect your assets with intelligent security systems.",
-      link: "/services/security-surveillance",
+      link: "/services/security-and-surveillance",
       color: "text-red-600"
     },
     {
@@ -25,7 +25,7 @@ const Services = () => {
       title: "Cloud & Edge Solutions",
       description: "Server Setup, Migration, Backup & Recovery",
       benefit: "Scale your operations with reliable cloud infrastructure.",
-      link: "/services/cloud-edge-solutions",
+      link: "/services/cloud-and-edge-solutions",
       color: "text-purple-600"
     },
     {
