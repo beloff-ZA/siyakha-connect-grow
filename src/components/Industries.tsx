@@ -1,4 +1,4 @@
-import { Building2, GraduationCap, Factory, Car, Stethoscope, ShoppingBag, Home } from "lucide-react";
+import { Building2, GraduationCap, Factory, Car, Stethoscope, ShoppingBag, Home, Truck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -60,6 +60,22 @@ const industries = [
       "Ongoing technical support for residents and building managers.",
     ],
   },
+  {
+    title: "Mining Operations",
+    icon: Factory,
+    points: [
+      "Ruggedised networking, fibre backbones, and reliable Wi‑Fi for remote and harsh environments.",
+      "CCTV, access control, and monitoring solutions for safety and compliance.",
+    ],
+  },
+  {
+    title: "Fleet & Telematics Companies",
+    icon: Truck,
+    points: [
+      "Installation of telematics units, GPS tracking, dashcams, and IoT sensors across vehicle fleets.",
+      "Remote monitoring, reporting, and preventative maintenance workflows to manage performance.",
+    ],
+  }
 ];
 
 const Industries = () => {
