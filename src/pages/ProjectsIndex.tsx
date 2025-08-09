@@ -43,7 +43,7 @@ const ProjectsIndex = () => {
     { src: "/lovable-uploads/9608ab6f-4906-42bb-9c2d-29ed733d19bb.png", alt: "Taxi fleet technology setup with in-vehicle display and connectivity" },
     { src: "/lovable-uploads/802e7b64-5c69-4376-a3d3-33b379205fb4.png", alt: "Structured cabling patch panels with neatly dressed blue Cat6 leads" },
     { src: "/lovable-uploads/33161a8a-1aec-45a5-8a2b-a26ec1af6c80.png", alt: "Data center network configuration session in server room" },
-    { src: "/lovable-uploads/dfdcf468-60c2-4f7c-8f51-8ac52f9789ae.png", alt: "Back-office rack with SFP patching, switches and labeled cabling" },
+    { src: "/lovable-uploads/f409af22-ace0-4220-9a51-a600a978c3e3.png", alt: "Student classroom infrastructure build — server and switch network cleanup with new cabinet" },
     { src: "/lovable-uploads/6c70ec7d-f786-4aee-8762-c5d34b30c103.png", alt: "Industrial control room multi-screen operations center" },
     { src: "/lovable-uploads/4c8f615b-1c86-4be3-a8e4-17cd204ec541.png", alt: "Netgear switch cabinet with organized Cat6a patching" },
   ];
