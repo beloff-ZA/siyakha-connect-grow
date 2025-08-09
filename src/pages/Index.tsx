@@ -5,6 +5,7 @@ import WhySiyakha from "@/components/WhySiyakha";
 import Services from "@/components/Services";
 import Industries from "@/components/Industries";
 import Projects from "@/components/Projects";
+import BrandCarousel from "@/components/BrandCarousel";
 import Testimonials from "@/components/Testimonials";
 import LeadMagnet from "@/components/LeadMagnet";
 import BlogPreview from "@/components/BlogPreview";
@@ -72,11 +73,12 @@ const Index = () => {
       <Hero />
       <WhySiyakha />
       <Services />
+      <BrandCarousel />
       <Industries />
       <Projects />
       <Testimonials />
       <LeadMagnet />
-      <BlogPreview />
+      <BlogPreview showCount={3} />
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJson) }} />
     </div>

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Calendar, ArrowRight, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const BlogPreview = () => {
+const BlogPreview = ({ showCount }: { showCount?: number }) => {
   const articles = [
     {
       title: "Field Support & Smart Hands Services in South Africa",
@@ -106,6 +106,8 @@ const BlogPreview = () => {
     }
   ];
 
+  const list = showCount ? articles.slice(0, showCount) : articles;
+
   return (
     <section className="py-20 bg-secondary">
       <div className="container mx-auto px-4 lg:px-6">
@@ -119,7 +121,7 @@ const BlogPreview = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {articles.map((article, index) => (
+          {list.map((article, index) => (
             <Card 
               key={index}
               className={`group hover:shadow-xl transition-all duration-300 ${
