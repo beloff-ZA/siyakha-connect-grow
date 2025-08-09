@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ShareButtons from "@/components/ShareButtons";
+import BlogViews from "@/components/BlogViews";
 
 const NComputing = () => {
   useEffect(() => {
@@ -53,6 +54,7 @@ const NComputing = () => {
         <article className="py-12 md:py-16">
           <div className="container mx-auto px-4 lg:px-6 max-w-3xl">
             <h1 className="text-3xl md:text-4xl font-bold text-primary">NComputing: The Smart, Affordable Solution for Schools</h1>
+            <div className="text-sm text-muted-foreground mt-2"><BlogViews increment /></div>
             <p className="text-muted-foreground mt-3">In today’s digital learning age, every student needs access to a computer — but not every school has the budget for dozens of laptops. Enter NComputing — a powerful, cost‑effective solution used by schools across South Africa.</p>
 
             <section className="prose prose-invert mt-8 max-w-none">

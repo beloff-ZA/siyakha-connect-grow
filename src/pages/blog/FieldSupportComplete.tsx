@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import ShareButtons from "@/components/ShareButtons";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import BlogViews from "@/components/BlogViews";
 
 const FieldSupportComplete = () => {
   useEffect(() => {
@@ -63,6 +64,7 @@ const FieldSupportComplete = () => {
         <article className="py-12 md:py-16">
           <div className="container mx-auto px-4 lg:px-6 max-w-3xl">
             <h1 className="text-3xl md:text-4xl font-bold text-primary">Complete Field Support Solutions – On‑Site, Remote, and Dedicated Engineers</h1>
+            <div className="text-sm text-muted-foreground mt-2"><BlogViews increment /></div>
             <p className="text-muted-foreground mt-3">
               In a world where technology powers every part of your business, IT issues can’t wait. Whether your staff need help with desktop
               problems, your infrastructure requires on‑site attention, or you want a dedicated engineer monitoring critical systems, Siyakha

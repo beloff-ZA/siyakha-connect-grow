@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import ShareButtons from "@/components/ShareButtons";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import BlogViews from "@/components/BlogViews";
 
 const FieldSupportSmartHands = () => {
   useEffect(() => {
@@ -68,6 +69,7 @@ const FieldSupportSmartHands = () => {
             <h1 className="text-3xl md:text-4xl font-bold text-primary">
               Field Support & Smart Hands Services That Keep Your Business Running
             </h1>
+            <div className="text-sm text-muted-foreground mt-2"><BlogViews increment /></div>
             <p className="text-muted-foreground mt-3">
               In a fast-paced, technology-driven world, businesses can’t afford downtime. Whether you’re running a national franchise, a SaaS company, or a large warehouse, reliable field support and Smart Hands services are essential for keeping your systems online.
             </p>

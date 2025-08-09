@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ShareButtons from "@/components/ShareButtons";
+import BlogViews from "@/components/BlogViews";
 
 const SchoolNetworkUpgrade = () => {
   useEffect(() => {
@@ -61,6 +62,7 @@ const SchoolNetworkUpgrade = () => {
             <h1 className="text-3xl md:text-4xl font-bold text-primary">
               5 Signs Your School Needs a Network Upgrade
             </h1>
+            <div className="text-sm text-muted-foreground mt-2"><BlogViews increment /></div>
             <p className="text-muted-foreground mt-3">In today’s digital learning environment, a reliable and secure network is no longer a luxury — it’s essential.</p>
 
             <section className="prose prose-invert mt-8 max-w-none">

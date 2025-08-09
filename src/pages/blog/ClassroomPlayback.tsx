@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ShareButtons from "@/components/ShareButtons";
+import BlogViews from "@/components/BlogViews";
 
 const ClassroomPlayback = () => {
   useEffect(() => {
@@ -66,6 +67,9 @@ const ClassroomPlayback = () => {
             <h1 className="text-3xl md:text-4xl font-bold text-primary">
               Classroom Playback Technology: Bringing the Soccer Replay Advantage to Education
             </h1>
+            <div className="text-sm text-muted-foreground mt-2">
+              <BlogViews increment />
+            </div>
             <p className="text-muted-foreground mt-3">📅 June 2025</p>
             <p className="text-muted-foreground mt-3">
               In the sports world, instant replay is a game-changer. Coaches and players watch every angle of a match—pausing, rewinding, and analysing plays to improve strategy and avoid repeated mistakes. A single replay can change the next game’s outcome.

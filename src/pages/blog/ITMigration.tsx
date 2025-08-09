@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import ShareButtons from "@/components/ShareButtons";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import BlogViews from "@/components/BlogViews";
 
 const ITMigration = () => {
   useEffect(() => {
@@ -65,6 +66,7 @@ const ITMigration = () => {
         <article className="py-12 md:py-16">
           <div className="container mx-auto px-4 lg:px-6 max-w-3xl">
             <h1 className="text-3xl md:text-4xl font-bold text-primary">Reliable IT Migration Services That Keep Your Business Moving Forward</h1>
+            <div className="text-sm text-muted-foreground mt-2"><BlogViews increment /></div>
             <p className="text-muted-foreground mt-3">Migrating your IT systems is like changing the engine on a moving train — it has to be done without stopping the ride. Whether it’s moving to the cloud, upgrading infrastructure, or transferring critical applications to a new environment, a poorly executed migration can lead to costly downtime, data loss, and frustrated teams.</p>
             <p className="text-muted-foreground mt-3">At Siyakha Technology, we’ve successfully handled complex IT migrations for insurance companies, mining operations, and large construction groups — ensuring a smooth transition with zero data loss and minimal disruption.</p>
 

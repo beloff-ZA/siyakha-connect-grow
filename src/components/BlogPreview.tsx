@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Calendar, ArrowRight, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
+import BlogViews from "@/components/BlogViews";
 
 const BlogPreview = ({ showCount }: { showCount?: number }) => {
   const articles = [
@@ -151,6 +152,7 @@ const BlogPreview = ({ showCount }: { showCount?: number }) => {
                       <Clock className="w-4 h-4 mr-1" />
                       {article.readTime}
                     </div>
+                    <BlogViews slug={article.link} />
                   </div>
                 </div>
                 <h3 className={`font-semibold text-primary group-hover:text-accent transition-colors leading-tight ${

@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ShareButtons from "@/components/ShareButtons";
+import BlogViews from "@/components/BlogViews";
 
 const ManagedITMSP = () => {
   useEffect(() => {
@@ -55,6 +56,7 @@ const ManagedITMSP = () => {
             <h1 className="text-3xl md:text-4xl font-bold text-primary">
               Why Every Growing Business Should Consider a Managed IT Service Provider (MSP)
             </h1>
+            <div className="text-sm text-muted-foreground mt-2"><BlogViews increment /></div>
             <p className="text-muted-foreground mt-3">As your business grows, so do your tech needs — and managing them internally can become overwhelming, costly, and inefficient.</p>
 
             <section className="prose prose-invert mt-8 max-w-none">

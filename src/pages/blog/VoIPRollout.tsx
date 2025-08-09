@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import ShareButtons from "@/components/ShareButtons";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import BlogViews from "@/components/BlogViews";
 
 const VoIPRollout = () => {
   useEffect(() => {
@@ -65,6 +66,7 @@ const VoIPRollout = () => {
         <article className="py-12 md:py-16">
           <div className="container mx-auto px-4 lg:px-6 max-w-3xl">
             <h1 className="text-3xl md:text-4xl font-bold text-primary">Seamless VoIP Phone Rollouts That Keep Your Teams Connected</h1>
+            <div className="text-sm text-muted-foreground mt-2"><BlogViews increment /></div>
             <p className="text-muted-foreground mt-3">In the modern workplace, communication is everything — and VoIP (Voice over Internet Protocol) is the backbone of many businesses’ daily operations. But when it’s time to replace outdated VoIP devices or roll out new phones across multiple branches, the process needs to be smooth, quick, and disruption‑free.</p>
             <p className="text-muted-foreground mt-3">At Siyakha Technology, we specialize in VoIP device replacements and large‑scale rollouts for groups, franchises, and multi‑branch organizations. From planning to installation, our team ensures your employees stay connected with minimal downtime.</p>
 
