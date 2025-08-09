@@ -32,6 +32,7 @@ import CyberVulnerabilities from "./pages/blog/CyberVulnerabilities";
 import NComputing from "./pages/blog/NComputing";
 import FieldSupportSmartHands from "./pages/blog/FieldSupportSmartHands";
 import ITMigration from "./pages/blog/ITMigration";
+import VoIPRollout from "./pages/blog/VoIPRollout";
 // Legal and misc
 import Careers from "./pages/Careers";
 import Privacy from "./pages/Privacy";
@@ -93,6 +94,7 @@ const App = () => (
           <Route path="/blog/ncomputing-the-smart-affordable-solution-for-schools" element={<NComputing />} />
           <Route path="/blog/field-support-and-smart-hands-services-south-africa" element={<FieldSupportSmartHands />} />
           <Route path="/blog/it-migration-services-south-africa" element={<ITMigration />} />
+          <Route path="/blog/voip-phone-rollout-services-south-africa" element={<VoIPRollout />} />
 
           {/* Projects */}
           <Route path="/projects/marist-brothers-linmeyer" element={<MaristBrothersProject />} />

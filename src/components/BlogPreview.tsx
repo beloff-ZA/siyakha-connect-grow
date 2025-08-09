@@ -85,6 +85,15 @@ const BlogPreview = () => {
       category: "Migration",
       link: "/blog/it-migration-services-south-africa",
       featured: false
+    },
+    {
+      title: "VoIP Phone Rollout Services in South Africa",
+      excerpt: "Nationwide VoIP phone replacements and multi-branch rollouts — fast, secure, and disruption-free for growing teams.",
+      date: "April 27, 2024",
+      readTime: "6 min read",
+      category: "VoIP",
+      link: "/blog/voip-phone-rollout-services-south-africa",
+      featured: false
     }
   ];
 

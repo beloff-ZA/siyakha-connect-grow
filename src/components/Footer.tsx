@@ -146,68 +146,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Get in Touch</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <Phone className="w-5 h-5 text-accent flex-shrink-0" />
-                  <div>
-                    <a href="tel:+27815012993" className="text-white/80 hover:text-accent transition-colors">
-                      081 501 2993
-                    </a>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <Mail className="w-5 h-5 text-accent flex-shrink-0" />
-                  <div>
-                    <a href="mailto:info@siyakhatechnology.co.za" className="text-white/80 hover:text-accent transition-colors">
-                      info@siyakhatechnology.co.za
-                    </a>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <MessageCircle className="w-5 h-5 text-accent flex-shrink-0" />
-                  <div>
-                    <a
-                      href="https://wa.me/27815012993?text=Hi%20Siyakha%20Technology%2C%20I%27d%20like%20to%20chat%20about%20services."
-                      className="text-white/80 hover:text-accent transition-colors"
-                      aria-label="Chat with us on WhatsApp"
-                    >
-                      WhatsApp: +27 81 501 2993
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
-                  <div className="text-white/80 break-words">
-                    2nd Floor, Nelson Mandela Square<br />
-                    Maude Street West Tower, Sandton<br />
-                    2146, South Africa
-                  </div>
-                </div>
-
-                <div className="p-4 bg-white/5 rounded-lg">
-                  <h4 className="font-medium mb-2">Business Hours</h4>
-                  <div className="text-sm text-white/80 grid grid-cols-2 gap-x-4 gap-y-1">
-                    <span>Mon - Fri:</span>
-                    <span className="text-right">8:00 AM - 5:00 PM</span>
-                    <span>Saturday:</span>
-                    <span className="text-right">9:00 AM - 1:00 PM</span>
-                    <span>Emergency:</span>
-                    <span className="text-right text-accent">24/7</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-
         {/* Bottom Bar */}
         <div className="border-t border-white/20 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
