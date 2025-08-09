@@ -94,6 +94,15 @@ const BlogPreview = () => {
       category: "VoIP",
       link: "/blog/voip-phone-rollout-services-south-africa",
       featured: false
+    },
+    {
+      title: "Complete Field Support Solutions – On‑Site, Remote, and Dedicated Engineers",
+      excerpt: "Desktop on‑site support, remote IT assistance, and dedicated L1–L3 engineers across South Africa.",
+      date: "June 9, 2022",
+      readTime: "7 min read",
+      category: "Field Support",
+      link: "/blog/complete-field-support-solutions-on-site-remote-and-dedicated-engineers",
+      featured: false
     }
   ];
 
