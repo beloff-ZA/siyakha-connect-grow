@@ -6,7 +6,10 @@ const logos = [
   { src: "/lovable-uploads/f638f406-44d9-42a7-8f35-fc4678930328.png", alt: "Hikvision logo" },
   { src: "/lovable-uploads/b0e40c4d-73a7-46ae-8e4e-d4e603c9513a.png", alt: "Grandstream logo" },
   { src: "/lovable-uploads/b5123bb8-e9c6-4737-bd9b-3e6d9a97df2e.png", alt: "TP-Link logo" },
-  { src: "/lovable-uploads/2b4ffa3c-019a-4a23-bf18-e2241963773f.png", alt: "Cisco Meraki logo" }
+  { src: "/lovable-uploads/2b4ffa3c-019a-4a23-bf18-e2241963773f.png", alt: "Cisco Meraki logo" },
+  { src: "/lovable-uploads/322af938-b3a3-4811-b076-03cdb23dd518.png", alt: "ICT brand logo" },
+  { src: "/lovable-uploads/e0c0b74c-69b4-4b72-8042-e0221fe4d8b2.png", alt: "ICT brand logo" },
+  { src: "/lovable-uploads/880db09a-cedc-4409-b382-6efe459c58cb.png", alt: "ICT brand logo" }
 ];
 
 const BrandCarousel = () => {
