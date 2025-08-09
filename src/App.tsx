@@ -30,6 +30,7 @@ import PowerOfAI from "./pages/blog/PowerOfAI";
 import HardwareUpgrade from "./pages/blog/HardwareUpgrade";
 import CyberVulnerabilities from "./pages/blog/CyberVulnerabilities";
 import NComputing from "./pages/blog/NComputing";
+import FieldSupportSmartHands from "./pages/blog/FieldSupportSmartHands";
 // Legal and misc
 import Careers from "./pages/Careers";
 import Privacy from "./pages/Privacy";
@@ -89,6 +90,7 @@ const App = () => (
           <Route path="/blog/why-you-need-to-upgrade-your-hardware-before-it-slows-you-down" element={<HardwareUpgrade />} />
           <Route path="/blog/understanding-cyber-vulnerabilities-and-how-to-protect-your-business" element={<CyberVulnerabilities />} />
           <Route path="/blog/ncomputing-the-smart-affordable-solution-for-schools" element={<NComputing />} />
+          <Route path="/blog/field-support-and-smart-hands-services-south-africa" element={<FieldSupportSmartHands />} />
 
           {/* Projects */}
           <Route path="/projects/marist-brothers-linmeyer" element={<MaristBrothersProject />} />

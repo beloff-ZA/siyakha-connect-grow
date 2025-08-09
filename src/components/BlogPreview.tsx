@@ -6,6 +6,15 @@ import { Link } from "react-router-dom";
 const BlogPreview = () => {
   const articles = [
     {
+      title: "Field Support & Smart Hands Services in South Africa",
+      excerpt: "Reliable on-site IT support for franchises, SaaS, hospitality and logistics — nationwide dispatch and skilled Smart Hands.",
+      date: "January 25, 2025",
+      readTime: "6 min read",
+      category: "Field Support",
+      link: "/blog/field-support-and-smart-hands-services-south-africa",
+      featured: true
+    },
+    {
       title: "Understanding the Power of AI in Modern Business and Education",
       excerpt: "AI is transforming work and learning. See how schools and businesses can safely harness AI for real impact.",
       date: "January 22, 2025",
