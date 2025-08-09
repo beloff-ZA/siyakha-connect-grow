@@ -23,7 +23,7 @@ const BrandCarousel = () => {
                     <img
                       src={logo.src}
                       alt={logo.alt}
-                      className="h-full max-w-[160px] object-contain filter grayscale brightness-0"
+                      className="h-full max-w-[160px] object-contain grayscale"
                       loading="lazy"
                       decoding="async"
                     />
