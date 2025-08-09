@@ -11,7 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 const InfrastructureAndNetworking = () => {
   useEffect(() => {
     const title = "Infrastructure & Networking | Siyakha Technology";
-    const description = "Powering reliable connectivity across campuses and enterprises — from cabling and Wi‑Fi to secure core networks, office moves, and future‑ready design.";
+    const description = "Infrastructure and networking for estates, malls, and commercial spaces — from fibre builds and structured cabling to student accommodation Wi‑Fi and future‑ready core networks.";
     document.title = title;
 
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
@@ -129,6 +129,39 @@ const InfrastructureAndNetworking = () => {
               <img src={"/lovable-uploads/e34b216a-0325-45dd-996f-b6b727e542ee.png"} alt="Data room rack with structured cabling trunking and patch panels" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/c74a7f86-838a-46db-9d88-ac8b192d5941.png"} alt="Wall-mounted patch panels with neatly dressed blue Cat6 leads" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
               <img src={"/lovable-uploads/5bd4b5cb-7c24-44d6-8df7-89a1f3a76c1f.png"} alt="Check Point security gateway firewall on network rack" className="rounded-lg border border-border object-cover h-40 w-full" loading="lazy" decoding="async" />
+            </div>
+          </div>
+        </section>
+
+        <section className="py-12 md:py-16 bg-muted/30 border-y border-border">
+          <div className="container mx-auto px-4 lg:px-6 max-w-6xl">
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary">Fibre Builds for Estates, Malls & Commercial Developments</h2>
+            <div className="grid lg:grid-cols-2 gap-8 mt-4 text-muted-foreground">
+              <div className="prose prose-sm max-w-none">
+                <p>Rolling out fibre for a new estate, mall or commercial space? We design and deliver end‑to‑end FTTx builds — from POP to risers to tenant hand‑offs — built to standards and ready for ISPs.</p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>Site audits, route design, and duct/tray planning for backbones and distribution</li>
+                  <li>Riser and floor distribution with labelled patching, trays and terminations</li>
+                  <li>FTTB/FTTH design, splicing, testing and light‑level verification</li>
+                  <li>Compliance to SANS and landlord/HOA specifications with as‑built documentation</li>
+                  <li>ISP coordination for WAN handover, CPE installation and go‑live</li>
+                </ul>
+              </div>
+              <div className="prose prose-sm max-w-none">
+                <h3 className="text-lg font-semibold text-foreground">Student Accommodation Technology Solutions</h3>
+                <p>High‑density, secure connectivity purpose‑built for residences and PBSA operators.</p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>Managed Wi‑Fi with captive portal and per‑room network isolation</li>
+                  <li>Bandwidth management, fair‑use and content filtering where required</li>
+                  <li>AP density planning, wired backhaul and fibre uplinks for stability</li>
+                  <li>Integrated CCTV and access control for common areas</li>
+                  <li>Resident onboarding and support playbooks for smooth operations</li>
+                </ul>
+                <div className="mt-6 flex gap-3">
+                  <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Discuss a Build</Button></Link>
+                  <Link to="/projects" className="inline-flex"><Button variant="outline">View Projects</Button></Link>
+                </div>
+              </div>
             </div>
           </div>
         </section>
