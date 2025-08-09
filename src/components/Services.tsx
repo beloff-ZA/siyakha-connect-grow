@@ -41,7 +41,7 @@ const Services = () => {
       title: "National Field Support",
       description: "Onsite smart hands across South Africa",
       benefit: "Dispatch certified techs for rollouts, swaps and break/fix.",
-      link: "/services/national-field-support",
+      link: "/services/national-field-support/cutovers-and-sim-replacements",
       color: "text-amber-600"
     }
   ];
