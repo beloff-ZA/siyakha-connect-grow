@@ -40,7 +40,7 @@ const ProjectsIndex = () => {
     { src: "/lovable-uploads/7ece805f-8460-412e-940f-6dcd049dae2d.png", alt: "Retail POS network with payment terminals and barcode scanners" },
     { src: "/lovable-uploads/bdeb1ff0-b433-4f7e-81e4-74b548b53871.png", alt: "Desktop rollout staging area with HP desktops prepared for deployment" },
     { src: "/lovable-uploads/20b05504-4a1c-4678-b6ab-6a94216b63de.png", alt: "Interactive classroom display installation by Siyakha" },
-    { src: "/lovable-uploads/9608ab6f-4906-42bb-9c2d-29ed733d19bb.png", alt: "Digital signage kiosk setup with COVID-19 information" },
+    { src: "/lovable-uploads/9608ab6f-4906-42bb-9c2d-29ed733d19bb.png", alt: "Taxi fleet technology setup with in-vehicle display and connectivity" },
     { src: "/lovable-uploads/802e7b64-5c69-4376-a3d3-33b379205fb4.png", alt: "Structured cabling patch panels with neatly dressed blue Cat6 leads" },
     { src: "/lovable-uploads/33161a8a-1aec-45a5-8a2b-a26ec1af6c80.png", alt: "Data center network configuration session in server room" },
     { src: "/lovable-uploads/dfdcf468-60c2-4f7c-8f51-8ac52f9789ae.png", alt: "Back-office rack with SFP patching, switches and labeled cabling" },
