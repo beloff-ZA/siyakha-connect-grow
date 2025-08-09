@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wifi, Shield, Cloud, MessageSquare, ArrowRight } from "lucide-react";
+import { Wifi, Shield, Cloud, MessageSquare, ArrowRight, Wrench } from "lucide-react";
 
 const Services = () => {
   const services = [
@@ -35,6 +35,14 @@ const Services = () => {
       benefit: "Enable seamless communication across your organization.",
       link: "/services/smart-collaboration-tools",
       color: "text-green-600"
+    },
+    {
+      icon: Wrench,
+      title: "National Field Support",
+      description: "Onsite smart hands across South Africa",
+      benefit: "Dispatch certified techs for rollouts, swaps and break/fix.",
+      link: "/services/national-field-support",
+      color: "text-amber-600"
     }
   ];
 

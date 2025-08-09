@@ -19,6 +19,7 @@ import InfrastructureAndNetworking from "./pages/services/InfrastructureAndNetwo
 import SecurityAndSurveillance from "./pages/services/SecurityAndSurveillance";
 import CloudAndEdgeSolutions from "./pages/services/CloudAndEdgeSolutions";
 import SmartCollaborationTools from "./pages/services/SmartCollaborationTools";
+import NationalFieldSupport from "./pages/services/NationalFieldSupport";
 import ServicesIndex from "./pages/ServicesIndex";
 // Blog articles
 import SchoolNetworkUpgrade from "./pages/blog/SchoolNetworkUpgrade";
@@ -74,6 +75,7 @@ const App = () => (
           <Route path="/services/cloud-and-edge-solutions" element={<CloudAndEdgeSolutions />} />
           <Route path="/services/cloud-edge-solutions" element={<Navigate to="/services/cloud-and-edge-solutions" replace />} />
           <Route path="/services/smart-collaboration-tools" element={<SmartCollaborationTools />} />
+          <Route path="/services/national-field-support" element={<NationalFieldSupport />} />
           <Route path="/services" element={<ServicesIndex />} />
 
           {/* Blog */}
