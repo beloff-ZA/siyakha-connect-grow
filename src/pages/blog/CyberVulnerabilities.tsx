@@ -40,8 +40,8 @@ const CyberVulnerabilities = () => {
     description: "Common cyber risks and practical protections: patches, MFA, phishing training, and more to reduce business risk.",
     author: { "@type": "Organization", name: "Siyakha Technology Solutions" },
     publisher: { "@type": "Organization", name: "Siyakha Technology Solutions" },
-    datePublished: "2025-01-19",
-    dateModified: "2025-01-19",
+    datePublished: "2023-02-10",
+    dateModified: "2023-02-10",
     mainEntityOfPage: `${window.location.origin}/blog/understanding-cyber-vulnerabilities-and-how-to-protect-your-business`,
   }), []);
 

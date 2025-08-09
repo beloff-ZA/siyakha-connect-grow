@@ -17,7 +17,7 @@ const BlogPreview = () => {
     {
       title: "Understanding the Power of AI in Modern Business and Education",
       excerpt: "AI is transforming work and learning. See how schools and businesses can safely harness AI for real impact.",
-      date: "January 22, 2025",
+      date: "July 12, 2019",
       readTime: "6 min read",
       category: "AI",
       link: "/blog/understanding-the-power-of-ai-in-modern-business-and-education",
@@ -26,7 +26,7 @@ const BlogPreview = () => {
     {
       title: "5 Signs Your School Needs a Network Upgrade",
       excerpt: "In today’s digital learning environment, a reliable and secure network is essential. Here are 5 signs it’s time to upgrade.",
-      date: "January 20, 2025",
+      date: "March 5, 2018",
       readTime: "6 min read",
       category: "Networking",
       link: "/blog/5-signs-your-school-needs-a-network-upgrade",
@@ -35,7 +35,7 @@ const BlogPreview = () => {
     {
       title: "Why Every Growing Business Should Consider a Managed IT Service Provider (MSP)",
       excerpt: "As your business scales, an MSP can cut costs, boost security, and keep systems running 24/7.",
-      date: "January 18, 2025",
+      date: "November 3, 2024",
       readTime: "7 min read",
       category: "Managed Services",
       link: "/blog/why-every-growing-business-should-consider-a-managed-it-service-provider-msp",
@@ -44,7 +44,7 @@ const BlogPreview = () => {
     {
       title: "How to Know When It’s Time to Replace Your Wi‑Fi System",
       excerpt: "Dead zones, slow speeds, and unstable connections are red flags. Here’s when to upgrade your Wi‑Fi.",
-      date: "January 16, 2025",
+      date: "September 18, 2017",
       readTime: "5 min read",
       category: "Wi‑Fi",
       link: "/blog/how-to-know-when-its-time-to-replace-your-wi-fi-system",
@@ -53,7 +53,7 @@ const BlogPreview = () => {
     {
       title: "Why You Need to Upgrade Your Hardware Before It Slows You Down",
       excerpt: "Old laptops and servers cost time and money. Here’s why upgrading hardware is an investment, not an expense.",
-      date: "January 21, 2025",
+      date: "May 28, 2021",
       readTime: "5 min read",
       category: "Hardware",
       link: "/blog/why-you-need-to-upgrade-your-hardware-before-it-slows-you-down",
@@ -62,7 +62,7 @@ const BlogPreview = () => {
     {
       title: "Understanding Cyber Vulnerabilities — and How to Protect Your Business",
       excerpt: "From unpatched systems to phishing — learn key risks and practical steps to reduce cyber threats.",
-      date: "January 19, 2025",
+      date: "February 10, 2023",
       readTime: "7 min read",
       category: "Security",
       link: "/blog/understanding-cyber-vulnerabilities-and-how-to-protect-your-business",
@@ -71,10 +71,19 @@ const BlogPreview = () => {
     {
       title: "NComputing: The Smart, Affordable Solution for Schools",
       excerpt: "Multiply classroom access to computers without multiplying costs using NComputing.",
-      date: "January 17, 2025",
+      date: "August 6, 2020",
       readTime: "5 min read",
       category: "EdTech",
       link: "/blog/ncomputing-the-smart-affordable-solution-for-schools",
+      featured: false
+    },
+    {
+      title: "IT Migration Services in South Africa",
+      excerpt: "Seamless data and system transfers for insurance, mining, and construction — secure, tested, and low‑downtime.",
+      date: "October 15, 2022",
+      readTime: "7 min read",
+      category: "Migration",
+      link: "/blog/it-migration-services-south-africa",
       featured: false
     }
   ];

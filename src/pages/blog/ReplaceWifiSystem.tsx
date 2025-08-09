@@ -40,8 +40,8 @@ const ReplaceWifiSystem = () => {
     description: "Dead zones, slow speeds, disconnects? Learn the top signs it’s time to replace your Wi‑Fi with a modern, secure, business‑grade system.",
     author: { "@type": "Organization", name: "Siyakha Technology Solutions" },
     publisher: { "@type": "Organization", name: "Siyakha Technology Solutions" },
-    datePublished: "2025-01-16",
-    dateModified: "2025-01-16",
+    datePublished: "2017-09-18",
+    dateModified: "2017-09-18",
     mainEntityOfPage: `${window.location.origin}/blog/how-to-know-when-its-time-to-replace-your-wi-fi-system`,
   }), []);
 

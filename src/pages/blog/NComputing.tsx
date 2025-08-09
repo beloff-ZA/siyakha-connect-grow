@@ -40,8 +40,8 @@ const NComputing = () => {
     description: "Equip more students for less. Learn how NComputing shares one PC across multiple learners — efficient, low‑cost, and easy to manage.",
     author: { "@type": "Organization", name: "Siyakha Technology Solutions" },
     publisher: { "@type": "Organization", name: "Siyakha Technology Solutions" },
-    datePublished: "2025-01-17",
-    dateModified: "2025-01-17",
+    datePublished: "2020-08-06",
+    dateModified: "2020-08-06",
     mainEntityOfPage: `${window.location.origin}/blog/ncomputing-the-smart-affordable-solution-for-schools`,
   }), []);
 

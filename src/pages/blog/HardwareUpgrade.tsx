@@ -40,8 +40,8 @@ const HardwareUpgrade = () => {
     description: "Old laptops and servers slow teams and raise risk. Learn why upgrading hardware is an investment that pays off.",
     author: { "@type": "Organization", name: "Siyakha Technology Solutions" },
     publisher: { "@type": "Organization", name: "Siyakha Technology Solutions" },
-    datePublished: "2025-01-21",
-    dateModified: "2025-01-21",
+    datePublished: "2021-05-28",
+    dateModified: "2021-05-28",
     mainEntityOfPage: `${window.location.origin}/blog/why-you-need-to-upgrade-your-hardware-before-it-slows-you-down`,
   }), []);
 

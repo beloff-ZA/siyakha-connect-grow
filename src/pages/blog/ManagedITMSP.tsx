@@ -40,8 +40,8 @@ const ManagedITMSP = () => {
     description: "MSPs cut costs, boost security, and scale your IT. Learn why a Managed Service Provider is essential for growing businesses.",
     author: { "@type": "Organization", name: "Siyakha Technology Solutions" },
     publisher: { "@type": "Organization", name: "Siyakha Technology Solutions" },
-    datePublished: "2025-01-18",
-    dateModified: "2025-01-18",
+    datePublished: "2024-11-03",
+    dateModified: "2024-11-03",
     mainEntityOfPage: `${window.location.origin}/blog/why-every-growing-business-should-consider-a-managed-it-service-provider-msp`,
   }), []);
 

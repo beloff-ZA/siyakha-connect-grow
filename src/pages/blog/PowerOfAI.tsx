@@ -40,8 +40,8 @@ const PowerOfAI = () => {
     description: "AI is transforming how we work and learn. See practical AI use cases for schools and businesses — safely and effectively.",
     author: { "@type": "Organization", name: "Siyakha Technology Solutions" },
     publisher: { "@type": "Organization", name: "Siyakha Technology Solutions" },
-    datePublished: "2025-01-22",
-    dateModified: "2025-01-22",
+    datePublished: "2019-07-12",
+    dateModified: "2019-07-12",
     mainEntityOfPage: `${window.location.origin}/blog/understanding-the-power-of-ai-in-modern-business-and-education`,
   }), []);
 

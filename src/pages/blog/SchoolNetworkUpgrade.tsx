@@ -46,8 +46,8 @@ const SchoolNetworkUpgrade = () => {
       "@type": "Organization",
       name: "Siyakha Technology Solutions"
     },
-    datePublished: "2025-01-20",
-    dateModified: "2025-01-20",
+    datePublished: "2018-03-05",
+    dateModified: "2018-03-05",
     mainEntityOfPage: `${window.location.origin}/blog/5-signs-your-school-needs-a-network-upgrade`,
   }), []);
 
