@@ -1,10 +1,12 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const logos = [
-  { src: "/brands/cisco.svg", alt: "Cisco logo" },
-  { src: "/brands/dell.svg", alt: "Dell logo" },
-  { src: "/brands/cisco.svg", alt: "Cisco logo" },
-  { src: "/brands/dell.svg", alt: "Dell logo" }
+  { src: "/lovable-uploads/ab10f531-3c98-4fc1-9d19-dff2ea49d639.png", alt: "MikroTik logo" },
+  { src: "/lovable-uploads/4f3ad49c-5df2-4a9e-be7b-19e242202b1f.png", alt: "Lenovo logo" },
+  { src: "/lovable-uploads/f638f406-44d9-42a7-8f35-fc4678930328.png", alt: "Hikvision logo" },
+  { src: "/lovable-uploads/b0e40c4d-73a7-46ae-8e4e-d4e603c9513a.png", alt: "Grandstream logo" },
+  { src: "/lovable-uploads/b5123bb8-e9c6-4737-bd9b-3e6d9a97df2e.png", alt: "TP-Link logo" },
+  { src: "/lovable-uploads/2b4ffa3c-019a-4a23-bf18-e2241963773f.png", alt: "Cisco Meraki logo" }
 ];
 
 const BrandCarousel = () => {
@@ -21,7 +23,7 @@ const BrandCarousel = () => {
                     <img
                       src={logo.src}
                       alt={logo.alt}
-                      className="max-h-full max-w-[140px] object-contain filter grayscale brightness-0"
+                      className="h-full max-w-[160px] object-contain filter grayscale brightness-0"
                       loading="lazy"
                       decoding="async"
                     />
