@@ -5,7 +5,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-primary text-white">
+    <footer className="relative z-10 bg-primary text-white">
       <div className="container mx-auto px-4 lg:px-6">
         {/* Main Footer Content */}
         <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -185,7 +185,7 @@ const Footer = () => {
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
                   <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
-                  <div className="text-white/80">
+                  <div className="text-white/80 break-words">
                     2nd Floor, Nelson Mandela Square<br />
                     Maude Street West Tower, Sandton<br />
                     2146, South Africa
@@ -194,19 +194,13 @@ const Footer = () => {
 
                 <div className="p-4 bg-white/5 rounded-lg">
                   <h4 className="font-medium mb-2">Business Hours</h4>
-                  <div className="text-sm text-white/80 space-y-1">
-                    <div className="flex justify-between">
-                      <span>Mon - Fri:</span>
-                      <span>8:00 AM - 5:00 PM</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Saturday:</span>
-                      <span>9:00 AM - 1:00 PM</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Emergency:</span>
-                      <span className="text-accent">24/7</span>
-                    </div>
+                  <div className="text-sm text-white/80 grid grid-cols-2 gap-x-4 gap-y-1">
+                    <span>Mon - Fri:</span>
+                    <span className="text-right">8:00 AM - 5:00 PM</span>
+                    <span>Saturday:</span>
+                    <span className="text-right">9:00 AM - 1:00 PM</span>
+                    <span>Emergency:</span>
+                    <span className="text-right text-accent">24/7</span>
                   </div>
                 </div>
               </div>
