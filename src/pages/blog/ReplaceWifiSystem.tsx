@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 
 const ReplaceWifiSystem = () => {
   useEffect(() => {
@@ -67,6 +68,9 @@ const ReplaceWifiSystem = () => {
               </ul>
               <p className="mt-6">Siyakha designs and deploys secure, scalable Wi‑Fi for schools and businesses. We’ll assess your environment and recommend a future‑ready upgrade path.</p>
             </section>
+            <div className="mt-8">
+              <ShareButtons />
+            </div>
           </div>
         </article>
       </main>

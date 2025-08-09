@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 
 const ManagedITMSP = () => {
   useEffect(() => {
@@ -72,6 +73,9 @@ const ManagedITMSP = () => {
               <h2 className="text-xl font-semibold text-primary mt-6">How Siyakha Technology Helps</h2>
               <p>We act as your dedicated IT partner — managing networks, support, cloud services, cybersecurity, and more. Whether you’re a school, NGO, or business, we tailor our services to your needs so you can focus on what matters most: running your business.</p>
             </section>
+            <div className="mt-8">
+              <ShareButtons />
+            </div>
           </div>
         </article>
       </main>

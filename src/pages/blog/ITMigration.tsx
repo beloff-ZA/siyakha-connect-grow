@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -119,6 +120,9 @@ const ITMigration = () => {
                 <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
               </div>
             </section>
+            <div className="mt-8">
+              <ShareButtons />
+            </div>
           </div>
         </article>
       </main>

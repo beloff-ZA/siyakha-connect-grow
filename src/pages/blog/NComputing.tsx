@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 
 const NComputing = () => {
   useEffect(() => {
@@ -69,6 +70,9 @@ const NComputing = () => {
               <h2 className="text-xl font-semibold text-primary mt-6">How Siyakha Can Help</h2>
               <p>We’ll assess your classroom needs, provide hardware and setup, and offer full support. Many schools we’ve worked with have doubled access to technology — without doubling costs.</p>
             </section>
+            <div className="mt-8">
+              <ShareButtons />
+            </div>
           </div>
         </article>
       </main>

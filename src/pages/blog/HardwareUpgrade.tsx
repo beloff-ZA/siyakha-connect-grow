@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 
 const HardwareUpgrade = () => {
   useEffect(() => {
@@ -65,6 +66,9 @@ const HardwareUpgrade = () => {
               </ul>
               <p className="mt-6">Siyakha offers customized upgrade solutions — from laptops and servers to network switches and printers. Let us assess your infrastructure and recommend the best path forward.</p>
             </section>
+            <div className="mt-8">
+              <ShareButtons />
+            </div>
           </div>
         </article>
       </main>

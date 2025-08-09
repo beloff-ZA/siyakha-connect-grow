@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 
 const CyberVulnerabilities = () => {
   useEffect(() => {
@@ -75,6 +76,9 @@ const CyberVulnerabilities = () => {
               </ul>
               <p className="mt-6">You can’t eliminate cyber risk — but you can drastically reduce it. Siyakha’s security audits and endpoint protection plans keep your data, your people, and your business safe.</p>
             </section>
+            <div className="mt-8">
+              <ShareButtons />
+            </div>
           </div>
         </article>
       </main>

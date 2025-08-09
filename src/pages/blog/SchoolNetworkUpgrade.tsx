@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 
 const SchoolNetworkUpgrade = () => {
   useEffect(() => {
@@ -81,6 +82,9 @@ const SchoolNetworkUpgrade = () => {
 
               <p className="mt-6">At Siyakha Technology, we specialize in building reliable, high‑performance network solutions for schools. Contact us today to assess your current infrastructure — we’ll help you create a smarter, faster, and safer digital learning environment.</p>
             </section>
+            <div className="mt-8">
+              <ShareButtons />
+            </div>
           </div>
         </article>
       </main>

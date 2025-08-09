@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 
 const PowerOfAI = () => {
   useEffect(() => {
@@ -77,6 +78,9 @@ const PowerOfAI = () => {
               <p className="mt-6">AI helps both businesses and schools reduce manual workload, save costs, and improve decision‑making.</p>
               <p className="mt-4">Want to explore AI tools for your organization? Siyakha will guide you safely into the future.</p>
             </section>
+            <div className="mt-8">
+              <ShareButtons />
+            </div>
           </div>
         </article>
       </main>
