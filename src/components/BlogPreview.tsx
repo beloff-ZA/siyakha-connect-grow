@@ -6,6 +6,15 @@ import { Link } from "react-router-dom";
 const BlogPreview = ({ showCount }: { showCount?: number }) => {
   const articles = [
     {
+      title: "Classroom Playback Technology: Bringing the Soccer Replay Advantage to Education",
+      excerpt: "Zoom-integrated lesson replays with AI transcripts and notes—replay, search, and learn at your own pace.",
+      date: "June 2025",
+      readTime: "6 min read",
+      category: "EdTech",
+      link: "/blog/classroom-playback-technology-zoom-ai-lesson-replay",
+      featured: true
+    },
+    {
       title: "Field Support & Smart Hands Services in South Africa",
       excerpt: "Reliable on-site IT support for franchises, SaaS, hospitality and logistics — nationwide dispatch and skilled Smart Hands.",
       date: "January 25, 2025",
