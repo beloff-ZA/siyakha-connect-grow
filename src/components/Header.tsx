@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
 
   const services = [
     "Infrastructure & Networking",
@@ -163,23 +164,30 @@ const Header = () => {
                 About
               </Link>
               <div className="px-4">
-                <div className="flex items-center justify-between py-2 text-foreground">
-                  <span>Services</span>
-                  <ChevronDown size={16} />
-                </div>
-                <div className="pl-4 space-y-2">
-                    <Link to="/services" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
-                      All Services
-                    </Link>
-                    {services.map((service) => (
-                      <Link
-                        key={service}
-                        to={`/services/${service.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
-                        className="block py-1 text-sm text-muted-foreground hover:text-accent transition-colors"
-                      >
-                        {service}
+                <button
+                  type="button"
+                  onClick={() => setIsServicesOpen((o) => !o)}
+                  className="flex w-full items-center justify-between py-2 text-foreground"
+                  aria-expanded={isServicesOpen}
+                  aria-controls="mobile-services-submenu"
+                >
+                  <span>{isServicesOpen ? "Hide Services" : "Show Services"}</span>
+                  <ChevronDown size={16} className={`transition-transform ${isServicesOpen ? "rotate-180" : ""}`} />
+                </button>
+                {isServicesOpen && (
+                  <div id="mobile-services-submenu" className="pl-4 space-y-2">
+                      <Link to="/services" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+                        All Services
                       </Link>
-                    ))}
+                      {services.map((service) => (
+                        <Link
+                          key={service}
+                          to={`/services/${service.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
+                          className="block py-1 text-sm text-muted-foreground hover:text-accent transition-colors"
+                        >
+                          {service}
+                        </Link>
+                      ))}
 <div className="pt-2 border-t border-border">
   <Link to="/it-company-johannesburg" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
     IT Company Johannesburg
@@ -197,7 +205,8 @@ const Header = () => {
     IT Company Angola
   </Link>
 </div>
-                </div>
+                  </div>
+                )}
               </div>
               <Link to="/projects" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Projects
