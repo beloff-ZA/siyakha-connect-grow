@@ -51,6 +51,7 @@ import CloudServicesJohannesburg from "./pages/CloudServicesJohannesburg";
 import ItCompanyEMEA from "./pages/ItCompanyEMEA";
 import ItCompanyCapeTown from "./pages/ItCompanyCapeTown";
 import ItCompanyLondon from "./pages/ItCompanyLondon";
+import ItCompanyAngola from "./pages/ItCompanyAngola";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -110,6 +111,7 @@ const App = () => (
 <Route path="/it-company-emea" element={<ItCompanyEMEA />} />
 <Route path="/it-company-cape-town" element={<ItCompanyCapeTown />} />
 <Route path="/it-company-london" element={<ItCompanyLondon />} />
+<Route path="/it-company-angola" element={<ItCompanyAngola />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

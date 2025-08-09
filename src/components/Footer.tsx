@@ -144,10 +144,15 @@ const Footer = () => {
                   IT Company EMEA
                 </Link>
               </li>
+              <li>
+                <Link to="/it-company-angola" className="text-white/80 hover:text-accent transition-colors">
+                  IT Company Angola
+                </Link>
+              </li>
             </ul>
           </div>
-        </div>
-        {/* Bottom Bar */}
+          </div>
+          {/* Bottom Bar */}
         <div className="border-t border-white/20 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-white/60 text-sm">

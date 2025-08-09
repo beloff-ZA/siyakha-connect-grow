@@ -97,6 +97,12 @@ const Header = () => {
   >
     IT Company EMEA
   </Link>
+  <Link
+    to="/it-company-angola"
+    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
+  >
+    IT Company Angola
+  </Link>
 </div>
                   </div>
                 </NavigationMenuContent>
@@ -185,6 +191,9 @@ const Header = () => {
   </Link>
   <Link to="/it-company-emea" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
     IT Company EMEA
+  </Link>
+  <Link to="/it-company-angola" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+    IT Company Angola
   </Link>
 </div>
                 </div>
