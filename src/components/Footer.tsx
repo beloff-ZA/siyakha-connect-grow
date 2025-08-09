@@ -113,6 +113,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/services/healthcare-it-support" className="text-white/80 hover:text-accent transition-colors">
+                  Healthcare IT Support
+                </Link>
+              </li>
+              <li>
                 <Link to="/support-deals" className="text-white/80 hover:text-accent transition-colors">
                   24/7 Support
                 </Link>
@@ -162,7 +167,7 @@ const Footer = () => {
               <span className="bg-accent/20 text-accent px-3 py-1 rounded-full font-medium">
                 BEE Level 1 Certified
               </span>
-              <span>Reg: 2008/123456/07</span>
+              
             </div>
           </div>
         </div>

@@ -17,7 +17,8 @@ const Header = () => {
     "Security & Surveillance", 
     "Cloud & Edge Solutions",
     "Smart Collaboration Tools",
-    "National Field Support"
+    "National Field Support",
+    "Healthcare IT Support"
   ];
 
   return (
