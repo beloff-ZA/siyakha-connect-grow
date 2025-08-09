@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Eye } from "lucide-react";
-import { defaultNamespace, getViews, hitView, keyFromSlug } from "@/lib/viewCounter";
+import { defaultNamespace, getViews, hitView, keyFromSlug, applyDisplayOffset, baselineForKey } from "@/lib/viewCounter";
 import { useLocation } from "react-router-dom";
 
 interface BlogViewsProps {
@@ -20,10 +20,11 @@ const BlogViews = ({ slug, increment = false, className = "" }: BlogViewsProps) 
     let cancelled = false;
     const run = async () => {
       try {
-        const val = increment ? await hitView(ns, key) : await getViews(ns, key);
-        if (!cancelled) setViews(val);
+        const raw = increment ? await hitView(ns, key) : await getViews(ns, key);
+        const display = applyDisplayOffset(key, raw);
+        if (!cancelled) setViews(display);
       } catch {
-        if (!cancelled) setViews(0);
+        if (!cancelled) setViews(baselineForKey(key));
       }
     };
     run();
