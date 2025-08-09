@@ -128,7 +128,7 @@ const FieldSupportSmartHands = () => {
             <div className="mt-8">
               <ShareButtons />
             </div>
-          
+          </div>
         </article>
       </main>
       <Footer />
