@@ -38,8 +38,16 @@ export default function CompanyProfile() {
       canonical.setAttribute('rel', 'canonical');
       document.head.appendChild(canonical);
     }
-    canonical.setAttribute('href', `${window.location.origin}/company`);
-  }, []);
+     canonical.setAttribute('href', `${window.location.origin}/company`);
+   }, []);
+ 
+   useEffect(() => {
+     const msg = sessionStorage.getItem('company_registered_msg');
+     if (msg) {
+       toast({ title: 'Thank you for registering', description: msg });
+       sessionStorage.removeItem('company_registered_msg');
+     }
+   }, [toast]);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -110,9 +118,8 @@ export default function CompanyProfile() {
       if (error) {
         toast({ title: 'Creation failed', description: error.message, variant: 'destructive' });
       } else {
-        // After trigger, user is a member; keep id for subsequent edits
-        form.reset({ ...(values as any), id: data?.id } as any);
-        toast({ title: 'Company created', description: 'You can now manage tickets under this company.' });
+        sessionStorage.setItem('company_registered_msg', "Your profile needs to be confirmed via email. If you didn't receive the email, check your junk box.");
+        window.location.reload();
       }
     }
   };
