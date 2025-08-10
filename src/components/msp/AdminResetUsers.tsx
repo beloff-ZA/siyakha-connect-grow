@@ -10,7 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 export default function AdminResetUsers() {
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [mode, setMode] = useState<"keep_current" | "keep_email">("keep_current");
+  const [mode, setMode] = useState<"keep_current" | "keep_email" | "delete_all">("keep_current");
   const [keepEmail, setKeepEmail] = useState("");
   const [confirmText, setConfirmText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,9 +41,10 @@ export default function AdminResetUsers() {
       const { data, error } = await supabase.functions.invoke("purge-users", { body });
       if (error) throw error;
 
+      const keptInfo = mode === "delete_all" ? "All users deleted" : `Kept ${data?.keptEmail}`;
       toast({
         title: "Users purged",
-        description: `Kept ${data?.keptEmail}. Deleted ${data?.deletedUserIds?.length || 0} users.`,
+        description: `${keptInfo}. Deleted ${data?.deletedUserIds?.length || 0} users.`,
       });
     } catch (e: any) {
       toast({ title: "Failed to purge", description: e?.message || "Unknown error", variant: "destructive" });
@@ -70,6 +71,7 @@ export default function AdminResetUsers() {
               <SelectContent>
                 <SelectItem value="keep_current">Keep current account ({callerEmail || "you"})</SelectItem>
                 <SelectItem value="keep_email">Keep specific email</SelectItem>
+                <SelectItem value="delete_all">Delete ALL users (admin only)</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -86,7 +88,7 @@ export default function AdminResetUsers() {
             <Input id="confirm" value={confirmText} onChange={(e) => setConfirmText(e.target.value)} className="rounded-xl" />
           </div>
 
-          <p className="text-xs text-muted-foreground">This removes all users except the one you keep, and cleans related data. Companies and Sites are not affected.</p>
+          <p className="text-xs text-muted-foreground">Dangerous action: In keep modes we remove all users except the one you keep; in Delete ALL we remove every user. Companies and Sites are not affected.</p>
 
           <Button disabled={!canSubmit} onClick={run} className="rounded-2xl" variant="destructive">
             {loading ? "Purging…" : "Purge users"}

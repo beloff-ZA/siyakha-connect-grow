@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-type Mode = "keep_current" | "keep_email";
+type Mode = "keep_current" | "keep_email" | "delete_all";
 
 interface PurgeBody {
   mode: Mode;
@@ -60,7 +60,57 @@ serve(async (req) => {
     }
     const isAdmin = Array.isArray(roles) && roles.some((r: any) => r.role === "siyakha_admin");
 
-    // Determine keep target
+    // Branch by mode
+    if (mode === "delete_all") {
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ error: "Forbidden: only admins can delete all users" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+
+      // Fetch up to 1000 users
+      const { data: list2, error: listErr2 } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+      if (listErr2) {
+        console.error("listUsers error:", listErr2);
+        return new Response(JSON.stringify({ error: listErr2.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+      const allUsers = list2?.users ?? [];
+      const targetIds = allUsers.map((u: any) => u.id);
+
+      // Clean associated data for all users
+      const cleaned: Record<string, number> = {};
+      const doDelete = async (table: string, col: string) => {
+        const { error: delErr, count } = await supabaseAdmin
+          .from(table)
+          .delete({ count: "exact" })
+          .in(col, targetIds);
+        if (delErr) {
+          console.error(`Delete from ${table} failed:`, delErr);
+          throw delErr;
+        }
+        cleaned[table] = count ?? 0;
+      };
+
+      await doDelete("user_roles", "user_id");
+      await doDelete("company_members", "user_id");
+      await doDelete("support_calls", "user_id");
+      await doDelete("quotes", "requested_by");
+      await doDelete("profiles", "id");
+
+      // Finally delete auth users
+      await Promise.allSettled(targetIds.map((id) => supabaseAdmin.auth.admin.deleteUser(id)));
+
+      return new Response(
+        JSON.stringify({ mode, deletedUserIds: targetIds, cleaned }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Determine keep target for keep_* modes
     let keepEmail = mode === "keep_email" ? (body.keepEmail || "").trim().toLowerCase() : (caller.email || "").toLowerCase();
 
     if (mode === "keep_email" && !keepEmail) {
@@ -74,16 +124,6 @@ serve(async (req) => {
     if (!isAdmin && keepEmail !== (caller.email || "").toLowerCase()) {
       return new Response(JSON.stringify({ error: "Forbidden: only admins can keep another email" }), {
         status: 403,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
-
-    // Fetch up to 1000 users
-    const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-    if (listErr) {
-      console.error("listUsers error:", listErr);
-      return new Response(JSON.stringify({ error: listErr.message }), {
-        status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
