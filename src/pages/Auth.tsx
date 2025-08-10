@@ -91,7 +91,7 @@ export default function Auth() {
               <div className="bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-b border-border">
                 <div className="px-6 py-3 max-w-screen-xl mx-auto">
                   <h2 className="sr-only">Industries we support</h2>
-                  <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-8 gap-3 md:gap-4 place-items-center">
+                  <ul className="flex items-center gap-4 overflow-x-auto whitespace-nowrap">
                     <li className="flex items-center gap-2">
                       <ShoppingBag className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
                       <span className="text-xs text-foreground">Retail</span>
@@ -129,7 +129,7 @@ export default function Auth() {
               </div>
             </div>
             {/* Circular process diagram overlay */}
-            <div className="absolute inset-0 flex items-center justify-center z-10">
+            <div className="absolute inset-x-0 top-12 bottom-24 flex items-center justify-center z-10">
               <div className="relative w-[420px] h-[420px] hidden xl:block pointer-events-none animate-fade-in">
                 <div className="absolute inset-0 rounded-full border border-border/60" aria-hidden="true" />
                 <div className="absolute inset-8 rounded-full border border-border/50" aria-hidden="true" />
