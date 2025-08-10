@@ -221,6 +221,9 @@ export default function Dashboard() {
                 <Button variant="ghost" size="icon" className="rounded-2xl">
                   <Bell className="h-5 w-5" />
                 </Button>
+                <a href="/company" className="hidden sm:inline-flex">
+                  <Button variant="outline" className="rounded-2xl">Company Profile</Button>
+                </a>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="rounded-2xl gap-2">
@@ -232,6 +235,10 @@ export default function Dashboard() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 rounded-xl">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <a href="/company">Company Profile</a>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
                       <LogOut className="h-4 w-4 mr-2" /> Sign out
