@@ -61,7 +61,7 @@ const Header = () => {
                   Services
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
-                  <div className="w-64 p-4">
+                  <div className="w-64 p-4 bg-popover rounded-md border border-border shadow-lg">
                     <Link
                       to="/services"
                       className="block px-4 py-2 mb-2 text-sm font-medium text-primary hover:text-accent hover:bg-muted rounded-md transition-colors"
