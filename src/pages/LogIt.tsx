@@ -223,7 +223,7 @@ const LogIt: React.FC = () => {
                     </li>
                     <li className="flex items-center gap-3">
                       <Mail className="h-5 w-5 text-accent" />
-                      <a href="mailto:cs@siyakhatechnology.co.za" className="text-foreground hover:text-primary transition-colors">cs@siyakhatechnology.co.za</a>
+                      <a href="mailto:accounts@siyakhatechnology.co.za" className="text-foreground hover:text-primary transition-colors">accounts@siyakhatechnology.co.za</a>
                     </li>
                     <li className="flex items-center gap-3">
                       <MessageCircle className="h-5 w-5 text-accent" />

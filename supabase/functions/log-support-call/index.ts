@@ -3,7 +3,7 @@
    - Accepts JSON payload from public web form
    - Validates required fields
    - Inserts into public.inbound_support_requests using service role (bypass RLS)
-   - Sends notification email to nikita@siyakhatechnology.co.za via Resend
+   - Sends notification email to accounts@siyakhatechnology.co.za via Resend
    - Returns a JSON response
 */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
@@ -177,7 +177,7 @@ serve(async (req: Request) => {
     },
     body: JSON.stringify({
       from: "Siyakha Technology <notifications@mail.siyakhatechnology.co.za>",
-      to: ["nikita@siyakhatechnology.co.za"],
+      to: ["accounts@siyakhatechnology.co.za"],
       subject,
       html,
       text:

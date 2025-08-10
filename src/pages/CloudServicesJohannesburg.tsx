@@ -85,7 +85,7 @@ const CloudServicesJohannesburg = () => {
             </p>
             <div className="mt-6 flex gap-3">
               <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Plan a Migration</Button></Link>
-              <a href="mailto:info@siyakhatechnology.co.za" className="inline-flex"><Button variant="outline">Email Us</Button></a>
+              <a href="mailto:accounts@siyakhatechnology.co.za" className="inline-flex"><Button variant="outline">Email Us</Button></a>
             </div>
           </div>
         </section>

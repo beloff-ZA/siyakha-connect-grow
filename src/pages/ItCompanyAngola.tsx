@@ -90,7 +90,7 @@ const ItCompanyAngola = () => {
             </p>
             <div className="mt-6 flex gap-3">
               <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Consultation</Button></Link>
-              <a href="mailto:info@siyakhatechnology.co.za" className="inline-flex"><Button variant="outline">Email Us</Button></a>
+              <a href="mailto:accounts@siyakhatechnology.co.za" className="inline-flex"><Button variant="outline">Email Us</Button></a>
             </div>
           </div>
         </section>
@@ -170,7 +170,7 @@ const ItCompanyAngola = () => {
               <p className="text-muted-foreground mt-2">Tell us your priorities and timelines—we’ll recommend the best remote support model for your teams in Angola.</p>
               <div className="mt-4 flex gap-3">
                 <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Consultation</Button></Link>
-                <a href="mailto:info@siyakhatechnology.co.za" className="inline-flex"><Button variant="secondary">Email Us</Button></a>
+                <a href="mailto:accounts@siyakhatechnology.co.za" className="inline-flex"><Button variant="secondary">Email Us</Button></a>
               </div>
             </article>
           </div>

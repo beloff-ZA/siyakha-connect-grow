@@ -88,7 +88,7 @@ const LogACall = () => {
       description: "Your call has been logged and one of our engineers will be in touch with you shortly.",
     });
 
-    window.location.href = `mailto:nikita@siyakhatechnology.co.za,accounts@siyakhatechnology.co.za?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:accounts@siyakhatechnology.co.za?subject=${subject}&body=${body}`;
   };
 
   return (

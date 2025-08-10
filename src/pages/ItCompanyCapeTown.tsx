@@ -165,7 +165,7 @@ const ItCompanyCapeTown = () => {
               <p className="text-muted-foreground mt-2">Ready to upgrade your IT without the stress? Contact Siyakha Technology today for a no-obligation IT assessment.</p>
               <div className="mt-4 flex gap-3">
                 <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Consultation</Button></Link>
-                <a href="mailto:info@siyakhatechnology.co.za" className="inline-flex"><Button variant="secondary">Email Us</Button></a>
+                <a href="mailto:accounts@siyakhatechnology.co.za" className="inline-flex"><Button variant="secondary">Email Us</Button></a>
               </div>
             </article>
             <article>

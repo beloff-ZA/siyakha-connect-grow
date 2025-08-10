@@ -247,7 +247,7 @@ const InfrastructureAndNetworking = () => {
               <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Quote</Button></Link>
               <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
               <a href="tel:+27877027411" className="inline-flex"><Button variant="secondary">Call 087 702 7411</Button></a>
-              <a href="mailto:info@siyakhatechnology.co.za" className="inline-flex"><Button variant="ghost">Email Us</Button></a>
+              <a href="mailto:accounts@siyakhatechnology.co.za" className="inline-flex"><Button variant="ghost">Email Us</Button></a>
             </div>
           </div>
         </section>

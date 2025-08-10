@@ -161,7 +161,7 @@ const ItCompanyEMEA = () => {
               <p className="text-muted-foreground mt-2">Speak with our experts about regional coverage, compliance, and scalable support models.</p>
               <div className="mt-4 flex gap-3">
                 <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Consultation</Button></Link>
-                <a href="mailto:info@siyakhatechnology.co.za" className="inline-flex"><Button variant="secondary">Email Us</Button></a>
+                <a href="mailto:accounts@siyakhatechnology.co.za" className="inline-flex"><Button variant="secondary">Email Us</Button></a>
               </div>
             </article>
           </div>

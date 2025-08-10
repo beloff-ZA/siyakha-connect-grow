@@ -62,7 +62,7 @@ const Privacy = () => {
                 <li>To meet legal obligations</li>
               </ul>
               <h2>Your Rights</h2>
-              <p>You can request access, correction, or deletion of your data. Contact us at info@siyakhatechnology.co.za.</p>
+              <p>You can request access, correction, or deletion of your data. Contact us at accounts@siyakhatechnology.co.za.</p>
             </div>
           </div>
         </section>

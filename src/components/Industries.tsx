@@ -126,7 +126,7 @@ const Industries = () => {
               <a href="tel:+27877027411" aria-label="Call Siyakha Technology on 087 702 7411">Call 087 702 7411</a>
             </Button>
             <Button variant="ghost" asChild>
-              <a href="mailto:info@siyakhatechnology.co.za" aria-label="Email Siyakha Technology">info@siyakhatechnology.co.za</a>
+              <a href="mailto:accounts@siyakhatechnology.co.za" aria-label="Email Siyakha Technology">accounts@siyakhatechnology.co.za</a>
             </Button>
           </div>
         </aside>

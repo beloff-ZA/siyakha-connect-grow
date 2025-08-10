@@ -105,7 +105,7 @@ const ItCompanyLondon = () => {
             </p>
             <div className="mt-6 flex gap-3">
               <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Book My Consultation</Button></Link>
-              <a href="mailto:info@siyakhatechnology.co.za" className="inline-flex"><Button variant="outline">Email Us</Button></a>
+              <a href="mailto:accounts@siyakhatechnology.co.za" className="inline-flex"><Button variant="outline">Email Us</Button></a>
             </div>
           </div>
         </section>
@@ -170,7 +170,7 @@ const ItCompanyLondon = () => {
               <p className="text-muted-foreground mt-2">Tell us your user count and priorities—we’ll recommend the most affordable package for your needs.</p>
               <div className="mt-4 flex gap-3">
                 <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Book My Consultation</Button></Link>
-                <a href="mailto:info@siyakhatechnology.co.za" className="inline-flex"><Button variant="secondary">Email Us</Button></a>
+                <a href="mailto:accounts@siyakhatechnology.co.za" className="inline-flex"><Button variant="secondary">Email Us</Button></a>
               </div>
             </article>
             <article>
