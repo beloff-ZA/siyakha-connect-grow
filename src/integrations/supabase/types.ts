@@ -154,6 +154,33 @@ export type Database = {
         }
         Relationships: []
       }
+      email_sends: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json
+          subject: string | null
+          to_emails: string[]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json
+          subject?: string | null
+          to_emails?: string[]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json
+          subject?: string | null
+          to_emails?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
       payfast_itn_logs: {
         Row: {
           created_at: string
