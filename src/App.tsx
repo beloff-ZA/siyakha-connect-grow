@@ -55,10 +55,6 @@ import ItCompanyEMEA from "./pages/ItCompanyEMEA";
 import ItCompanyCapeTown from "./pages/ItCompanyCapeTown";
 import ItCompanyLondon from "./pages/ItCompanyLondon";
 import ItCompanyAngola from "./pages/ItCompanyAngola";
-import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-// import CompanyProfile from "./pages/CompanyProfile";
-import { AuthProvider } from "./contexts/AuthContext";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -66,7 +62,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <AuthProvider>
+      
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
@@ -77,10 +73,10 @@ const App = () => (
             <Route path="/careers" element={<Careers />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
-            <Route path="/auth" element={<Auth />} />
+            
             <Route path="/need-help" element={<NeedHelp />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/company" element={<Navigate to="/dashboard" replace />} />
+            
+            <Route path="/company" element={<Navigate to="/" replace />} />
             <Route path="/log-a-call" element={<Navigate to="/need-help" replace />} />
             <Route path="/support-deals" element={<SupportDeals />} />
 
@@ -133,7 +129,7 @@ const App = () => (
           </Routes>
           <WhatsAppContact />
         </BrowserRouter>
-      </AuthProvider>
+      
     </TooltipProvider>
   </QueryClientProvider>
 );

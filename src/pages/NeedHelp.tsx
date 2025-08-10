@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import SignInForm from "@/components/msp/SignInForm";
+
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -54,9 +54,7 @@ export default function NeedHelp() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(false);
+const [submitted, setSubmitted] = useState(false);
   // SEO metadata
   useEffect(() => {
     const title = "Need Help? Your Tech Problems, Solved | Siyakha Technology";
@@ -89,28 +87,6 @@ export default function NeedHelp() {
     canonical.setAttribute("href", `${window.location.origin}/need-help`);
   }, []);
 
-  // Auth listener to react to login/logout and prefill data
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserEmail(session?.user?.email ?? null);
-      if (session) {
-        setClientStatus("registered");
-        setAuthOpen(false);
-        setEmail((prev) => prev || session.user.email || "");
-        if (step === 1) setStep(2);
-        toast({ title: "Signed in", description: "You're now signed in." });
-      }
-    });
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUserEmail(session?.user?.email ?? null);
-      if (session) {
-        setClientStatus((s) => s ?? "registered");
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [step, toast]);
 
   const canContinue = useMemo(() => {
     switch (step) {
@@ -166,27 +142,6 @@ export default function NeedHelp() {
     `;
 
     try {
-      // Persist to database for dashboard tracking if user is authenticated
-      const { data: userRes } = await supabase.auth.getUser();
-      const user = userRes?.user ?? null;
-      if (user) {
-        const { error: insertError } = await supabase.from("support_calls").insert([
-          {
-            user_id: user.id,
-            client_status: clientStatus ?? "new",
-            location,
-            issues,
-            description,
-            contact_name: fullName,
-            contact_email: email,
-            contact_phone: phone,
-            status: "open",
-          },
-        ]);
-        if (insertError) {
-          console.error("Insert support_call failed", insertError);
-        }
-      }
 
       const { error } = await supabase.functions.invoke("send-email", {
         body: {
@@ -202,7 +157,7 @@ export default function NeedHelp() {
 
       if (error) throw error;
 
-      toast({ title: "Request submitted", description: user ? "Track it in your dashboard." : "Our team will reach out shortly." });
+      toast({ title: "Request submitted", description: "Our team will reach out shortly." });
       setSubmitted(true);
       setStep(6);
     } catch (err: any) {
@@ -213,16 +168,6 @@ export default function NeedHelp() {
     }
   };
 
-  const signOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      toast({ title: "Signed out", description: "You have been logged out." });
-      setClientStatus(null);
-      setUserEmail(null);
-    } catch (e: any) {
-      toast({ title: "Sign out failed", description: e.message ?? "Please try again.", variant: "destructive" });
-    }
-  };
 
   const StepHeader = ({ number, title, subtitle }: { number: number; title: string; subtitle?: string }) => (
     <div className="mb-6">
@@ -256,18 +201,11 @@ export default function NeedHelp() {
                 {step === 1 && (
                   <div>
                     <StepHeader number={1} title="Are You a Client?" />
-                    {userEmail && (
-                      <div className="mb-4 flex items-center justify-between rounded-md border border-border p-3">
-                        <div className="text-sm">Signed in as <span className="font-medium">{userEmail}</span></div>
-                        <Button variant="secondary" size="sm" onClick={signOut}>Sign out</Button>
-                      </div>
-                    )}
                     <div className="grid gap-4 sm:grid-cols-2">
                       <button
                         type="button"
                         onClick={() => {
                           setClientStatus("registered");
-                          setAuthOpen(true);
                         }}
                         className={cn(
                           "rounded-md border border-border p-4 text-left hover:bg-accent/40 transition",
@@ -282,7 +220,6 @@ export default function NeedHelp() {
                         type="button"
                         onClick={() => {
                           setClientStatus("new");
-                          setAuthOpen(true);
                         }}
                         className={cn(
                           "rounded-md border border-border p-4 text-left hover:bg-accent/40 transition",
@@ -396,9 +333,6 @@ export default function NeedHelp() {
                       <div className="space-y-4">
                         <StepHeader number={6} title="Request Submitted" subtitle="We’ve received your request. Our team will be in touch shortly." />
                         <div className="flex items-center gap-3">
-                          <a href="/dashboard" className="inline-flex">
-                            <Button className="cta-primary">View in Dashboard</Button>
-                          </a>
                           <a href="/" className="inline-flex">
                             <Button variant="secondary">Back to Home</Button>
                           </a>
@@ -443,19 +377,6 @@ export default function NeedHelp() {
       </main>
       <Footer />
 
-      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{clientStatus === "registered" ? "Sign in for faster service" : "Create an account"}</DialogTitle>
-            <DialogDescription>
-              {clientStatus === "registered"
-                ? "Log in to track your request and get priority support."
-                : "Register to get priority support and access to all our IT services."}
-            </DialogDescription>
-          </DialogHeader>
-          <SignInForm />
-        </DialogContent>
-      </Dialog>
 
       {/* JSON-LD Structured Data */}
       <script

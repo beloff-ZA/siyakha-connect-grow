@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,25 +8,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
+
+
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
-  const displayName =
-    ((user?.user_metadata as any)?.full_name as string) ||
-    (user?.email ? user.email.split("@")[0] : "Account");
-  const avatarUrl = ((user?.user_metadata as any)?.avatar_url as string) || null;
-  const initials = (displayName || "A")
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 
   const services = [
     "Infrastructure & Networking",
@@ -157,34 +145,6 @@ const Header = () => {
             <Link to="/contact" className="hidden sm:inline-flex">
               <Button className="cta-primary">Request a Quote</Button>
             </Link>
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="hidden sm:inline-flex">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      {avatarUrl ? (
-                        <AvatarImage src={avatarUrl} alt={`${displayName} avatar`} />
-                      ) : (
-                        <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
-                      )}
-                    </Avatar>
-                    <span className="text-sm font-medium text-foreground">{displayName}</span>
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard">Dashboard</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={async () => { try { await signOut(); } finally { window.location.href = "/"; } }} className="text-destructive">
-                    Sign out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link to="/auth" className="hidden sm:inline-flex">
-                <Button variant="secondary">Sign in</Button>
-              </Link>
-            )}
             
             {/* Mobile Menu Button */}
             <button
@@ -271,19 +231,6 @@ const Header = () => {
                   <Button className="cta-primary w-full">Request a Quote</Button>
                 </Link>
                 <div className="h-2" />
-                {user ? (
-                  <>
-                    <Link to="/dashboard" className="block w-full">
-                      <Button variant="secondary" className="w-full">Dashboard</Button>
-                    </Link>
-                    <div className="h-2" />
-                    <Button variant="ghost" className="w-full" onClick={async () => { try { await signOut(); } finally { window.location.href = "/"; } }}>Sign out</Button>
-                  </>
-                ) : (
-                  <Link to="/auth" className="block w-full">
-                    <Button variant="secondary" className="w-full">Sign in</Button>
-                  </Link>
-                )}
               </div>
             </div>
           </div>
