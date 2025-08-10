@@ -163,7 +163,7 @@ const About = () => {
             <article>
               <h3 className="text-xl font-semibold text-primary mb-3">Where We Operate</h3>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-foreground">
-                <li>South Africa: Johannesburg, Cape Town, Durban, Pretoria</li>
+                <li>South Africa</li>
                 <li>Angola</li>
                 <li>Swaziland</li>
                 <li>Bahrain</li>
