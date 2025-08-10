@@ -80,6 +80,48 @@ export default function Auth() {
               decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-background/10" />
+            {/* Top industries strip */}
+            <div className="absolute top-0 left-0 right-0 z-20">
+              <div className="bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-b border-border">
+                <div className="px-6 py-3">
+                  <h2 className="sr-only">Industries we support</h2>
+                  <ul className="flex flex-wrap items-center gap-5">
+                    <li className="flex items-center gap-2">
+                      <ShoppingBag className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Retail</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <GraduationCap className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Education</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <HeartPulse className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Healthcare</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Hotel className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Hospitality</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Truck className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Logistics</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Landmark className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Finance</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Factory className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Manufacturing</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Corporate Offices</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
             {/* Circular process diagram overlay */}
             <div className="absolute inset-0 flex items-center justify-center z-10">
               <div className="relative w-[420px] h-[420px] hidden xl:block pointer-events-none animate-fade-in">
@@ -157,42 +199,6 @@ export default function Auth() {
             </div>
             <aside className="absolute bottom-0 left-0 right-0 z-10">
               <div className="bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-t border-border">
-                <div className="px-6 py-3 border-b border-border/60">
-                  <ul className="flex items-center gap-5 overflow-x-auto">
-                    <li className="flex items-center gap-2 shrink-0">
-                      <ShoppingBag className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Retail</span>
-                    </li>
-                    <li className="flex items-center gap-2 shrink-0">
-                      <GraduationCap className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Education</span>
-                    </li>
-                    <li className="flex items-center gap-2 shrink-0">
-                      <HeartPulse className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Healthcare</span>
-                    </li>
-                    <li className="flex items-center gap-2 shrink-0">
-                      <Hotel className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Hospitality</span>
-                    </li>
-                    <li className="flex items-center gap-2 shrink-0">
-                      <Truck className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Logistics</span>
-                    </li>
-                    <li className="flex items-center gap-2 shrink-0">
-                      <Landmark className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Finance</span>
-                    </li>
-                    <li className="flex items-center gap-2 shrink-0">
-                      <Factory className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Manufacturing</span>
-                    </li>
-                    <li className="flex items-center gap-2 shrink-0">
-                      <Building2 className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Corporate Offices</span>
-                    </li>
-                  </ul>
-                </div>
                 <ul className="px-6 py-4 grid grid-cols-2 lg:grid-cols-3 gap-4">
                   <li className="flex items-center gap-2">
                     <Server className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
