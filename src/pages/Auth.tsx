@@ -31,11 +31,11 @@ const AuthPage: React.FC = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        window.location.replace("/portal/my-tickets");
+        window.location.replace("/portal/tickets");
       }
     });
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session?.user) window.location.replace("/portal/my-tickets");
+      if (data.session?.user) window.location.replace("/portal/tickets");
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -49,12 +49,28 @@ const AuthPage: React.FC = () => {
 
   const signUp = async () => {
     setLoading(true);
-    const redirectUrl = `${window.location.origin}/portal/my-tickets`;
+    const redirectUrl = `${window.location.origin}/portal/tickets`;
     const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: redirectUrl } });
     if (error) {
       toast({ title: "Sign up failed", description: error.message, variant: "destructive" as any });
     } else {
       toast({ title: "Check your email", description: "Confirm your email to continue." });
+    }
+    setLoading(false);
+  };
+
+  const forgotPassword = async () => {
+    if (!email) {
+      toast({ title: "Enter your email", description: "We'll send a password reset link." });
+      return;
+    }
+    setLoading(true);
+    const redirectUrl = `${window.location.origin}/auth`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl });
+    if (error) {
+      toast({ title: "Reset failed", description: error.message, variant: "destructive" as any });
+    } else {
+      toast({ title: "Check your email", description: "We've sent a password reset link." });
     }
     setLoading(false);
   };
@@ -78,7 +94,7 @@ const AuthPage: React.FC = () => {
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {mode === 'signin' ? (
                   <Button onClick={signIn} disabled={loading}>Sign In</Button>
                 ) : (
@@ -87,6 +103,9 @@ const AuthPage: React.FC = () => {
                 <Button variant="outline" type="button" onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}>
                   {mode === 'signin' ? 'Need an account? Sign Up' : 'Have an account? Sign In'}
                 </Button>
+                {mode === 'signin' && (
+                  <Button variant="link" type="button" onClick={forgotPassword}>Forgot password?</Button>
+                )}
               </div>
             </div>
           </CardContent>

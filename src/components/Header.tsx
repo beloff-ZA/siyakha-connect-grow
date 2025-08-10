@@ -9,9 +9,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-
-
-
+import { useAuth } from "@/contexts/AuthContext";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
@@ -24,6 +22,8 @@ const Header = () => {
     "National Field Support",
     "Healthcare IT Support"
   ];
+
+  const { user, signOut } = useAuth();
 
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm">
@@ -128,7 +128,7 @@ const Header = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/portal/my-tickets" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/portal/tickets" className="text-foreground hover:text-primary transition-colors font-medium">
                   Portal
                 </Link>
               </NavigationMenuItem>
@@ -137,7 +137,11 @@ const Header = () => {
 
           {/* CTA Button & Mobile Menu */}
 <div className="flex items-center space-x-4">
-            <Link to="/auth" className="hidden lg:inline text-sm text-foreground hover:text-primary transition-colors">Sign In</Link>
+            {user ? (
+              <button onClick={signOut} className="hidden lg:inline text-sm text-foreground hover:text-primary transition-colors">Sign Out</button>
+            ) : (
+              <Link to="/auth" className="hidden lg:inline text-sm text-foreground hover:text-primary transition-colors">Sign In</Link>
+            )}
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -212,12 +216,18 @@ const Header = () => {
               <Link to="/support-deals" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Support Deals
               </Link>
-              <Link to="/portal/my-tickets" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/portal/tickets" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Portal
               </Link>
-              <Link to="/auth" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Sign In
-              </Link>
+              {user ? (
+                <button onClick={signOut} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+                  Sign Out
+                </button>
+              ) : (
+                <Link to="/auth" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+                  Sign In
+                </Link>
+              )}
             </div>
           </div>
         )}
