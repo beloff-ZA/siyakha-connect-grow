@@ -30,7 +30,7 @@ export default function ResetPasswordForm() {
     } else {
       toast({ title: "Password updated", description: "Please sign in with your new password." });
       await signOut();
-      window.location.href = "/auth";
+      window.location.href = "/";
     }
   };
 
