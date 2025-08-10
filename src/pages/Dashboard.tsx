@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import AuthGate from "@/components/msp/AuthGate";
 import { LayoutDashboard, Wrench, Wifi, ShieldCheck, MessageSquare, Bell, Search, LogOut } from "lucide-react";
+import LogCallDialog from "@/components/msp/LogCallDialog";
 
 interface SupportCall {
   id: string;
@@ -30,6 +31,8 @@ export default function Dashboard() {
   const [profileInitials, setProfileInitials] = useState("ME");
   const [displayName, setDisplayName] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [logOpen, setLogOpen] = useState(false);
+
   const openCount = useMemo(() =>
     calls.filter(c => !["closed", "resolved"].includes((c.status || "").toLowerCase())).length
   , [calls]);
@@ -146,11 +149,9 @@ export default function Dashboard() {
                   <Wrench className="h-4 w-4" /> My Tickets
                 </Button>
               </a>
-              <a href="/need-help" className="block">
-                <Button variant="ghost" className="w-full justify-start gap-3 rounded-xl hover-scale">
-                  <MessageSquare className="h-4 w-4" /> Log a Call
-                </Button>
-              </a>
+              <Button variant="ghost" className="w-full justify-start gap-3 rounded-xl hover-scale" onClick={() => setLogOpen(true)}>
+                <MessageSquare className="h-4 w-4" /> Log a Call
+              </Button>
             </nav>
             <div className="mt-auto p-3 rounded-2xl border border-border bg-background">
               <div className="text-sm font-medium">Need immediate help?</div>
@@ -252,9 +253,7 @@ export default function Dashboard() {
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="tickets">Tickets</TabsTrigger>
                 </TabsList>
-                <a href="/need-help" className="inline-flex">
-                  <Button className="rounded-2xl">Log a Call</Button>
-                </a>
+                <Button className="rounded-2xl" onClick={() => setLogOpen(true)}>Log a Call</Button>
               </div>
 
               <TabsContent value="overview" className="mt-6">
@@ -269,7 +268,7 @@ export default function Dashboard() {
                       ) : calls.length === 0 ? (
                         <div className="space-y-4">
                           <p className="text-muted-foreground">You have no tickets yet.</p>
-                          <a href="/need-help" className="inline-flex"><Button className="cta-primary">Log a Call</Button></a>
+                          <Button className="cta-primary" onClick={() => setLogOpen(true)}>Log a Call</Button>
                         </div>
                       ) : (
                         <Table>
@@ -303,7 +302,7 @@ export default function Dashboard() {
                       <CardTitle>Quick Actions</CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-2 sm:grid-cols-2">
-                      <a href="/need-help" className="inline-flex"><Button className="rounded-2xl justify-start gap-2"><Wrench className="h-4 w-4"/> Log a Call</Button></a>
+                      <Button className="rounded-2xl justify-start gap-2" onClick={() => setLogOpen(true)}><Wrench className="h-4 w-4"/> Log a Call</Button>
                       <a href="https://wa.me/27815012993" target="_blank" rel="noreferrer" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><MessageSquare className="h-4 w-4"/> WhatsApp</Button></a>
                       <a href="/blog" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><ShieldCheck className="h-4 w-4"/> Knowledge Base</Button></a>
                     </CardContent>
@@ -322,7 +321,7 @@ export default function Dashboard() {
                     ) : calls.length === 0 ? (
                       <div className="space-y-4">
                         <p className="text-muted-foreground">You have no tickets yet.</p>
-                        <a href="/need-help" className="inline-flex"><Button className="cta-primary">Log a Call</Button></a>
+                        <Button className="cta-primary" onClick={() => setLogOpen(true)}>Log a Call</Button>
                       </div>
                     ) : (
                       <Table>
@@ -352,6 +351,8 @@ export default function Dashboard() {
                 </Card>
               </TabsContent>
             </Tabs>
+
+            <LogCallDialog open={logOpen} onOpenChange={setLogOpen} />
 
             <footer className="mt-8 text-xs text-muted-foreground">
               © {new Date().getFullYear()} Siyakha Technology — All rights reserved.
