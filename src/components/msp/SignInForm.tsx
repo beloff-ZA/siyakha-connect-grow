@@ -9,6 +9,7 @@ export default function SignInForm() {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [company, setCompany] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -53,14 +54,24 @@ export default function SignInForm() {
       if (error) {
         toast({ title: "Sign in failed", description: mapAuthError(error.message), variant: "destructive" });
       } else {
-        toast({ title: "Signed in", description: "Welcome back." });
+        const { data: userRes } = await supabase.auth.getUser();
+        let org = "";
+        if (userRes.user) {
+          const { data: prof } = await supabase
+            .from("profiles")
+            .select("company_name, display_name")
+            .eq("id", userRes.user.id)
+            .maybeSingle();
+          org = prof?.company_name || prof?.display_name || "";
+        }
+        toast({ title: "Signed in", description: org ? `Welcome back — ${org}` : "Welcome back." });
       }
     } else {
       const redirectUrl = `${window.location.origin}/auth`;
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: redirectUrl },
+        options: { emailRedirectTo: redirectUrl, data: { company } },
       });
       if (error) {
         toast({ title: "Sign up failed", description: mapAuthError(error.message), variant: "destructive" });
@@ -89,6 +100,12 @@ export default function SignInForm() {
           </div>
         )}
       </div>
+      {!isLogin && (
+        <div className="space-y-2">
+          <Label htmlFor="company">Company name</Label>
+          <Input id="company" value={company} onChange={(e) => setCompany(e.target.value)} placeholder="e.g. Siyakha Technology" />
+        </div>
+      )}
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={loading} className="cta-primary">{isLogin ? "Sign in" : "Sign up"}</Button>
         <Button type="button" variant="secondary" onClick={() => setIsLogin(!isLogin)}>
