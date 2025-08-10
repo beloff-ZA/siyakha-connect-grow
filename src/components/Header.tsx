@@ -60,7 +60,7 @@ const Header = () => {
                 <NavigationMenuTrigger className="text-foreground hover:text-primary font-medium">
                   Services
                 </NavigationMenuTrigger>
-                <NavigationMenuContent>
+                <NavigationMenuContent className="z-50">
                   <div className="w-64 p-4">
                     <Link
                       to="/services"
