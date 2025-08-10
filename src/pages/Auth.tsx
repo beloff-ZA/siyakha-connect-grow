@@ -6,7 +6,7 @@ import ResetPasswordForm from "@/components/msp/ResetPasswordForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.jpg";
-import { Server, Shield, Cloud, Users, LifeBuoy, Activity } from "lucide-react";
+import { Server, Shield, Cloud, Users, LifeBuoy, Activity, FileText, CheckCircle2, History, Clock, ShoppingCart, KanbanSquare, PiggyBank } from "lucide-react";
 
 export default function Auth() {
   const { isPasswordRecovery, session } = useAuth();
@@ -80,6 +80,81 @@ export default function Auth() {
               decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-background/10" />
+            {/* Circular process diagram overlay */}
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <div className="relative w-[420px] h-[420px] hidden xl:block pointer-events-none animate-fade-in">
+                <div className="absolute inset-0 rounded-full border border-border/60" aria-hidden="true" />
+                <div className="absolute inset-8 rounded-full border border-border/50" aria-hidden="true" />
+                <div className="absolute inset-16 rounded-full border border-border/40" aria-hidden="true" />
+
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(0deg) translateX(180px) rotate(0deg)" }}>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground/90">Request Your Quote</span>
+                  </div>
+                </div>
+
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(45deg) translateX(180px) rotate(-45deg)" }}>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground/90">Accept Your Quote</span>
+                  </div>
+                </div>
+
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(90deg) translateX(180px) rotate(-90deg)" }}>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <LifeBuoy className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground/90">Quick Help Request</span>
+                  </div>
+                </div>
+
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(135deg) translateX(180px) rotate(-135deg)" }}>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <History className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground/90">Manage History of Calls</span>
+                  </div>
+                </div>
+
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(180deg) translateX(180px) rotate(-180deg)" }}>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <Clock className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground/90">Manage ETA</span>
+                  </div>
+                </div>
+
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(225deg) translateX(180px) rotate(-225deg)" }}>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <ShoppingCart className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground/90">Order Products</span>
+                  </div>
+                </div>
+
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(270deg) translateX(180px) rotate(-270deg)" }}>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <KanbanSquare className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground/90">Manage Projects</span>
+                  </div>
+                </div>
+
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(315deg) translateX(180px) rotate(-315deg)" }}>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <PiggyBank className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground/90">Save Money</span>
+                  </div>
+                </div>
+
+                <ul className="sr-only">
+                  <li>Request Your Quote</li>
+                  <li>Accept Your Quote</li>
+                  <li>Quick Help Request</li>
+                  <li>Manage Your History of Calls</li>
+                  <li>Manage ETA</li>
+                  <li>Order Products</li>
+                  <li>Manage Projects</li>
+                  <li>Save Money</li>
+                </ul>
+              </div>
+            </div>
             <aside className="absolute bottom-0 left-0 right-0 z-10">
               <div className="bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-t border-border">
                 <ul className="px-6 py-4 grid grid-cols-2 lg:grid-cols-3 gap-4">
