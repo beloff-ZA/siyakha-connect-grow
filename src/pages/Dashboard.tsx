@@ -28,7 +28,8 @@ export default function Dashboard() {
   const [calls, setCalls] = useState<SupportCall[]>([]);
   const [loading, setLoading] = useState(true);
   const [profileInitials, setProfileInitials] = useState("ME");
-
+  const [displayName, setDisplayName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const openCount = useMemo(() =>
     calls.filter(c => !["closed", "resolved"].includes((c.status || "").toLowerCase())).length
   , [calls]);
@@ -56,11 +57,34 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      const email = data.user?.email || "";
-      const initials = email ? email[0].toUpperCase() : "ME";
+    const fetchProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      const email = user?.email || "";
+      let initials = email ? email[0].toUpperCase() : "ME";
+
+      if (user) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("display_name, company_name, avatar_url")
+          .eq("id", user.id)
+          .maybeSingle();
+        if (prof) {
+          const dn = prof.display_name || "";
+          const cn = prof.company_name || "";
+          initials = (cn || dn || email)
+            .split(" ")
+            .map((s) => s[0])
+            .filter(Boolean)
+            .slice(0, 2)
+            .join("")
+            .toUpperCase();
+          setDisplayName(dn);
+          setCompanyName(cn);
+        }
+      }
       setProfileInitials(initials);
-    });
+    };
+    fetchProfile();
   }, []);
 
   useEffect(() => {
@@ -143,6 +167,7 @@ export default function Dashboard() {
             <header className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between mb-6">
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Client Dashboard</h1>
+                {companyName && <Badge variant="secondary" className="rounded-full">{companyName}</Badge>}
                 <Badge className="rounded-full">v1.0</Badge>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -159,7 +184,7 @@ export default function Dashboard() {
                       <Avatar className="h-6 w-6">
                         <AvatarFallback>{profileInitials}</AvatarFallback>
                       </Avatar>
-                      <span className="hidden sm:inline">Account</span>
+                      <span className="hidden sm:inline">{displayName || companyName || "Account"}</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 rounded-xl">
