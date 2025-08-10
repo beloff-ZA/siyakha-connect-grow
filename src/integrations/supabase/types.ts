@@ -71,6 +71,87 @@ export type Database = {
         }
         Relationships: []
       }
+      company_contacts: {
+        Row: {
+          company_id: string
+          created_at: string
+          email: string | null
+          id: string
+          is_primary: boolean
+          metadata: Json
+          name: string
+          phone: string | null
+          position: string | null
+          preferred_comms: string | null
+          type: Database["public"]["Enums"]["contact_type"]
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          metadata?: Json
+          name: string
+          phone?: string | null
+          position?: string | null
+          preferred_comms?: string | null
+          type?: Database["public"]["Enums"]["contact_type"]
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          metadata?: Json
+          name?: string
+          phone?: string | null
+          position?: string | null
+          preferred_comms?: string | null
+          type?: Database["public"]["Enums"]["contact_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      company_invites: {
+        Row: {
+          accepted_at: string | null
+          company_id: string
+          created_at: string
+          created_by: string
+          email: string
+          id: string
+          metadata: Json
+          role: Database["public"]["Enums"]["company_role"]
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          company_id: string
+          created_at?: string
+          created_by?: string
+          email: string
+          id?: string
+          metadata?: Json
+          role?: Database["public"]["Enums"]["company_role"]
+          token?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          company_id?: string
+          created_at?: string
+          created_by?: string
+          email?: string
+          id?: string
+          metadata?: Json
+          role?: Database["public"]["Enums"]["company_role"]
+          token?: string
+        }
+        Relationships: []
+      }
       company_members: {
         Row: {
           company_id: string
@@ -181,6 +262,57 @@ export type Database = {
         }
         Relationships: []
       }
+      inbound_support_requests: {
+        Row: {
+          category: string
+          contact_number: string
+          created_at: string
+          description: string
+          email: string
+          full_name: string
+          id: string
+          ip: string | null
+          preferred_channel: string | null
+          source: string
+          status: string
+          updated_at: string
+          user_agent: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          category: string
+          contact_number: string
+          created_at?: string
+          description: string
+          email: string
+          full_name: string
+          id?: string
+          ip?: string | null
+          preferred_channel?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          category?: string
+          contact_number?: string
+          created_at?: string
+          description?: string
+          email?: string
+          full_name?: string
+          id?: string
+          ip?: string | null
+          preferred_channel?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
       payfast_itn_logs: {
         Row: {
           created_at: string
@@ -230,6 +362,8 @@ export type Database = {
           display_name: string | null
           id: string
           phone: string | null
+          position: string | null
+          role_title: string | null
           updated_at: string
         }
         Insert: {
@@ -239,6 +373,8 @@ export type Database = {
           display_name?: string | null
           id: string
           phone?: string | null
+          position?: string | null
+          role_title?: string | null
           updated_at?: string
         }
         Update: {
@@ -248,6 +384,8 @@ export type Database = {
           display_name?: string | null
           id?: string
           phone?: string | null
+          position?: string | null
+          role_title?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -427,6 +565,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_company_invite: {
+        Args: { _token: string }
+        Returns: string
+      }
       add_company_member_by_email: {
         Args: {
           _company_id: string
@@ -434,6 +576,17 @@ export type Database = {
           _role?: Database["public"]["Enums"]["company_role"]
         }
         Returns: undefined
+      }
+      create_company_invite: {
+        Args: {
+          _company_id: string
+          _email: string
+          _role?: Database["public"]["Enums"]["company_role"]
+        }
+        Returns: {
+          id: string
+          token: string
+        }[]
       }
       has_role: {
         Args: {
@@ -485,6 +638,7 @@ export type Database = {
         | "manufacturing"
         | "finance"
         | "other"
+      contact_type: "primary" | "billing" | "technical" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -635,6 +789,7 @@ export const Constants = {
         "finance",
         "other",
       ],
+      contact_type: ["primary", "billing", "technical", "other"],
     },
   },
 } as const
