@@ -313,6 +313,96 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_documents: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          file_url: string
+          id: string
+          issued_at: string | null
+          notes: string | null
+          partner_id: string
+          type: Database["public"]["Enums"]["partner_document_type"]
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          file_url: string
+          id?: string
+          issued_at?: string | null
+          notes?: string | null
+          partner_id: string
+          type: Database["public"]["Enums"]["partner_document_type"]
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          file_url?: string
+          id?: string
+          issued_at?: string | null
+          notes?: string | null
+          partner_id?: string
+          type?: Database["public"]["Enums"]["partner_document_type"]
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
+      partners: {
+        Row: {
+          company_id: string
+          company_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          individual_name: string | null
+          partner_type: Database["public"]["Enums"]["partner_type"]
+          profile_score: number
+          regions: Json
+          skills: Json
+          status: Database["public"]["Enums"]["partner_status"]
+          tier: Database["public"]["Enums"]["partner_tier"]
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          company_id: string
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          individual_name?: string | null
+          partner_type: Database["public"]["Enums"]["partner_type"]
+          profile_score?: number
+          regions?: Json
+          skills?: Json
+          status?: Database["public"]["Enums"]["partner_status"]
+          tier?: Database["public"]["Enums"]["partner_tier"]
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          company_id?: string
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          individual_name?: string | null
+          partner_type?: Database["public"]["Enums"]["partner_type"]
+          profile_score?: number
+          regions?: Json
+          skills?: Json
+          status?: Database["public"]["Enums"]["partner_status"]
+          tier?: Database["public"]["Enums"]["partner_tier"]
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       payfast_itn_logs: {
         Row: {
           created_at: string
@@ -440,6 +530,36 @@ export type Database = {
           },
         ]
       }
+      service_categories: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          name: string
+          sla_resolve_mins: number
+          sla_response_mins: number
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          name: string
+          sla_resolve_mins?: number
+          sla_response_mins?: number
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          sla_resolve_mins?: number
+          sla_response_mins?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sites: {
         Row: {
           address: string | null
@@ -536,6 +656,134 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      ticket_messages: {
+        Row: {
+          attachments: Json
+          body: string
+          channel: Database["public"]["Enums"]["message_channel"]
+          created_at: string
+          direction: Database["public"]["Enums"]["message_direction"]
+          id: string
+          metadata: Json
+          provider_ids: Json
+          raw_headers: Json
+          status: Database["public"]["Enums"]["message_status"]
+          subject: string | null
+          ticket_id: string
+          to_from: string
+          updated_at: string
+        }
+        Insert: {
+          attachments?: Json
+          body: string
+          channel: Database["public"]["Enums"]["message_channel"]
+          created_at?: string
+          direction: Database["public"]["Enums"]["message_direction"]
+          id?: string
+          metadata?: Json
+          provider_ids?: Json
+          raw_headers?: Json
+          status?: Database["public"]["Enums"]["message_status"]
+          subject?: string | null
+          ticket_id: string
+          to_from: string
+          updated_at?: string
+        }
+        Update: {
+          attachments?: Json
+          body?: string
+          channel?: Database["public"]["Enums"]["message_channel"]
+          created_at?: string
+          direction?: Database["public"]["Enums"]["message_direction"]
+          id?: string
+          metadata?: Json
+          provider_ids?: Json
+          raw_headers?: Json
+          status?: Database["public"]["Enums"]["message_status"]
+          subject?: string | null
+          ticket_id?: string
+          to_from?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tickets: {
+        Row: {
+          assigned_partner_id: string | null
+          assigned_user_id: string | null
+          attachments: Json
+          channel: Database["public"]["Enums"]["ticket_channel"]
+          client_account_id: string | null
+          company_id: string
+          created_at: string
+          created_by_user_id: string
+          details: string | null
+          id: string
+          location: string | null
+          priority: Database["public"]["Enums"]["ticket_priority"]
+          service_category_id: string | null
+          sla_resolve_due_at: string | null
+          sla_response_due_at: string | null
+          source_message_id: string | null
+          status: Database["public"]["Enums"]["ticket_status"]
+          summary: string
+          tracking_ref: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_partner_id?: string | null
+          assigned_user_id?: string | null
+          attachments?: Json
+          channel?: Database["public"]["Enums"]["ticket_channel"]
+          client_account_id?: string | null
+          company_id: string
+          created_at?: string
+          created_by_user_id: string
+          details?: string | null
+          id?: string
+          location?: string | null
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          service_category_id?: string | null
+          sla_resolve_due_at?: string | null
+          sla_response_due_at?: string | null
+          source_message_id?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          summary: string
+          tracking_ref?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_partner_id?: string | null
+          assigned_user_id?: string | null
+          attachments?: Json
+          channel?: Database["public"]["Enums"]["ticket_channel"]
+          client_account_id?: string | null
+          company_id?: string
+          created_at?: string
+          created_by_user_id?: string
+          details?: string | null
+          id?: string
+          location?: string | null
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          service_category_id?: string | null
+          sla_resolve_due_at?: string | null
+          sla_response_due_at?: string | null
+          source_message_id?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          summary?: string
+          tracking_ref?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -639,6 +887,39 @@ export type Database = {
         | "finance"
         | "other"
       contact_type: "primary" | "billing" | "technical" | "other"
+      message_channel: "whatsapp" | "email"
+      message_direction: "inbound" | "outbound"
+      message_status:
+        | "inbound_received"
+        | "pending_send"
+        | "sent_manual"
+        | "sent_api"
+        | "failed"
+      partner_document_type:
+        | "id"
+        | "company_reg"
+        | "insurance"
+        | "certification"
+        | "safety"
+      partner_status:
+        | "submitted"
+        | "review"
+        | "approved"
+        | "declined"
+        | "suspended"
+      partner_tier: "probation" | "standard" | "premium"
+      partner_type: "technician" | "subcontractor" | "freelancer"
+      ticket_channel: "whatsapp" | "email" | "phone" | "portal"
+      ticket_priority: "low" | "normal" | "high" | "urgent"
+      ticket_status:
+        | "new"
+        | "triage"
+        | "assigned"
+        | "in_progress"
+        | "halted"
+        | "awaiting_client"
+        | "completed"
+        | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -790,6 +1071,43 @@ export const Constants = {
         "other",
       ],
       contact_type: ["primary", "billing", "technical", "other"],
+      message_channel: ["whatsapp", "email"],
+      message_direction: ["inbound", "outbound"],
+      message_status: [
+        "inbound_received",
+        "pending_send",
+        "sent_manual",
+        "sent_api",
+        "failed",
+      ],
+      partner_document_type: [
+        "id",
+        "company_reg",
+        "insurance",
+        "certification",
+        "safety",
+      ],
+      partner_status: [
+        "submitted",
+        "review",
+        "approved",
+        "declined",
+        "suspended",
+      ],
+      partner_tier: ["probation", "standard", "premium"],
+      partner_type: ["technician", "subcontractor", "freelancer"],
+      ticket_channel: ["whatsapp", "email", "phone", "portal"],
+      ticket_priority: ["low", "normal", "high", "urgent"],
+      ticket_status: [
+        "new",
+        "triage",
+        "assigned",
+        "in_progress",
+        "halted",
+        "awaiting_client",
+        "completed",
+        "closed",
+      ],
     },
   },
 } as const

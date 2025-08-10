@@ -1,5 +1,10 @@
-
 project_id = "nhbnhcrpotqwqqqydign"
 
 [functions.log-support-call]
 verify_jwt = false
+
+[functions.messages-intent]
+verify_jwt = true
+
+[functions.messages-mark-sent]
+verify_jwt = true
