@@ -24,18 +24,10 @@ export default function AuthGate({ children }: PropsWithChildren) {
   if (!ready) return null;
 
   if (!isAuthed) {
-    return (
-      <div className="w-full flex justify-center py-10">
-        <Card className="w-full max-w-lg">
-          <CardHeader>
-            <CardTitle>Sign in to manage calls</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <SignInForm />
-          </CardContent>
-        </Card>
-      </div>
-    );
+    if (typeof window !== 'undefined') {
+      window.location.replace('/');
+    }
+    return null;
   }
 
   return <>{children}</>;
