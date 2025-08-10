@@ -95,6 +95,7 @@ export default function CompanyProfileForm({ initialCompany, onSubmitted }: { in
       } else {
         toast({ title: 'Company updated', description: 'Your company profile was saved.' });
         onSubmitted?.();
+        window.setTimeout(() => window.location.reload(), 400);
       }
     } else {
       const { data, error } = await supabase
