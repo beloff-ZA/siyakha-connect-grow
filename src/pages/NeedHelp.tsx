@@ -56,6 +56,7 @@ export default function NeedHelp() {
   const [loading, setLoading] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
   // SEO metadata
   useEffect(() => {
     const title = "Need Help? Your Tech Problems, Solved | Siyakha Technology";
@@ -202,6 +203,7 @@ export default function NeedHelp() {
       if (error) throw error;
 
       toast({ title: "Request submitted", description: user ? "Track it in your dashboard." : "Our team will reach out shortly." });
+      setSubmitted(true);
       setStep(6);
     } catch (err: any) {
       console.error(err);
@@ -390,32 +392,48 @@ export default function NeedHelp() {
                 {/* Step 6 */}
                 {step === 6 && (
                   <div>
-                    <StepHeader number={6} title="Let’s Fix It" />
-                    <div className="space-y-4">
-                      <Button onClick={submit} disabled={loading} className="cta-primary">Get Help Now</Button>
-                      <div>
-                        <a
-                          href={`https://wa.me/27815012993?text=${encodeURIComponent(
-                            `Need Help request — ${fullName} (${email}, ${phone})\nLocation: ${location}\nIssues: ${issues.join(", ")}\n\n${description}`
-                          )}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-accent hover:underline"
-                        >
-                          Or chat via WhatsApp now
-                        </a>
+                    {submitted ? (
+                      <div className="space-y-4">
+                        <StepHeader number={6} title="Request Submitted" subtitle="We’ve received your request. Our team will be in touch shortly." />
+                        <div className="flex items-center gap-3">
+                          <a href="/dashboard" className="inline-flex">
+                            <Button className="cta-primary">View in Dashboard</Button>
+                          </a>
+                          <a href="/" className="inline-flex">
+                            <Button variant="secondary">Back to Home</Button>
+                          </a>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <>
+                        <StepHeader number={6} title="Let’s Fix It" />
+                        <div className="space-y-4">
+                          <Button onClick={submit} disabled={loading} className="cta-primary">Get Help Now</Button>
+                          <div>
+                            <a
+                              href={`https://wa.me/27815012993?text=${encodeURIComponent(
+                                `Need Help request — ${fullName} (${email}, ${phone})\nLocation: ${location}\nIssues: ${issues.join(", ")}\n\n${description}`
+                              )}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-accent hover:underline"
+                            >
+                              Or chat via WhatsApp now
+                            </a>
+                          </div>
+                        </div>
 
-                    <div className="mt-8">
-                      <h3 className="text-xl font-semibold text-primary mb-3">Why Siyakha Support?</h3>
-                      <ul className="list-disc pl-5 text-foreground space-y-1">
-                        <li>Real-Time Tracking – Watch your request progress</li>
-                        <li>Fast Response Times – Issues handled quickly</li>
-                        <li>Tailored Solutions – We match the right tech to your problem</li>
-                        <li>Issue History – We remember past fixes for faster troubleshooting</li>
-                      </ul>
-                    </div>
+                        <div className="mt-8">
+                          <h3 className="text-xl font-semibold text-primary mb-3">Why Siyakha Support?</h3>
+                          <ul className="list-disc pl-5 text-foreground space-y-1">
+                            <li>Real-Time Tracking – Watch your request progress</li>
+                            <li>Fast Response Times – Issues handled quickly</li>
+                            <li>Tailored Solutions – We match the right tech to your problem</li>
+                            <li>Issue History – We remember past fixes for faster troubleshooting</li>
+                          </ul>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </CardContent>

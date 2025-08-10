@@ -62,9 +62,8 @@ export default function Dashboard() {
     // Optional: realtime updates for new calls
     const channel = supabase
       .channel("support_calls_changes")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_calls" }, () => {
-        fetchCalls();
-      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_calls" }, fetchCalls)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "support_calls" }, fetchCalls)
       .subscribe();
 
     return () => {
