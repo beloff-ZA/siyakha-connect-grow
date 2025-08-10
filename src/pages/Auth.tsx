@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 import SignInForm from "@/components/msp/SignInForm";
 import ResetPasswordForm from "@/components/msp/ResetPasswordForm";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.jpg";
 import { Server, Shield, Cloud, Users, LifeBuoy, Activity, FileText, CheckCircle2, History, Clock, ShoppingCart, KanbanSquare, PiggyBank, Building2, GraduationCap, HeartPulse, Factory, Truck, Landmark, Hotel, ShoppingBag } from "lucide-react";
 
@@ -48,6 +49,25 @@ export default function Auth() {
         <h1 className="sr-only">Sign in to Siyakha Technology</h1>
         <div className="flex items-center justify-center px-6 py-10">
           <div className="w-full max-w-md">
+            <nav className="mb-4">
+              <ul className="flex items-center gap-2">
+                <li>
+                  <Button asChild variant="outline" size="sm" aria-label="Go to Home">
+                    <Link to="/">Home</Link>
+                  </Button>
+                </li>
+                <li>
+                  <Button asChild variant="ghost" size="sm" aria-label="Go to About Us">
+                    <Link to="/about">About Us</Link>
+                  </Button>
+                </li>
+                <li>
+                  <Button asChild variant="ghost" size="sm" aria-label="Go to Contact Us">
+                    <Link to="/contact">Contact Us</Link>
+                  </Button>
+                </li>
+              </ul>
+            </nav>
             <div className="flex items-center justify-center mb-6">
               <img
                 src="/lovable-uploads/18df369d-304c-4290-97b8-53ae2aad27fb.png"
