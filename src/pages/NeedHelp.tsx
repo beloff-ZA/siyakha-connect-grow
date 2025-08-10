@@ -55,7 +55,7 @@ export default function NeedHelp() {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
-
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   // SEO metadata
   useEffect(() => {
     const title = "Need Help? Your Tech Problems, Solved | Siyakha Technology";
@@ -87,6 +87,29 @@ export default function NeedHelp() {
     }
     canonical.setAttribute("href", `${window.location.origin}/need-help`);
   }, []);
+
+  // Auth listener to react to login/logout and prefill data
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user?.email ?? null);
+      if (session) {
+        setClientStatus("registered");
+        setAuthOpen(false);
+        setEmail((prev) => prev || session.user.email || "");
+        if (step === 1) setStep(2);
+        toast({ title: "Signed in", description: "You're now signed in." });
+      }
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserEmail(session?.user?.email ?? null);
+      if (session) {
+        setClientStatus((s) => s ?? "registered");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [step, toast]);
 
   const canContinue = useMemo(() => {
     switch (step) {
@@ -166,6 +189,17 @@ export default function NeedHelp() {
     }
   };
 
+  const signOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({ title: "Signed out", description: "You have been logged out." });
+      setClientStatus(null);
+      setUserEmail(null);
+    } catch (e: any) {
+      toast({ title: "Sign out failed", description: e.message ?? "Please try again.", variant: "destructive" });
+    }
+  };
+
   const StepHeader = ({ number, title, subtitle }: { number: number; title: string; subtitle?: string }) => (
     <div className="mb-6">
       <div className="text-sm text-muted-foreground">Step {number} of 6</div>
@@ -198,6 +232,12 @@ export default function NeedHelp() {
                 {step === 1 && (
                   <div>
                     <StepHeader number={1} title="Are You a Client?" />
+                    {userEmail && (
+                      <div className="mb-4 flex items-center justify-between rounded-md border border-border p-3">
+                        <div className="text-sm">Signed in as <span className="font-medium">{userEmail}</span></div>
+                        <Button variant="secondary" size="sm" onClick={signOut}>Sign out</Button>
+                      </div>
+                    )}
                     <div className="grid gap-4 sm:grid-cols-2">
                       <button
                         type="button"
