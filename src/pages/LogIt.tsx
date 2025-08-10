@@ -14,6 +14,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Phone, Mail, MessageCircle, ShieldCheck } from "lucide-react";
+import heroImage from "@/assets/hero-bg.jpg";
 const schema = z.object({
   full_name: z.string().min(2, "Please enter your full name"),
   contact_number: z.string().min(5, "Please enter a valid contact number"),
@@ -117,8 +118,10 @@ const LogIt: React.FC = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        <section className="py-14 md:py-20 bg-gradient-to-b from-background to-muted/40 border-b border-border">
-          <div className="container mx-auto px-4 lg:px-6">
+        <section className="relative py-16 md:py-24 border-b border-border overflow-hidden">
+          <img src={heroImage} alt="Support request background" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+          <div className="absolute inset-0 bg-background/75" />
+          <div className="relative container mx-auto px-4 lg:px-6">
             <header className="max-w-3xl">
               <p className="inline-block px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm mb-4">
                 Support
