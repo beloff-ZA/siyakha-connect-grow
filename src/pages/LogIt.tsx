@@ -215,7 +215,11 @@ const LogIt: React.FC = () => {
                   <ul className="space-y-4">
                     <li className="flex items-center gap-3">
                       <Phone className="h-5 w-5 text-accent" />
-                      <a href="tel:+27110000000" className="text-foreground hover:text-primary transition-colors">+27 (0) 11 000 0000</a>
+                      <a href="tel:+27877027411" className="text-foreground hover:text-primary transition-colors">087 702 7411</a>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <Phone className="h-5 w-5 text-accent" />
+                      <a href="tel:+27815012993" className="text-foreground hover:text-primary transition-colors">081 501 2993</a>
                     </li>
                     <li className="flex items-center gap-3">
                       <Mail className="h-5 w-5 text-accent" />

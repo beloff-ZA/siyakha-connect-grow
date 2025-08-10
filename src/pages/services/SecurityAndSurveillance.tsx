@@ -169,7 +169,7 @@ const SecurityAndSurveillance = () => {
               <Link to="/log-a-call" className="inline-flex"><Button variant="outline">Log a Call</Button></Link>
             </div>
             <div className="mt-4 text-sm text-muted-foreground">
-              <p>📞 <a href="tel:+27815012993" className="underline underline-offset-4">081 501 2993</a></p>
+              <p>📞 <a href="tel:+27877027411" className="underline underline-offset-4">087 702 7411</a> <span className="ml-2">/ <a href="tel:+27815012993" className="underline underline-offset-4">081 501 2993</a></span></p>
               <p>📧 <a href="mailto:info@siyakhatechnology.co.za" className="underline underline-offset-4">info@siyakhatechnology.co.za</a></p>
             </div>
           </div>
