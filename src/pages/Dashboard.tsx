@@ -1,11 +1,18 @@
-import { useEffect, useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { useEffect, useMemo, useState } from "react";
+// Removed site Header/Footer for app-like dashboard
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import AuthGate from "@/components/msp/AuthGate";
+import { LayoutDashboard, Wrench, Wifi, ShieldCheck, MessageSquare, Bell, Search, LogOut } from "lucide-react";
 
 interface SupportCall {
   id: string;
@@ -20,10 +27,17 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [calls, setCalls] = useState<SupportCall[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profileInitials, setProfileInitials] = useState("ME");
+
+  const openCount = useMemo(() =>
+    calls.filter(c => !["closed", "resolved"].includes((c.status || "").toLowerCase())).length
+  , [calls]);
+  const uniqueLocations = useMemo(() => new Set(calls.map(c => c.location || "Unspecified")).size, [calls]);
+  const lastRequest = useMemo(() => calls[0]?.created_at ? new Date(calls[0].created_at).toLocaleDateString() : "—", [calls]);
 
   useEffect(() => {
-    const title = "Your Support Dashboard | Siyakha Technology";
-    const description = "View and track all your logged support calls with Siyakha Technology.";
+    const title = "Client Dashboard | Siyakha Technology";
+    const description = "Track your support tickets and updates in one place.";
     document.title = title;
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
@@ -39,6 +53,14 @@ export default function Dashboard() {
       document.head.appendChild(canonical);
     }
     canonical.setAttribute('href', `${window.location.origin}/dashboard`);
+  }, []);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      const email = data.user?.email || "";
+      const initials = email ? email[0].toUpperCase() : "ME";
+      setProfileInitials(initials);
+    });
   }, []);
 
   useEffect(() => {
@@ -71,58 +93,246 @@ export default function Dashboard() {
     };
   }, [toast]);
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/auth";
+  };
+
   return (
     <AuthGate>
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main>
-          <section className="py-10 md:py-14 border-b border-border">
-            <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
-              <h1 className="text-3xl md:text-4xl font-bold text-primary">Your Support Dashboard</h1>
-              <p className="text-muted-foreground mt-3">Track all your logged calls in one place.</p>
+      <div className="min-h-screen bg-background text-foreground">
+        <main className="grid lg:grid-cols-[260px_1fr]">
+          {/* Sidebar */}
+          <aside className="hidden lg:flex h-dvh sticky top-0 flex-col gap-4 p-4 border-r border-border bg-background/80 backdrop-blur">
+            <div className="flex items-center gap-3 px-2">
+              <div className="h-10 w-10 rounded-2xl bg-primary/90 text-primary-foreground flex items-center justify-center font-semibold shadow">
+                ST
+              </div>
+              <div>
+                <div className="text-lg font-bold leading-tight">Siyakha Technology</div>
+                <div className="text-xs text-muted-foreground -mt-0.5">Client Portal</div>
+              </div>
             </div>
-          </section>
-          <section className="py-10 md:py-14">
-            <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Logged Calls</CardTitle>
+            <nav className="mt-2 space-y-1">
+              <Button variant="default" className="w-full justify-start gap-3 rounded-xl">
+                <LayoutDashboard className="h-4 w-4" /> Dashboard
+              </Button>
+              <a href="#tickets" className="block">
+                <Button variant="ghost" className="w-full justify-start gap-3 rounded-xl hover-scale">
+                  <Wrench className="h-4 w-4" /> My Tickets
+                </Button>
+              </a>
+              <a href="/need-help" className="block">
+                <Button variant="ghost" className="w-full justify-start gap-3 rounded-xl hover-scale">
+                  <MessageSquare className="h-4 w-4" /> Log a Call
+                </Button>
+              </a>
+            </nav>
+            <div className="mt-auto p-3 rounded-2xl border border-border bg-background">
+              <div className="text-sm font-medium">Need immediate help?</div>
+              <div className="text-xs text-muted-foreground mb-2">Chat to our team now</div>
+              <a href="https://wa.me/27815012993" target="_blank" rel="noreferrer" className="inline-flex w-full">
+                <Button variant="secondary" className="w-full rounded-xl">WhatsApp Support</Button>
+              </a>
+            </div>
+          </aside>
+
+          {/* Main */}
+          <section className="p-4 sm:p-6 lg:p-8">
+            {/* Topbar */}
+            <header className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between mb-6">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Client Dashboard</h1>
+                <Badge className="rounded-full">v1.0</Badge>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="relative w-full sm:w-[320px]">
+                  <Input className="pl-9 rounded-xl" placeholder="Search tickets…" />
+                  <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
+                <Button variant="ghost" size="icon" className="rounded-2xl">
+                  <Bell className="h-5 w-5" />
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="rounded-2xl gap-2">
+                      <Avatar className="h-6 w-6">
+                        <AvatarFallback>{profileInitials}</AvatarFallback>
+                      </Avatar>
+                      <span className="hidden sm:inline">Account</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 rounded-xl">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                      <LogOut className="h-4 w-4 mr-2" /> Sign out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </header>
+
+            {/* KPIs */}
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <Card className="rounded-2xl shadow-sm animate-fade-in">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm text-muted-foreground font-medium">Open Tickets</CardTitle>
+                  <Wrench className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  {loading ? (
-                    <div className="text-muted-foreground">Loading your calls...</div>
-                  ) : calls.length === 0 ? (
-                    <div className="space-y-4">
-                      <p className="text-muted-foreground">You have no logged calls yet.</p>
-                      <a href="/need-help" className="inline-flex"><Button className="cta-primary">Log a Call</Button></a>
-                    </div>
-                  ) : (
-                    <ul className="divide-y divide-border">
-                      {calls.map((c) => (
-                        <li key={c.id} className="py-4">
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <div className="text-sm text-muted-foreground">{new Date(c.created_at).toLocaleString()}</div>
-                              <div className="font-medium mt-1">{(c.issues || []).join(", ") || "Support Call"}</div>
-                              {c.location && <div className="text-sm text-muted-foreground">Location: {c.location}</div>}
-                              {c.description && <p className="text-sm mt-2 line-clamp-2">{c.description}</p>}
-                            </div>
-                            <div>
-                              <span className="inline-flex items-center rounded-md border border-border px-2 py-1 text-xs">
-                                {c.status}
-                              </span>
-                            </div>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  <div className="text-2xl font-bold">{openCount}</div>
+                  <div className="text-xs text-muted-foreground mt-1">Awaiting resolution</div>
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-2xl shadow-sm animate-fade-in">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm text-muted-foreground font-medium">All Tickets</CardTitle>
+                  <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{calls.length}</div>
+                  <div className="text-xs text-muted-foreground mt-1">Total requests</div>
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-2xl shadow-sm animate-fade-in">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm text-muted-foreground font-medium">Locations</CardTitle>
+                  <Wifi className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{uniqueLocations}</div>
+                  <div className="text-xs text-muted-foreground mt-1">Where issues occurred</div>
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-2xl shadow-sm animate-fade-in">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm text-muted-foreground font-medium">Last Request</CardTitle>
+                  <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{lastRequest}</div>
+                  <div className="text-xs text-muted-foreground mt-1">Most recent ticket</div>
                 </CardContent>
               </Card>
             </div>
+
+            {/* Tabs */}
+            <Tabs defaultValue="overview" className="mt-6">
+              <div className="flex items-center justify-between">
+                <TabsList className="rounded-2xl">
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="tickets">Tickets</TabsTrigger>
+                </TabsList>
+                <a href="/need-help" className="inline-flex">
+                  <Button className="rounded-2xl">Log a Call</Button>
+                </a>
+              </div>
+
+              <TabsContent value="overview" className="mt-6">
+                <div className="grid gap-4 lg:grid-cols-7">
+                  <Card id="tickets" className="rounded-2xl shadow-sm lg:col-span-4">
+                    <CardHeader>
+                      <CardTitle>My Tickets</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {loading ? (
+                        <div className="text-muted-foreground">Loading your tickets…</div>
+                      ) : calls.length === 0 ? (
+                        <div className="space-y-4">
+                          <p className="text-muted-foreground">You have no tickets yet.</p>
+                          <a href="/need-help" className="inline-flex"><Button className="cta-primary">Log a Call</Button></a>
+                        </div>
+                      ) : (
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Date</TableHead>
+                              <TableHead>Issue</TableHead>
+                              <TableHead>Location</TableHead>
+                              <TableHead>Status</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {calls.slice(0, 10).map((c) => (
+                              <TableRow key={c.id}>
+                                <TableCell className="whitespace-nowrap">{new Date(c.created_at).toLocaleString()}</TableCell>
+                                <TableCell className="font-medium">{(c.issues || []).join(", ") || "Support Call"}</TableCell>
+                                <TableCell>{c.location || "—"}</TableCell>
+                                <TableCell>
+                                  <Badge variant="outline">{c.status}</Badge>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="rounded-2xl shadow-sm lg:col-span-3">
+                    <CardHeader>
+                      <CardTitle>Quick Actions</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid gap-2 sm:grid-cols-2">
+                      <a href="/need-help" className="inline-flex"><Button className="rounded-2xl justify-start gap-2"><Wrench className="h-4 w-4"/> Log a Call</Button></a>
+                      <a href="https://wa.me/27815012993" target="_blank" rel="noreferrer" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><MessageSquare className="h-4 w-4"/> WhatsApp</Button></a>
+                      <a href="/blog" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><ShieldCheck className="h-4 w-4"/> Knowledge Base</Button></a>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="tickets" className="mt-6">
+                <Card className="rounded-2xl shadow-sm">
+                  <CardHeader>
+                    <CardTitle>All Tickets</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {loading ? (
+                      <div className="text-muted-foreground">Loading your tickets…</div>
+                    ) : calls.length === 0 ? (
+                      <div className="space-y-4">
+                        <p className="text-muted-foreground">You have no tickets yet.</p>
+                        <a href="/need-help" className="inline-flex"><Button className="cta-primary">Log a Call</Button></a>
+                      </div>
+                    ) : (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Issue</TableHead>
+                            <TableHead>Location</TableHead>
+                            <TableHead>Status</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {calls.map((c) => (
+                            <TableRow key={c.id}>
+                              <TableCell className="whitespace-nowrap">{new Date(c.created_at).toLocaleString()}</TableCell>
+                              <TableCell className="font-medium">{(c.issues || []).join(", ") || "Support Call"}</TableCell>
+                              <TableCell>{c.location || "—"}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{c.status}</Badge>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+
+            <footer className="mt-8 text-xs text-muted-foreground">
+              © {new Date().getFullYear()} Siyakha Technology — All rights reserved.
+            </footer>
           </section>
         </main>
-        <Footer />
       </div>
     </AuthGate>
   );
