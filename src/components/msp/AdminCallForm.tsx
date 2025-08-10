@@ -20,6 +20,7 @@ const TEAM_RECIPIENTS = [
 
 export default function AdminCallForm() {
   const { toast } = useToast();
+  const sb = supabase as any;
 
   const [roles, setRoles] = useState<RoleRow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -42,7 +43,7 @@ export default function AdminCallForm() {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session?.user) return;
-      const { data } = await supabase
+      const { data } = await sb
         .from("user_roles")
         .select("role")
         .eq("user_id", session.user.id);
@@ -73,7 +74,7 @@ export default function AdminCallForm() {
     setCreatedTracking(null);
 
     // 1) Find or create client
-    const { data: existingClient } = await supabase
+    const { data: existingClient } = await sb
       .from("clients")
       .select("id")
       .ilike("name", clientName)
@@ -82,7 +83,7 @@ export default function AdminCallForm() {
     let clientId = existingClient?.id as string | undefined;
 
     if (!clientId) {
-      const { data: newClient, error: clientErr } = await supabase
+      const { data: newClient, error: clientErr } = await sb
         .from("clients")
         .insert({
           name: clientName,
@@ -104,7 +105,7 @@ export default function AdminCallForm() {
     // 2) Optional site
     let siteId: string | null = null;
     if (siteName || siteAddress) {
-      const { data: site, error: siteErr } = await supabase
+      const { data: site, error: siteErr } = await sb
         .from("client_sites")
         .insert({
           client_id: clientId,
@@ -122,7 +123,7 @@ export default function AdminCallForm() {
     }
 
     // 3) Create call
-    const { data: call, error: callErr } = await supabase
+    const { data: call, error: callErr } = await sb
       .from("calls")
       .insert({
         subject,
@@ -142,7 +143,7 @@ export default function AdminCallForm() {
     }
 
     // 4) Create tracking link
-    const { data: track, error: trackErr } = await supabase
+    const { data: track, error: trackErr } = await sb
       .from("tracking_links")
       .insert({ call_id: call.id })
       .select("token")
