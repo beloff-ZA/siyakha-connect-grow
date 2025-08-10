@@ -14,6 +14,7 @@ import About from "./pages/About";
 import ProjectsIndex from "./pages/ProjectsIndex";
 import BlogIndex from "./pages/BlogIndex";
 import LogIt from "./pages/LogIt";
+import PortalTickets from "./pages/PortalTickets";
 
 // Services
 import InfrastructureAndNetworking from "./pages/services/InfrastructureAndNetworking";
@@ -77,6 +78,7 @@ function App() {
               <Route path="/terms" element={<Terms />} />
               
               <Route path="/log-it" element={<LogIt />} />
+              <Route path="/portal/tickets" element={<PortalTickets />} />
               <Route path="/need-help" element={<Navigate to="/log-it" replace />} />
               <Route path="/company" element={<Navigate to="/" replace />} />
               <Route path="/log-a-call" element={<Navigate to="/log-it" replace />} />
