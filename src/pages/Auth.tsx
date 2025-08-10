@@ -89,9 +89,9 @@ export default function Auth() {
             {/* Top industries strip */}
             <div className="absolute top-0 left-0 right-0 z-20">
               <div className="bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-b border-border">
-                <div className="px-6 py-3">
+                <div className="px-6 py-3 max-w-screen-xl mx-auto">
                   <h2 className="sr-only">Industries we support</h2>
-                  <ul className="flex flex-wrap items-center gap-5">
+                  <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-8 gap-3 md:gap-4 place-items-center">
                     <li className="flex items-center gap-2">
                       <ShoppingBag className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
                       <span className="text-xs text-foreground">Retail</span>
