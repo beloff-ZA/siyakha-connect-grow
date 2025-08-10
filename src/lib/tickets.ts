@@ -37,3 +37,22 @@ export async function getTicketMessages(ticketId: string) {
   if (error) throw error;
   return data || [];
 }
+
+export async function getMyTickets() {
+  const { data, error } = await supabase
+    .from("tickets")
+    .select("id, summary, status, created_at, tracking_ref, priority")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getTicketById(id: string) {
+  const { data, error } = await supabase
+    .from("tickets")
+    .select("id, summary, status, created_at, tracking_ref, details, location")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}

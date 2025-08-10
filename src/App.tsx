@@ -15,6 +15,9 @@ import ProjectsIndex from "./pages/ProjectsIndex";
 import BlogIndex from "./pages/BlogIndex";
 import LogIt from "./pages/LogIt";
 import PortalTickets from "./pages/PortalTickets";
+import TicketsList from "./pages/TicketsList";
+import TicketDetail from "./pages/TicketDetail";
+import AuthPage from "./pages/Auth";
 
 // Services
 import InfrastructureAndNetworking from "./pages/services/InfrastructureAndNetworking";
@@ -79,6 +82,9 @@ function App() {
               
               <Route path="/log-it" element={<LogIt />} />
               <Route path="/portal/tickets" element={<PortalTickets />} />
+              <Route path="/portal/my-tickets" element={<TicketsList />} />
+              <Route path="/portal/tickets/:id" element={<TicketDetail />} />
+              <Route path="/auth" element={<AuthPage />} />
               <Route path="/need-help" element={<Navigate to="/log-it" replace />} />
               <Route path="/company" element={<Navigate to="/" replace />} />
               <Route path="/log-a-call" element={<Navigate to="/log-it" replace />} />

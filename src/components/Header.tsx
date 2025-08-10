@@ -128,8 +128,8 @@ const Header = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/log-it" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Log It
+                <Link to="/portal/my-tickets" className="text-foreground hover:text-primary transition-colors font-medium">
+                  Portal
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -137,7 +137,7 @@ const Header = () => {
 
           {/* CTA Button & Mobile Menu */}
 <div className="flex items-center space-x-4">
-            
+            <Link to="/auth" className="hidden lg:inline text-sm text-foreground hover:text-primary transition-colors">Sign In</Link>
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -212,8 +212,11 @@ const Header = () => {
               <Link to="/support-deals" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Support Deals
               </Link>
-              <Link to="/log-it" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Log It
+              <Link to="/portal/my-tickets" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+                Portal
+              </Link>
+              <Link to="/auth" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+                Sign In
               </Link>
             </div>
           </div>
