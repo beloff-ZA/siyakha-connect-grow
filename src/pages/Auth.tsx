@@ -7,7 +7,7 @@ import ResetPasswordForm from "@/components/msp/ResetPasswordForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.jpg";
-import { Server, Shield, Cloud, Users, LifeBuoy, Activity, FileText, CheckCircle2, History, Clock, ShoppingCart, KanbanSquare, PiggyBank, Building2, GraduationCap, HeartPulse, Factory, Truck, Landmark, Hotel, ShoppingBag } from "lucide-react";
+import { Server, Shield, Cloud, Users, LifeBuoy, Activity, FileText, CheckCircle2, History, Clock, ShoppingCart, KanbanSquare, PiggyBank } from "lucide-react";
 
 export default function Auth() {
   const { isPasswordRecovery, session } = useAuth();
@@ -86,50 +86,8 @@ export default function Auth() {
               decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-background/10" />
-            {/* Top industries strip */}
-            <div className="absolute top-0 left-0 right-0 z-20">
-              <div className="bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-b border-border">
-                <div className="px-6 py-3 max-w-screen-xl mx-auto">
-                  <h2 className="sr-only">Industries we support</h2>
-                  <ul className="flex items-center gap-4 overflow-x-auto whitespace-nowrap">
-                    <li className="flex items-center gap-2">
-                      <ShoppingBag className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Retail</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <GraduationCap className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Education</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <HeartPulse className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Healthcare</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Hotel className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Hospitality</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Truck className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Logistics</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Landmark className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Finance</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Factory className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Manufacturing</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Building2 className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
-                      <span className="text-xs text-foreground">Corporate Offices</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
             {/* Circular process diagram overlay */}
-            <div className="absolute inset-x-0 top-12 bottom-24 flex items-center justify-center z-10">
+            <div className="absolute inset-x-0 top-0 bottom-24 flex items-center justify-center z-10">
               <div className="relative w-[420px] h-[420px] hidden xl:block pointer-events-none animate-fade-in">
                 <div className="absolute inset-0 rounded-full border border-border/60" aria-hidden="true" />
                 <div className="absolute inset-8 rounded-full border border-border/50" aria-hidden="true" />
