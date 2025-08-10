@@ -16,6 +16,8 @@ import { LayoutDashboard, Wrench, Wifi, ShieldCheck, MessageSquare, Bell, Search
 import LogCallDialog from "@/components/msp/LogCallDialog";
 import { useCompany } from "@/hooks/useCompany";
 import CompanyBanner from "@/components/msp/CompanyBanner";
+import CompanyProfileForm from "@/components/msp/CompanyProfileForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface SupportCall {
   id: string;
@@ -35,6 +37,7 @@ export default function Dashboard() {
   const [displayName, setDisplayName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [logOpen, setLogOpen] = useState(false);
+  const [companyFormOpen, setCompanyFormOpen] = useState(false);
 
   const { company, loading: companyLoading } = useCompany();
 
@@ -63,6 +66,14 @@ export default function Dashboard() {
     }
     canonical.setAttribute('href', `${window.location.origin}/dashboard`);
   }, []);
+
+  useEffect(() => {
+    const msg = sessionStorage.getItem('company_registered_msg');
+    if (msg) {
+      toast({ title: 'Thank you for registering', description: msg });
+      sessionStorage.removeItem('company_registered_msg');
+    }
+  }, [toast]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -221,9 +232,7 @@ export default function Dashboard() {
                 <Button variant="ghost" size="icon" className="rounded-2xl">
                   <Bell className="h-5 w-5" />
                 </Button>
-                <a href="/company" className="hidden sm:inline-flex">
-                  <Button variant="outline" className="rounded-2xl">Company Profile</Button>
-                </a>
+                <Button variant="outline" className="rounded-2xl hidden sm:inline-flex" onClick={() => setCompanyFormOpen(true)}>Edit Company</Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="rounded-2xl gap-2">
@@ -236,8 +245,8 @@ export default function Dashboard() {
                   <DropdownMenuContent align="end" className="w-56 rounded-xl">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <a href="/company">Company Profile</a>
+                    <DropdownMenuItem onClick={() => setCompanyFormOpen(true)}>
+                      Edit Company
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
@@ -352,7 +361,7 @@ export default function Dashboard() {
                     </CardHeader>
                     <CardContent className="grid gap-2 sm:grid-cols-2">
                       <Button className="rounded-2xl justify-start gap-2" onClick={() => setLogOpen(true)}><Wrench className="h-4 w-4"/> Log a Call</Button>
-                      <a href="/company" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><ShieldCheck className="h-4 w-4"/> Company Profile</Button></a>
+                      <Button variant="outline" className="rounded-2xl justify-start gap-2" onClick={() => setCompanyFormOpen(true)}><ShieldCheck className="h-4 w-4"/> Company Profile</Button>
                       <a href="https://wa.me/27815012993" target="_blank" rel="noreferrer" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><MessageSquare className="h-4 w-4"/> WhatsApp</Button></a>
                       <a href="/blog" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><ShieldCheck className="h-4 w-4"/> Knowledge Base</Button></a>
                     </CardContent>
@@ -401,6 +410,16 @@ export default function Dashboard() {
                 </Card>
               </TabsContent>
             </Tabs>
+
+            <Dialog open={companyFormOpen} onOpenChange={setCompanyFormOpen}>
+              <DialogContent className="max-w-xl">
+                <DialogHeader>
+                  <DialogTitle>Edit Company Profile</DialogTitle>
+                  <DialogDescription>Update your company and billing details.</DialogDescription>
+                </DialogHeader>
+                <CompanyProfileForm initialCompany={company || undefined} onSubmitted={() => setCompanyFormOpen(false)} />
+              </DialogContent>
+            </Dialog>
 
             <LogCallDialog open={logOpen} onOpenChange={setLogOpen} />
 
