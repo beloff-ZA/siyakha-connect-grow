@@ -6,8 +6,8 @@ import heroImage from "@/assets/hero-bg.jpg";
 
 const BlogIndex = () => {
   useEffect(() => {
-    const title = "Blog | Siyakha Technology Solutions";
-    const description = "Insights and updates from Siyakha Technology Solutions on networking, security, cloud, and ICT best practices.";
+    const title = "Siyakha Tech Blog: EdTech, Automation & AI";
+    const description = "EdTech, automation, AI, smart home and business solutions—plus YouTube channels we follow.";
     document.title = title;
 
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
@@ -43,8 +43,8 @@ const BlogIndex = () => {
           <img src={heroImage} alt="Network and cloud technology background" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
           <div className="absolute inset-0 bg-background/70 backdrop-blur-sm" />
           <div className="relative container mx-auto px-4 lg:px-6">
-            <h1 className="text-3xl md:text-5xl font-bold text-primary">Insights, Guides, and Case Studies</h1>
-            <p className="text-muted-foreground mt-3 max-w-2xl">Latest articles and updates from our team on networking, security, cloud, and collaboration.</p>
+            <h1 className="text-3xl md:text-5xl font-bold text-primary">EdTech, Automation & AI — Siyakha Tech Blog</h1>
+            <p className="text-muted-foreground mt-3 max-w-2xl">Insights on EdTech, automation, AI, smart home and business solutions. We'll also share YouTube channels we follow and practical guides.</p>
           </div>
         </section>
         <BlogPreview />
