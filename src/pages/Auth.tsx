@@ -6,6 +6,7 @@ import ResetPasswordForm from "@/components/msp/ResetPasswordForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.jpg";
+import { Server, Shield, Cloud, Users, LifeBuoy, Activity } from "lucide-react";
 
 export default function Auth() {
   const { isPasswordRecovery, session } = useAuth();
@@ -79,6 +80,36 @@ export default function Auth() {
               decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-background/10" />
+            <aside className="absolute bottom-0 left-0 right-0 z-10">
+              <div className="bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-t border-border">
+                <ul className="px-6 py-4 grid grid-cols-2 lg:grid-cols-3 gap-4">
+                  <li className="flex items-center gap-2">
+                    <Server className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground">Infrastructure & Networking</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground">Security & Surveillance</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Cloud className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground">Cloud & Edge Solutions</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground">Smart Collaboration Tools</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <LifeBuoy className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground">National Field Support</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <span className="text-xs text-foreground">Healthcare IT Support</span>
+                  </li>
+                </ul>
+              </div>
+            </aside>
           </div>
         </div>
       </section>
