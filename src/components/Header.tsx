@@ -175,11 +175,7 @@ const Header = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/company">Company Profile</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => { signOut(); navigate("/", { replace: true }); }} className="text-destructive">
+                  <DropdownMenuItem onClick={async () => { try { await signOut(); } finally { window.location.href = "/"; } }} className="text-destructive">
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -281,7 +277,7 @@ const Header = () => {
                       <Button variant="secondary" className="w-full">Dashboard</Button>
                     </Link>
                     <div className="h-2" />
-                    <Button variant="ghost" className="w-full" onClick={() => { signOut(); navigate("/", { replace: true }); }}>Sign out</Button>
+                    <Button variant="ghost" className="w-full" onClick={async () => { try { await signOut(); } finally { window.location.href = "/"; } }}>Sign out</Button>
                   </>
                 ) : (
                   <Link to="/auth" className="block w-full">
