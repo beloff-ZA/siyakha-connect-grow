@@ -49,25 +49,6 @@ export default function Auth() {
         <h1 className="sr-only">Sign in to Siyakha Technology</h1>
         <div className="flex items-center justify-center px-6 py-10">
           <div className="w-full max-w-md">
-            <nav className="mb-4">
-              <ul className="flex items-center gap-2">
-                <li>
-                  <Button asChild variant="outline" size="sm" aria-label="Go to Home">
-                    <Link to="/">Home</Link>
-                  </Button>
-                </li>
-                <li>
-                  <Button asChild variant="ghost" size="sm" aria-label="Go to About Us">
-                    <Link to="/about">About Us</Link>
-                  </Button>
-                </li>
-                <li>
-                  <Button asChild variant="ghost" size="sm" aria-label="Go to Contact Us">
-                    <Link to="/contact">Contact Us</Link>
-                  </Button>
-                </li>
-              </ul>
-            </nav>
             <div className="flex items-center justify-center mb-6">
               <img
                 src="/lovable-uploads/18df369d-304c-4290-97b8-53ae2aad27fb.png"
@@ -88,6 +69,11 @@ export default function Auth() {
                 {isPasswordRecovery ? <ResetPasswordForm /> : <SignInForm />}
               </CardContent>
             </Card>
+            <div className="mt-4 text-center">
+              <Button asChild variant="link" size="sm" aria-label="Return to home">
+                <Link to="/">Return to Home</Link>
+              </Button>
+            </div>
           </div>
         </div>
         <div className="hidden md:block">
