@@ -16,37 +16,55 @@ export type Database = {
     Tables: {
       companies: {
         Row: {
+          access_instructions: string | null
           address: string | null
+          arrival_notification_recipients: string[]
           billing_email: string | null
           created_at: string
           id: string
+          logo_url: string | null
           metadata: Json
           name: string
           phone: string | null
+          preferred_comms: string | null
+          sla_tier: string | null
           updated_at: string
           vat_number: string | null
+          working_hours: Json
         }
         Insert: {
+          access_instructions?: string | null
           address?: string | null
+          arrival_notification_recipients?: string[]
           billing_email?: string | null
           created_at?: string
           id?: string
+          logo_url?: string | null
           metadata?: Json
           name: string
           phone?: string | null
+          preferred_comms?: string | null
+          sla_tier?: string | null
           updated_at?: string
           vat_number?: string | null
+          working_hours?: Json
         }
         Update: {
+          access_instructions?: string | null
           address?: string | null
+          arrival_notification_recipients?: string[]
           billing_email?: string | null
           created_at?: string
           id?: string
+          logo_url?: string | null
           metadata?: Json
           name?: string
           phone?: string | null
+          preferred_comms?: string | null
+          sla_tier?: string | null
           updated_at?: string
           vat_number?: string | null
+          working_hours?: Json
         }
         Relationships: []
       }
@@ -254,6 +272,57 @@ export type Database = {
           },
         ]
       }
+      sites: {
+        Row: {
+          address: string | null
+          city: string | null
+          company_id: string
+          country: string | null
+          created_at: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          metadata: Json
+          name: string
+          postal_code: string | null
+          site_ref: string | null
+          state: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          company_id: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          metadata?: Json
+          name: string
+          postal_code?: string | null
+          site_ref?: string | null
+          state?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          company_id?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          metadata?: Json
+          name?: string
+          postal_code?: string | null
+          site_ref?: string | null
+          state?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       support_calls: {
         Row: {
           client_status: string | null
@@ -302,6 +371,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -314,6 +404,13 @@ export type Database = {
           _role?: Database["public"]["Enums"]["company_role"]
         }
         Returns: undefined
+      }
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
       }
       is_company_admin: {
         Args: { _company_id: string; _user_id?: string }
@@ -337,6 +434,13 @@ export type Database = {
       }
     }
     Enums: {
+      app_role:
+        | "siyakha_admin"
+        | "dispatcher"
+        | "technician"
+        | "client_msp"
+        | "client_non_msp"
+        | "team_member"
       company_role: "owner" | "admin" | "member"
     }
     CompositeTypes: {
@@ -465,6 +569,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: [
+        "siyakha_admin",
+        "dispatcher",
+        "technician",
+        "client_msp",
+        "client_non_msp",
+        "team_member",
+      ],
       company_role: ["owner", "admin", "member"],
     },
   },
