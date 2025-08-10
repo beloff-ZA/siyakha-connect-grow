@@ -21,6 +21,7 @@ import CompanyProfileViewer from "@/components/msp/CompanyProfileViewer";
 import SitesManager from "@/components/msp/SitesManager";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import AdminResetUsers from "@/components/msp/AdminResetUsers";
+import MyProfileForm from "@/components/msp/MyProfileForm";
 interface SupportCall {
   id: string;
   status: string;
@@ -109,6 +110,39 @@ export default function Dashboard() {
       setProfileInitials(initials);
     };
     fetchProfile();
+  }, []);
+
+  // Realtime: keep profile details in sync
+  useEffect(() => {
+    let channel: any;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      channel = supabase
+        .channel(`profiles_${user.id}`)
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` },
+          (payload) => {
+            const prof: any = (payload as any).new || {};
+            const email = user.email || '';
+            const dn = prof.display_name || ((user.user_metadata as any)?.full_name as string) || (email ? email.split('@')[0] : '');
+            const cn = prof.company_name || '';
+            const initials = (cn || dn || email)
+              .split(' ')
+              .map((s: string) => s[0])
+              .filter(Boolean)
+              .slice(0, 2)
+              .join('')
+              .toUpperCase();
+            setDisplayName(dn);
+            setCompanyName(cn);
+            setProfileInitials(initials);
+          }
+        )
+        .subscribe();
+    })();
+    return () => { if (channel) supabase.removeChannel(channel); };
   }, []);
 
   // Load calls, scoped by active company when available, and subscribe to changes
@@ -375,6 +409,11 @@ export default function Dashboard() {
                   {/* Company Profile viewer */}
                   <div className="lg:col-span-3">
                     <CompanyProfileViewer />
+                  </div>
+
+                  {/* My Profile editor */}
+                  <div className="lg:col-span-3">
+                    <MyProfileForm />
                   </div>
                 </div>
 

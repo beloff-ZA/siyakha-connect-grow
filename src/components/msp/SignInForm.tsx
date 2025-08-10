@@ -75,12 +75,26 @@ export default function SignInForm() {
         const { data: userRes } = await supabase.auth.getUser();
         let org = "";
         if (userRes.user) {
-          const { data: prof } = await supabase
+          // Ensure profile exists or initialize on first login
+          const { data: prof, error: profErr } = await supabase
             .from("profiles")
-            .select("company_name, display_name")
+            .select("company_name, display_name, phone")
             .eq("id", userRes.user.id)
             .maybeSingle();
-          org = prof?.company_name || prof?.display_name || "";
+
+          if (!prof && !profErr) {
+            const fallbackName = ((userRes.user.user_metadata as any)?.full_name as string) || (userRes.user.email ? userRes.user.email.split("@")[0] : "");
+            const init = {
+              id: userRes.user.id,
+              display_name: fallbackName,
+              company_name: (userRes.user.user_metadata as any)?.company || null,
+              phone: (userRes.user.user_metadata as any)?.phone || null,
+            } as any;
+            await supabase.from("profiles").insert(init);
+            org = (init as any).company_name || (init as any).display_name || "";
+          } else {
+            org = (prof as any)?.company_name || (prof as any)?.display_name || "";
+          }
         }
         toast({ title: "Signed in", description: org ? `Welcome back — ${org}` : "Welcome back." });
       }
