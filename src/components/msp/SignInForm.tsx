@@ -10,6 +10,8 @@ export default function SignInForm() {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
   const [companyType, setCompanyType] = useState("");
   const COMPANY_TYPES = [
@@ -84,10 +86,18 @@ export default function SignInForm() {
       }
     } else {
       const redirectUrl = `${window.location.origin}/auth`;
+      if (!fullName || !phone || !companyType) {
+        setLoading(false);
+        toast({ title: "Missing details", description: "Please enter your full name, contact number, and company type.", variant: "destructive" });
+        return;
+      }
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: redirectUrl, data: { company, company_type: companyType } },
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: { full_name: fullName, phone, company, company_type: companyType }
+        },
       });
       if (error) {
         toast({ title: "Sign up failed", description: mapAuthError(error.message), variant: "destructive" });
@@ -120,6 +130,14 @@ export default function SignInForm() {
       </div>
       {!isLogin && (
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="full_name">Full name</Label>
+            <Input id="full_name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="e.g. Jane Doe" required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Contact number</Label>
+            <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. +27 82 123 4567" required />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="company">Company name</Label>
             <Input id="company" value={company} onChange={(e) => setCompany(e.target.value)} placeholder="e.g. Siyakha Technology" />
