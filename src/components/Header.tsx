@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, User } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,10 +10,21 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const { user } = useAuth();
+  const displayName =
+    ((user?.user_metadata as any)?.full_name as string) ||
+    (user?.email ? user.email.split("@")[0] : "Account");
+  const avatarUrl = ((user?.user_metadata as any)?.avatar_url as string) || null;
+  const initials = (displayName || "A")
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   const services = [
     "Infrastructure & Networking",
@@ -146,7 +157,16 @@ const Header = () => {
             </Link>
             {user ? (
               <Link to="/dashboard" className="hidden sm:inline-flex">
-                <Button variant="secondary">Dashboard</Button>
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    {avatarUrl ? (
+                      <AvatarImage src={avatarUrl} alt={`${displayName} avatar`} />
+                    ) : (
+                      <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
+                    )}
+                  </Avatar>
+                  <span className="text-sm font-medium text-foreground">{displayName}</span>
+                </div>
               </Link>
             ) : (
               <Link to="/auth" className="hidden sm:inline-flex">
