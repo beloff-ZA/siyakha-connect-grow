@@ -138,9 +138,12 @@ const Header = () => {
           </NavigationMenu>
 
           {/* CTA Button & Mobile Menu */}
-          <div className="flex items-center space-x-4">
+<div className="flex items-center space-x-4">
             <Link to="/contact" className="hidden sm:inline-flex">
               <Button className="cta-primary">Request a Quote</Button>
+            </Link>
+            <Link to="/auth" className="hidden sm:inline-flex">
+              <Button variant="secondary">Sign in</Button>
             </Link>
             
             {/* Mobile Menu Button */}
@@ -223,9 +226,13 @@ const Header = () => {
               <Link to="/contact" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Contact
               </Link>
-              <div className="px-4 pt-2">
+<div className="px-4 pt-2">
                 <Link to="/contact" className="block w-full">
                   <Button className="cta-primary w-full">Request a Quote</Button>
+                </Link>
+                <div className="h-2" />
+                <Link to="/auth" className="block w-full">
+                  <Button variant="secondary" className="w-full">Sign in</Button>
                 </Link>
               </div>
             </div>
