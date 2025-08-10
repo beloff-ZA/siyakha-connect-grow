@@ -6,7 +6,7 @@ import ResetPasswordForm from "@/components/msp/ResetPasswordForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.jpg";
-import { Server, Shield, Cloud, Users, LifeBuoy, Activity, FileText, CheckCircle2, History, Clock, ShoppingCart, KanbanSquare, PiggyBank } from "lucide-react";
+import { Server, Shield, Cloud, Users, LifeBuoy, Activity, FileText, CheckCircle2, History, Clock, ShoppingCart, KanbanSquare, PiggyBank, Building2, GraduationCap, HeartPulse, Factory, Truck, Landmark, Hotel, ShoppingBag } from "lucide-react";
 
 export default function Auth() {
   const { isPasswordRecovery, session } = useAuth();
@@ -87,58 +87,58 @@ export default function Auth() {
                 <div className="absolute inset-8 rounded-full border border-border/50" aria-hidden="true" />
                 <div className="absolute inset-16 rounded-full border border-border/40" aria-hidden="true" />
 
-                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(0deg) translateX(180px) rotate(0deg)" }}>
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(0deg) translateX(178px) rotate(0deg)" }}>
                   <div className="flex flex-col items-center gap-1 text-center">
-                    <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <FileText className="h-5 w-5 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground/90">Request Your Quote</span>
                   </div>
                 </div>
 
-                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(45deg) translateX(180px) rotate(-45deg)" }}>
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(45deg) translateX(178px) rotate(-45deg)" }}>
                   <div className="flex flex-col items-center gap-1 text-center">
-                    <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <CheckCircle2 className="h-5 w-5 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground/90">Accept Your Quote</span>
                   </div>
                 </div>
 
-                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(90deg) translateX(180px) rotate(-90deg)" }}>
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(90deg) translateX(178px) rotate(-90deg)" }}>
                   <div className="flex flex-col items-center gap-1 text-center">
-                    <LifeBuoy className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <LifeBuoy className="h-5 w-5 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground/90">Quick Help Request</span>
                   </div>
                 </div>
 
-                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(135deg) translateX(180px) rotate(-135deg)" }}>
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(135deg) translateX(178px) rotate(-135deg)" }}>
                   <div className="flex flex-col items-center gap-1 text-center">
-                    <History className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <History className="h-5 w-5 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground/90">Manage History of Calls</span>
                   </div>
                 </div>
 
-                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(180deg) translateX(180px) rotate(-180deg)" }}>
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(180deg) translateX(178px) rotate(-180deg)" }}>
                   <div className="flex flex-col items-center gap-1 text-center">
-                    <Clock className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <Clock className="h-5 w-5 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground/90">Manage ETA</span>
                   </div>
                 </div>
 
-                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(225deg) translateX(180px) rotate(-225deg)" }}>
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(225deg) translateX(178px) rotate(-225deg)" }}>
                   <div className="flex flex-col items-center gap-1 text-center">
-                    <ShoppingCart className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <ShoppingCart className="h-5 w-5 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground/90">Order Products</span>
                   </div>
                 </div>
 
-                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(270deg) translateX(180px) rotate(-270deg)" }}>
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(270deg) translateX(178px) rotate(-270deg)" }}>
                   <div className="flex flex-col items-center gap-1 text-center">
-                    <KanbanSquare className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <KanbanSquare className="h-5 w-5 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground/90">Manage Projects</span>
                   </div>
                 </div>
 
-                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(315deg) translateX(180px) rotate(-315deg)" }}>
+                <div className="absolute left-1/2 top-1/2" style={{ transform: "rotate(315deg) translateX(178px) rotate(-315deg)" }}>
                   <div className="flex flex-col items-center gap-1 text-center">
-                    <PiggyBank className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <PiggyBank className="h-5 w-5 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground/90">Save Money</span>
                   </div>
                 </div>
@@ -157,29 +157,65 @@ export default function Auth() {
             </div>
             <aside className="absolute bottom-0 left-0 right-0 z-10">
               <div className="bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-t border-border">
+                <div className="px-6 py-3 border-b border-border/60">
+                  <ul className="flex items-center gap-5 overflow-x-auto">
+                    <li className="flex items-center gap-2 shrink-0">
+                      <ShoppingBag className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Retail</span>
+                    </li>
+                    <li className="flex items-center gap-2 shrink-0">
+                      <GraduationCap className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Education</span>
+                    </li>
+                    <li className="flex items-center gap-2 shrink-0">
+                      <HeartPulse className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Healthcare</span>
+                    </li>
+                    <li className="flex items-center gap-2 shrink-0">
+                      <Hotel className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Hospitality</span>
+                    </li>
+                    <li className="flex items-center gap-2 shrink-0">
+                      <Truck className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Logistics</span>
+                    </li>
+                    <li className="flex items-center gap-2 shrink-0">
+                      <Landmark className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Finance</span>
+                    </li>
+                    <li className="flex items-center gap-2 shrink-0">
+                      <Factory className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Manufacturing</span>
+                    </li>
+                    <li className="flex items-center gap-2 shrink-0">
+                      <Building2 className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
+                      <span className="text-xs text-foreground">Corporate Offices</span>
+                    </li>
+                  </ul>
+                </div>
                 <ul className="px-6 py-4 grid grid-cols-2 lg:grid-cols-3 gap-4">
                   <li className="flex items-center gap-2">
-                    <Server className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <Server className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground">Infrastructure & Networking</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <Shield className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground">Security & Surveillance</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <Cloud className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <Cloud className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground">Cloud & Edge Solutions</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <Users className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground">Smart Collaboration Tools</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <LifeBuoy className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <LifeBuoy className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground">National Field Support</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-primary" aria-hidden="true" />
+                    <Activity className="h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
                     <span className="text-xs text-foreground">Healthcare IT Support</span>
                   </li>
                 </ul>
