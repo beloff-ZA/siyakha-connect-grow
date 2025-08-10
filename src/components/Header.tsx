@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+
 import { Menu, X, ChevronDown } from "lucide-react";
 import {
   NavigationMenu,
@@ -127,24 +127,11 @@ const Header = () => {
                   Support Deals
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/need-help" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Need Help
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Contact
-                </Link>
-              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
           {/* CTA Button & Mobile Menu */}
 <div className="flex items-center space-x-4">
-            <Link to="/contact" className="hidden sm:inline-flex">
-              <Button className="cta-primary">Request a Quote</Button>
-            </Link>
             
             {/* Mobile Menu Button */}
             <button
@@ -220,18 +207,6 @@ const Header = () => {
               <Link to="/support-deals" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Support Deals
               </Link>
-              <Link to="/need-help" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Need Help
-              </Link>
-              <Link to="/contact" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Contact
-              </Link>
-<div className="px-4 pt-2">
-                <Link to="/contact" className="block w-full">
-                  <Button className="cta-primary w-full">Request a Quote</Button>
-                </Link>
-                <div className="h-2" />
-              </div>
             </div>
           </div>
         )}

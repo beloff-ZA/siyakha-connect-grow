@@ -13,7 +13,7 @@ import CampusKeyProject from "./pages/projects/CampusKey";
 import About from "./pages/About";
 import ProjectsIndex from "./pages/ProjectsIndex";
 import BlogIndex from "./pages/BlogIndex";
-import Contact from "./pages/Contact";
+
 // Services
 import InfrastructureAndNetworking from "./pages/services/InfrastructureAndNetworking";
 import SecurityAndSurveillance from "./pages/services/SecurityAndSurveillance";
@@ -40,7 +40,7 @@ import ClassroomPlayback from "./pages/blog/ClassroomPlayback";
 import Careers from "./pages/Careers";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
-import NeedHelp from "./pages/NeedHelp";
+
 import SupportDeals from "./pages/SupportDeals";
 import WhatsAppContact from "./components/WhatsAppContact";
 import ScrollToTop from "./components/ScrollToTop";
@@ -69,12 +69,12 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/projects" element={<ProjectsIndex />} />
-            <Route path="/contact" element={<Contact />} />
+            <Route path="/contact" element={<Navigate to="/" replace />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             
-            <Route path="/need-help" element={<NeedHelp />} />
+            <Route path="/need-help" element={<Navigate to="/" replace />} />
             
             <Route path="/company" element={<Navigate to="/" replace />} />
             <Route path="/log-a-call" element={<Navigate to="/need-help" replace />} />
