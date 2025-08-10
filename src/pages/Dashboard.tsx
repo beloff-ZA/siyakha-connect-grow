@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 // Removed site Header/Footer for app-like dashboard
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +24,7 @@ interface SupportCall {
   location: string | null;
   issues: string[];
   description: string | null;
+  company_id: string | null; // added so we can scope/filter and handle realtime
 }
 
 export default function Dashboard() {
@@ -95,35 +95,62 @@ export default function Dashboard() {
     fetchProfile();
   }, []);
 
+  // Load calls, scoped by active company when available, and subscribe to changes
   useEffect(() => {
     const fetchCalls = async () => {
       setLoading(true);
-      const { data, error } = await supabase
+
+      // Build the base query and scope by company if we have one
+      let query = supabase
         .from("support_calls")
-        .select("id, status, created_at, location, issues, description")
+        .select("id, status, created_at, location, issues, description, company_id")
         .order("created_at", { ascending: false });
+
+      if (company?.id) {
+        query = query.eq("company_id", company.id);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         toast({ title: "Could not load calls", description: error.message, variant: "destructive" });
       } else {
-        setCalls(data as SupportCall[]);
+        setCalls((data || []) as SupportCall[]);
       }
       setLoading(false);
     };
 
     fetchCalls();
 
-    // Optional: realtime updates for new calls
+    // Realtime updates, scoped to company where possible
     const channel = supabase
-      .channel("support_calls_changes")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_calls" }, fetchCalls)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "support_calls" }, fetchCalls)
+      .channel(company?.id ? `support_calls_${company.id}` : "support_calls_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "support_calls",
+          ...(company?.id ? { filter: `company_id=eq.${company.id}` } : {}),
+        },
+        fetchCalls
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "support_calls",
+          ...(company?.id ? { filter: `company_id=eq.${company.id}` } : {}),
+        },
+        fetchCalls
+      )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [toast]);
+  }, [toast, company?.id]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -175,12 +202,18 @@ export default function Dashboard() {
             {/* Topbar */}
             <header className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between mb-6">
               <div className="flex items-center gap-2 w-full sm:w-auto">
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Client Dashboard</h1>
-                {(company?.name || companyName) && (
-                  <Badge variant="secondary" className="rounded-full">
-                    {company?.name || companyName}
-                  </Badge>
+                {/* Heading: show company name prominently */}
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                  {company?.name || companyName || "Client Dashboard"}
+                </h1>
+                <span className="text-xs text-muted-foreground hidden sm:inline">Client Dashboard</span>
+                {company && (
+                  <></>
                 )}
+                <span className="sr-only">{displayName}</span>
+                <span className="sr-only">{companyName}</span>
+                <span className="sr-only">{company?.name}</span>
+                {/* Version badge remains */}
                 <Badge className="rounded-full">v1.0</Badge>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto">
