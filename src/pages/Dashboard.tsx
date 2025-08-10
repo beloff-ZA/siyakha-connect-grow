@@ -77,7 +77,10 @@ export default function Dashboard() {
           .eq("id", user.id)
           .maybeSingle();
         if (prof) {
-          const dn = prof.display_name || "";
+          const dn =
+            prof.display_name ||
+            (((user?.user_metadata as any)?.full_name as string) || "") ||
+            (email ? email.split("@")[0] : "");
           const cn = prof.company_name || "";
           initials = (cn || dn || email)
             .split(" ")
@@ -201,20 +204,14 @@ export default function Dashboard() {
 
             {/* Topbar */}
             <header className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between mb-6">
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                {/* Heading: show company name prominently */}
+              <div className="flex flex-col w-full sm:w-auto gap-1">
+                {/* Hero greeting with user full name and company */}
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                  {company?.name || companyName || "Client Dashboard"}
+                  Welcome, {displayName || (company?.name || companyName) || "there"}
                 </h1>
-                <span className="text-xs text-muted-foreground hidden sm:inline">Client Dashboard</span>
-                {company && (
-                  <></>
-                )}
-                <span className="sr-only">{displayName}</span>
-                <span className="sr-only">{companyName}</span>
-                <span className="sr-only">{company?.name}</span>
-                {/* Version badge remains */}
-                <Badge className="rounded-full">v1.0</Badge>
+                <p className="text-sm text-muted-foreground">
+                  Company: {company?.name || companyName || "—"}
+                </p>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <div className="relative w-full sm:w-[320px]">
