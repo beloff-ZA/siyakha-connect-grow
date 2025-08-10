@@ -12,14 +12,16 @@ const AuthPage: React.FC = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "recovery">("signin");
   const [loading, setLoading] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
-    document.title = (mode === 'signin' ? 'Sign In' : 'Sign Up') + " | Siyakha Technology";
+    const pageTitle = mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Sign Up' : 'Reset Password';
+    document.title = `${pageTitle} | Siyakha Technology`;
     const meta = document.querySelector('meta[name="description"]') || document.createElement("meta");
     meta.setAttribute("name", "description");
-    meta.setAttribute("content", "Sign in or create an account to access the portal.");
+    meta.setAttribute("content", mode === 'recovery' ? "Set a new password to access your account." : "Sign in or create an account to access the portal.");
     if (!meta.parentNode) document.head.appendChild(meta);
 
     const canonical = document.querySelector('link[rel="canonical"]') || document.createElement("link");
@@ -29,13 +31,19 @@ const AuthPage: React.FC = () => {
   }, [mode]);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setMode('recovery');
+        return;
+      }
       if (session?.user) {
         window.location.replace("/portal/tickets");
       }
     });
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session?.user) window.location.replace("/portal/tickets");
+      const params = new URLSearchParams(window.location.search);
+      const isRecovery = params.get('type') === 'recovery';
+      if (data.session?.user && !isRecovery) window.location.replace("/portal/tickets");
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -75,38 +83,71 @@ const AuthPage: React.FC = () => {
     setLoading(false);
   };
 
+  const updatePassword = async () => {
+    if (!newPassword) {
+      toast({ title: "Enter a new password", description: "Please provide a new password to continue." });
+      return;
+    }
+    setLoading(true);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      toast({ title: "Update failed", description: error.message, variant: "destructive" as any });
+    } else {
+      toast({ title: "Password updated", description: "Your password has been updated. Redirecting..." });
+      window.location.replace("/portal/tickets");
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 container max-w-md mx-auto px-4 py-10">
-        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-6">{mode === 'signin' ? 'Sign In' : 'Sign Up'}</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-6">
+          {mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Sign Up' : 'Reset Password'}
+        </h1>
         <Card>
           <CardHeader>
-            <CardTitle>Access the Portal</CardTitle>
+            <CardTitle>{mode === 'recovery' ? 'Set a New Password' : 'Access the Portal'}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {mode === 'signin' ? (
-                  <Button onClick={signIn} disabled={loading}>Sign In</Button>
-                ) : (
-                  <Button onClick={signUp} disabled={loading}>Create Account</Button>
-                )}
-                <Button variant="outline" type="button" onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}>
-                  {mode === 'signin' ? 'Need an account? Sign Up' : 'Have an account? Sign In'}
-                </Button>
-                {mode === 'signin' && (
-                  <Button variant="link" type="button" onClick={forgotPassword}>Forgot password?</Button>
-                )}
-              </div>
+              {mode === 'recovery' ? (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">New Password</Label>
+                    <Input id="new-password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button onClick={updatePassword} disabled={loading}>Update Password</Button>
+                    <Button variant="outline" type="button" onClick={() => setMode('signin')}>Back to Sign In</Button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {mode === 'signin' ? (
+                      <Button onClick={signIn} disabled={loading}>Sign In</Button>
+                    ) : (
+                      <Button onClick={signUp} disabled={loading}>Create Account</Button>
+                    )}
+                    <Button variant="outline" type="button" onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}>
+                      {mode === 'signin' ? 'Need an account? Sign Up' : 'Have an account? Sign In'}
+                    </Button>
+                    {mode === 'signin' && (
+                      <Button variant="link" type="button" onClick={forgotPassword}>Forgot password?</Button>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
