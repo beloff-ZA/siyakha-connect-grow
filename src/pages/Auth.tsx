@@ -43,6 +43,14 @@ export default function Auth() {
     }
   }, [session, isPasswordRecovery, navigate, toast]);
 
+  useEffect(() => {
+    const msg = sessionStorage.getItem('signup_success_msg');
+    if (msg) {
+      toast({ title: 'Thank you for registering', description: msg });
+      sessionStorage.removeItem('signup_success_msg');
+    }
+  }, [toast]);
+
   return (
     <main className="min-h-screen bg-background">
       <section className="min-h-screen grid md:grid-cols-2">

@@ -76,7 +76,9 @@ export default function SignInForm() {
       if (error) {
         toast({ title: "Sign up failed", description: mapAuthError(error.message), variant: "destructive" });
       } else {
-        toast({ title: "Check your email", description: "Confirm your address to complete sign up." });
+        const msg = "Thank you for registering as a Siyakha partner. We look forward to helping you. Please check your mail for registered company authentication confirmation.";
+        sessionStorage.setItem('signup_success_msg', msg);
+        toast({ title: "Thank you for registering", description: msg });
       }
     }
 
