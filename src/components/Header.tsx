@@ -8,13 +8,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const displayName =
     ((user?.user_metadata as any)?.full_name as string) ||
     (user?.email ? user.email.split("@")[0] : "Account");
@@ -156,18 +158,32 @@ const Header = () => {
               <Button className="cta-primary">Request a Quote</Button>
             </Link>
             {user ? (
-              <Link to="/dashboard" className="hidden sm:inline-flex">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    {avatarUrl ? (
-                      <AvatarImage src={avatarUrl} alt={`${displayName} avatar`} />
-                    ) : (
-                      <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
-                    )}
-                  </Avatar>
-                  <span className="text-sm font-medium text-foreground">{displayName}</span>
-                </div>
-              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="hidden sm:inline-flex">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8">
+                      {avatarUrl ? (
+                        <AvatarImage src={avatarUrl} alt={`${displayName} avatar`} />
+                      ) : (
+                        <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
+                      )}
+                    </Avatar>
+                    <span className="text-sm font-medium text-foreground">{displayName}</span>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/company">Company Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => { signOut(); navigate("/", { replace: true }); }} className="text-destructive">
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Link to="/auth" className="hidden sm:inline-flex">
                 <Button variant="secondary">Sign in</Button>
@@ -260,9 +276,13 @@ const Header = () => {
                 </Link>
                 <div className="h-2" />
                 {user ? (
-                  <Link to="/dashboard" className="block w-full">
-                    <Button variant="secondary" className="w-full">Dashboard</Button>
-                  </Link>
+                  <>
+                    <Link to="/dashboard" className="block w-full">
+                      <Button variant="secondary" className="w-full">Dashboard</Button>
+                    </Link>
+                    <div className="h-2" />
+                    <Button variant="ghost" className="w-full" onClick={() => { signOut(); navigate("/", { replace: true }); }}>Sign out</Button>
+                  </>
                 ) : (
                   <Link to="/auth" className="block w-full">
                     <Button variant="secondary" className="w-full">Sign in</Button>

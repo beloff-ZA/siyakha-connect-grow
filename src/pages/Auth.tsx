@@ -38,8 +38,8 @@ export default function Auth() {
 
   useEffect(() => {
     if (session && !isPasswordRecovery) {
-      toast({ title: "You're already signed in", description: "Redirecting to home." });
-      navigate("/", { replace: true });
+      toast({ title: "You're already signed in", description: "Redirecting to your dashboard." });
+      navigate("/dashboard", { replace: true });
     }
   }, [session, isPasswordRecovery, navigate, toast]);
 
