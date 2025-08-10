@@ -17,6 +17,8 @@ import LogCallDialog from "@/components/msp/LogCallDialog";
 import { useCompany } from "@/hooks/useCompany";
 import CompanyBanner from "@/components/msp/CompanyBanner";
 import CompanyProfileForm from "@/components/msp/CompanyProfileForm";
+import CompanyProfileViewer from "@/components/msp/CompanyProfileViewer";
+import SitesManager from "@/components/msp/SitesManager";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface SupportCall {
@@ -366,6 +368,16 @@ export default function Dashboard() {
                       <a href="/blog" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><ShieldCheck className="h-4 w-4"/> Knowledge Base</Button></a>
                     </CardContent>
                   </Card>
+
+                  {/* Company Profile viewer */}
+                  <div className="lg:col-span-3">
+                    <CompanyProfileViewer />
+                  </div>
+                </div>
+
+                {/* Sites Manager full-width below */}
+                <div className="mt-4">
+                  <SitesManager />
                 </div>
               </TabsContent>
 
