@@ -307,9 +307,33 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_company_member_by_email: {
+        Args: {
+          _company_id: string
+          _email: string
+          _role?: Database["public"]["Enums"]["company_role"]
+        }
+        Returns: undefined
+      }
+      is_company_admin: {
+        Args: { _company_id: string; _user_id?: string }
+        Returns: boolean
+      }
       is_company_member: {
         Args: { _company_id: string; _user_id?: string }
         Returns: boolean
+      }
+      remove_company_member: {
+        Args: { _company_id: string; _member_id: string }
+        Returns: undefined
+      }
+      set_company_member_role: {
+        Args: {
+          _company_id: string
+          _member_id: string
+          _role: Database["public"]["Enums"]["company_role"]
+        }
+        Returns: undefined
       }
     }
     Enums: {

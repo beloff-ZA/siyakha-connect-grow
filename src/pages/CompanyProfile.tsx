@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,6 +45,9 @@ export default function CompanyProfile() {
     resolver: zodResolver(schema),
     defaultValues: { name: "", billing_email: "", phone: "", address: "", vat_number: "" },
   });
+
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviting, setInviting] = useState(false);
 
   const isUpdate = useMemo(() => !!(form.getValues() as any).id, [form]);
 
@@ -113,6 +116,29 @@ export default function CompanyProfile() {
       }
     }
   };
+  const inviteMember = async () => {
+    const id = (form.getValues() as any).id as string | undefined;
+    if (!id) {
+      toast({ title: 'Create a company first', description: 'Save your company details before inviting staff.', variant: 'destructive' });
+      return;
+    }
+    if (!inviteEmail) {
+      toast({ title: 'Enter an email', description: 'Provide the staff member’s email address.' });
+      return;
+    }
+    try {
+      setInviting(true);
+      const { error } = await supabase.rpc('add_company_member_by_email', { _company_id: id, _email: inviteEmail });
+      if (error) {
+        toast({ title: 'Invite failed', description: error.message, variant: 'destructive' });
+      } else {
+        toast({ title: 'Invitation sent', description: 'If the user exists, they have been added as a member.' });
+        setInviteEmail('');
+      }
+    } finally {
+      setInviting(false);
+    }
+  };
 
   return (
     <AuthGate>
@@ -151,6 +177,24 @@ export default function CompanyProfile() {
                   <div className="flex items-center gap-3">
                     <Button type="submit" className="cta-primary">{isUpdate ? 'Save changes' : 'Create company'}</Button>
                   </div>
+                  {isUpdate && (
+                    <div className="mt-8 border-t border-border pt-6">
+                      <h2 className="text-base font-medium mb-3">Invite staff member</h2>
+                      <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+                        <Input
+                          id="invite_email"
+                          type="email"
+                          placeholder="staff@company.com"
+                          value={inviteEmail}
+                          onChange={(e) => setInviteEmail(e.target.value)}
+                        />
+                        <Button type="button" onClick={inviteMember} disabled={inviting}>
+                          {inviting ? 'Adding...' : 'Add to company'}
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">Only admins can add members. The user must have an existing account.</p>
+                    </div>
+                  )}
                 </form>
               </CardContent>
             </Card>
