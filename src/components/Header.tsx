@@ -125,8 +125,8 @@ const Header = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/log-a-call" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Log a Call
+                <Link to="/need-help" className="text-foreground hover:text-primary transition-colors font-medium">
+                  Need Help
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
@@ -217,8 +217,8 @@ const Header = () => {
               <Link to="/support-deals" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Support Deals
               </Link>
-              <Link to="/log-a-call" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Log a Call
+              <Link to="/need-help" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+                Need Help
               </Link>
               <Link to="/contact" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Contact

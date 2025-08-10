@@ -40,7 +40,7 @@ import ClassroomPlayback from "./pages/blog/ClassroomPlayback";
 import Careers from "./pages/Careers";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
-import LogACall from "./pages/LogACall";
+import NeedHelp from "./pages/NeedHelp";
 import SupportDeals from "./pages/SupportDeals";
 import WhatsAppContact from "./components/WhatsAppContact";
 import ScrollToTop from "./components/ScrollToTop";
@@ -72,7 +72,8 @@ const App = () => (
           <Route path="/careers" element={<Careers />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
-          <Route path="/log-a-call" element={<LogACall />} />
+          <Route path="/need-help" element={<NeedHelp />} />
+          <Route path="/log-a-call" element={<Navigate to="/need-help" replace />} />
           <Route path="/support-deals" element={<SupportDeals />} />
 
           {/* Services */}
