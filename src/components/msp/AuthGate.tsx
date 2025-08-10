@@ -10,11 +10,13 @@ export default function AuthGate({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthed(!!session);
+      const verified = !!(session?.user?.email_confirmed_at);
+      setIsAuthed(!!session && verified);
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthed(!!session);
+      const verified = !!(session?.user?.email_confirmed_at);
+      setIsAuthed(!!session && verified);
       setReady(true);
     });
 
@@ -25,7 +27,7 @@ export default function AuthGate({ children }: PropsWithChildren) {
 
   if (!isAuthed) {
     if (typeof window !== 'undefined') {
-      window.location.replace('/');
+      window.location.replace('/auth');
     }
     return null;
   }
