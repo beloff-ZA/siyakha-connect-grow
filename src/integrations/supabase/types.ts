@@ -14,6 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
+      companies: {
+        Row: {
+          address: string | null
+          billing_email: string | null
+          created_at: string
+          id: string
+          metadata: Json
+          name: string
+          phone: string | null
+          updated_at: string
+          vat_number: string | null
+        }
+        Insert: {
+          address?: string | null
+          billing_email?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          name: string
+          phone?: string | null
+          updated_at?: string
+          vat_number?: string | null
+        }
+        Update: {
+          address?: string | null
+          billing_email?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          name?: string
+          phone?: string | null
+          updated_at?: string
+          vat_number?: string | null
+        }
+        Relationships: []
+      }
+      company_members: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["company_role"]
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["company_role"]
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["company_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       donations: {
         Row: {
           amount_cents: number
@@ -136,9 +204,60 @@ export type Database = {
         }
         Relationships: []
       }
+      quotes: {
+        Row: {
+          amount_cents: number | null
+          company_id: string
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          metadata: Json
+          requested_by: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number | null
+          company_id: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          metadata?: Json
+          requested_by: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number | null
+          company_id?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          metadata?: Json
+          requested_by?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_calls: {
         Row: {
           client_status: string | null
+          company_id: string | null
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
@@ -153,6 +272,7 @@ export type Database = {
         }
         Insert: {
           client_status?: string | null
+          company_id?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
@@ -167,6 +287,7 @@ export type Database = {
         }
         Update: {
           client_status?: string | null
+          company_id?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
@@ -186,10 +307,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_company_member: {
+        Args: { _company_id: string; _user_id?: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      company_role: "owner" | "admin" | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -316,6 +440,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      company_role: ["owner", "admin", "member"],
+    },
   },
 } as const

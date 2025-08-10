@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 // Removed site Header/Footer for app-like dashboard
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +15,8 @@ import { useToast } from "@/components/ui/use-toast";
 import AuthGate from "@/components/msp/AuthGate";
 import { LayoutDashboard, Wrench, Wifi, ShieldCheck, MessageSquare, Bell, Search, LogOut } from "lucide-react";
 import LogCallDialog from "@/components/msp/LogCallDialog";
+import { useCompany } from "@/hooks/useCompany";
+import CompanyBanner from "@/components/msp/CompanyBanner";
 
 interface SupportCall {
   id: string;
@@ -32,6 +35,8 @@ export default function Dashboard() {
   const [displayName, setDisplayName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [logOpen, setLogOpen] = useState(false);
+
+  const { company, loading: companyLoading } = useCompany();
 
   const openCount = useMemo(() =>
     calls.filter(c => !["closed", "resolved"].includes((c.status || "").toLowerCase())).length
@@ -164,11 +169,18 @@ export default function Dashboard() {
 
           {/* Main */}
           <section className="p-4 sm:p-6 lg:p-8">
+            {/* Company Banner */}
+            {company && <CompanyBanner company={company} className="mb-4" />}
+
             {/* Topbar */}
             <header className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between mb-6">
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Client Dashboard</h1>
-                {companyName && <Badge variant="secondary" className="rounded-full">{companyName}</Badge>}
+                {(company?.name || companyName) && (
+                  <Badge variant="secondary" className="rounded-full">
+                    {company?.name || companyName}
+                  </Badge>
+                )}
                 <Badge className="rounded-full">v1.0</Badge>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -185,7 +197,7 @@ export default function Dashboard() {
                       <Avatar className="h-6 w-6">
                         <AvatarFallback>{profileInitials}</AvatarFallback>
                       </Avatar>
-                      <span className="hidden sm:inline">{displayName || companyName || "Account"}</span>
+                      <span className="hidden sm:inline">{displayName || company?.name || companyName || "Account"}</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 rounded-xl">
