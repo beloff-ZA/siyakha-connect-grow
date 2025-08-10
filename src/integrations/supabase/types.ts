@@ -106,6 +106,51 @@ export type Database = {
           },
         ]
       }
+      support_calls: {
+        Row: {
+          client_status: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          id: string
+          issues: string[]
+          location: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_status?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          issues?: string[]
+          location?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_status?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          issues?: string[]
+          location?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

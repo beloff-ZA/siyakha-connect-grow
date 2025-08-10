@@ -9,9 +9,11 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const { user } = useAuth();
 
   const services = [
     "Infrastructure & Networking",
@@ -142,9 +144,15 @@ const Header = () => {
             <Link to="/contact" className="hidden sm:inline-flex">
               <Button className="cta-primary">Request a Quote</Button>
             </Link>
-            <Link to="/auth" className="hidden sm:inline-flex">
-              <Button variant="secondary">Sign in</Button>
-            </Link>
+            {user ? (
+              <Link to="/dashboard" className="hidden sm:inline-flex">
+                <Button variant="secondary">Dashboard</Button>
+              </Link>
+            ) : (
+              <Link to="/auth" className="hidden sm:inline-flex">
+                <Button variant="secondary">Sign in</Button>
+              </Link>
+            )}
             
             {/* Mobile Menu Button */}
             <button
@@ -231,9 +239,15 @@ const Header = () => {
                   <Button className="cta-primary w-full">Request a Quote</Button>
                 </Link>
                 <div className="h-2" />
-                <Link to="/auth" className="block w-full">
-                  <Button variant="secondary" className="w-full">Sign in</Button>
-                </Link>
+                {user ? (
+                  <Link to="/dashboard" className="block w-full">
+                    <Button variant="secondary" className="w-full">Dashboard</Button>
+                  </Link>
+                ) : (
+                  <Link to="/auth" className="block w-full">
+                    <Button variant="secondary" className="w-full">Sign in</Button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

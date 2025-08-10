@@ -165,6 +165,28 @@ export default function NeedHelp() {
     `;
 
     try {
+      // Persist to database for dashboard tracking if user is authenticated
+      const { data: userRes } = await supabase.auth.getUser();
+      const user = userRes?.user ?? null;
+      if (user) {
+        const { error: insertError } = await supabase.from("support_calls").insert([
+          {
+            user_id: user.id,
+            client_status: clientStatus ?? "new",
+            location,
+            issues,
+            description,
+            contact_name: fullName,
+            contact_email: email,
+            contact_phone: phone,
+            status: "open",
+          },
+        ]);
+        if (insertError) {
+          console.error("Insert support_call failed", insertError);
+        }
+      }
+
       const { error } = await supabase.functions.invoke("send-email", {
         body: {
           to: [
@@ -179,7 +201,7 @@ export default function NeedHelp() {
 
       if (error) throw error;
 
-      toast({ title: "Request submitted", description: "Our team will reach out shortly." });
+      toast({ title: "Request submitted", description: user ? "Track it in your dashboard." : "Our team will reach out shortly." });
       setStep(6);
     } catch (err: any) {
       console.error(err);
