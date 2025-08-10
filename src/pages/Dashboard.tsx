@@ -345,6 +345,7 @@ export default function Dashboard() {
                     </CardHeader>
                     <CardContent className="grid gap-2 sm:grid-cols-2">
                       <Button className="rounded-2xl justify-start gap-2" onClick={() => setLogOpen(true)}><Wrench className="h-4 w-4"/> Log a Call</Button>
+                      <a href="/company" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><ShieldCheck className="h-4 w-4"/> Company Profile</Button></a>
                       <a href="https://wa.me/27815012993" target="_blank" rel="noreferrer" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><MessageSquare className="h-4 w-4"/> WhatsApp</Button></a>
                       <a href="/blog" className="inline-flex"><Button variant="outline" className="rounded-2xl justify-start gap-2"><ShieldCheck className="h-4 w-4"/> Knowledge Base</Button></a>
                     </CardContent>
