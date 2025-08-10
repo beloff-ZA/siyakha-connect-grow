@@ -31,7 +31,7 @@ const categories = [
   "Other",
 ];
 
-const NeedHelp: React.FC = () => {
+const LogIt: React.FC = () => {
   const { toast } = useToast();
   const {
     register,
@@ -43,12 +43,12 @@ const NeedHelp: React.FC = () => {
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (values: FormValues) => {
-    console.log("[NeedHelp] Submitting payload", values);
+    console.log("[LogIt] Submitting payload", values);
     const { data, error } = await supabase.functions.invoke("log-support-call", {
       body: { ...values, preferred_channel: "email" },
     });
     if (error) {
-      console.error("[NeedHelp] Submission error", error);
+      console.error("[LogIt] Submission error", error);
       toast({
         title: "Something went wrong",
         description: "We couldn’t log your request. Please try again.",
@@ -56,7 +56,7 @@ const NeedHelp: React.FC = () => {
       });
       return;
     }
-    console.log("[NeedHelp] Submission success", data);
+    console.log("[LogIt] Submission success", data);
     toast({
       title: "Request submitted",
       description: "Thank you! Our support team will contact you shortly.",
@@ -70,7 +70,7 @@ const NeedHelp: React.FC = () => {
     <div className="container mx-auto px-4 py-10">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Need Help? We’re Here for You</h1>
+          <h1 className="text-3xl font-bold text-foreground">Log It</h1>
           <p className="mt-3 text-muted-foreground">
             Welcome — this is your direct line to Siyakha Technology’s support team. Fill in the form below to log your request.
             We’ll send it to our system and notify our team immediately.
@@ -140,4 +140,4 @@ const NeedHelp: React.FC = () => {
   );
 };
 
-export default NeedHelp;
+export default LogIt;
