@@ -8,6 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const COMPANY_TYPES = [
+  { value: "msp", label: "MSP" },
+  { value: "isp", label: "ISP" },
+  { value: "school", label: "School" },
+  { value: "enterprise", label: "Enterprise" },
+  { value: "government", label: "Government" },
+  { value: "healthcare", label: "Healthcare" },
+  { value: "hospitality", label: "Hospitality" },
+  { value: "retail", label: "Retail" },
+  { value: "nonprofit", label: "Nonprofit" },
+  { value: "manufacturing", label: "Manufacturing" },
+  { value: "finance", label: "Finance" },
+  { value: "other", label: "Other" },
+];
 
 const schema = z.object({
   name: z.string().min(2, "Company name is required"),
@@ -15,6 +31,7 @@ const schema = z.object({
   phone: z.string().optional().or(z.literal("")).transform(v => v || null),
   address: z.string().optional().or(z.literal("")).transform(v => v || null),
   vat_number: z.string().optional().or(z.literal("")).transform(v => v || null),
+  company_type: z.string().optional().or(z.literal("")).transform(v => v || null),
 });
 
 export interface CompanyLike {
@@ -24,6 +41,7 @@ export interface CompanyLike {
   phone?: string | null;
   address?: string | null;
   vat_number?: string | null;
+  company_type?: string | null;
 }
 
 export default function CompanyProfileForm({ initialCompany, onSubmitted }: { initialCompany?: CompanyLike | null; onSubmitted?: () => void }) {
@@ -37,6 +55,7 @@ export default function CompanyProfileForm({ initialCompany, onSubmitted }: { in
       phone: initialCompany?.phone || "",
       address: initialCompany?.address || "",
       vat_number: initialCompany?.vat_number || "",
+      company_type: initialCompany?.company_type || "",
     },
   });
 
@@ -46,7 +65,7 @@ export default function CompanyProfileForm({ initialCompany, onSubmitted }: { in
       (async () => {
         const { data, error } = await supabase
           .from('companies')
-          .select('id, name, billing_email, phone, address, vat_number')
+          .select('id, name, billing_email, phone, address, vat_number, company_type')
           .limit(1)
           .maybeSingle();
         if (!error && data) {
@@ -58,6 +77,7 @@ export default function CompanyProfileForm({ initialCompany, onSubmitted }: { in
             phone: data.phone || "",
             address: data.address || "",
             vat_number: data.vat_number || "",
+            company_type: (data as any).company_type || "",
           } as any);
         }
       })();
@@ -71,6 +91,7 @@ export default function CompanyProfileForm({ initialCompany, onSubmitted }: { in
         phone: initialCompany.phone || "",
         address: initialCompany.address || "",
         vat_number: initialCompany.vat_number || "",
+        company_type: initialCompany.company_type || "",
       } as any);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,6 +109,7 @@ export default function CompanyProfileForm({ initialCompany, onSubmitted }: { in
           phone: values.phone,
           address: values.address,
           vat_number: values.vat_number,
+          company_type: values.company_type as any,
         })
         .eq('id', id);
       if (error) {
@@ -106,6 +128,7 @@ export default function CompanyProfileForm({ initialCompany, onSubmitted }: { in
           phone: values.phone,
           address: values.address,
           vat_number: values.vat_number,
+          company_type: values.company_type as any,
           metadata: {},
         })
         .select('id')
@@ -142,9 +165,24 @@ export default function CompanyProfileForm({ initialCompany, onSubmitted }: { in
               <Input id="vat_number" placeholder="ZA123456789" {...form.register('vat_number')} />
             </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="address">Address</Label>
-            <Input id="address" placeholder="Company address" {...form.register('address')} />
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2">
+              <Label>Company type</Label>
+              <Select value={(form.watch('company_type') as any) || undefined} onValueChange={(v) => form.setValue('company_type', v as any)}>
+                <SelectTrigger className="rounded-xl">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {COMPANY_TYPES.map((t) => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="address">Address</Label>
+              <Input id="address" placeholder="Company address" {...form.register('address')} />
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <Button type="submit" className="cta-primary">Save</Button>

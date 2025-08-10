@@ -20,6 +20,7 @@ export type Database = {
           address: string | null
           arrival_notification_recipients: string[]
           billing_email: string | null
+          company_type: Database["public"]["Enums"]["company_type"] | null
           created_at: string
           id: string
           logo_url: string | null
@@ -37,6 +38,7 @@ export type Database = {
           address?: string | null
           arrival_notification_recipients?: string[]
           billing_email?: string | null
+          company_type?: Database["public"]["Enums"]["company_type"] | null
           created_at?: string
           id?: string
           logo_url?: string | null
@@ -54,6 +56,7 @@ export type Database = {
           address?: string | null
           arrival_notification_recipients?: string[]
           billing_email?: string | null
+          company_type?: Database["public"]["Enums"]["company_type"] | null
           created_at?: string
           id?: string
           logo_url?: string | null
@@ -442,6 +445,19 @@ export type Database = {
         | "client_non_msp"
         | "team_member"
       company_role: "owner" | "admin" | "member"
+      company_type:
+        | "msp"
+        | "isp"
+        | "school"
+        | "enterprise"
+        | "government"
+        | "healthcare"
+        | "hospitality"
+        | "retail"
+        | "nonprofit"
+        | "manufacturing"
+        | "finance"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -578,6 +594,20 @@ export const Constants = {
         "team_member",
       ],
       company_role: ["owner", "admin", "member"],
+      company_type: [
+        "msp",
+        "isp",
+        "school",
+        "enterprise",
+        "government",
+        "healthcare",
+        "hospitality",
+        "retail",
+        "nonprofit",
+        "manufacturing",
+        "finance",
+        "other",
+      ],
     },
   },
 } as const

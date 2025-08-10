@@ -80,6 +80,9 @@ export default function CompanyProfileViewer() {
             {company.vat_number && (
               <div className="text-sm text-muted-foreground">VAT: {company.vat_number}</div>
             )}
+            {company.company_type && (
+              <div className="text-sm text-muted-foreground capitalize">Type: {String(company.company_type).replace('_',' ')}</div>
+            )}
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

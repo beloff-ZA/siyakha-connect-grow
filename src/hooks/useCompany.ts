@@ -10,6 +10,7 @@ export interface Company {
   address?: string | null;
   vat_number?: string | null;
   logo_url?: string | null;
+  company_type?: string | null;
   metadata?: any;
 }
 
@@ -65,7 +66,7 @@ export function useCompany() {
 
       const { data: comps, error: compErr } = await supabase
         .from("companies")
-        .select("id, name, billing_email, phone, address, vat_number, logo_url, metadata")
+        .select("id, name, billing_email, phone, address, vat_number, logo_url, company_type, metadata")
         .in("id", ids);
 
       if (compErr) {

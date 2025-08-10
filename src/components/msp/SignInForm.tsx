@@ -4,12 +4,28 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function SignInForm() {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [company, setCompany] = useState("");
+  const [companyType, setCompanyType] = useState("");
+  const COMPANY_TYPES = [
+    { value: "msp", label: "MSP" },
+    { value: "isp", label: "ISP" },
+    { value: "school", label: "School" },
+    { value: "enterprise", label: "Enterprise" },
+    { value: "government", label: "Government" },
+    { value: "healthcare", label: "Healthcare" },
+    { value: "hospitality", label: "Hospitality" },
+    { value: "retail", label: "Retail" },
+    { value: "nonprofit", label: "Nonprofit" },
+    { value: "manufacturing", label: "Manufacturing" },
+    { value: "finance", label: "Finance" },
+    { value: "other", label: "Other" },
+  ];
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -71,7 +87,7 @@ export default function SignInForm() {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: redirectUrl, data: { company } },
+        options: { emailRedirectTo: redirectUrl, data: { company, company_type: companyType } },
       });
       if (error) {
         toast({ title: "Sign up failed", description: mapAuthError(error.message), variant: "destructive" });
@@ -103,9 +119,24 @@ export default function SignInForm() {
         )}
       </div>
       {!isLogin && (
-        <div className="space-y-2">
-          <Label htmlFor="company">Company name</Label>
-          <Input id="company" value={company} onChange={(e) => setCompany(e.target.value)} placeholder="e.g. Siyakha Technology" />
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="company">Company name</Label>
+            <Input id="company" value={company} onChange={(e) => setCompany(e.target.value)} placeholder="e.g. Siyakha Technology" />
+          </div>
+          <div className="space-y-2">
+            <Label>Company type</Label>
+            <Select value={companyType || undefined} onValueChange={(v) => setCompanyType(v)}>
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                {COMPANY_TYPES.map(t => (
+                  <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       )}
       <div className="flex items-center gap-3">
