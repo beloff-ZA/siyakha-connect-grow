@@ -11,3 +11,6 @@ verify_jwt = true
 
 [functions.invite-admin-user]
 verify_jwt = true
+
+[functions.create-company-admin]
+verify_jwt = true
