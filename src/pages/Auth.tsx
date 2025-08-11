@@ -21,7 +21,7 @@ const AuthPage: React.FC = () => {
     document.title = `${pageTitle} | Siyakha Technology`;
     const meta = document.querySelector('meta[name="description"]') || document.createElement("meta");
     meta.setAttribute("name", "description");
-    meta.setAttribute("content", mode === 'recovery' ? "Set a new password to access your account." : "Sign in or create an account to access the portal.");
+    meta.setAttribute("content", mode === 'recovery' ? "Set a new password to access your account." : "Sign in or create an account to access your tickets.");
     if (!meta.parentNode) document.head.appendChild(meta);
 
     const canonical = document.querySelector('link[rel="canonical"]') || document.createElement("link");
@@ -108,7 +108,7 @@ const AuthPage: React.FC = () => {
         </h1>
         <Card>
           <CardHeader>
-            <CardTitle>{mode === 'recovery' ? 'Set a New Password' : 'Access the Portal'}</CardTitle>
+            <CardTitle>{mode === 'recovery' ? 'Set a New Password' : 'Access your account'}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">

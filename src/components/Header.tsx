@@ -129,7 +129,7 @@ const Header = () => {
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/portal/tickets" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Portal
+                  Tickets
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -217,7 +217,7 @@ const Header = () => {
                 Support Deals
               </Link>
               <Link to="/portal/tickets" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Portal
+                Tickets
               </Link>
               {user ? (
                 <button onClick={signOut} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">

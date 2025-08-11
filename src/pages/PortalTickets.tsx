@@ -20,7 +20,7 @@ const PortalTickets: React.FC = () => {
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    document.title = "Portal Tickets | Siyakha Technology";
+    document.title = "Tickets | Siyakha Technology";
     const ensureMeta = (name: string, content: string) => {
       let el = document.querySelector(`meta[name="${name}"]`);
       if (!el) {
