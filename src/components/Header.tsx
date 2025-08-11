@@ -127,20 +127,13 @@ const Header = () => {
                   Support Deals
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/portal/tickets" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Tickets
-                </Link>
-              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
           {/* CTA Button & Mobile Menu */}
 <div className="flex items-center space-x-4">
-            {user ? (
+            {user && (
               <button onClick={signOut} className="hidden lg:inline text-sm text-foreground hover:text-primary transition-colors">Sign Out</button>
-            ) : (
-              <Link to="/auth" className="hidden lg:inline text-sm text-foreground hover:text-primary transition-colors">Sign In</Link>
             )}
             {/* Mobile Menu Button */}
             <button
@@ -216,17 +209,10 @@ const Header = () => {
               <Link to="/support-deals" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Support Deals
               </Link>
-              <Link to="/portal/tickets" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Tickets
-              </Link>
-              {user ? (
+              {user && (
                 <button onClick={signOut} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                   Sign Out
                 </button>
-              ) : (
-                <Link to="/auth" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                  Sign In
-                </Link>
               )}
             </div>
           </div>
