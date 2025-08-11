@@ -62,6 +62,7 @@ import ItCompanyLondon from "./pages/ItCompanyLondon";
 import ItCompanyAngola from "./pages/ItCompanyAngola";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminQuickCreate from "./components/admin/AdminQuickCreate";
 const queryClient = new QueryClient();
 
 function App() {
@@ -140,6 +141,7 @@ function App() {
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <AdminQuickCreate />
               <WhatsAppContact />
             </Router>
           </AuthProvider>
