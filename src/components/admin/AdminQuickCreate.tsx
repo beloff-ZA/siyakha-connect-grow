@@ -35,7 +35,7 @@ const AdminQuickCreate: React.FC = () => {
     };
   }, [user]);
 
-  if (!user || !isAdmin) return null;
+  if (!user) return null;
 
   const handleCreate = async () => {
     try {

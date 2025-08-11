@@ -63,25 +63,38 @@ serve(async (req) => {
       });
     }
 
-    // Check caller has global admin role
-    const { data: hasRole, error: roleErr } = await admin.rpc("has_role", {
-      _user_id: userData.user.id,
-      _role: "siyakha_admin",
-    });
+    // Bootstrap: allow first authenticated user to run if no global admins exist yet
+    const { data: anyAdmin, error: anyAdminErr } = await admin
+      .from("user_roles")
+      .select("id")
+      .eq("role", "siyakha_admin")
+      .limit(1);
 
-    if (roleErr) {
-      console.error("Role check error", roleErr);
-      return new Response(JSON.stringify({ error: "Role check failed" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
+    const bootstrap = !anyAdminErr && (!anyAdmin || anyAdmin.length === 0);
 
-    if (!hasRole) {
-      return new Response(JSON.stringify({ error: "Forbidden" }), {
-        status: 403,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+    if (!bootstrap) {
+      // Check caller has global admin role
+      const { data: hasRole, error: roleErr } = await admin.rpc("has_role", {
+        _user_id: userData.user.id,
+        _role: "siyakha_admin",
       });
+
+      if (roleErr) {
+        console.error("Role check error", roleErr);
+        return new Response(JSON.stringify({ error: "Role check failed" }), {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+
+      if (!hasRole) {
+        return new Response(JSON.stringify({ error: "Forbidden" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+    } else {
+      console.log("Bootstrap mode enabled: no global admins found. Allowing first-time setup by", userData.user.email);
     }
 
     // 1) Create or find the company by name (case-insensitive)
