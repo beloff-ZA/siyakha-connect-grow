@@ -10,6 +10,7 @@ const pelicanImage = "/lovable-uploads/f345d1c0-6383-4a5c-9188-81c8ae221932.png"
 const campusKeyImage = "/lovable-uploads/7c314536-73bf-4ae1-b7e3-ccceee5d640e.png";
 const conferenceRoomProject = "/lovable-uploads/e85bfefa-f7c0-413b-ac3e-5c3dc791bacc.png";
 const guestWifiProject = "/lovable-uploads/08c32d0c-30d7-4eb1-b8c2-73824f3fd226.png";
+const guestWifiPortal = "/lovable-uploads/536b36ad-d93e-4ae6-941a-f55cf5ac1fb9.png";
 
 const Projects = () => {
   const projects = [

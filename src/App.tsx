@@ -62,6 +62,7 @@ import ItCompanyLondon from "./pages/ItCompanyLondon";
 import ItCompanyAngola from "./pages/ItCompanyAngola";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import GuestWifiSolutions from "./pages/projects/GuestWifiSolutions";
 import Contact from "./pages/Contact";
 import AdminQuickCreate from "./components/admin/AdminQuickCreate";
 const queryClient = new QueryClient();
@@ -129,6 +130,7 @@ function App() {
                 <Route path="/projects/kfc-national-network-rollout" element={<KFCExmileProject />} />
                 <Route path="/projects/pelican-club-bahrain" element={<PelicanClubBahrainProject />} />
                 <Route path="/projects/campuskey-network-overhaul" element={<CampusKeyProject />} />
+                <Route path="/projects/guest-wifi-solutions" element={<GuestWifiSolutions />} />
 
                 <Route path="/it-company-johannesburg" element={<ItCompanyJohannesburg />} />
                 <Route path="/managed-it-services-johannesburg" element={<ManagedITSJohannesburg />} />
