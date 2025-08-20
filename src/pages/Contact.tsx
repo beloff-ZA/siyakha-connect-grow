@@ -24,9 +24,8 @@ import {
 import { Mail, Phone, Clock, Send, CheckCircle } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { sendEmail } from "@/lib/email";
 import { useToast } from "@/hooks/use-toast";
-import { escapeHtml } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -61,36 +60,21 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      const emailContent = `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
-        <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
-        <p><strong>Phone:</strong> ${escapeHtml(data.phone)}</p>
-        <p><strong>Company:</strong> ${escapeHtml(data.company)}</p>
-        <p><strong>Service Type:</strong> ${escapeHtml(data.serviceType)}</p>
-        <p><strong>Subject:</strong> ${escapeHtml(data.subject)}</p>
-        <p><strong>Message:</strong></p>
-        <p>${escapeHtml(data.message).replace(/\n/g, '<br>')}</p>
-      `;
+      const payload = {
+        full_name: data.name,
+        email: data.email,
+        contact_number: data.phone,
+        whatsapp_number: data.phone,
+        category: data.serviceType,
+        description: `Subject: ${data.subject}\n\nCompany: ${data.company}\n\nMessage:\n${data.message}`,
+        preferred_channel: "email"
+      };
 
-      await sendEmail({
-        to: ["nikita@siyakhatechnology.co.za"],
-        subject: `Contact Form: ${data.subject}`,
-        html: emailContent,
-        text: `
-          New Contact Form Submission
-          
-          Name: ${data.name}
-          Email: ${data.email}
-          Phone: ${data.phone}
-          Company: ${data.company}
-          Service Type: ${data.serviceType}
-          Subject: ${data.subject}
-          
-          Message:
-          ${data.message}
-        `,
+      const { data: result, error } = await supabase.functions.invoke("log-support-call", {
+        body: payload,
       });
+
+      if (error) throw error;
 
       toast({
         title: "Message sent successfully!",
@@ -99,7 +83,7 @@ const Contact = () => {
 
       form.reset();
     } catch (error) {
-      console.error("Error sending email:", error);
+      console.error("Error sending message:", error);
       toast({
         title: "Failed to send message",
         description: "Please try again or contact us directly.",
