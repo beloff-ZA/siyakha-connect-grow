@@ -60,6 +60,8 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
+      console.log("Starting form submission...");
+      
       const payload = {
         full_name: data.name,
         email: data.email,
@@ -70,11 +72,21 @@ const Contact = () => {
         preferred_channel: "email"
       };
 
+      console.log("Payload:", payload);
+
       const { data: result, error } = await supabase.functions.invoke("log-support-call", {
         body: payload,
       });
 
-      if (error) throw error;
+      console.log("Function result:", result);
+      console.log("Function error:", error);
+
+      if (error) {
+        console.error("Supabase function error:", error);
+        throw error;
+      }
+
+      console.log("Message sent successfully");
 
       toast({
         title: "Message sent successfully!",
