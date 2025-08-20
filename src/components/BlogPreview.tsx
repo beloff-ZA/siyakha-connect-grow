@@ -7,6 +7,15 @@ import BlogViews from "@/components/BlogViews";
 const BlogPreview = ({ showCount }: { showCount?: number }) => {
   const articles = [
     {
+      title: "DRaaS: Disaster Recovery as a Service - Complete Guide 2025",
+      excerpt: "Discover how DRaaS ensures business continuity with cloud-based backup solutions, minimal downtime, and cost-effective disaster recovery strategies.",
+      date: "January 20, 2025",
+      readTime: "8 min read",
+      category: "Business Continuity",
+      link: "/blog/draas",
+      featured: true
+    },
+    {
       title: "Classroom Playback Technology: Bringing the Soccer Replay Advantage to Education",
       excerpt: "Zoom-integrated lesson replays with AI transcripts and notes—replay, search, and learn at your own pace.",
       date: "June 2025",

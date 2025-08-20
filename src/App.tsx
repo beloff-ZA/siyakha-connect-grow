@@ -41,6 +41,7 @@ import ITMigration from "./pages/blog/ITMigration";
 import VoIPRollout from "./pages/blog/VoIPRollout";
 import FieldSupportComplete from "./pages/blog/FieldSupportComplete";
 import ClassroomPlayback from "./pages/blog/ClassroomPlayback";
+import DRaaS from "./pages/blog/DRaaS";
 // Legal and misc
 import Careers from "./pages/Careers";
 import Privacy from "./pages/Privacy";
@@ -123,6 +124,7 @@ function App() {
                 <Route path="/blog/voip-phone-rollout-services-south-africa" element={<VoIPRollout />} />
                 <Route path="/blog/complete-field-support-solutions-on-site-remote-and-dedicated-engineers" element={<FieldSupportComplete />} />
                 <Route path="/blog/classroom-playback-technology-zoom-ai-lesson-replay" element={<ClassroomPlayback />} />
+                <Route path="/blog/draas" element={<DRaaS />} />
 
                 {/* Projects */}
                 <Route path="/projects/marist-brothers-linmeyer" element={<MaristBrothersProject />} />
