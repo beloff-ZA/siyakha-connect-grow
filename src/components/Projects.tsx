@@ -81,7 +81,8 @@ const Projects = () => {
       title: "Guest Wi-Fi Solutions for Hotels & Restaurants",
       location: "Thavhani Mall & Hospitality Venues",
       description: "Professional guest Wi-Fi infrastructure with branded login portals, time-based access control, and seamless user experience for hotels and restaurants.",
-      image: guestWifiPortal,
+      image: guestWifiProject,
+      images: [guestWifiProject, guestWifiPortal],
       icon: Wifi,
       features: ["Branded Login Portals", "Time-based Access", "User Management", "Hospitality Integration"],
       link: "/projects/guest-wifi-solutions"
@@ -107,13 +108,28 @@ const Projects = () => {
               className="overflow-hidden group hover:shadow-xl transition-all duration-300"
             >
               <div className="relative h-64 overflow-hidden">
-                <img 
-                  src={project.image}
-                  alt={project.title}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+                {project.images && project.images.length > 1 ? (
+                  <div className="grid grid-cols-2 h-full gap-1">
+                    {project.images.map((img, imgIndex) => (
+                      <img 
+                        key={imgIndex}
+                        src={img}
+                        alt={`${project.title} - Image ${imgIndex + 1}`}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <img 
+                    src={project.image}
+                    alt={project.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                )}
                 <div className="absolute inset-0 bg-primary/60 group-hover:bg-primary/40 transition-colors duration-300"></div>
                 <div className="absolute top-4 left-4">
                   <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
