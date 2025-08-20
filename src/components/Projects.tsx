@@ -81,7 +81,7 @@ const Projects = () => {
       title: "Guest Wi-Fi Solutions for Hotels & Restaurants",
       location: "Thavhani Mall & Hospitality Venues",
       description: "Professional guest Wi-Fi infrastructure with branded login portals, time-based access control, and seamless user experience for hotels and restaurants.",
-      image: guestWifiProject,
+      image: guestWifiPortal,
       icon: Wifi,
       features: ["Branded Login Portals", "Time-based Access", "User Management", "Hospitality Integration"],
       link: "/projects/guest-wifi-solutions"
