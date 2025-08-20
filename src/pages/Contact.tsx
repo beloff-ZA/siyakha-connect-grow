@@ -26,6 +26,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { sendEmail } from "@/lib/email";
 import { useToast } from "@/hooks/use-toast";
+import { escapeHtml } from "@/lib/utils";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -62,14 +63,14 @@ const Contact = () => {
     try {
       const emailContent = `
         <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${data.name}</p>
-        <p><strong>Email:</strong> ${data.email}</p>
-        <p><strong>Phone:</strong> ${data.phone}</p>
-        <p><strong>Company:</strong> ${data.company}</p>
-        <p><strong>Service Type:</strong> ${data.serviceType}</p>
-        <p><strong>Subject:</strong> ${data.subject}</p>
+        <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(data.phone)}</p>
+        <p><strong>Company:</strong> ${escapeHtml(data.company)}</p>
+        <p><strong>Service Type:</strong> ${escapeHtml(data.serviceType)}</p>
+        <p><strong>Subject:</strong> ${escapeHtml(data.subject)}</p>
         <p><strong>Message:</strong></p>
-        <p>${data.message.replace(/\n/g, '<br>')}</p>
+        <p>${escapeHtml(data.message).replace(/\n/g, '<br>')}</p>
       `;
 
       await sendEmail({
