@@ -54,13 +54,6 @@ const ItCompanyJohannesburg = () => {
     provider: {
       "@type": "LocalBusiness",
       name: "Siyakha Technology",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Maude Street West Tower, Nelson Mandela Square",
-        addressLocality: "Sandton",
-        postalCode: "2146",
-        addressCountry: "ZA",
-      },
       telephone: "+27 87 702 7411",
       areaServed: ["Johannesburg", "Sandton", "Rosebank", "Midrand"],
     },

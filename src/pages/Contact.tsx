@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from "lucide-react";
+import { Mail, Phone, Clock, Send, CheckCircle } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { sendEmail } from "@/lib/email";
@@ -121,12 +121,6 @@ const Contact = () => {
       title: "Email",
       content: "nikita@siyakhatechnology.co.za",
       description: "We'll respond within 24 hours"
-    },
-    {
-      icon: MapPin,
-      title: "Address",
-      content: "Nelson Mandela Square, Sandton",
-      description: "2nd Floor, Maude Street West Tower"
     },
     {
       icon: Clock,

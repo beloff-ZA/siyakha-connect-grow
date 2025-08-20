@@ -46,14 +46,6 @@ const Index = () => {
     "@type": "LocalBusiness",
     name: "Siyakha Tech Solutions (Pty) Ltd",
     telephone: "+27 81 501 2993",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "2nd Floor, Nelson Mandela Square, Maude Street West Tower",
-      addressLocality: "Sandton",
-      addressRegion: "Gauteng",
-      postalCode: "2146",
-      addressCountry: "ZA"
-    },
     areaServed: ["Johannesburg", "Sandton", "Randburg", "Gauteng", "South Africa"],
     url: typeof window !== 'undefined' ? window.location.origin : undefined,
     sameAs: [
