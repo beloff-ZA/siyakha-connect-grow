@@ -204,7 +204,9 @@ const MaristBrothersProject = () => {
             security, and stronger cyber resilience.
           </div>
           <div className="flex gap-3">
-            <Button className="cta-primary">Request a Consultation</Button>
+            <Link to="/contact" className="inline-flex">
+              <Button className="cta-primary">Request a Consultation</Button>
+            </Link>
             <Button
               variant="outline"
               className="cta-secondary"

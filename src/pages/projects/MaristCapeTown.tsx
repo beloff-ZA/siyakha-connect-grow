@@ -131,7 +131,9 @@ const MaristCapeTownProject = () => {
             We deployed a 55‑camera CCTV solution built on a resilient campus fibre network, delivering full coverage and centralized control across the entire site.
           </div>
           <div className="flex gap-3">
-            <Button className="cta-primary">Request a Consultation</Button>
+            <Link to="/contact" className="inline-flex">
+              <Button className="cta-primary">Request a Consultation</Button>
+            </Link>
             <Button variant="outline" className="cta-secondary" onClick={() => (window.location.href = "/projects")}>
               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Projects
             </Button>

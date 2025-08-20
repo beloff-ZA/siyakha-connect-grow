@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -130,7 +131,9 @@ const About = () => {
               <p className="text-muted-foreground mb-6">
                 Whether you’re upgrading your infrastructure, rolling out a new network, or need trusted support — Siyakha is here to help.
               </p>
-              <Button className="cta-primary w-full sm:w-auto">Contact Us</Button>
+              <Link to="/contact" className="inline-flex">
+                <Button className="cta-primary w-full sm:w-auto">Contact Us</Button>
+              </Link>
             </aside>
           </div>
         </section>
@@ -182,7 +185,9 @@ const About = () => {
             <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
               Our goal is simple: to become your most reliable and proactive technology partner.
             </p>
-            <Button className="cta-primary">Contact Us Today</Button>
+            <Link to="/contact" className="inline-flex">
+              <Button className="cta-primary">Contact Us Today</Button>
+            </Link>
           </div>
         </section>
       </main>

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Clock, Zap, CheckCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const DraasFeature = () => {
   const features = [
@@ -45,12 +46,16 @@ const DraasFeature = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-accent hover:bg-accent/90">
-                Get DRaaS Quote
-              </Button>
-              <Button variant="outline" size="lg">
-                Learn More
-              </Button>
+              <Link to="/contact" className="inline-flex">
+                <Button size="lg" className="bg-accent hover:bg-accent/90">
+                  Get DRaaS Quote
+                </Button>
+              </Link>
+              <Link to="/contact" className="inline-flex">
+                <Button variant="outline" size="lg">
+                  Learn More
+                </Button>
+              </Link>
             </div>
           </div>
 

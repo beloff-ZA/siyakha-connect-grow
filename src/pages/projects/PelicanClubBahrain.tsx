@@ -135,7 +135,7 @@ const PelicanClubBahrainProject = () => {
                 </p>
                 <div className="flex gap-3">
                   <Button asChild className="cta-primary">
-                    <a href="#contact" aria-label="Request a consultation">Request a consultation</a>
+                    <Link to="/contact">Request a consultation</Link>
                   </Button>
                   <Button asChild variant="outline">
                     <Link to="/" aria-label="Back to home">Back to home</Link>
@@ -246,7 +246,7 @@ const PelicanClubBahrainProject = () => {
               We help organizations operate smoothly with fast, professional assistance—from printer setup to full remote desktop support.
             </p>
             <Button className="cta-primary" asChild>
-              <a href="mailto:info@siyakha.co.za?subject=Remote%20IT%20Support%20Enquiry">Get a consultation</a>
+              <Link to="/contact">Get a consultation</Link>
             </Button>
           </div>
         </section>

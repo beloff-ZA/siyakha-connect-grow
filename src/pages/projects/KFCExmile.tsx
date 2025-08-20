@@ -127,7 +127,9 @@ const KFCExmileProject = () => {
             This successful rollout strengthened our collaboration with Exmile and helped modernize the IT infrastructure of one of South Africa’s most recognized retail brands.
           </div>
           <div className="flex gap-3">
-            <Button className="cta-primary">Request a Consultation</Button>
+            <Link to="/contact" className="inline-flex">
+              <Button className="cta-primary">Request a Consultation</Button>
+            </Link>
             <Button
               variant="outline"
               className="cta-secondary"

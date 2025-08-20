@@ -133,7 +133,7 @@ const CampusKeyProject = () => {
                 </p>
                 <div className="flex gap-3">
                   <Button asChild className="cta-primary">
-                    <a href="#contact" aria-label="Request a consultation">Request a consultation</a>
+                    <Link to="/contact">Request a consultation</Link>
                   </Button>
                   <Button asChild variant="outline">
                     <Link to="/" aria-label="Back to home">Back to home</Link>
@@ -238,7 +238,7 @@ const CampusKeyProject = () => {
               From cabling to Wi‑Fi to centralized management, we deliver reliable connectivity at scale.
             </p>
             <Button className="cta-primary" asChild>
-              <a href="mailto:info@siyakha.co.za?subject=CampusKey%20Network%20Overhaul">Request a consultation</a>
+              <Link to="/contact">Request a consultation</Link>
             </Button>
           </div>
         </section>
