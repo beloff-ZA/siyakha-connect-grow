@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import WhySiyakha from "@/components/WhySiyakha";
 import Services from "@/components/Services";
+import DraasFeature from "@/components/DraasFeature";
 import Industries from "@/components/Industries";
 import Projects from "@/components/Projects";
 import BrandCarousel from "@/components/BrandCarousel";
@@ -73,6 +74,7 @@ const Index = () => {
       <Hero />
       <WhySiyakha />
       <Services />
+      <DraasFeature />
       <BrandCarousel />
       <Industries />
       <Projects />
