@@ -127,6 +127,11 @@ const Header = () => {
                   Support Deals
                 </Link>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
+                  Contact
+                </Link>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
@@ -208,6 +213,9 @@ const Header = () => {
               </Link>
               <Link to="/support-deals" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Support Deals
+              </Link>
+              <Link to="/contact" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+                Contact
               </Link>
               {user && (
                 <button onClick={signOut} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">

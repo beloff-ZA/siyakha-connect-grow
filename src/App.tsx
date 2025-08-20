@@ -62,6 +62,7 @@ import ItCompanyLondon from "./pages/ItCompanyLondon";
 import ItCompanyAngola from "./pages/ItCompanyAngola";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Contact from "./pages/Contact";
 import AdminQuickCreate from "./components/admin/AdminQuickCreate";
 const queryClient = new QueryClient();
 
@@ -79,7 +80,7 @@ function App() {
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<ProjectsIndex />} />
-                <Route path="/contact" element={<Navigate to="/" replace />} />
+                <Route path="/contact" element={<Contact />} />
                 <Route path="/careers" element={<Careers />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
