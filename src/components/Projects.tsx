@@ -9,6 +9,7 @@ import officeProject from "@/assets/office-project.jpg";
 const pelicanImage = "/lovable-uploads/f345d1c0-6383-4a5c-9188-81c8ae221932.png";
 const campusKeyImage = "/lovable-uploads/7c314536-73bf-4ae1-b7e3-ccceee5d640e.png";
 const conferenceRoomProject = "/lovable-uploads/e85bfefa-f7c0-413b-ac3e-5c3dc791bacc.png";
+const guestWifiProject = "/lovable-uploads/08c32d0c-30d7-4eb1-b8c2-73824f3fd226.png";
 
 const Projects = () => {
   const projects = [
@@ -74,6 +75,15 @@ const Projects = () => {
       icon: Monitor,
       features: ["Smart Display Integration", "AV System Setup", "Collaborative Tools", "Premium Fitout"],
       link: "/projects/executive-conference-room"
+    },
+    {
+      title: "Guest Wi-Fi Solutions for Hotels & Restaurants",
+      location: "Thavhani Mall & Hospitality Venues",
+      description: "Professional guest Wi-Fi infrastructure with branded login portals, time-based access control, and seamless user experience for hotels and restaurants.",
+      image: guestWifiProject,
+      icon: Wifi,
+      features: ["Branded Login Portals", "Time-based Access", "User Management", "Hospitality Integration"],
+      link: "/projects/guest-wifi-solutions"
     }
   ];
 
