@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { submitSupportForm } from "@/lib/formSubmission";
 import { Handshake, MapPin, Users, Wrench, ArrowRight } from "lucide-react";
 const partnershipSchema = z.object({
   company_name: z.string().min(2, "Company name is required"),
@@ -48,37 +48,40 @@ export default function SmartHandsPartnership() {
       const payload = {
         full_name: `${data.contact_person} (${data.company_name})`,
         email: data.email,
-        phone: data.phone,
+        contact_number: data.phone,
         category: "Smart Hands Partnership",
         description: `Partnership Inquiry from ${data.company_name}
 
-Contact Person: ${data.contact_person}
 Location: ${data.location}
-Coverage Area: ${data.coverage_area}
-
-Services Offered:
-${data.services}
+Services Offered: ${data.services}
+Coverage Areas: ${data.coverage_area}
 
 Experience & Capabilities:
 ${data.experience}`,
+        preferred_channel: "email"
       };
 
-      const { data: result, error } = await supabase.functions.invoke("log-support-call", {
-        body: payload,
-      });
+      const result = await submitSupportForm(payload);
 
-      if (error) throw error;
+      if (!result.success) {
+        throw new Error(`All submission methods failed`);
+      }
+
+      let successMessage = "We'll review your application and get back to you within 48 hours.";
+      if (result.method === 'mailto') {
+        successMessage = "Your email client should open. Please send the pre-filled email to complete your inquiry.";
+      }
 
       toast({
         title: "Partnership inquiry submitted!",
-        description: "We'll review your application and get back to you within 48 hours.",
+        description: successMessage,
       });
 
       form.reset();
     } catch (error) {
       toast({
-        title: "Error submitting inquiry",
-        description: "Please try again or contact us directly.",
+        title: "Unable to submit inquiry",
+        description: "Please contact us directly at nikita@siyakhatechnology.co.za or call +27 81 501 2993",
         variant: "destructive",
       });
     } finally {

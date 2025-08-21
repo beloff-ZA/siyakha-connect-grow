@@ -25,7 +25,7 @@ import { Mail, Phone, Clock, Send, CheckCircle } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { submitSupportForm } from "@/lib/formSubmission";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -60,8 +60,6 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      console.log("Starting form submission...");
-      
       const payload = {
         full_name: data.name,
         email: data.email,
@@ -72,33 +70,28 @@ const Contact = () => {
         preferred_channel: "email"
       };
 
-      console.log("Payload:", payload);
+      const result = await submitSupportForm(payload);
 
-      const { data: result, error } = await supabase.functions.invoke("log-support-call", {
-        body: payload,
-      });
+      if (result.success) {
+        let successMessage = "We'll get back to you within 24 hours.";
+        if (result.method === 'mailto') {
+          successMessage = "Your email client should open. Please send the pre-filled email to complete your request.";
+        }
 
-      console.log("Function result:", result);
-      console.log("Function error:", error);
+        toast({
+          title: "Message sent successfully!",
+          description: successMessage,
+        });
 
-      if (error) {
-        console.error("Supabase function error:", error);
-        throw error;
+        form.reset();
+      } else {
+        throw new Error(`All submission methods failed`);
       }
-
-      console.log("Message sent successfully");
-
-      toast({
-        title: "Message sent successfully!",
-        description: "We'll get back to you within 24 hours.",
-      });
-
-      form.reset();
     } catch (error) {
       console.error("Error sending message:", error);
       toast({
-        title: "Failed to send message",
-        description: "Please try again or contact us directly.",
+        title: "Unable to send message",
+        description: "Please contact us directly at nikita@siyakhatechnology.co.za or call +27 81 501 2993",
         variant: "destructive",
       });
     } finally {

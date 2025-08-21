@@ -29,7 +29,7 @@ import {
   CheckCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { submitSupportForm } from "@/lib/formSubmission";
 
 const supportSchema = z.object({
   issue: z.string().min(10, "Please describe your issue in detail (at least 10 characters)"),
@@ -127,27 +127,33 @@ export default function SupportIssuesForm({ onClose }: SupportIssuesFormProps) {
       const payload = {
         full_name: "Support Request",
         email: data.email,
-        phone: data.phone,
+        contact_number: data.phone,
         category: `${data.sector} - ${data.needs.join(", ")}`,
         description: `Issue: ${data.issue}\n\nSector: ${data.sector}\n\nNeeds: ${data.needs.join(", ")}\n\nHow we can help: ${data.helpDescription}`,
+        preferred_channel: "email"
       };
 
-      const { data: result, error } = await supabase.functions.invoke("log-support-call", {
-        body: payload,
-      });
+      const result = await submitSupportForm(payload);
 
-      if (error) throw error;
+      if (!result.success) {
+        throw new Error(`All submission methods failed`);
+      }
+
+      let successMessage = "We'll get back to you within 24 hours.";
+      if (result.method === 'mailto') {
+        successMessage = "Your email client should open. Please send the pre-filled email to complete your request.";
+      }
 
       toast({
         title: "Form submitted successfully!",
-        description: "We'll get back to you within 24 hours.",
+        description: successMessage,
       });
 
       onClose();
     } catch (error) {
       toast({
-        title: "Error submitting form",
-        description: "Please try again or contact us directly.",
+        title: "Unable to submit form",
+        description: "Please contact us directly at nikita@siyakhatechnology.co.za or call +27 81 501 2993",
         variant: "destructive",
       });
     } finally {

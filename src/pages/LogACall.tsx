@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { submitSupportForm } from "@/lib/formSubmission";
 
 const services = [
   { value: "infrastructure-and-networking", label: "Infrastructure & Networking" },
@@ -92,42 +92,44 @@ const LogACall = () => {
       const payload = {
         full_name: fullName,
         email,
-        phone,
-        whatsapp: whatsapp || null,
-        company: company || null,
-        country,
+        contact_number: phone,
+        whatsapp_number: whatsapp || undefined,
         category: service,
-        priority,
-        description: issue,
+        description: `Priority: ${priority}\nCompany: ${company || 'Not provided'}\nCountry: ${country}\n\nIssue:\n${issue}`,
+        preferred_channel: "email"
       };
 
-      const { data, error } = await supabase.functions.invoke("log-support-call", {
-        body: payload,
-      });
+      const result = await submitSupportForm(payload);
 
-      if (error) throw error;
+      if (result.success) {
+        let successMessage = "Our team will contact you shortly.";
+        if (result.method === 'mailto') {
+          successMessage = "Your email client should open. Please send the pre-filled email to complete your request.";
+        }
 
-      toast({
-        title: "Call Logged Successfully",
-        description: "Your support request has been submitted. Our team will contact you shortly.",
-      });
+        toast({
+          title: "Call Logged Successfully",
+          description: successMessage,
+        });
 
-      // Reset form
-      setFullName("");
-      setEmail("");
-      setPhone("");
-      setWhatsapp("");
-      setCompany("");
-      setCountry("");
-      setService("");
-      setPriority("normal");
-      setIssue("");
-
+        // Reset form
+        setFullName("");
+        setEmail("");
+        setPhone("");
+        setWhatsapp("");
+        setCompany("");
+        setCountry("");
+        setService("");
+        setPriority("normal");
+        setIssue("");
+      } else {
+        throw new Error(`All submission methods failed`);
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
       toast({
-        title: "Submission Failed",
-        description: "There was an error submitting your request. Please try again or contact us directly.",
+        title: "Unable to submit request",
+        description: "Please contact us directly at nikita@siyakhatechnology.co.za or call +27 81 501 2993",
         variant: "destructive",
       });
     } finally {
