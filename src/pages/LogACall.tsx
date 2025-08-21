@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const services = [
   { value: "infrastructure-and-networking", label: "Infrastructure & Networking" },
@@ -32,6 +33,7 @@ const LogACall = () => {
   const [service, setService] = useState("");
   const [priority, setPriority] = useState("normal");
   const [issue, setIssue] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { toast } = useToast();
 
@@ -72,23 +74,65 @@ const LogACall = () => {
     description: "Support request form for Siyakha Technology Solutions",
   }), []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!fullName || !email || !phone || !country || !service || !issue) {
-      alert("Please complete all required fields.");
+      toast({
+        title: "Missing Information",
+        description: "Please complete all required fields.",
+        variant: "destructive",
+      });
       return;
     }
-    const subject = encodeURIComponent(`[${priority.toUpperCase()}] Support Call: ${service} - ${company || fullName}`);
-    const body = encodeURIComponent(
-      `Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nWhatsApp: ${whatsapp || "(not provided)"}\nCompany: ${company}\nCountry: ${country}\nService: ${service}\nPriority: ${priority}\n\nIssue:\n${issue}`
-    );
 
-    toast({
-      title: "Call logged",
-      description: "Your call has been logged and one of our engineers will be in touch with you shortly.",
-    });
+    setIsSubmitting(true);
 
-    window.location.href = `mailto:accounts@siyakhatechnology.co.za?subject=${subject}&body=${body}`;
+    try {
+      const payload = {
+        full_name: fullName,
+        email,
+        phone,
+        whatsapp: whatsapp || null,
+        company: company || null,
+        country,
+        category: service,
+        priority,
+        description: issue,
+      };
+
+      const { data, error } = await supabase.functions.invoke("log-support-call", {
+        body: payload,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Call Logged Successfully",
+        description: "Your support request has been submitted. Our team will contact you shortly.",
+      });
+
+      // Reset form
+      setFullName("");
+      setEmail("");
+      setPhone("");
+      setWhatsapp("");
+      setCompany("");
+      setCountry("");
+      setService("");
+      setPriority("normal");
+      setIssue("");
+
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your request. Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -158,7 +202,9 @@ const LogACall = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button type="submit" className="cta-primary">Submit</Button>
+                <Button type="submit" className="cta-primary" disabled={isSubmitting}>
+                  {isSubmitting ? "Submitting..." : "Submit"}
+                </Button>
                 <a
                   href={`https://wa.me/27815012993?text=${encodeURIComponent(`Hi Siyakha, I just logged a support call for ${service || 'a service'}. My name is ${fullName}.`)}`}
                   target="_blank"
