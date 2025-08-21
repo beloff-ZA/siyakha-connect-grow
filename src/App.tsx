@@ -65,6 +65,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Contact from "./pages/Contact";
 import AdminQuickCreate from "./components/admin/AdminQuickCreate";
+import FibreFeasibilityForm from "./pages/FibreFeasibilityForm";
 const queryClient = new QueryClient();
 
 function App() {
@@ -131,6 +132,7 @@ function App() {
                 <Route path="/projects/kfc-national-network-rollout" element={<KFCExmileProject />} />
                 <Route path="/projects/pelican-club-bahrain" element={<PelicanClubBahrainProject />} />
                 <Route path="/projects/campuskey-network-overhaul" element={<CampusKeyProject />} />
+                <Route path="/projects/fibre-feasibility" element={<FibreFeasibilityForm />} />
 
                 <Route path="/it-company-johannesburg" element={<ItCompanyJohannesburg />} />
                 <Route path="/managed-it-services-johannesburg" element={<ManagedITSJohannesburg />} />
