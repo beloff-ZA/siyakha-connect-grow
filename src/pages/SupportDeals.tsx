@@ -1,13 +1,15 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import SupportIssuesForm from "@/components/SupportIssuesForm";
 import heroImage from "@/assets/hero-bg.jpg";
 import officeProject from "@/assets/office-project.jpg";
 import schoolProject from "@/assets/school-project.jpg";
 
 const SupportDeals = () => {
+  const [showForm, setShowForm] = useState(false);
   useEffect(() => {
     const title = "Global IT Support & International Managed Services | Siyakha";
     const description = "Global IT support and managed services. L1–L3 remote desktop, sell-by-call and monthly SLAs for EMEA, North America & Middle East.";
@@ -80,7 +82,12 @@ const SupportDeals = () => {
             <h1 className="text-3xl md:text-5xl font-bold text-primary">Enhance Your Global Support Capability</h1>
             <p className="text-muted-foreground mt-3 max-w-3xl">Delivering scalable, multi‑region IT support with confidence — L1, L2, L3 remote support, sell‑by‑call and monthly SLAs.</p>
             <div className="mt-6 flex gap-3">
-              <Link to="/log-a-call" className="inline-flex"><Button className="cta-primary">Log a Call</Button></Link>
+              <Button 
+                onClick={() => setShowForm(true)}
+                className="cta-primary text-lg px-8 py-3 h-auto"
+              >
+                Tell Us Your Issue
+              </Button>
               <Link to="/contact#quote-form" className="inline-flex"><Button variant="outline">Request a Monthly Deal</Button></Link>
             </div>
           </div>
@@ -168,13 +175,19 @@ const SupportDeals = () => {
               <li>Retail and logistics providers with international distribution networks</li>
             </ul>
             <div className="mt-8 flex gap-3">
-              <Link to="/log-a-call" className="inline-flex"><Button className="cta-primary">Log a Call</Button></Link>
+              <Button 
+                onClick={() => setShowForm(true)}
+                className="cta-primary"
+              >
+                Tell Us Your Issue
+              </Button>
               <Link to="/contact#quote-form" className="inline-flex"><Button variant="outline">Build a Global Support Plan</Button></Link>
             </div>
           </div>
         </section>
       </main>
       <Footer />
+      {showForm && <SupportIssuesForm onClose={() => setShowForm(false)} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
     </div>
