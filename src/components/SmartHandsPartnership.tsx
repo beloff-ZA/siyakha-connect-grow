@@ -8,8 +8,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { Handshake, MapPin, Users, Wrench, ArrowRight } from "lucide-react";
-
 const partnershipSchema = z.object({
   company_name: z.string().min(2, "Company name is required"),
   contact_person: z.string().min(2, "Contact person name is required"),
@@ -48,7 +48,7 @@ export default function SmartHandsPartnership() {
       const payload = {
         full_name: `${data.contact_person} (${data.company_name})`,
         email: data.email,
-        contact_number: data.phone,
+        phone: data.phone,
         category: "Smart Hands Partnership",
         description: `Partnership Inquiry from ${data.company_name}
 
@@ -61,20 +61,13 @@ ${data.services}
 
 Experience & Capabilities:
 ${data.experience}`,
-        preferred_channel: "email",
       };
 
-      const response = await fetch("/api/log-support-call", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+      const { data: result, error } = await supabase.functions.invoke("log-support-call", {
+        body: payload,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to submit partnership inquiry");
-      }
+      if (error) throw error;
 
       toast({
         title: "Partnership inquiry submitted!",
@@ -92,7 +85,6 @@ ${data.experience}`,
       setIsSubmitting(false);
     }
   };
-
   return (
     <section className="py-16 md:py-24 bg-muted/30 border-y border-border">
       <div className="container mx-auto px-4 lg:px-6 max-w-6xl">

@@ -29,6 +29,7 @@ import {
   CheckCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const supportSchema = z.object({
   issue: z.string().min(10, "Please describe your issue in detail (at least 10 characters)"),
@@ -129,20 +130,13 @@ export default function SupportIssuesForm({ onClose }: SupportIssuesFormProps) {
         phone: data.phone,
         category: `${data.sector} - ${data.needs.join(", ")}`,
         description: `Issue: ${data.issue}\n\nSector: ${data.sector}\n\nNeeds: ${data.needs.join(", ")}\n\nHow we can help: ${data.helpDescription}`,
-        message: data.helpDescription,
       };
 
-      const response = await fetch("/api/log-support-call", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+      const { data: result, error } = await supabase.functions.invoke("log-support-call", {
+        body: payload,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to submit form");
-      }
+      if (error) throw error;
 
       toast({
         title: "Form submitted successfully!",
