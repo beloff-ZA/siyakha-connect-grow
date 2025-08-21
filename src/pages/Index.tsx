@@ -10,6 +10,7 @@ import Projects from "@/components/Projects";
 import BrandCarousel from "@/components/BrandCarousel";
 import Testimonials from "@/components/Testimonials";
 import LeadMagnet from "@/components/LeadMagnet";
+import SmartHandsPartnership from "@/components/SmartHandsPartnership";
 import BlogPreview from "@/components/BlogPreview";
 import Footer from "@/components/Footer";
 
@@ -73,6 +74,7 @@ const Index = () => {
       <Industries />
       <Projects />
       <Testimonials />
+      <SmartHandsPartnership />
       <LeadMagnet />
       <BlogPreview showCount={3} />
       <Footer />

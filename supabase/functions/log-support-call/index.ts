@@ -177,7 +177,7 @@ serve(async (req: Request) => {
     },
     body: JSON.stringify({
       from: "Siyakha Technology <notifications@mail.siyakhatechnology.co.za>",
-      to: ["accounts@siyakhatechnology.co.za"],
+      to: ["nikita@siyakhatechnology.co.za"],
       subject,
       html,
       text:
