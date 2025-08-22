@@ -42,6 +42,24 @@ const Projects = () => {
       link: "/projects/kfc-national-network-rollout"
     },
     {
+      title: "The Village Bakery – CCTV Installation",
+      location: "Fordsburg, Johannesburg",
+      description: "Complete property and in-store CCTV surveillance system for comprehensive security coverage",
+      image: "/lovable-uploads/134e1b88-479c-4122-9897-1e74ae8819a9.png",
+      icon: Camera,
+      features: ["Property-wide coverage", "In-store monitoring", "High-definition cameras", "24/7 recording"],
+      link: "/projects/village-bakery-cctv"
+    },
+    {
+      title: "Greestone – Network Infrastructure Rebuild",
+      location: "Johannesburg, Gauteng",
+      description: "Complete network overhaul with Linux server installation, upgraded network points, and new switching infrastructure",
+      image: "/lovable-uploads/c8302aaa-3768-46a7-93ab-e0b5021f6d5c.png",
+      icon: Wifi,
+      features: ["Linux server setup", "Network point upgrades", "New switch cabinet", "Ongoing support"],
+      link: "/projects/greestone-network-rebuild"
+    },
+    {
       title: "St Joseph's Marist College – Campus CCTV Overhaul",
       location: "Cape Town, Western Cape",
       description: "55‑camera fibre network covering the entire campus with remote monitoring",
