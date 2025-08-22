@@ -7,7 +7,7 @@ import DraasFeature from "@/components/DraasFeature";
 import FranchiseFeature from "@/components/FranchiseFeature";
 import Industries from "@/components/Industries";
 import Projects from "@/components/Projects";
-import BrandCarousel from "@/components/BrandCarousel";
+
 import Testimonials from "@/components/Testimonials";
 import LeadMagnet from "@/components/LeadMagnet";
 import SmartHandsPartnership from "@/components/SmartHandsPartnership";
@@ -70,7 +70,7 @@ const Index = () => {
       <Services />
       <DraasFeature />
       <FranchiseFeature />
-      <BrandCarousel />
+      
       <Industries />
       <Projects />
       <Testimonials />
