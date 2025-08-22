@@ -177,15 +177,17 @@ const Projects = () => {
           ))}
         </div>
 
-        {/* All Projects CTA */}
-        <div className="text-center mt-12">
-          <Link to="/projects" className="inline-flex">
-            <Button className="cta-secondary">
-              View All Projects
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-        </div>
+        {/* All Projects CTA - Only show when not on projects page */}
+        {window.location.pathname !== '/projects' && (
+          <div className="text-center mt-12">
+            <Link to="/projects" className="inline-flex">
+              <Button className="cta-secondary">
+                View All Projects
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        )}
 
         {/* Project Stats */}
         <div className="mt-16 pt-16 border-t border-border grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
