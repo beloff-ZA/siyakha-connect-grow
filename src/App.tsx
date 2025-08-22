@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Index from "./pages/Index";
 import MaristBrothersProject from "./pages/projects/MaristBrothers";
 import KFCExmileProject from "./pages/projects/KFCExmile";
+import VillageBakeryProject from "./pages/projects/VillageBakery";
 import NotFound from "./pages/NotFound";
 import MaristCapeTownProject from "./pages/projects/MaristCapeTown";
 import PelicanClubBahrainProject from "./pages/projects/PelicanClubBahrain";
@@ -130,6 +131,7 @@ function App() {
                 {/* Projects */}
                 <Route path="/projects/marist-brothers-linmeyer" element={<MaristBrothersProject />} />
                 <Route path="/projects/kfc-national-network-rollout" element={<KFCExmileProject />} />
+                <Route path="/projects/village-bakery-cctv" element={<VillageBakeryProject />} />
                 <Route path="/projects/pelican-club-bahrain" element={<PelicanClubBahrainProject />} />
                 <Route path="/projects/campuskey-network-overhaul" element={<CampusKeyProject />} />
                 <Route path="/projects/fibre-feasibility" element={<FibreFeasibilityForm />} />
