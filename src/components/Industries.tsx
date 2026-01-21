@@ -1,135 +1,67 @@
 import { Building2, GraduationCap, Factory, Car, Stethoscope, ShoppingBag, Home, Truck } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const industries = [
-  {
-    title: "Small & Medium Enterprises (SMMEs)",
-    icon: Building2,
-    points: [
-      "Affordable, flexible IT support packages for growing businesses.",
-      "Unlimited remote assistance and proactive system monitoring.",
-    ],
-  },
-  {
-    title: "Schools & Educational Institutions",
-    icon: GraduationCap,
-    points: [
-      "Reliable Wi‑Fi installations and classroom connectivity solutions.",
-      "CCTV & access control for student and staff safety.",
-    ],
-  },
-  {
-    title: "Manufacturing & Industrial Businesses",
-    icon: Factory,
-    points: [
-      "Robust networking, CCTV, and security solutions for factories and warehouses.",
-      "Preventative maintenance to minimise costly downtime.",
-    ],
-  },
-  {
-    title: "Panel Beaters & Auto Body Shops",
-    icon: Car,
-    points: [
-      "IT systems for insurance claims management, case tracking, and customer updates.",
-      "CCTV for workshop monitoring and security.",
-    ],
-  },
-  {
-    title: "Healthcare Practices & Clinics",
-    icon: Stethoscope,
-    points: [
-      "Secure IT infrastructure for sensitive patient data.",
-      "Fast response times to keep systems running smoothly.",
-    ],
-  },
-  {
-    title: "Retail & Service Businesses",
-    icon: ShoppingBag,
-    points: [
-      "Point‑of‑sale support, network troubleshooting, and CCTV monitoring.",
-      "Scalable IT solutions that grow with your business.",
-    ],
-  },
-  {
-    title: "Residential Complexes & Property Managers",
-    icon: Home,
-    points: [
-      "Secure Wi‑Fi networks, intercoms, and access control installations.",
-      "Ongoing technical support for residents and building managers.",
-    ],
-  },
-  {
-    title: "Mining Operations",
-    icon: Factory,
-    points: [
-      "Ruggedised networking, fibre backbones, and reliable Wi‑Fi for remote and harsh environments.",
-      "CCTV, access control, and monitoring solutions for safety and compliance.",
-    ],
-  },
-  {
-    title: "Fleet & Telematics Companies",
-    icon: Truck,
-    points: [
-      "Installation of telematics units, GPS tracking, dashcams, and IoT sensors across vehicle fleets.",
-      "Remote monitoring, reporting, and preventative maintenance workflows to manage performance.",
-    ],
-  }
+  { title: "SMMEs", icon: Building2 },
+  { title: "Education", icon: GraduationCap },
+  { title: "Manufacturing", icon: Factory },
+  { title: "Automotive", icon: Car },
+  { title: "Healthcare", icon: Stethoscope },
+  { title: "Retail", icon: ShoppingBag },
+  { title: "Property", icon: Home },
+  { title: "Fleet & Logistics", icon: Truck }
 ];
 
 const Industries = () => {
   return (
-    <section id="industries" aria-labelledby="industries-heading" className="py-16 sm:py-20">
-      <div className="container mx-auto px-4">
-        <header className="mx-auto max-w-3xl text-center mb-12">
-          <h2 id="industries-heading" className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-            Companies & Industries We Support
+    <section id="industries" className="py-24 lg:py-32 bg-secondary">
+      <div className="container mx-auto px-4 lg:px-6">
+        {/* Header */}
+        <div className="max-w-3xl mb-16">
+          <div className="divider-bold mb-6" />
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6 tracking-tight leading-[1.1]">
+            Industries We Serve
           </h2>
-          <p className="mt-4 text-muted-foreground">
-            At Siyakha Technology, we’re proud to deliver award‑winning IT solutions to a diverse range of clients across South Africa. From small start‑ups to established enterprises, our services are designed to meet the unique needs of every organisation we work with.
+          <p className="text-xl text-muted-foreground leading-relaxed">
+            From small start-ups to established enterprises, our services meet the unique needs of every organization.
           </p>
-        </header>
+        </div>
 
-        <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {industries.map(({ title, icon: Icon, points }) => (
-            <Card key={title} className="h-full">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
-                    <Icon aria-hidden="true" className="h-5 w-5" />
-                  </span>
-                  <CardTitle className="text-lg">{title}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="mt-2 space-y-2 text-sm text-muted-foreground list-disc pl-5">
-                  {points.map((p) => (
-                    <li key={p}>{p}</li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+        {/* Industry Pills */}
+        <div className="flex flex-wrap gap-4 mb-16">
+          {industries.map(({ title, icon: Icon }) => (
+            <div 
+              key={title}
+              className="flex items-center gap-3 px-6 py-4 bg-background rounded-xl border border-border hover:border-accent hover:bg-accent/5 transition-all duration-300 cursor-default group"
+            >
+              <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent transition-colors">
+                <Icon className="w-5 h-5 text-accent group-hover:text-white transition-colors" />
+              </div>
+              <span className="font-semibold text-primary">{title}</span>
+            </div>
           ))}
         </div>
 
-        <aside className="mt-12 mx-auto max-w-3xl text-center">
-          <h3 className="text-xl font-semibold text-foreground">Why Businesses Choose Us</h3>
-          <p className="mt-3 text-muted-foreground">
-            Local expertise in Johannesburg, tailored solutions for SMMEs through to enterprises, and a trusted, proactive partnership.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild>
-              <Link to="/contact" aria-label="Contact us about IT support">Contact Us</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <a href="tel:+27877027411" aria-label="Call Siyakha Technology on 087 702 7411">Call 087 702 7411</a>
-            </Button>
-            <Button variant="ghost" asChild>
-              <a href="mailto:accounts@siyakhatechnology.co.za" aria-label="Email Siyakha Technology">accounts@siyakhatechnology.co.za</a>
-            </Button>
+        {/* CTA */}
+        <div className="flex flex-col sm:flex-row items-start gap-6">
+          <Button asChild size="lg" className="bg-accent hover:bg-accent-hover text-accent-foreground font-semibold group">
+            <Link to="/contact">
+              Contact Us
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 text-muted-foreground">
+            <a href="tel:+27877027411" className="hover:text-accent transition-colors font-medium">
+              087 702 7411
+            </a>
+            <span className="hidden sm:inline">·</span>
+            <a href="mailto:accounts@siyakhatechnology.co.za" className="hover:text-accent transition-colors">
+              accounts@siyakhatechnology.co.za
+            </a>
           </div>
-        </aside>
+        </div>
       </div>
     </section>
   );
