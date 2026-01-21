@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wifi, Shield, Cloud, MessageSquare, ArrowRight, Wrench } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Services = () => {
   const services = [
@@ -9,107 +9,104 @@ const Services = () => {
       title: "Infrastructure & Networking",
       description: "Data Cabling, Switches, Wi-Fi, Trunking",
       benefit: "Future-proof your business network with scalable Wi-Fi & cabling.",
-      link: "/services/infrastructure-and-networking",
-      color: "text-blue-600"
+      link: "/services/infrastructure-and-networking"
     },
     {
       icon: Shield,
       title: "Security & Surveillance",
       description: "CCTV, Access Control, Intercoms, Smart Gates",
       benefit: "Protect your assets with intelligent security systems.",
-      link: "/services/security-and-surveillance",
-      color: "text-red-600"
+      link: "/services/security-and-surveillance"
     },
     {
       icon: Cloud,
       title: "Cloud & Edge Solutions",
       description: "Server Setup, Migration, Backup & Recovery",
       benefit: "Scale your operations with reliable cloud infrastructure.",
-      link: "/services/cloud-and-edge-solutions",
-      color: "text-purple-600"
+      link: "/services/cloud-and-edge-solutions"
     },
     {
       icon: MessageSquare,
       title: "Smart Collaboration Tools",
       description: "VoIP, Remote Work, Microsoft 365, Email Systems",
       benefit: "Enable seamless communication across your organization.",
-      link: "/services/smart-collaboration-tools",
-      color: "text-green-600"
+      link: "/services/smart-collaboration-tools"
     },
     {
       icon: Wrench,
       title: "National Field Support",
       description: "Onsite smart hands across South Africa",
       benefit: "Dispatch certified techs for rollouts, swaps and break/fix.",
-      link: "/services/national-field-support/cutovers-and-sim-replacements",
-      color: "text-amber-600"
+      link: "/services/national-field-support/cutovers-and-sim-replacements"
     }
   ];
 
+  const stats = [
+    { value: "Same Day", label: "Site Visits" },
+    { value: "24/7", label: "Monitoring" },
+    { value: "100%", label: "Uptime SLA" },
+    { value: "Free", label: "Consultations" }
+  ];
+
   return (
-    <section id="services" className="py-20 bg-background">
+    <section id="services" className="py-24 lg:py-32 bg-secondary">
       <div className="container mx-auto px-4 lg:px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Our Core Services
+        {/* Header */}
+        <div className="max-w-3xl mb-16">
+          <div className="divider-bold mb-6" />
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6 tracking-tight leading-[1.1]">
+            Our Services
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground leading-relaxed">
             Comprehensive ICT solutions designed to transform your business operations.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Services List */}
+        <div className="border-t border-border">
           {services.map((service, index) => (
-            <Card 
+            <Link 
               key={index}
-              className="service-card group cursor-pointer"
-              onClick={() => window.location.href = service.link}
+              to={service.link}
+              className="service-item group cursor-pointer"
             >
-              <CardHeader className="text-center pb-4">
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                  <service.icon className={`w-8 h-8 ${service.color} group-hover:text-accent transition-colors duration-300`} />
-                </div>
-                <CardTitle className="text-xl font-semibold text-primary group-hover:text-accent transition-colors duration-300">
+              <div className="flex-shrink-0 text-5xl font-bold text-accent/20 leading-none select-none w-20">
+                {String(index + 1).padStart(2, '0')}
+              </div>
+              
+              <div className="flex-shrink-0 w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center group-hover:bg-accent transition-colors duration-300">
+                <service.icon className="w-7 h-7 text-accent group-hover:text-white transition-colors duration-300" />
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <h3 className="text-xl md:text-2xl font-bold text-primary group-hover:text-accent transition-colors mb-2">
                   {service.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-muted-foreground mb-4 text-sm">
+                </h3>
+                <p className="text-muted-foreground mb-1">
                   {service.description}
                 </p>
-                <p className="text-primary font-medium text-sm leading-relaxed mb-4">
+                <p className="text-primary font-medium text-sm">
                   {service.benefit}
                 </p>
-                <Button 
-                  variant="ghost" 
-                  className="text-accent hover:text-accent-hover group/btn p-0 h-auto font-medium"
-                >
-                  Learn More
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                </Button>
-              </CardContent>
-            </Card>
+              </div>
+              
+              <div className="flex-shrink-0 hidden md:block">
+                <div className="w-12 h-12 rounded-full border-2 border-accent/30 flex items-center justify-center group-hover:bg-accent group-hover:border-accent transition-all duration-300">
+                  <ArrowRight className="w-5 h-5 text-accent group-hover:text-white transition-colors" />
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
 
-        {/* Service Features Grid */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div className="p-6 rounded-lg bg-muted">
-            <div className="text-2xl font-bold text-accent mb-2">Same Day</div>
-            <div className="text-sm text-muted-foreground">Site Visits</div>
-          </div>
-          <div className="p-6 rounded-lg bg-muted">
-            <div className="text-2xl font-bold text-accent mb-2">24/7</div>
-            <div className="text-sm text-muted-foreground">Monitoring</div>
-          </div>
-          <div className="p-6 rounded-lg bg-muted">
-            <div className="text-2xl font-bold text-accent mb-2">100%</div>
-            <div className="text-sm text-muted-foreground">Uptime SLA</div>
-          </div>
-          <div className="p-6 rounded-lg bg-muted">
-            <div className="text-2xl font-bold text-accent mb-2">Free</div>
-            <div className="text-sm text-muted-foreground">Consultations</div>
-          </div>
+        {/* Stats */}
+        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map((stat, index) => (
+            <div key={index} className="text-center p-6 bg-background rounded-xl">
+              <div className="text-2xl md:text-3xl font-bold text-accent mb-2">{stat.value}</div>
+              <div className="text-sm text-muted-foreground uppercase tracking-wider">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

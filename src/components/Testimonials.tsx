@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 
@@ -11,8 +10,7 @@ const Testimonials = () => {
       name: "Boikano Pule",
       role: "Client",
       company: "siyakhatechnology.co.za",
-      content:
-        "These folks turned our digital dreams into reality! Emails flowing smoothly, website looking slick. Seriously, they're the email and website superheroes we didn't know we needed. Highly recommend!",
+      content: "These folks turned our digital dreams into reality! Emails flowing smoothly, website looking slick. Seriously, they're the email and website superheroes we didn't know we needed. Highly recommend!",
       rating: 5,
       avatar: "BP",
     },
@@ -20,8 +18,7 @@ const Testimonials = () => {
       name: "Mandy Laing",
       role: "Client",
       company: "Siyakha Technology",
-      content:
-        "I've had so many bad experiences with tech companies. I must say Siyakha is the best company for all things technology and computers. They are efficient, reliable and professional. With great customer support. I highly recommend them.",
+      content: "I've had so many bad experiences with tech companies. I must say Siyakha is the best company for all things technology and computers. They are efficient, reliable and professional. With great customer support.",
       rating: 5,
       avatar: "ML",
     },
@@ -29,8 +26,7 @@ const Testimonials = () => {
       name: "Emmy Trish",
       role: "Client",
       company: "The Pelican Club, Bahrain",
-      content:
-        "We had an urgent printer issue at The Pelican Club here in Bahrain and reached out to Siyakha Technology for help. Their team responded instantly — they connected remotely and resolved everything quickly and professionally. The support was smooth, efficient, and incredibly reassuring. It's great to work with a team that delivers results across borders.",
+      content: "We had an urgent printer issue at The Pelican Club here in Bahrain and reached out to Siyakha Technology for help. Their team responded instantly — they connected remotely and resolved everything quickly.",
       rating: 5,
       avatar: "ET",
     },
@@ -38,8 +34,7 @@ const Testimonials = () => {
       name: "Mfundo",
       role: "School Administrator",
       company: "Marist Brothers School",
-      content:
-        "Siyakha Technology has been a trusted partner for our major ICT needs at the school. Their expertise, responsiveness, and dedication give us confidence that our technology is in the best hands.",
+      content: "Siyakha Technology has been a trusted partner for our major ICT needs at the school. Their expertise, responsiveness, and dedication give us confidence that our technology is in the best hands.",
       rating: 5,
       avatar: "M",
     },
@@ -47,8 +42,7 @@ const Testimonials = () => {
       name: "Brian",
       role: "Operations Lead",
       company: "Zizwe DSD",
-      content:
-        "At Zizwe DSD, Siyakha has been instrumental in managing our complete IT ecosystem—networking, VoIP, internet support, antivirus, and Office 365 services. They also helped upgrade our website, ensuring everything runs smoothly and securely. We couldn’t ask for a more dependable ICT partner.",
+      content: "At Zizwe DSD, Siyakha has been instrumental in managing our complete IT ecosystem—networking, VoIP, internet support, antivirus, and Office 365 services.",
       rating: 5,
       avatar: "B",
     },
@@ -72,112 +66,96 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <section className="py-20 bg-background">
+    <section className="py-24 lg:py-32 bg-background">
       <div className="container mx-auto px-4 lg:px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Client Testimonials
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Real feedback from clients across education, clubs, and businesses.
-          </p>
-        </div>
-
         <div className="max-w-4xl mx-auto">
-          <div className="relative">
-            <Card className="border-2 border-accent/20 shadow-lg">
-              <CardContent className="p-8 md:p-12">
-                <div className="flex items-center justify-between mb-6">
-                  <Quote className="w-8 h-8 text-accent opacity-60" />
-                  <div className="flex space-x-1">
-                    {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-accent text-accent" />
-                    ))}
-                  </div>
+          {/* Large Quote Mark */}
+          <Quote className="w-20 h-20 text-accent/20 mb-8" strokeWidth={1} />
+
+          {/* Testimonial Content */}
+          <div className="min-h-[200px] mb-12">
+            <blockquote
+              className="text-2xl md:text-3xl lg:text-4xl font-medium text-primary leading-snug mb-8"
+              aria-live="polite"
+            >
+              "{testimonials[currentIndex].content}"
+            </blockquote>
+
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white font-bold text-lg">
+                {testimonials[currentIndex].avatar}
+              </div>
+              <div>
+                <div className="font-bold text-primary text-lg">
+                  {testimonials[currentIndex].name}
                 </div>
-
-                <blockquote
-                  className="text-lg md:text-xl text-foreground leading-relaxed mb-8 italic min-h-28"
-                  aria-live="polite"
-                  role="status"
-                >
-                  "{testimonials[currentIndex].content}"
-                </blockquote>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-semibold">
-                      {testimonials[currentIndex].avatar}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-primary text-lg">
-                        {testimonials[currentIndex].name}
-                      </div>
-                      <div className="text-muted-foreground">
-                        {testimonials[currentIndex].role}
-                      </div>
-                      <div className="text-sm text-accent">
-                        {testimonials[currentIndex].company}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={prevTestimonial}
-                      className="w-10 h-10 p-0"
-                      aria-label="Previous testimonial"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={nextTestimonial}
-                      className="w-10 h-10 p-0"
-                      aria-label="Next testimonial"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
-                  </div>
+                <div className="text-muted-foreground">
+                  {testimonials[currentIndex].role}, {testimonials[currentIndex].company}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="ml-auto flex gap-1">
+                {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-accent text-accent" />
+                ))}
+              </div>
+            </div>
+          </div>
 
-            {/* Dots Indicator */}
-            <div className="flex justify-center space-x-2 mt-6">
+          {/* Navigation */}
+          <div className="flex items-center justify-between border-t border-border pt-8">
+            <div className="flex gap-2">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
+                  className={`w-12 h-1 rounded-full transition-colors ${
                     index === currentIndex ? 'bg-accent' : 'bg-border'
                   }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
             </div>
-          </div>
 
-          {/* Trust Badges */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-8 border-t border-border">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-accent mb-1">98%</div>
-              <div className="text-sm text-muted-foreground">Client Retention</div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={prevTestimonial}
+                className="w-12 h-12 rounded-full"
+                aria-label="Previous testimonial"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={nextTestimonial}
+                className="w-12 h-12 rounded-full"
+                aria-label="Next testimonial"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-accent mb-1">4.9/5</div>
-              <div className="text-sm text-muted-foreground">Average Rating</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-accent mb-1">&lt;24hr</div>
-              <div className="text-sm text-muted-foreground">Response Time</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-accent mb-1">100%</div>
-              <div className="text-sm text-muted-foreground">On-Time Delivery</div>
-            </div>
+          </div>
+        </div>
+
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-12 border-t border-border max-w-4xl mx-auto">
+          <div className="stat-block">
+            <div className="stat-value">98%</div>
+            <div className="stat-label">Retention</div>
+          </div>
+          <div className="stat-block">
+            <div className="stat-value">4.9</div>
+            <div className="stat-label">Rating</div>
+          </div>
+          <div className="stat-block">
+            <div className="stat-value">&lt;24h</div>
+            <div className="stat-label">Response</div>
+          </div>
+          <div className="stat-block">
+            <div className="stat-value">100%</div>
+            <div className="stat-label">On-Time</div>
           </div>
         </div>
       </div>
