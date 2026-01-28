@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Phone, Search } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -7,10 +7,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
-const Header = () => {
+interface HeaderProps {
+  onOpenWizard?: () => void;
+}
+
+const Header = ({ onOpenWizard }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
 
@@ -42,19 +47,19 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <NavigationMenu className="hidden lg:flex">
-            <NavigationMenuList className="space-x-8">
+            <NavigationMenuList className="space-x-6">
               <NavigationMenuItem>
-                <Link to="/" className="text-foreground hover:text-accent transition-colors font-medium">
+                <Link to="/" className="text-foreground hover:text-accent transition-colors font-medium text-sm">
                   Home
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/about" className="text-foreground hover:text-accent transition-colors font-medium">
+                <Link to="/about" className="text-foreground hover:text-accent transition-colors font-medium text-sm">
                   About
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-foreground hover:text-accent font-medium bg-transparent">
+                <NavigationMenuTrigger className="text-foreground hover:text-accent font-medium bg-transparent text-sm">
                   Services
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -90,25 +95,44 @@ const Header = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/projects" className="text-foreground hover:text-accent transition-colors font-medium">
+                <Link to="/projects" className="text-foreground hover:text-accent transition-colors font-medium text-sm">
                   Projects
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/blog" className="text-foreground hover:text-accent transition-colors font-medium">
+                <Link to="/blog" className="text-foreground hover:text-accent transition-colors font-medium text-sm">
                   Blog
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/contact" className="text-foreground hover:text-accent transition-colors font-medium">
+                <Link to="/contact" className="text-foreground hover:text-accent transition-colors font-medium text-sm">
                   Contact
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Right Side */}
-          <div className="flex items-center gap-4">
+          {/* Right Side CTAs */}
+          <div className="flex items-center gap-3">
+            {/* Find My Solution - Desktop */}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="hidden lg:flex items-center gap-2"
+              onClick={onOpenWizard}
+            >
+              <Search className="w-4 h-4" />
+              Find My Solution
+            </Button>
+            
+            {/* Book Consultation - Desktop */}
+            <Link to="/contact" className="hidden lg:block">
+              <Button size="sm" className="cta-primary">
+                <Phone className="w-4 h-4 mr-2" />
+                Book Consultation
+              </Button>
+            </Link>
+
             {user && (
               <button onClick={signOut} className="hidden lg:block text-sm text-muted-foreground hover:text-accent transition-colors">
                 Sign Out
@@ -173,6 +197,27 @@ const Header = () => {
               <Link to="/contact" className="block px-4 py-3 text-foreground hover:text-accent hover:bg-muted rounded-lg transition-colors font-medium">
                 Contact
               </Link>
+
+              {/* Mobile CTAs */}
+              <div className="px-4 pt-4 space-y-3">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-center"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    onOpenWizard?.();
+                  }}
+                >
+                  <Search className="w-4 h-4 mr-2" />
+                  Find My Solution
+                </Button>
+                <Link to="/contact" className="block" onClick={() => setIsMenuOpen(false)}>
+                  <Button className="w-full cta-primary justify-center">
+                    <Phone className="w-4 h-4 mr-2" />
+                    Book Consultation
+                  </Button>
+                </Link>
+              </div>
               
               {user && (
                 <button onClick={signOut} className="block w-full text-left px-4 py-3 text-muted-foreground hover:text-accent transition-colors">

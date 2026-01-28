@@ -1,42 +1,84 @@
+import { Download, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Calendar, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { submitSupportForm } from "@/lib/formSubmission";
 
 const LeadMagnet = () => {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setIsSubmitting(true);
+
+    try {
+      await submitSupportForm({
+        full_name: "Lead Magnet Download",
+        email: email,
+        category: "IT Audit Checklist Download",
+        description: `Lead magnet download request from: ${email}`,
+      });
+
+      toast({
+        title: "Success!",
+        description: "Check your inbox for the IT Audit Checklist.",
+      });
+      setEmail("");
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        description: "Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <section className="py-24 lg:py-32 bg-primary">
+    <section className="py-24 bg-accent">
       <div className="container mx-auto px-4 lg:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 bg-accent/20 text-accent font-semibold text-sm rounded-full mb-8">
-            <Calendar className="w-4 h-4 mr-2" />
-            Free Consultation Available
+          <div className="inline-flex items-center gap-2 bg-accent-foreground/10 px-4 py-2 rounded-full mb-8">
+            <Download className="w-5 h-5 text-accent-foreground" />
+            <span className="text-sm font-medium text-accent-foreground">Free Resource</span>
           </div>
 
-          {/* Headline */}
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 tracking-tight leading-[1.1]">
-            Need an ICT Partner
-            <br />
-            You Can Trust?
+          <h2 className="text-3xl md:text-5xl font-bold text-accent-foreground mb-6">
+            Get Your Free IT Audit Checklist
           </h2>
 
-          {/* Subtext */}
-          <p className="text-xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
-            We offer free consultations for businesses ready to level up their tech. 
-            Let's discuss your challenges and explore solutions together.
+          <p className="text-xl text-accent-foreground/80 mb-10 max-w-2xl mx-auto">
+            Identify gaps in your IT infrastructure with our comprehensive checklist. Used by 500+ South African businesses.
           </p>
 
-          {/* CTA */}
-          <Button asChild size="lg" className="bg-accent hover:bg-accent-hover text-accent-foreground text-lg px-12 py-7 h-auto font-semibold group">
-            <Link to="/contact#quote-form">
-              Book My Free Consultation
-              <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </Button>
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1 h-14 text-lg bg-accent-foreground text-primary placeholder:text-primary/50 border-0"
+              required
+            />
+            <Button
+              type="submit"
+              size="lg"
+              disabled={isSubmitting}
+              className="h-14 px-8 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              {isSubmitting ? "Sending..." : "Download Now"}
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </form>
 
-          {/* Trust line */}
-          <p className="text-white/50 text-sm mt-8">
-            No spam, no sales pressure. Just expert advice tailored to your business.
+          <p className="text-sm text-accent-foreground/60 mt-4">
+            No spam, ever. We respect your inbox.
           </p>
         </div>
       </div>

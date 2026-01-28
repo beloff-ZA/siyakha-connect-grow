@@ -1,112 +1,108 @@
-import { Button } from "@/components/ui/button";
-import { Wifi, Shield, Cloud, MessageSquare, ArrowRight, Wrench } from "lucide-react";
+import { Monitor, Wifi, Shield, Cloud, Phone, Wrench, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const services = [
+  {
+    icon: Monitor,
+    title: "IT Support / Managed Services",
+    description: "24/7 helpdesk, proactive monitoring, and complete IT management to reduce downtime and boost productivity.",
+    link: "/services/infrastructure-and-networking",
+    benefit: "Reduce downtime by 90%"
+  },
+  {
+    icon: Wifi,
+    title: "Networking & Wi-Fi",
+    description: "Enterprise-grade network design, installation, and optimization for seamless connectivity across your premises.",
+    link: "/services/infrastructure-and-networking",
+    benefit: "Improve coverage everywhere"
+  },
+  {
+    icon: Shield,
+    title: "CCTV, Security & Access Control",
+    description: "HD surveillance systems, access management, and remote monitoring to secure your premises and assets.",
+    link: "/services/security-and-surveillance",
+    benefit: "Protect what matters most"
+  },
+  {
+    icon: Cloud,
+    title: "Cloud, Backup & Microsoft 365",
+    description: "Secure cloud migration, automated backups, and Microsoft 365 deployment for modern workplace productivity.",
+    link: "/services/cloud-and-edge-solutions",
+    benefit: "Never lose critical data"
+  },
+  {
+    icon: Phone,
+    title: "VoIP & Connectivity",
+    description: "Crystal-clear VoIP phone systems and reliable internet connectivity solutions for unified communications.",
+    link: "/services/smart-collaboration-tools",
+    benefit: "Cut phone costs by 50%"
+  },
+  {
+    icon: Wrench,
+    title: "Field Support / Smart Hands",
+    description: "Nationwide on-site technical support with skilled technicians ready to deploy wherever you need them.",
+    link: "/services/national-field-support",
+    benefit: "Fast on-site response"
+  },
+];
+
 const Services = () => {
-  const services = [
-    {
-      icon: Wifi,
-      title: "Infrastructure & Networking",
-      description: "Data Cabling, Switches, Wi-Fi, Trunking",
-      benefit: "Future-proof your business network with scalable Wi-Fi & cabling.",
-      link: "/services/infrastructure-and-networking"
-    },
-    {
-      icon: Shield,
-      title: "Security & Surveillance",
-      description: "CCTV, Access Control, Intercoms, Smart Gates",
-      benefit: "Protect your assets with intelligent security systems.",
-      link: "/services/security-and-surveillance"
-    },
-    {
-      icon: Cloud,
-      title: "Cloud & Edge Solutions",
-      description: "Server Setup, Migration, Backup & Recovery",
-      benefit: "Scale your operations with reliable cloud infrastructure.",
-      link: "/services/cloud-and-edge-solutions"
-    },
-    {
-      icon: MessageSquare,
-      title: "Smart Collaboration Tools",
-      description: "VoIP, Remote Work, Microsoft 365, Email Systems",
-      benefit: "Enable seamless communication across your organization.",
-      link: "/services/smart-collaboration-tools"
-    },
-    {
-      icon: Wrench,
-      title: "National Field Support",
-      description: "Onsite smart hands across South Africa",
-      benefit: "Dispatch certified techs for rollouts, swaps and break/fix.",
-      link: "/services/national-field-support/cutovers-and-sim-replacements"
-    }
-  ];
-
-  const stats = [
-    { value: "Same Day", label: "Site Visits" },
-    { value: "24/7", label: "Monitoring" },
-    { value: "100%", label: "Uptime SLA" },
-    { value: "Free", label: "Consultations" }
-  ];
-
   return (
-    <section id="services" className="py-24 lg:py-32 bg-secondary">
+    <section className="py-24 bg-background">
       <div className="container mx-auto px-4 lg:px-6">
-        {/* Header */}
-        <div className="max-w-3xl mb-16">
-          <div className="divider-bold mb-6" />
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6 tracking-tight leading-[1.1]">
-            Our Services
+        <div className="text-center mb-16">
+          <p className="text-accent font-semibold text-sm uppercase tracking-wider mb-4">
+            What We Do
+          </p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Complete IT Solutions
           </h2>
-          <p className="text-xl text-muted-foreground leading-relaxed">
-            Comprehensive ICT solutions designed to transform your business operations.
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            From network infrastructure to security systems, we deliver end-to-end technology solutions tailored to your business.
           </p>
         </div>
 
-        {/* Services List */}
-        <div className="border-t border-border">
-          {services.map((service, index) => (
-            <Link 
-              key={index}
-              to={service.link}
-              className="service-item group cursor-pointer"
-            >
-              <div className="flex-shrink-0 text-5xl font-bold text-accent/20 leading-none select-none w-20">
-                {String(index + 1).padStart(2, '0')}
-              </div>
-              
-              <div className="flex-shrink-0 w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center group-hover:bg-accent transition-colors duration-300">
-                <service.icon className="w-7 h-7 text-accent group-hover:text-white transition-colors duration-300" />
-              </div>
-              
-              <div className="flex-1 min-w-0">
-                <h3 className="text-xl md:text-2xl font-bold text-primary group-hover:text-accent transition-colors mb-2">
-                  {service.title}
-                </h3>
-                <p className="text-muted-foreground mb-1">
-                  {service.description}
-                </p>
-                <p className="text-primary font-medium text-sm">
-                  {service.benefit}
-                </p>
-              </div>
-              
-              <div className="flex-shrink-0 hidden md:block">
-                <div className="w-12 h-12 rounded-full border-2 border-accent/30 flex items-center justify-center group-hover:bg-accent group-hover:border-accent transition-all duration-300">
-                  <ArrowRight className="w-5 h-5 text-accent group-hover:text-white transition-colors" />
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {services.map((service, index) => {
+            const Icon = service.icon;
+            return (
+              <Link
+                key={index}
+                to={service.link}
+                className="group bg-background border border-border rounded-2xl p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-accent/10 rounded-xl group-hover:bg-accent/20 transition-colors">
+                    <Icon className="w-6 h-6 text-accent" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg mb-2 group-hover:text-accent transition-colors">
+                      {service.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      {service.description}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-accent bg-accent/10 px-3 py-1 rounded-full">
+                        {service.benefit}
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
 
-        {/* Stats */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center p-6 bg-background rounded-xl">
-              <div className="text-2xl md:text-3xl font-bold text-accent mb-2">{stat.value}</div>
-              <div className="text-sm text-muted-foreground uppercase tracking-wider">{stat.label}</div>
-            </div>
-          ))}
+        <div className="text-center mt-12">
+          <Link
+            to="/services"
+            className="inline-flex items-center gap-2 text-accent font-medium hover:underline"
+          >
+            View all services
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </section>
