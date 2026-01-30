@@ -1,64 +1,89 @@
 import { Button } from "@/components/ui/button";
-import { Shield, Clock, Zap, CheckCircle, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Shield, Clock, Zap, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const DraasFeature = () => {
   const features = [
-    { icon: Zap, title: "Lightning Fast Recovery" },
-    { icon: Shield, title: "Business Continuity" },
-    { icon: Clock, title: "Optimal RPO & RTO" },
-    { icon: CheckCircle, title: "Flexible Solutions" }
+    {
+      icon: Zap,
+      title: "Lightning Fast Recovery",
+      description: "Minimize downtime with rapid system restoration"
+    },
+    {
+      icon: Shield,
+      title: "Business Continuity",
+      description: "Keep your operations running during disasters"
+    },
+    {
+      icon: Clock,
+      title: "Optimal RPO & RTO",
+      description: "Customized recovery objectives for your needs"
+    },
+    {
+      icon: CheckCircle,
+      title: "Flexible Solutions",
+      description: "Tailored to fit your specific requirements"
+    }
   ];
 
   return (
-    <section className="py-24 lg:py-32 bg-primary">
+    <section className="py-20 bg-gradient-to-br from-background to-accent/5">
       <div className="container mx-auto px-4 lg:px-6">
-        <div className="max-w-5xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 bg-accent/20 text-accent font-semibold text-sm rounded-full mb-8">
-            <Zap className="w-4 h-4 mr-2" />
-            DRaaS Services
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Content Side */}
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-accent/10 text-accent text-sm font-medium">
+                🚀 DRaaS Services
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-primary leading-tight">
+                Disaster Recovery as a Service
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Recover your business-critical systems in a flash with our flexible Disaster Recovery as a Service (DRaaS). We tailor a solution to meet your needs and provide you with the best possible RPO and RTO.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link to="/contact" className="inline-flex">
+                <Button size="lg" className="bg-accent hover:bg-accent/90">
+                  Get DRaaS Quote
+                </Button>
+              </Link>
+              <Link to="/contact" className="inline-flex">
+                <Button variant="outline" size="lg">
+                  Learn More
+                </Button>
+              </Link>
+            </div>
           </div>
 
-          {/* Headline */}
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 tracking-tight leading-[1.1]">
-            Disaster Recovery
-            <br />
-            as a Service
-          </h2>
-
-          {/* Description */}
-          <p className="text-xl text-white/70 mb-12 max-w-2xl leading-relaxed">
-            Recover your business-critical systems in a flash with our flexible DRaaS. 
-            We tailor solutions to meet your needs with the best possible RPO and RTO.
-          </p>
-
-          {/* Features Row */}
-          <div className="flex flex-wrap gap-6 mb-12">
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {features.map((feature, index) => (
-              <div 
-                key={index} 
-                className="flex items-center gap-3 text-white/90"
-              >
-                <div className="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
-                  <feature.icon className="w-5 h-5 text-accent" />
-                </div>
-                <span className="font-medium">{feature.title}</span>
-              </div>
+              <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                        <feature.icon className="w-6 h-6 text-accent" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-primary group-hover:text-accent transition-colors">
+                        {feature.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
-
-          {/* CTA */}
-          <Button asChild size="lg" className="bg-accent hover:bg-accent-hover text-accent-foreground text-lg px-10 py-6 h-auto font-semibold group">
-            <Link to="/contact">
-              Get DRaaS Quote
-              <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </Button>
         </div>
-
-        {/* Accent Line */}
-        <div className="w-24 h-1 bg-accent mt-20 mx-auto" />
       </div>
     </section>
   );

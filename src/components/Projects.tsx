@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, MapPin, Wifi, Shield, Camera, Printer, Monitor } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 const maristProject = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
 const kfcProject = "/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png";
 const maristCTProject = "/lovable-uploads/de3c5edc-ea87-4242-bbb0-8782b25a22ec.png";
@@ -9,10 +9,10 @@ import officeProject from "@/assets/office-project.jpg";
 const pelicanImage = "/lovable-uploads/f345d1c0-6383-4a5c-9188-81c8ae221932.png";
 const campusKeyImage = "/lovable-uploads/7c314536-73bf-4ae1-b7e3-ccceee5d640e.png";
 const conferenceRoomProject = "/lovable-uploads/e85bfefa-f7c0-413b-ac3e-5c3dc791bacc.png";
+const guestWifiProject = "/lovable-uploads/08c32d0c-30d7-4eb1-b8c2-73824f3fd226.png";
+const guestWifiPortal = "/lovable-uploads/536b36ad-d93e-4ae6-941a-f55cf5ac1fb9.png";
 
 const Projects = () => {
-  const location = useLocation();
-  
   const projects = [
     {
       title: "Marist Brothers Linmeyer",
@@ -20,6 +20,7 @@ const Projects = () => {
       description: "Full Wi-Fi and data infrastructure for 22 classrooms",
       image: maristProject,
       icon: Wifi,
+      features: ["Enterprise Wi-Fi 6", "Structured Cabling", "Network Security", "24/7 Monitoring"],
       link: "/projects/marist-brothers-linmeyer"
     },
     {
@@ -28,121 +29,177 @@ const Projects = () => {
       description: "Comprehensive security and access control system",
       image: officeProject,
       icon: Shield,
+      features: ["IP CCTV System", "Access Control", "Intercom Network", "Smart Gate Automation"],
       link: "/projects/corporate-office-complex"
     },
     {
-      title: "KFC – National Network Rollout",
+      title: "KFC – National Network Infrastructure Rollout",
       location: "Nationwide, South Africa",
-      description: "Nationwide Wi‑Fi and secure network for 50+ stores",
+      description: "In partnership with Exmile: nationwide Wi‑Fi and secure network deployment for KFC stores",
       image: kfcProject,
       icon: Wifi,
+      features: ["Nationwide rollout", "50+ firewalls", "1000+ devices & APs", "Enterprise compliance"],
       link: "/projects/kfc-national-network-rollout"
     },
     {
-      title: "The Village Bakery – CCTV",
+      title: "The Village Bakery – CCTV Installation",
       location: "Fordsburg, Johannesburg",
-      description: "Complete property and in-store CCTV surveillance",
+      description: "Complete property and in-store CCTV surveillance system for comprehensive security coverage",
       image: "/lovable-uploads/134e1b88-479c-4122-9897-1e74ae8819a9.png",
       icon: Camera,
+      features: ["Property-wide coverage", "In-store monitoring", "High-definition cameras", "24/7 recording"],
       link: "/projects/village-bakery-cctv"
     },
     {
-      title: "St Joseph's Marist College",
+      title: "Greestone – Network Infrastructure Rebuild",
+      location: "Johannesburg, Gauteng",
+      description: "Complete network overhaul with Linux server installation, upgraded network points, and new switching infrastructure",
+      image: "/lovable-uploads/c8302aaa-3768-46a7-93ab-e0b5021f6d5c.png",
+      icon: Wifi,
+      features: ["Linux server setup", "Network point upgrades", "New switch cabinet", "Ongoing support"],
+      link: "/projects/greestone-network-rebuild"
+    },
+    {
+      title: "St Joseph's Marist College – Campus CCTV Overhaul",
       location: "Cape Town, Western Cape",
-      description: "55-camera fibre network with remote monitoring",
+      description: "55‑camera fibre network covering the entire campus with remote monitoring",
       image: maristCTProject,
       icon: Camera,
+      features: ["55 cameras", "Fibre backbone", "Full campus coverage", "Remote monitoring"],
       link: "/projects/st-josephs-marist-cape-town-cctv"
     },
     {
-      title: "CampusKey – National Overhaul",
-      location: "Cape Town • Stellenbosch • PE • Pretoria",
-      description: "Multi-campus Cat6 cabling and 500+ AP deployment",
+      title: "The Pelican Club Bahrain – International Remote IT Support",
+      location: "Manama, Bahrain",
+      description: "Remote printer setup, troubleshooting, and desktop support ensuring uninterrupted operations.",
+      image: pelicanImage,
+      icon: Printer,
+      features: ["Remote printer fixes", "Driver & network setup", "Remote desktop support", "Optimized workflows"],
+      link: "/projects/pelican-club-bahrain"
+    },
+    {
+      title: "CampusKey – National Network Infrastructure Overhaul",
+      location: "Cape Town • Stellenbosch • PE • Pretoria (+ remote Bloemfontein)",
+      description: "Multi-campus Cat6 cabling, fibre backbone, and 500+ AP deployment for high-speed student Wi‑Fi.",
       image: campusKeyImage,
       icon: Wifi,
+      features: ["500+ APs", "Fibre backbone", "Cat6 cabling", "Centralized management"],
       link: "/projects/campuskey-network-overhaul"
+    },
+    {
+      title: "Executive Conference Room Setup",
+      location: "Johannesburg, Gauteng",
+      description: "Premium boardroom transformation with integrated AV systems, smart displays, and collaborative technology solutions.",
+      image: conferenceRoomProject,
+      icon: Monitor,
+      features: ["Smart Display Integration", "AV System Setup", "Collaborative Tools", "Premium Fitout"],
+      link: "/projects/executive-conference-room"
     },
   ];
 
-  const stats = [
-    { value: "500+", label: "Access Points" },
-    { value: "1000+", label: "CCTV Cameras" },
-    { value: "50+", label: "Cloud Migrations" },
-    { value: "99.9%", label: "Network Uptime" }
-  ];
-
   return (
-    <section className="py-24 lg:py-32 bg-secondary">
+    <section className="py-20 bg-secondary">
       <div className="container mx-auto px-4 lg:px-6">
-        {/* Header */}
-        <div className="max-w-3xl mb-16">
-          <div className="divider-bold mb-6" />
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6 tracking-tight leading-[1.1]">
-            Featured Projects
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+            Featured Project Spotlight
           </h2>
-          <p className="text-xl text-muted-foreground leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Discover how we've transformed businesses with innovative technology solutions.
           </p>
         </div>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {projects.map((project, index) => (
-            <Link 
+            <Card 
               key={index}
-              to={project.link}
-              className="group relative overflow-hidden rounded-xl aspect-[4/3]"
+              className="overflow-hidden group hover:shadow-xl transition-all duration-300"
             >
-              <img 
-                src={project.image}
-                alt={project.title}
-                loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity" />
+              <div className="relative h-64 overflow-hidden">
+                <img 
+                  src={project.image}
+                  alt={project.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-primary/60 group-hover:bg-primary/40 transition-colors duration-300"></div>
+                <div className="absolute top-4 left-4">
+                  <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
+                    <project.icon className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+              </div>
               
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="flex items-center gap-2 text-white/70 text-sm mb-2">
-                  <MapPin className="w-4 h-4" />
+              <CardContent className="p-6">
+                <div className="flex items-center text-sm text-muted-foreground mb-2">
+                  <MapPin className="w-4 h-4 mr-1" />
                   {project.location}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-accent transition-colors">
+                
+                <h3 className="text-xl font-semibold text-primary mb-2 group-hover:text-accent transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-white/80 text-sm">
+                
+                <p className="text-muted-foreground mb-4">
                   {project.description}
                 </p>
-              </div>
 
-              <div className="absolute top-4 right-4">
-                <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-                  <project.icon className="w-5 h-5 text-white" />
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {project.features.map((feature, featureIndex) => (
+                    <span 
+                      key={featureIndex}
+                      className="px-3 py-1 bg-accent/10 text-accent text-xs rounded-full"
+                    >
+                      {feature}
+                    </span>
+                  ))}
                 </div>
-              </div>
-            </Link>
+
+                <Link to={project.link} className="inline-flex">
+                  <Button 
+                    variant="ghost" 
+                    className="text-accent hover:text-accent-hover group/btn p-0 h-auto font-medium"
+                  >
+                    View Project Details
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
-        {/* View All CTA */}
-        {location.pathname !== '/projects' && (
-          <div className="text-center mb-20">
-            <Button asChild variant="outline" size="lg" className="font-semibold group">
-              <Link to="/projects">
+        {/* All Projects CTA - Only show when not on projects page */}
+        {window.location.pathname !== '/projects' && (
+          <div className="text-center mt-12">
+            <Link to="/projects" className="inline-flex">
+              <Button className="cta-secondary">
                 View All Projects
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         )}
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t border-border">
-          {stats.map((stat, index) => (
-            <div key={index} className="stat-block">
-              <div className="stat-value">{stat.value}</div>
-              <div className="stat-label">{stat.label}</div>
-            </div>
-          ))}
+        {/* Project Stats */}
+        <div className="mt-16 pt-16 border-t border-border grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div className="text-3xl font-bold text-accent mb-2">500+</div>
+            <div className="text-sm text-muted-foreground">Wi-Fi Access Points Installed</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold text-accent mb-2">1000+</div>
+            <div className="text-sm text-muted-foreground">CCTV Cameras Deployed</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold text-accent mb-2">50+</div>
+            <div className="text-sm text-muted-foreground">Cloud Migrations</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold text-accent mb-2">99.9%</div>
+            <div className="text-sm text-muted-foreground">Network Uptime</div>
+          </div>
         </div>
       </div>
     </section>

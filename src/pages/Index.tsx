@@ -1,22 +1,20 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import TrustBar from "@/components/TrustBar";
+import WhySiyakha from "@/components/WhySiyakha";
 import Services from "@/components/Services";
-import HowItWorks from "@/components/HowItWorks";
-import ServicePackages from "@/components/ServicePackages";
-import FeaturedProjects from "@/components/FeaturedProjects";
-import ClientLogos from "@/components/ClientLogos";
+import DraasFeature from "@/components/DraasFeature";
+import FranchiseFeature from "@/components/FranchiseFeature";
+import Industries from "@/components/Industries";
+import Projects from "@/components/Projects";
+
 import Testimonials from "@/components/Testimonials";
 import LeadMagnet from "@/components/LeadMagnet";
 import SmartHandsPartnership from "@/components/SmartHandsPartnership";
 import BlogPreview from "@/components/BlogPreview";
 import Footer from "@/components/Footer";
-import FindMySolutionWizard from "@/components/FindMySolutionWizard";
 
 const Index = () => {
-  const [wizardOpen, setWizardOpen] = useState(false);
-
   useEffect(() => {
     const title = "IT Company Johannesburg (Sandton) MSP | Siyakha";
     const description = "Managed IT support (MSP) in Johannesburg & Sandton. Business IT services, Wi‑Fi, CCTV, and cloud by Siyakha Tech Solutions.";
@@ -66,20 +64,20 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onOpenWizard={() => setWizardOpen(true)} />
-      <Hero onOpenWizard={() => setWizardOpen(true)} />
-      <TrustBar />
+      <Header />
+      <Hero />
+      <WhySiyakha />
       <Services />
-      <HowItWorks />
-      <ClientLogos />
-      <FeaturedProjects />
-      <ServicePackages onOpenWizard={() => setWizardOpen(true)} />
+      <DraasFeature />
+      <FranchiseFeature />
+      
+      <Industries />
+      <Projects />
       <Testimonials />
-      <LeadMagnet />
       <SmartHandsPartnership />
+      <LeadMagnet />
       <BlogPreview showCount={3} />
       <Footer />
-      <FindMySolutionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJson) }} />
     </div>
   );
