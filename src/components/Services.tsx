@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wifi, Shield, Cloud, MessageSquare, ArrowRight, Wrench } from "lucide-react";
+import { Wifi, Shield, Cloud, MessageSquare, ArrowRight, Wrench, Headphones } from "lucide-react";
 
 const Services = () => {
   const services = [
@@ -43,6 +43,14 @@ const Services = () => {
       benefit: "Dispatch certified techs for rollouts, swaps and break/fix.",
       link: "/services/national-field-support/cutovers-and-sim-replacements",
       color: "text-amber-600"
+    },
+    {
+      icon: Headphones,
+      title: "Field Support Services",
+      description: "Remote IT, Cabling Engineers & Support Network",
+      benefit: "Access our nationwide network of skilled technicians.",
+      link: "/services/field-support-services",
+      color: "text-teal-600"
     }
   ];
 

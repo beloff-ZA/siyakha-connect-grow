@@ -29,6 +29,7 @@ import SmartCollaborationTools from "./pages/services/SmartCollaborationTools";
 import NationalFieldSupport from "./pages/services/NationalFieldSupport";
 import CutoversSimReplacements from "./pages/services/CutoversSimReplacements";
 import HealthcareItSupport from "./pages/services/HealthcareItSupport";
+import FieldSupportServices from "./pages/services/FieldSupportServices";
 import ServicesIndex from "./pages/ServicesIndex";
 // Blog articles
 import SchoolNetworkUpgrade from "./pages/blog/SchoolNetworkUpgrade";
@@ -111,6 +112,7 @@ function App() {
                 <Route path="/services/national-field-support/cutovers-and-sim-replacements" element={<CutoversSimReplacements />} />
                 <Route path="/services/healthcare-it-support" element={<HealthcareItSupport />} />
                 <Route path="/healthcare-it-support" element={<Navigate to="/services/healthcare-it-support" replace />} />
+                <Route path="/services/field-support-services" element={<FieldSupportServices />} />
                 <Route path="/services" element={<ServicesIndex />} />
 
                 {/* Blog */}

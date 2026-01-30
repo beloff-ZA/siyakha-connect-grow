@@ -18,6 +18,7 @@ const AdminQuickCreate: React.FC = () => {
       const { data, error } = await supabase
         .from("user_roles")
         .select("role")
+        .eq("user_id", user.id)
         .eq("role", "siyakha_admin")
         .limit(1);
       if (!cancelled) {
