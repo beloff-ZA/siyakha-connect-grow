@@ -1,16 +1,1 @@
-project_id = "nhbnhcrpotqwqqqydign"
-
-[functions.log-support-call]
-verify_jwt = false
-
-[functions.messages-intent]
-verify_jwt = true
-
-[functions.messages-mark-sent]
-verify_jwt = true
-
-[functions.invite-admin-user]
-verify_jwt = true
-
-[functions.create-company-admin]
-verify_jwt = true
+project_id = "xgnvaemzxfblhqxhsslq"

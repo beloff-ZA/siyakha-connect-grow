@@ -7,148 +7,52 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.4"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
       companies: {
         Row: {
-          access_instructions: string | null
           address: string | null
-          arrival_notification_recipients: string[]
           billing_email: string | null
-          company_type: Database["public"]["Enums"]["company_type"] | null
+          company_type: string | null
           created_at: string
           id: string
           logo_url: string | null
-          metadata: Json
+          metadata: Json | null
           name: string
           phone: string | null
-          preferred_comms: string | null
-          sla_tier: string | null
           updated_at: string
           vat_number: string | null
-          working_hours: Json
         }
         Insert: {
-          access_instructions?: string | null
           address?: string | null
-          arrival_notification_recipients?: string[]
           billing_email?: string | null
-          company_type?: Database["public"]["Enums"]["company_type"] | null
+          company_type?: string | null
           created_at?: string
           id?: string
           logo_url?: string | null
-          metadata?: Json
+          metadata?: Json | null
           name: string
           phone?: string | null
-          preferred_comms?: string | null
-          sla_tier?: string | null
           updated_at?: string
           vat_number?: string | null
-          working_hours?: Json
         }
         Update: {
-          access_instructions?: string | null
           address?: string | null
-          arrival_notification_recipients?: string[]
           billing_email?: string | null
-          company_type?: Database["public"]["Enums"]["company_type"] | null
+          company_type?: string | null
           created_at?: string
           id?: string
           logo_url?: string | null
-          metadata?: Json
+          metadata?: Json | null
           name?: string
           phone?: string | null
-          preferred_comms?: string | null
-          sla_tier?: string | null
           updated_at?: string
           vat_number?: string | null
-          working_hours?: Json
-        }
-        Relationships: []
-      }
-      company_contacts: {
-        Row: {
-          company_id: string
-          created_at: string
-          email: string | null
-          id: string
-          is_primary: boolean
-          metadata: Json
-          name: string
-          phone: string | null
-          position: string | null
-          preferred_comms: string | null
-          type: Database["public"]["Enums"]["contact_type"]
-          updated_at: string
-        }
-        Insert: {
-          company_id: string
-          created_at?: string
-          email?: string | null
-          id?: string
-          is_primary?: boolean
-          metadata?: Json
-          name: string
-          phone?: string | null
-          position?: string | null
-          preferred_comms?: string | null
-          type?: Database["public"]["Enums"]["contact_type"]
-          updated_at?: string
-        }
-        Update: {
-          company_id?: string
-          created_at?: string
-          email?: string | null
-          id?: string
-          is_primary?: boolean
-          metadata?: Json
-          name?: string
-          phone?: string | null
-          position?: string | null
-          preferred_comms?: string | null
-          type?: Database["public"]["Enums"]["contact_type"]
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      company_invites: {
-        Row: {
-          accepted_at: string | null
-          company_id: string
-          created_at: string
-          created_by: string
-          email: string
-          id: string
-          metadata: Json
-          role: Database["public"]["Enums"]["company_role"]
-          token: string
-        }
-        Insert: {
-          accepted_at?: string | null
-          company_id: string
-          created_at?: string
-          created_by?: string
-          email: string
-          id?: string
-          metadata?: Json
-          role?: Database["public"]["Enums"]["company_role"]
-          token?: string
-        }
-        Update: {
-          accepted_at?: string | null
-          company_id?: string
-          created_at?: string
-          created_by?: string
-          email?: string
-          id?: string
-          metadata?: Json
-          role?: Database["public"]["Enums"]["company_role"]
-          token?: string
         }
         Relationships: []
       }
@@ -157,21 +61,21 @@ export type Database = {
           company_id: string
           created_at: string
           id: string
-          role: Database["public"]["Enums"]["company_role"]
+          role: string
           user_id: string
         }
         Insert: {
           company_id: string
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["company_role"]
+          role?: string
           user_id: string
         }
         Update: {
           company_id?: string
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["company_role"]
+          role?: string
           user_id?: string
         }
         Relationships: [
@@ -184,529 +88,140 @@ export type Database = {
           },
         ]
       }
-      donations: {
+      job_applications: {
         Row: {
-          amount_cents: number
+          cover_letter: string | null
           created_at: string
-          currency: string
-          donor_email: string | null
-          donor_name: string | null
-          id: string
-          item_name: string | null
-          merchant_reference: string | null
-          metadata: Json
-          monthly: boolean
-          pf_payment_id: string | null
-          provider: string
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          amount_cents: number
-          created_at?: string
-          currency?: string
-          donor_email?: string | null
-          donor_name?: string | null
-          id?: string
-          item_name?: string | null
-          merchant_reference?: string | null
-          metadata?: Json
-          monthly?: boolean
-          pf_payment_id?: string | null
-          provider?: string
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          amount_cents?: number
-          created_at?: string
-          currency?: string
-          donor_email?: string | null
-          donor_name?: string | null
-          id?: string
-          item_name?: string | null
-          merchant_reference?: string | null
-          metadata?: Json
-          monthly?: boolean
-          pf_payment_id?: string | null
-          provider?: string
-          status?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      email_sends: {
-        Row: {
-          created_at: string
-          id: string
-          metadata: Json
-          subject: string | null
-          to_emails: string[]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          metadata?: Json
-          subject?: string | null
-          to_emails?: string[]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          metadata?: Json
-          subject?: string | null
-          to_emails?: string[]
-          user_id?: string
-        }
-        Relationships: []
-      }
-      inbound_support_requests: {
-        Row: {
-          category: string
-          contact_number: string
-          created_at: string
-          description: string
+          current_employer: string | null
+          cv_url: string
           email: string
           full_name: string
           id: string
-          ip: string | null
-          preferred_channel: string | null
-          source: string
+          job_id: string
+          linkedin_url: string | null
+          phone: string | null
           status: string
           updated_at: string
-          user_agent: string | null
-          whatsapp_number: string | null
+          years_experience: number | null
         }
         Insert: {
-          category: string
-          contact_number: string
+          cover_letter?: string | null
           created_at?: string
-          description: string
+          current_employer?: string | null
+          cv_url: string
           email: string
           full_name: string
           id?: string
-          ip?: string | null
-          preferred_channel?: string | null
-          source?: string
+          job_id: string
+          linkedin_url?: string | null
+          phone?: string | null
           status?: string
           updated_at?: string
-          user_agent?: string | null
-          whatsapp_number?: string | null
+          years_experience?: number | null
         }
         Update: {
-          category?: string
-          contact_number?: string
+          cover_letter?: string | null
           created_at?: string
-          description?: string
+          current_employer?: string | null
+          cv_url?: string
           email?: string
           full_name?: string
           id?: string
-          ip?: string | null
-          preferred_channel?: string | null
-          source?: string
+          job_id?: string
+          linkedin_url?: string | null
+          phone?: string | null
           status?: string
           updated_at?: string
-          user_agent?: string | null
-          whatsapp_number?: string | null
-        }
-        Relationships: []
-      }
-      partner_documents: {
-        Row: {
-          created_at: string
-          expires_at: string | null
-          file_url: string
-          id: string
-          issued_at: string | null
-          notes: string | null
-          partner_id: string
-          type: Database["public"]["Enums"]["partner_document_type"]
-          updated_at: string
-          verified: boolean
-        }
-        Insert: {
-          created_at?: string
-          expires_at?: string | null
-          file_url: string
-          id?: string
-          issued_at?: string | null
-          notes?: string | null
-          partner_id: string
-          type: Database["public"]["Enums"]["partner_document_type"]
-          updated_at?: string
-          verified?: boolean
-        }
-        Update: {
-          created_at?: string
-          expires_at?: string | null
-          file_url?: string
-          id?: string
-          issued_at?: string | null
-          notes?: string | null
-          partner_id?: string
-          type?: Database["public"]["Enums"]["partner_document_type"]
-          updated_at?: string
-          verified?: boolean
-        }
-        Relationships: []
-      }
-      partners: {
-        Row: {
-          company_id: string
-          company_name: string | null
-          created_at: string
-          email: string | null
-          id: string
-          individual_name: string | null
-          partner_type: Database["public"]["Enums"]["partner_type"]
-          profile_score: number
-          regions: Json
-          skills: Json
-          status: Database["public"]["Enums"]["partner_status"]
-          tier: Database["public"]["Enums"]["partner_tier"]
-          updated_at: string
-          whatsapp: string | null
-        }
-        Insert: {
-          company_id: string
-          company_name?: string | null
-          created_at?: string
-          email?: string | null
-          id?: string
-          individual_name?: string | null
-          partner_type: Database["public"]["Enums"]["partner_type"]
-          profile_score?: number
-          regions?: Json
-          skills?: Json
-          status?: Database["public"]["Enums"]["partner_status"]
-          tier?: Database["public"]["Enums"]["partner_tier"]
-          updated_at?: string
-          whatsapp?: string | null
-        }
-        Update: {
-          company_id?: string
-          company_name?: string | null
-          created_at?: string
-          email?: string | null
-          id?: string
-          individual_name?: string | null
-          partner_type?: Database["public"]["Enums"]["partner_type"]
-          profile_score?: number
-          regions?: Json
-          skills?: Json
-          status?: Database["public"]["Enums"]["partner_status"]
-          tier?: Database["public"]["Enums"]["partner_tier"]
-          updated_at?: string
-          whatsapp?: string | null
-        }
-        Relationships: []
-      }
-      payfast_itn_logs: {
-        Row: {
-          created_at: string
-          donation_id: string | null
-          id: number
-          ip: string | null
-          payload: Json
-          payment_status: string | null
-          pf_payment_id: string | null
-          valid: boolean | null
-        }
-        Insert: {
-          created_at?: string
-          donation_id?: string | null
-          id?: number
-          ip?: string | null
-          payload: Json
-          payment_status?: string | null
-          pf_payment_id?: string | null
-          valid?: boolean | null
-        }
-        Update: {
-          created_at?: string
-          donation_id?: string | null
-          id?: number
-          ip?: string | null
-          payload?: Json
-          payment_status?: string | null
-          pf_payment_id?: string | null
-          valid?: boolean | null
+          years_experience?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "payfast_itn_logs_donation_id_fkey"
-            columns: ["donation_id"]
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
             isOneToOne: false
-            referencedRelation: "donations"
+            referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
         ]
       }
-      profiles: {
+      jobs: {
         Row: {
-          avatar_url: string | null
-          company_name: string | null
+          benefits: string[] | null
           created_at: string
-          display_name: string | null
+          department: string
+          description: string
+          employment_type: string
           id: string
-          phone: string | null
-          position: string | null
-          role_title: string | null
-          updated_at: string
-        }
-        Insert: {
-          avatar_url?: string | null
-          company_name?: string | null
-          created_at?: string
-          display_name?: string | null
-          id: string
-          phone?: string | null
-          position?: string | null
-          role_title?: string | null
-          updated_at?: string
-        }
-        Update: {
-          avatar_url?: string | null
-          company_name?: string | null
-          created_at?: string
-          display_name?: string | null
-          id?: string
-          phone?: string | null
-          position?: string | null
-          role_title?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      quotes: {
-        Row: {
-          amount_cents: number | null
-          company_id: string
-          created_at: string
-          currency: string
-          description: string | null
-          id: string
-          metadata: Json
-          requested_by: string
-          status: string
+          is_active: boolean
+          location: string
+          requirements: string[]
           title: string
           updated_at: string
         }
         Insert: {
-          amount_cents?: number | null
-          company_id: string
+          benefits?: string[] | null
           created_at?: string
-          currency?: string
-          description?: string | null
+          department: string
+          description: string
+          employment_type?: string
           id?: string
-          metadata?: Json
-          requested_by: string
-          status?: string
+          is_active?: boolean
+          location?: string
+          requirements?: string[]
           title: string
           updated_at?: string
         }
         Update: {
-          amount_cents?: number | null
-          company_id?: string
+          benefits?: string[] | null
           created_at?: string
-          currency?: string
-          description?: string | null
+          department?: string
+          description?: string
+          employment_type?: string
           id?: string
-          metadata?: Json
-          requested_by?: string
-          status?: string
+          is_active?: boolean
+          location?: string
+          requirements?: string[]
           title?: string
           updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "quotes_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      service_categories: {
-        Row: {
-          company_id: string
-          created_at: string
-          id: string
-          name: string
-          sla_resolve_mins: number
-          sla_response_mins: number
-          updated_at: string
-        }
-        Insert: {
-          company_id: string
-          created_at?: string
-          id?: string
-          name: string
-          sla_resolve_mins?: number
-          sla_response_mins?: number
-          updated_at?: string
-        }
-        Update: {
-          company_id?: string
-          created_at?: string
-          id?: string
-          name?: string
-          sla_resolve_mins?: number
-          sla_response_mins?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      sites: {
-        Row: {
-          address: string | null
-          city: string | null
-          company_id: string
-          country: string | null
-          created_at: string
-          id: string
-          latitude: number | null
-          longitude: number | null
-          metadata: Json
-          name: string
-          postal_code: string | null
-          site_ref: string | null
-          state: string | null
-          updated_at: string
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          company_id: string
-          country?: string | null
-          created_at?: string
-          id?: string
-          latitude?: number | null
-          longitude?: number | null
-          metadata?: Json
-          name: string
-          postal_code?: string | null
-          site_ref?: string | null
-          state?: string | null
-          updated_at?: string
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          company_id?: string
-          country?: string | null
-          created_at?: string
-          id?: string
-          latitude?: number | null
-          longitude?: number | null
-          metadata?: Json
-          name?: string
-          postal_code?: string | null
-          site_ref?: string | null
-          state?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      support_calls: {
-        Row: {
-          client_status: string | null
-          company_id: string | null
-          contact_email: string | null
-          contact_name: string | null
-          contact_phone: string | null
-          created_at: string
-          description: string | null
-          id: string
-          issues: string[]
-          location: string | null
-          status: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          client_status?: string | null
-          company_id?: string | null
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          issues?: string[]
-          location?: string | null
-          status?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          client_status?: string | null
-          company_id?: string | null
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          issues?: string[]
-          location?: string | null
-          status?: string
-          updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }
       ticket_messages: {
         Row: {
-          attachments: Json
-          body: string
-          channel: Database["public"]["Enums"]["message_channel"]
+          body: string | null
+          channel: string | null
           created_at: string
-          direction: Database["public"]["Enums"]["message_direction"]
+          direction: string
           id: string
-          metadata: Json
-          provider_ids: Json
-          raw_headers: Json
-          status: Database["public"]["Enums"]["message_status"]
+          metadata: Json | null
+          status: string | null
           subject: string | null
           ticket_id: string
-          to_from: string
-          updated_at: string
+          to_from: string | null
         }
         Insert: {
-          attachments?: Json
-          body: string
-          channel: Database["public"]["Enums"]["message_channel"]
+          body?: string | null
+          channel?: string | null
           created_at?: string
-          direction: Database["public"]["Enums"]["message_direction"]
+          direction: string
           id?: string
-          metadata?: Json
-          provider_ids?: Json
-          raw_headers?: Json
-          status?: Database["public"]["Enums"]["message_status"]
+          metadata?: Json | null
+          status?: string | null
           subject?: string | null
           ticket_id: string
-          to_from: string
-          updated_at?: string
+          to_from?: string | null
         }
         Update: {
-          attachments?: Json
-          body?: string
-          channel?: Database["public"]["Enums"]["message_channel"]
+          body?: string | null
+          channel?: string | null
           created_at?: string
-          direction?: Database["public"]["Enums"]["message_direction"]
+          direction?: string
           id?: string
-          metadata?: Json
-          provider_ids?: Json
-          raw_headers?: Json
-          status?: Database["public"]["Enums"]["message_status"]
+          metadata?: Json | null
+          status?: string | null
           subject?: string | null
           ticket_id?: string
-          to_from?: string
-          updated_at?: string
+          to_from?: string | null
         }
         Relationships: [
           {
@@ -720,72 +235,59 @@ export type Database = {
       }
       tickets: {
         Row: {
-          assigned_partner_id: string | null
-          assigned_user_id: string | null
-          attachments: Json
-          channel: Database["public"]["Enums"]["ticket_channel"]
-          client_account_id: string | null
-          company_id: string
+          channel: string
+          company_id: string | null
           created_at: string
           created_by_user_id: string
           details: string | null
           id: string
           location: string | null
-          priority: Database["public"]["Enums"]["ticket_priority"]
+          priority: string
           service_category_id: string | null
-          sla_resolve_due_at: string | null
-          sla_response_due_at: string | null
-          source_message_id: string | null
-          status: Database["public"]["Enums"]["ticket_status"]
+          status: string
           summary: string
-          tracking_ref: string | null
+          tracking_ref: string
           updated_at: string
         }
         Insert: {
-          assigned_partner_id?: string | null
-          assigned_user_id?: string | null
-          attachments?: Json
-          channel?: Database["public"]["Enums"]["ticket_channel"]
-          client_account_id?: string | null
-          company_id: string
+          channel?: string
+          company_id?: string | null
           created_at?: string
           created_by_user_id: string
           details?: string | null
           id?: string
           location?: string | null
-          priority?: Database["public"]["Enums"]["ticket_priority"]
+          priority?: string
           service_category_id?: string | null
-          sla_resolve_due_at?: string | null
-          sla_response_due_at?: string | null
-          source_message_id?: string | null
-          status?: Database["public"]["Enums"]["ticket_status"]
+          status?: string
           summary: string
-          tracking_ref?: string | null
+          tracking_ref: string
           updated_at?: string
         }
         Update: {
-          assigned_partner_id?: string | null
-          assigned_user_id?: string | null
-          attachments?: Json
-          channel?: Database["public"]["Enums"]["ticket_channel"]
-          client_account_id?: string | null
-          company_id?: string
+          channel?: string
+          company_id?: string | null
           created_at?: string
           created_by_user_id?: string
           details?: string | null
           id?: string
           location?: string | null
-          priority?: Database["public"]["Enums"]["ticket_priority"]
+          priority?: string
           service_category_id?: string | null
-          sla_resolve_due_at?: string | null
-          sla_response_due_at?: string | null
-          source_message_id?: string | null
-          status?: Database["public"]["Enums"]["ticket_status"]
+          status?: string
           summary?: string
-          tracking_ref?: string | null
+          tracking_ref?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tickets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -813,113 +315,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      accept_company_invite: {
-        Args: { _token: string }
-        Returns: string
-      }
-      add_company_member_by_email: {
-        Args: {
-          _company_id: string
-          _email: string
-          _role?: Database["public"]["Enums"]["company_role"]
-        }
-        Returns: undefined
-      }
-      create_company_invite: {
-        Args: {
-          _company_id: string
-          _email: string
-          _role?: Database["public"]["Enums"]["company_role"]
-        }
-        Returns: {
-          id: string
-          token: string
-        }[]
-      }
       has_role: {
         Args: {
-          _user_id: string
           _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
         }
         Returns: boolean
-      }
-      is_company_admin: {
-        Args: { _company_id: string; _user_id?: string }
-        Returns: boolean
-      }
-      is_company_member: {
-        Args: { _company_id: string; _user_id?: string }
-        Returns: boolean
-      }
-      remove_company_member: {
-        Args: { _company_id: string; _member_id: string }
-        Returns: undefined
-      }
-      set_company_member_role: {
-        Args: {
-          _company_id: string
-          _member_id: string
-          _role: Database["public"]["Enums"]["company_role"]
-        }
-        Returns: undefined
       }
     }
     Enums: {
-      app_role:
-        | "siyakha_admin"
-        | "dispatcher"
-        | "technician"
-        | "client_msp"
-        | "client_non_msp"
-        | "team_member"
-      company_role: "owner" | "admin" | "member"
-      company_type:
-        | "msp"
-        | "isp"
-        | "school"
-        | "enterprise"
-        | "government"
-        | "healthcare"
-        | "hospitality"
-        | "retail"
-        | "nonprofit"
-        | "manufacturing"
-        | "finance"
-        | "other"
-      contact_type: "primary" | "billing" | "technical" | "other"
-      message_channel: "whatsapp" | "email"
-      message_direction: "inbound" | "outbound"
-      message_status:
-        | "inbound_received"
-        | "pending_send"
-        | "sent_manual"
-        | "sent_api"
-        | "failed"
-      partner_document_type:
-        | "id"
-        | "company_reg"
-        | "insurance"
-        | "certification"
-        | "safety"
-      partner_status:
-        | "submitted"
-        | "review"
-        | "approved"
-        | "declined"
-        | "suspended"
-      partner_tier: "probation" | "standard" | "premium"
-      partner_type: "technician" | "subcontractor" | "freelancer"
-      ticket_channel: "whatsapp" | "email" | "phone" | "portal"
-      ticket_priority: "low" | "normal" | "high" | "urgent"
-      ticket_status:
-        | "new"
-        | "triage"
-        | "assigned"
-        | "in_progress"
-        | "halted"
-        | "awaiting_client"
-        | "completed"
-        | "closed"
+      app_role: "admin" | "moderator" | "user" | "siyakha_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1047,67 +452,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: [
-        "siyakha_admin",
-        "dispatcher",
-        "technician",
-        "client_msp",
-        "client_non_msp",
-        "team_member",
-      ],
-      company_role: ["owner", "admin", "member"],
-      company_type: [
-        "msp",
-        "isp",
-        "school",
-        "enterprise",
-        "government",
-        "healthcare",
-        "hospitality",
-        "retail",
-        "nonprofit",
-        "manufacturing",
-        "finance",
-        "other",
-      ],
-      contact_type: ["primary", "billing", "technical", "other"],
-      message_channel: ["whatsapp", "email"],
-      message_direction: ["inbound", "outbound"],
-      message_status: [
-        "inbound_received",
-        "pending_send",
-        "sent_manual",
-        "sent_api",
-        "failed",
-      ],
-      partner_document_type: [
-        "id",
-        "company_reg",
-        "insurance",
-        "certification",
-        "safety",
-      ],
-      partner_status: [
-        "submitted",
-        "review",
-        "approved",
-        "declined",
-        "suspended",
-      ],
-      partner_tier: ["probation", "standard", "premium"],
-      partner_type: ["technician", "subcontractor", "freelancer"],
-      ticket_channel: ["whatsapp", "email", "phone", "portal"],
-      ticket_priority: ["low", "normal", "high", "urgent"],
-      ticket_status: [
-        "new",
-        "triage",
-        "assigned",
-        "in_progress",
-        "halted",
-        "awaiting_client",
-        "completed",
-        "closed",
-      ],
+      app_role: ["admin", "moderator", "user", "siyakha_admin"],
     },
   },
 } as const
