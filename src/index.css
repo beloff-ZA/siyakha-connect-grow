@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Siyakha Technology Design System
-All colors MUST be HSL. Professional tech aesthetic with Navy Blue and Electric Green.
+All colors MUST be HSL. Professional tech aesthetic with Navy Blue and Teal accent.
 */
 
 @layer base {
@@ -11,7 +11,7 @@ All colors MUST be HSL. Professional tech aesthetic with Navy Blue and Electric 
     --background: 0 0% 100%;
     --foreground: 213 90% 8%;
 
-    --card: 0 0% 100%;
+    --card: 30 20% 99%;
     --card-foreground: 213 90% 8%;
 
     --popover: 0 0% 100%;
@@ -22,60 +22,59 @@ All colors MUST be HSL. Professional tech aesthetic with Navy Blue and Electric 
     --primary-foreground: 0 0% 100%;
     --primary-hover: 213 90% 25%;
 
-    /* Light backgrounds */
-    --secondary: 210 25% 97%;
+    /* Light backgrounds - warmer tones */
+    --secondary: 30 15% 97%;
     --secondary-foreground: 213 90% 18%;
 
-    --muted: 210 25% 95%;
+    --muted: 30 10% 95%;
     --muted-foreground: 213 25% 45%;
 
-    /* Electric Green Accent */
-    --accent: 140 100% 45%;
+    /* Teal Blue Accent - sophisticated and modern */
+    --accent: 190 80% 42%;
     --accent-foreground: 0 0% 100%;
-    --accent-hover: 140 100% 35%;
+    --accent-hover: 190 80% 35%;
 
-    /* Orange Alternative Accent */
-    --orange-accent: 25 100% 55%;
+    /* Warm Orange for CTAs and highlights */
+    --orange-accent: 25 95% 55%;
     --orange-accent-foreground: 0 0% 100%;
+    --orange-hover: 25 95% 45%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 213 25% 88%;
+    --border: 213 20% 88%;
     --input: 213 25% 92%;
-    --ring: 213 90% 18%;
+    --ring: 190 80% 42%;
 
-    /* Tech Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(213 90% 18%), hsl(213 90% 25%));
-    --gradient-accent: linear-gradient(135deg, hsl(140 100% 45%), hsl(140 100% 35%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 25% 98%));
+    /* Refined Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(213 90% 18%), hsl(213 90% 28%));
+    --gradient-accent: linear-gradient(135deg, hsl(190 80% 42%), hsl(190 80% 32%));
+    --gradient-warm: linear-gradient(135deg, hsl(25 95% 55%), hsl(25 95% 45%));
+    --gradient-card: linear-gradient(135deg, hsl(30 20% 99%), hsl(30 15% 97%));
+    --gradient-stats: linear-gradient(135deg, hsl(213 90% 18% / 0.03), hsl(190 80% 42% / 0.05));
+    --gradient-overlay: linear-gradient(135deg, hsl(213 90% 18% / 0.85), hsl(190 80% 35% / 0.75));
 
-    /* Shadows */
-    --shadow-soft: 0 4px 20px -4px hsl(213 90% 18% / 0.1);
-    --shadow-medium: 0 8px 30px -8px hsl(213 90% 18% / 0.15);
-    --shadow-strong: 0 20px 50px -15px hsl(213 90% 18% / 0.25);
+    /* Enhanced Shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(213 90% 18% / 0.08);
+    --shadow-medium: 0 8px 30px -8px hsl(213 90% 18% / 0.12);
+    --shadow-strong: 0 20px 50px -15px hsl(213 90% 18% / 0.2);
+    --shadow-glow: 0 0 40px -10px hsl(190 80% 42% / 0.3);
+    --shadow-card-hover: 0 12px 40px -12px hsl(190 80% 42% / 0.25);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: all 0.2s ease-out;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 190 80% 42%;
   }
 
   .dark {
@@ -88,9 +87,9 @@ All colors MUST be HSL. Professional tech aesthetic with Navy Blue and Electric 
     --popover: 213 90% 12%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 140 100% 45%;
+    --primary: 190 80% 50%;
     --primary-foreground: 213 90% 8%;
-    --primary-hover: 140 100% 35%;
+    --primary-hover: 190 80% 40%;
 
     --secondary: 213 25% 15%;
     --secondary-foreground: 0 0% 100%;
@@ -98,24 +97,28 @@ All colors MUST be HSL. Professional tech aesthetic with Navy Blue and Electric 
     --muted: 213 25% 18%;
     --muted-foreground: 213 15% 65%;
 
-    --accent: 140 100% 45%;
+    --accent: 190 80% 50%;
     --accent-foreground: 213 90% 8%;
-    --accent-hover: 140 100% 35%;
+    --accent-hover: 190 80% 40%;
+
+    --orange-accent: 25 95% 55%;
+    --orange-accent-foreground: 0 0% 100%;
+    --orange-hover: 25 95% 45%;
 
     --destructive: 0 62.8% 50%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 213 25% 20%;
     --input: 213 25% 18%;
-    --ring: 140 100% 45%;
+    --ring: 190 80% 50%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 190 80% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 190 80% 50%;
   }
 }
 
@@ -143,30 +146,111 @@ All colors MUST be HSL. Professional tech aesthetic with Navy Blue and Electric 
     background: var(--gradient-accent);
   }
 
-  /* Card Hover Effects */
+  .warm-gradient {
+    background: var(--gradient-warm);
+  }
+
+  /* Glass Morphism Effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+
+  .glass-dark {
+    @apply bg-primary/10 backdrop-blur-md border border-primary/10;
+  }
+
+  /* Card Hover Effects - Enhanced */
   .service-card {
-    @apply bg-card border border-border rounded-lg p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply bg-card border border-border rounded-xl p-6 transition-all duration-300 hover:-translate-y-2;
     box-shadow: var(--shadow-soft);
   }
 
   .service-card:hover {
-    box-shadow: var(--shadow-medium);
+    box-shadow: var(--shadow-card-hover);
+    border-color: hsl(var(--accent) / 0.3);
   }
 
-  /* CTA Button Styles */
-  .cta-primary {
-    @apply bg-accent text-accent-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-accent/90 hover:scale-105;
+  /* Project Card Styles */
+  .project-card {
+    @apply bg-card border border-border rounded-xl overflow-hidden transition-all duration-500;
     box-shadow: var(--shadow-soft);
   }
 
+  .project-card:hover {
+    @apply -translate-y-2;
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .project-card::after {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-1 bg-accent opacity-0 transition-all duration-300;
+  }
+
+  .project-card:hover::after {
+    @apply opacity-100;
+  }
+
+  /* Feature Tag Styles */
+  .feature-tag {
+    @apply px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200;
+    background: linear-gradient(135deg, hsl(var(--accent) / 0.1), hsl(var(--accent) / 0.15));
+    color: hsl(var(--accent));
+    border: 1px solid hsl(var(--accent) / 0.2);
+  }
+
+  .feature-tag:hover {
+    background: linear-gradient(135deg, hsl(var(--accent) / 0.15), hsl(var(--accent) / 0.2));
+    border-color: hsl(var(--accent) / 0.4);
+  }
+
+  /* Stats Card - Glass Effect */
+  .stats-card {
+    @apply relative rounded-xl p-6 text-center transition-all duration-300;
+    background: linear-gradient(135deg, hsl(0 0% 100% / 0.9), hsl(30 15% 97% / 0.9));
+    backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-soft);
+  }
+
+  .stats-card:hover {
+    @apply -translate-y-1;
+    box-shadow: var(--shadow-medium);
+    border-color: hsl(var(--accent) / 0.3);
+  }
+
+  /* CTA Button Styles - Enhanced */
+  .cta-primary {
+    @apply bg-accent text-accent-foreground px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105;
+    box-shadow: 0 4px 20px -4px hsl(var(--accent) / 0.4);
+  }
+
+  .cta-primary:hover {
+    box-shadow: 0 8px 30px -4px hsl(var(--accent) / 0.5);
+  }
+
   .cta-secondary {
-    @apply border-2 border-primary text-primary px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-primary hover:text-primary-foreground;
+    @apply border-2 border-primary text-primary px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-primary hover:text-primary-foreground;
+  }
+
+  .cta-orange {
+    @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105;
+    background: linear-gradient(135deg, hsl(var(--orange-accent)), hsl(var(--orange-hover)));
+    box-shadow: 0 4px 20px -4px hsl(var(--orange-accent) / 0.4);
+  }
+
+  .cta-orange:hover {
+    box-shadow: 0 8px 30px -4px hsl(var(--orange-accent) / 0.5);
+  }
+
+  /* Page Header Overlay */
+  .page-header-overlay {
+    background: linear-gradient(135deg, hsl(213 90% 18% / 0.88), hsl(190 80% 35% / 0.78));
   }
 
   /* Tech Grid Animation */
   .tech-grid {
-    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0);
-    background-size: 20px 20px;
+    background-image: radial-gradient(circle at 1px 1px, hsl(var(--accent) / 0.15) 1px, transparent 0);
+    background-size: 24px 24px;
   }
 
   /* Floating Animation */
@@ -191,5 +275,23 @@ All colors MUST be HSL. Professional tech aesthetic with Navy Blue and Electric 
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  /* Icon Badge */
+  .icon-badge {
+    @apply w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-hover)));
+    box-shadow: 0 8px 20px -4px hsl(var(--accent) / 0.4);
+  }
+
+  .icon-badge:hover {
+    @apply scale-110;
+    box-shadow: 0 12px 30px -4px hsl(var(--accent) / 0.5);
+  }
+
+  /* Decorative line */
+  .accent-line {
+    @apply h-1 w-16 rounded-full;
+    background: linear-gradient(90deg, hsl(var(--accent)), hsl(var(--orange-accent)));
   }
 }
