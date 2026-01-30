@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, MapPin, Wifi, Shield, Camera, Printer, Monitor } from "lucide-react";
+import { ArrowRight, MapPin, Wifi, Shield, Camera, Printer, Monitor, Activity, Radio, Server, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
+
 const maristProject = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
 const kfcProject = "/lovable-uploads/1840c802-41fe-4f29-ae89-891da2fe347c.png";
 const maristCTProject = "/lovable-uploads/de3c5edc-ea87-4242-bbb0-8782b25a22ec.png";
@@ -9,8 +10,6 @@ import officeProject from "@/assets/office-project.jpg";
 const pelicanImage = "/lovable-uploads/f345d1c0-6383-4a5c-9188-81c8ae221932.png";
 const campusKeyImage = "/lovable-uploads/7c314536-73bf-4ae1-b7e3-ccceee5d640e.png";
 const conferenceRoomProject = "/lovable-uploads/e85bfefa-f7c0-413b-ac3e-5c3dc791bacc.png";
-const guestWifiProject = "/lovable-uploads/08c32d0c-30d7-4eb1-b8c2-73824f3fd226.png";
-const guestWifiPortal = "/lovable-uploads/536b36ad-d93e-4ae6-941a-f55cf5ac1fb9.png";
 
 const Projects = () => {
   const projects = [
@@ -97,75 +96,102 @@ const Projects = () => {
     },
   ];
 
+  const stats = [
+    { value: "500+", label: "Wi-Fi Access Points Installed", icon: Radio },
+    { value: "1000+", label: "CCTV Cameras Deployed", icon: Eye },
+    { value: "50+", label: "Cloud Migrations", icon: Server },
+    { value: "99.9%", label: "Network Uptime", icon: Activity },
+  ];
+
   return (
-    <section className="py-20 bg-secondary">
+    <section className="py-24 bg-gradient-to-b from-secondary to-background">
       <div className="container mx-auto px-4 lg:px-6">
+        {/* Section Header */}
         <div className="text-center mb-16">
+          <div className="accent-line mx-auto mb-4" />
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Featured Project Spotlight
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Discover how we've transformed businesses with innovative technology solutions.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* Project Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {projects.map((project, index) => (
             <Card 
               key={index}
-              className="overflow-hidden group hover:shadow-xl transition-all duration-300"
+              className="project-card group relative overflow-hidden border-0"
             >
-              <div className="relative h-64 overflow-hidden">
+              {/* Image Container */}
+              <div className="relative h-56 overflow-hidden">
                 <img 
                   src={project.image}
                   alt={project.title}
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-primary/60 group-hover:bg-primary/40 transition-colors duration-300"></div>
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/50 to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500" />
+                
+                {/* Icon Badge */}
                 <div className="absolute top-4 left-4">
-                  <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
+                  <div className="icon-badge">
                     <project.icon className="w-6 h-6 text-white" />
                   </div>
                 </div>
+
+                {/* Title on Image */}
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="flex items-center text-xs text-white/80 mb-1">
+                    <MapPin className="w-3 h-3 mr-1" />
+                    {project.location}
+                  </div>
+                  <h3 className="text-lg font-bold text-white leading-tight">
+                    {project.title}
+                  </h3>
+                </div>
               </div>
               
-              <CardContent className="p-6">
-                <div className="flex items-center text-sm text-muted-foreground mb-2">
-                  <MapPin className="w-4 h-4 mr-1" />
-                  {project.location}
-                </div>
-                
-                <h3 className="text-xl font-semibold text-primary mb-2 group-hover:text-accent transition-colors">
-                  {project.title}
-                </h3>
-                
-                <p className="text-muted-foreground mb-4">
+              {/* Card Content */}
+              <CardContent className="p-5">
+                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                   {project.description}
                 </p>
 
+                {/* Feature Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {project.features.map((feature, featureIndex) => (
+                  {project.features.slice(0, 3).map((feature, featureIndex) => (
                     <span 
                       key={featureIndex}
-                      className="px-3 py-1 bg-accent/10 text-accent text-xs rounded-full"
+                      className="feature-tag"
                     >
                       {feature}
                     </span>
                   ))}
+                  {project.features.length > 3 && (
+                    <span className="feature-tag">
+                      +{project.features.length - 3}
+                    </span>
+                  )}
                 </div>
 
+                {/* CTA Link */}
                 <Link to={project.link} className="inline-flex">
                   <Button 
                     variant="ghost" 
-                    className="text-accent hover:text-accent-hover group/btn p-0 h-auto font-medium"
+                    className="text-accent hover:text-accent-hover hover:bg-accent/5 group/btn p-0 h-auto font-semibold"
                   >
                     View Project Details
                     <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
               </CardContent>
+
+              {/* Bottom accent line on hover */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-accent to-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Card>
           ))}
         </div>
@@ -174,7 +200,7 @@ const Projects = () => {
         {window.location.pathname !== '/projects' && (
           <div className="text-center mt-12">
             <Link to="/projects" className="inline-flex">
-              <Button className="cta-secondary">
+              <Button className="cta-orange">
                 View All Projects
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -182,23 +208,18 @@ const Projects = () => {
           </div>
         )}
 
-        {/* Project Stats */}
-        <div className="mt-16 pt-16 border-t border-border grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div>
-            <div className="text-3xl font-bold text-accent mb-2">500+</div>
-            <div className="text-sm text-muted-foreground">Wi-Fi Access Points Installed</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-accent mb-2">1000+</div>
-            <div className="text-sm text-muted-foreground">CCTV Cameras Deployed</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-accent mb-2">50+</div>
-            <div className="text-sm text-muted-foreground">Cloud Migrations</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-accent mb-2">99.9%</div>
-            <div className="text-sm text-muted-foreground">Network Uptime</div>
+        {/* Project Stats - Glass Effect Cards */}
+        <div className="mt-20 pt-12 border-t border-border">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <div key={index} className="stats-card group">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                  <stat.icon className="w-6 h-6 text-accent" />
+                </div>
+                <div className="text-3xl md:text-4xl font-bold text-accent mb-1">{stat.value}</div>
+                <div className="text-sm text-muted-foreground">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

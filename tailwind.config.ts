@@ -44,15 +44,20 @@ export default {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
 				},
-				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))',
-					hover: 'hsl(var(--accent-hover))'
-				},
-				orange: {
-					DEFAULT: 'hsl(var(--orange-accent))',
-					foreground: 'hsl(var(--orange-accent-foreground))'
-				},
+			accent: {
+				DEFAULT: 'hsl(var(--accent))',
+				foreground: 'hsl(var(--accent-foreground))',
+				hover: 'hsl(var(--accent-hover))'
+			},
+			orange: {
+				DEFAULT: 'hsl(var(--orange-accent))',
+				foreground: 'hsl(var(--orange-accent-foreground))',
+				hover: 'hsl(var(--orange-hover))'
+			},
+			teal: {
+				DEFAULT: 'hsl(var(--accent))',
+				foreground: 'hsl(var(--accent-foreground))'
+			},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
 					foreground: 'hsl(var(--popover-foreground))'

@@ -54,12 +54,14 @@ const ProjectsIndex = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        <section className="relative py-16 md:py-24 border-b border-border overflow-hidden">
-          <img src={"/src/assets/hero-bg.jpg"} alt="Showcase of successful ICT projects" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
-          <div className="absolute inset-0 bg-background/75" />
+        <section className="relative py-20 md:py-28 border-b border-border overflow-hidden">
+          <img src={heroImage} alt="Showcase of successful ICT projects" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+          <div className="absolute inset-0 page-header-overlay" />
+          <div className="absolute inset-0 tech-grid opacity-30" />
           <div className="relative container mx-auto px-4 lg:px-6">
-            <h1 className="text-3xl md:text-5xl font-bold text-primary">Our Projects</h1>
-            <p className="text-muted-foreground mt-3 max-w-2xl">A selection of recent deployments and case studies.</p>
+            <div className="accent-line mb-6" />
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">Our Projects</h1>
+            <p className="text-white/80 text-lg md:text-xl max-w-2xl">A selection of recent deployments and case studies showcasing our expertise.</p>
           </div>
         </section>
         <Projects />
@@ -91,10 +93,13 @@ const ProjectsIndex = () => {
           </div>
         </section>
         
-        <section className="py-16 bg-background border-t border-border" aria-label="Project Gallery">
+        <section className="py-20 bg-gradient-to-b from-background to-secondary/50 border-t border-border" aria-label="Project Gallery">
           <div className="container mx-auto px-4 lg:px-6">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-6">Project Gallery</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="text-center mb-10">
+              <div className="accent-line mx-auto mb-4" />
+              <h2 className="text-2xl md:text-3xl font-bold text-primary">Project Gallery</h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {gallery.map((img) => (
                 <button
                   key={img.src}
@@ -108,8 +113,9 @@ const ProjectsIndex = () => {
                     alt={img.alt}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-40 object-cover rounded-lg border border-border cursor-zoom-in"
+                    className="w-full h-36 object-cover rounded-xl border border-border cursor-zoom-in group-hover:scale-105 transition-transform duration-500"
                   />
+                  <div className="absolute inset-0 rounded-xl bg-accent/0 group-hover:bg-accent/10 transition-colors duration-300" />
                 </button>
               ))}
             </div>
