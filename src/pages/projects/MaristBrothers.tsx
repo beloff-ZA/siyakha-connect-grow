@@ -3,16 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom";
-import { CheckCircle, MapPin, ArrowLeft, AlertTriangle, Cable, ShieldCheck, Headphones, Camera, Cloud, Globe2 } from "lucide-react";
+import { CheckCircle, MapPin, ArrowLeft, AlertTriangle, Cable, ShieldCheck, Headphones, Camera, Cloud, Globe2, Wifi, Server, Network } from "lucide-react";
 
 const MARIST_IMAGE = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
 
 const MaristBrothersProject = () => {
-  // SEO metadata for this page
   useEffect(() => {
-    document.title = "Marist Brothers Linmeyer – Project Case Study | Siyakha";
+    document.title = "Marist Brothers Linmeyer – Infrastructure & Security Upgrade | Siyakha";
 
-    const desc = "Full Wi‑Fi & data infrastructure upgrade with integrated CCTV, cloud, and cybersecurity for Marist Brothers Linmeyer.";
+    const desc = "Enhanced IT and security infrastructure including solid copper cabling, managed switches, 4MP CCTV cameras, and VLAN configuration for Marist Brothers Linmeyer.";
     let meta = document.querySelector("meta[name='description']");
     if (!meta) {
       meta = document.createElement("meta");
@@ -21,7 +20,6 @@ const MaristBrothersProject = () => {
     }
     meta.setAttribute("content", desc);
 
-    // Canonical
     const canonicalHref = window.location.origin + "/projects/marist-brothers-linmeyer";
     let canonical = document.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
     if (!canonical) {
@@ -31,7 +29,6 @@ const MaristBrothersProject = () => {
     }
     canonical.href = canonicalHref;
 
-    // Open Graph basic tags
     const setOg = (property: string, content: string) => {
       let el = document.querySelector(`meta[property='${property}']`);
       if (!el) {
@@ -50,16 +47,16 @@ const MaristBrothersProject = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
-    name: "Marist Brothers Linmeyer – ICT Infrastructure Upgrade",
+    name: "Marist Brothers Linmeyer – Infrastructure & Security Upgrade",
     description:
-      "Comprehensive network, security, and cloud integration upgrade including Wi‑Fi, CCTV centralization, and cybersecurity hardening.",
+      "Enhanced IT and security infrastructure including solid copper cabling, managed switches, 4MP CCTV cameras, and VLAN configuration.",
     url: typeof window !== "undefined" ? window.location.href : "",
     image: MARIST_IMAGE,
     author: {
       "@type": "Organization",
       name: "Siyakha Technology"
     },
-    about: ["Wi‑Fi", "CCTV", "Cybersecurity", "Cloud Integration"],
+    about: ["Cabling", "CCTV", "Network Management", "VLAN", "Google Workspace"],
     locationCreated: {
       "@type": "Place",
       name: "Johannesburg, Gauteng, South Africa"
@@ -83,13 +80,13 @@ const MaristBrothersProject = () => {
       icon: ShieldCheck,
       title: "Weak cybersecurity posture",
       description:
-        "Required a robust multi‑layered solution to protect sensitive data and the network."
+        "Required a robust, multi-layered security solution to protect sensitive data and the network."
     },
     {
       icon: Globe2,
       title: "Web & domain management",
       description:
-        "Inadequate management impacting online efficiency and increasing risk exposure."
+        "Inadequate management affecting online efficiency and increasing risk exposure."
     },
     {
       icon: Camera,
@@ -99,48 +96,46 @@ const MaristBrothersProject = () => {
     }
   ];
 
-  const solutions = [
+  const deliverables = [
     {
       icon: Cable,
-      title: "Network Overhaul",
-      description:
-        "Reorganized and optimized cable layout using Cat6/Cat6a and upgraded all switches to SFP++ for high‑speed, stable connectivity."
+      title: "Solid Copper Cabling",
+      description: "Replaced old/poor cabling with reliable solid copper infrastructure for stable connectivity."
     },
     {
-      icon: ShieldCheck,
-      title: "Cybersecurity Reinforcement",
-      description:
-        "Deployed a multi‑layered stack combining software and hardware defenses to reduce cyber risk exposure."
+      icon: Network,
+      title: "Network Repairs & Optimization",
+      description: "Comprehensive network repairs and performance improvements across the campus."
     },
     {
-      icon: Headphones,
-      title: "Onsite Support Deployment",
-      description:
-        "Dedicated on‑premise technical teams for immediate resolution and continuous performance."
-    },
-    {
-      icon: Headphones,
-      title: "Enhanced Support Services",
-      description:
-        "Introduced faster, SLA‑driven ticketing and support management for responsive service."
+      icon: Wifi,
+      title: "Managed Switches & Access Points",
+      description: "Installation of managed switches and deployment of managed access points for better control and scalability."
     },
     {
       icon: Camera,
-      title: "CCTV System Upgrade",
-      description:
-        "Centralized platform with remote monitoring, smart analytics, and expanded visual coverage."
+      title: "4MP CCTV Upgrade",
+      description: "Upgraded to 4MP cameras plus PT function cameras with audio, alarms, and active deterrence features."
+    },
+    {
+      icon: ShieldCheck,
+      title: "VLAN Setup & Management",
+      description: "Structured network segmentation and control through VLAN configuration and governance."
     },
     {
       icon: Cloud,
-      title: "Cloud Integration",
-      description:
-        "Enabled smooth Google ↔ Microsoft interoperability to boost collaboration and productivity."
+      title: "Google Workspace Administration",
+      description: "Ongoing Google Workspace management, server setup, and broader infrastructure support."
     },
     {
-      icon: Globe2,
-      title: "Web & Domain Services",
-      description:
-        "Strengthened hosting, domain security, and management for a secure online presence."
+      icon: Server,
+      title: "Server Setup & Configuration",
+      description: "Complete server setup and configuration to support campus operations."
+    },
+    {
+      icon: Headphones,
+      title: "Ongoing IT Management",
+      description: "Continuous IT infrastructure management and platform support services."
     }
   ];
 
@@ -180,7 +175,7 @@ const MaristBrothersProject = () => {
           </Breadcrumb>
 
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
-            Marist Brothers Linmeyer
+            Marist Brothers – Infrastructure & Security Upgrade
           </h1>
           <div className="flex flex-wrap items-center gap-3 text-white/90">
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm">
@@ -190,7 +185,7 @@ const MaristBrothersProject = () => {
               Education
             </span>
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm">
-              Wi‑Fi & Data · CCTV · Cloud · Security
+              Cabling · CCTV · VLAN · Network Management
             </span>
           </div>
         </div>
@@ -198,12 +193,11 @@ const MaristBrothersProject = () => {
 
       {/* Overview CTA */}
       <section className="py-8 bg-secondary">
-        <div className="container mx-auto px-4 lg:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-muted-foreground">
-            A comprehensive ICT upgrade delivering reliable connectivity, centralized
-            security, and stronger cyber resilience.
+        <div className="container mx-auto px-4 lg:px-6 flex flex-col md:flex-row items-start justify-between gap-4">
+          <div className="text-muted-foreground max-w-3xl">
+            We enhanced and modernized the existing IT and security infrastructure to improve reliability, performance, and visibility across the environment. This included removing aged and substandard cabling and replacing it with solid copper cabling, repairing and optimizing the network, and deploying managed switches with managed access points for better control and scalability.
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 shrink-0">
             <Link to="/contact" className="inline-flex">
               <Button className="cta-primary">Request a Consultation</Button>
             </Link>
@@ -218,6 +212,27 @@ const MaristBrothersProject = () => {
         </div>
       </section>
 
+      {/* Security & CCTV Summary */}
+      <section className="py-12 bg-background">
+        <div className="container mx-auto px-4 lg:px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-accent/5 border border-accent/20 rounded-lg p-6 md:p-8">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                  <Camera className="w-6 h-6 text-accent" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-primary mb-2">Security & Surveillance Enhancement</h2>
+                  <p className="text-muted-foreground leading-relaxed">
+                    On the security side, we upgraded the CCTV system by installing 4MP cameras as well as PT (Pan-Tilt) function cameras with audio, alarm capabilities, and active deterrence features, enabling clearer monitoring, stronger coverage, and improved incident response.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* The Challenge */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4 lg:px-6">
@@ -227,15 +242,14 @@ const MaristBrothersProject = () => {
             </h2>
             <p className="text-muted-foreground mb-8">
               The client faced several critical challenges within their IT and
-              security infrastructure that demanded immediate attention. Key
-              concerns included:
+              security infrastructure that required immediate attention:
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {challenges.map((c, i) => (
                 <Card key={i} className="border border-border">
                   <CardContent className="p-6 flex items-start gap-4">
-                    <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center">
+                    <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
                       <c.icon className="w-6 h-6 text-accent" />
                     </div>
                     <div>
@@ -254,30 +268,30 @@ const MaristBrothersProject = () => {
         </div>
       </section>
 
-      {/* Our Solution */}
+      {/* Key Deliverables */}
       <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4 lg:px-6">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4">
-              Our Solution
+              Key Deliverables
             </h2>
             <p className="text-muted-foreground mb-8">
-              We implemented a comprehensive infrastructure upgrade that addressed each concern:
+              We implemented a comprehensive infrastructure upgrade addressing every concern:
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {solutions.map((s, i) => (
+              {deliverables.map((d, i) => (
                 <Card key={i} className="service-card">
                   <CardContent className="p-6 flex items-start gap-4">
-                    <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
-                      <s.icon className="w-6 h-6 text-primary" />
+                    <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <d.icon className="w-6 h-6 text-primary" />
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-primary mb-1">
-                        {s.title}
+                        {d.title}
                       </h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">
-                        {s.description}
+                        {d.description}
                       </p>
                     </div>
                   </CardContent>
@@ -295,10 +309,11 @@ const MaristBrothersProject = () => {
             Ready to transform your campus infrastructure?
           </h3>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Book a free consultation and our team will tailor a solution to your
-            needs.
+            Book a free consultation and our team will tailor a solution to your needs.
           </p>
-          <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary px-8 py-4">Book My Free Consultation</Button></Link>
+          <Link to="/contact#quote-form" className="inline-flex">
+            <Button className="cta-primary px-8 py-4">Book My Free Consultation</Button>
+          </Link>
         </div>
       </section>
     </main>
