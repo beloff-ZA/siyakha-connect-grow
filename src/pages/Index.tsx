@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import WhySiyakha from "@/components/WhySiyakha";
 import Services from "@/components/Services";
-import DraasFeature from "@/components/DraasFeature";
+import NetworkInfrastructureFeature from "@/components/NetworkInfrastructureFeature";
 import FranchiseFeature from "@/components/FranchiseFeature";
 import Industries from "@/components/Industries";
 import Projects from "@/components/Projects";
@@ -68,7 +68,7 @@ const Index = () => {
       <Hero />
       <WhySiyakha />
       <Services />
-      <DraasFeature />
+      <NetworkInfrastructureFeature />
       <FranchiseFeature />
       
       <Industries />
