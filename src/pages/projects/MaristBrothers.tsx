@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom";
-import { CheckCircle, MapPin, ArrowLeft, AlertTriangle, Cable, ShieldCheck, Headphones, Camera, Cloud, Globe2, Wifi, Server, Network, Radio, Zap } from "lucide-react";
+import { CheckCircle, MapPin, ArrowLeft, AlertTriangle, Cable, ShieldCheck, Headphones, Camera, Cloud, Globe2, Wifi, Server, Network, Radio, Zap, Monitor } from "lucide-react";
 
 const MARIST_IMAGE = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
 
@@ -212,8 +212,113 @@ const MaristBrothersProject = () => {
         </div>
       </section>
 
+      {/* Wireless & Connectivity Enhancements */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4 lg:px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                <Radio className="w-6 h-6 text-accent" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-primary">
+                Wireless & Connectivity Enhancements
+              </h2>
+            </div>
+            <p className="text-muted-foreground mb-8">
+              To further strengthen site-wide connectivity and performance, we implemented additional wireless and backbone upgrades:
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card className="border border-border">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <Wifi className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary mb-1">Wi-Fi 6 Device Installations</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Deployed Wi-Fi 6–capable equipment to improve speed, capacity, and stability in high-usage areas.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-border">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <Radio className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary mb-1">Enhanced Exterior Connectivity</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Installed and optimized outdoor access points to extend reliable coverage to exterior areas and improve roaming performance.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-border">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <Network className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary mb-1">Point-to-Point Connectivity</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Implemented point-to-point links where required to bridge coverage gaps and connect separate areas securely and efficiently.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-border">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <Cable className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary mb-1">High-Speed Fibre Links</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Introduced fibre backbone links between server locations and key network points to increase throughput and reduce bottlenecks.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-border">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <Monitor className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary mb-1">Computer Lab Enhancements</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Enhanced computer lab infrastructure to ensure exam stability, reliable connectivity, and consistent performance during high-demand periods.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-border">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <Zap className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary mb-1">Improved Network Performance & Reliability</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Optimized network routing and segmentation (including VLANs) to enhance overall performance, reduce downtime, and improve manageability.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Security & CCTV Summary */}
-      <section className="py-12 bg-background">
+      <section className="py-12 bg-secondary">
         <div className="container mx-auto px-4 lg:px-6">
           <div className="max-w-5xl mx-auto">
             <div className="bg-accent/5 border border-accent/20 rounded-lg p-6 md:p-8">
@@ -302,96 +407,6 @@ const MaristBrothersProject = () => {
         </div>
       </section>
 
-      {/* Wireless & Connectivity Enhancements */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4 lg:px-6">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
-                <Radio className="w-6 h-6 text-accent" />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-primary">
-                Wireless & Connectivity Enhancements
-              </h2>
-            </div>
-            <p className="text-muted-foreground mb-8">
-              To further strengthen site-wide connectivity and performance, we implemented additional wireless and backbone upgrades:
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="border border-border">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                    <Wifi className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-primary mb-1">Wi-Fi 6 Device Installations</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Deployed Wi-Fi 6–capable equipment to improve speed, capacity, and stability in high-usage areas.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border border-border">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                    <Radio className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-primary mb-1">Enhanced Exterior Connectivity</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Installed and optimized outdoor access points to extend reliable coverage to exterior areas and improve roaming performance.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border border-border">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                    <Network className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-primary mb-1">Point-to-Point Connectivity</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Implemented point-to-point links where required to bridge coverage gaps and connect separate areas securely and efficiently.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border border-border">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                    <Cable className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-primary mb-1">High-Speed Fibre Links</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Introduced fibre backbone links between server locations and key network points to increase throughput and reduce bottlenecks.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border border-border md:col-span-2">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                    <Zap className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-primary mb-1">Improved Network Performance & Reliability</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Optimized network routing and segmentation (including VLANs) to enhance overall performance, reduce downtime, and improve manageability.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="py-16 bg-background">
