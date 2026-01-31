@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom";
-import { CheckCircle, MapPin, ArrowLeft, AlertTriangle, Cable, ShieldCheck, Headphones, Camera, Cloud, Globe2, Wifi, Server, Network, Radio, Zap, Monitor } from "lucide-react";
+import { CheckCircle, MapPin, ArrowLeft, AlertTriangle, Cable, ShieldCheck, Headphones, Camera, Cloud, Globe2, Wifi, Server, Network, Radio, Zap, Monitor, Laptop, Wrench } from "lucide-react";
 
 const MARIST_IMAGE = "/lovable-uploads/b998daf2-a8ef-498b-adb2-59eca8e135ef.png";
 
@@ -131,6 +131,16 @@ const MaristBrothersProject = () => {
       icon: Server,
       title: "Server Setup & Configuration",
       description: "Complete server setup and configuration to support campus operations."
+    },
+    {
+      icon: Laptop,
+      title: "Hardware Supply",
+      description: "Supplied computers and hardware equipment to support teaching, administration, and student learning needs."
+    },
+    {
+      icon: Wrench,
+      title: "Hardware Maintenance",
+      description: "Ongoing hardware maintenance and repair services to ensure equipment reliability and minimize downtime."
     },
     {
       icon: Headphones,
