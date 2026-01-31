@@ -30,18 +30,18 @@ const NetworkInfrastructureFeature = () => {
   const projects = [
     {
       image: "/lovable-uploads/b5123bb8-e9c6-4737-bd9b-3e6d9a97df2e.png",
-      title: "School Network Upgrade",
-      description: "Complete infrastructure overhaul"
+      title: "School CCTV & Cabling Upgrade",
+      description: "Cape Town - Structured cabling installation"
     },
     {
       image: "/lovable-uploads/5c53be57-de20-455a-aa49-6ac211db9e73.png",
-      title: "Office Cabling Project",
-      description: "200+ network points installed"
+      title: "School CCTV & Cabling Upgrade",
+      description: "Cape Town - Network point termination"
     },
     {
       image: "/lovable-uploads/329436ed-9b85-46bd-9a90-9921225137c1.png",
-      title: "Retail Chain Rollout",
-      description: "Multi-site networking solution"
+      title: "School CCTV & Cabling Upgrade",
+      description: "Cape Town - Complete infrastructure delivery"
     }
   ];
 
