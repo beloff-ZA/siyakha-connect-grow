@@ -95,7 +95,9 @@ const SecurityAndSurveillance = () => {
                 <li><span className="font-medium text-foreground">Remote Access Monitoring</span> — View live feeds securely from anywhere, on any device</li>
                 <li><span className="font-medium text-foreground">Smart Alerts & AI Analytics</span> — Motion detection, perimeter breaches, facial recognition, and people counting</li>
                 <li><span className="font-medium text-foreground">Access Control Solutions</span> — Biometric, RFID card, and mobile credential systems</li>
-                <li><span className="font-medium text-foreground">Alarm System Integration</span> — Seamlessly connect alarms, CCTV, and access control into one security platform</li>
+                <li><span className="font-medium text-foreground">Gate Access Automation</span> — Motorised gates, boom barriers, and sliding gate systems with remote and app-based control</li>
+                <li><span className="font-medium text-foreground">Electric Fencing</span> — Perimeter protection with monitored electric fence systems and energizers</li>
+                <li><span className="font-medium text-foreground">Alarm Systems</span> — Intruder detection, panic buttons, and 24/7 armed response integration</li>
               </ul>
             </div>
             <div className="grid grid-cols-2 gap-4">

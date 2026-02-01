@@ -15,7 +15,7 @@ const Services = () => {
     {
       icon: Shield,
       title: "Security & Surveillance",
-      description: "CCTV, Access Control, Intercoms, Smart Gates",
+      description: "CCTV, Access Control, Electric Fencing, Gate Automation, Alarms",
       benefit: "Protect your assets with intelligent security systems.",
       link: "/services/security-and-surveillance",
       color: "text-red-600"
