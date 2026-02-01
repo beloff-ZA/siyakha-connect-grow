@@ -59,12 +59,12 @@ const Projects = () => {
       link: "/projects/greestone-network-rebuild"
     },
     {
-      title: "St Joseph's Marist College – Campus CCTV Overhaul",
+      title: "St Joseph's Marist College – CCTV & Cabling Upgrade",
       location: "Cape Town, Western Cape",
-      description: "55‑camera fibre network covering the entire campus with remote monitoring",
-      image: maristCTProject,
+      description: "Complete infrastructure delivery: 55‑camera fibre network, structured cabling, and network point termination across campus",
+      image: "/lovable-uploads/marist-cape-town-merged.png",
       icon: Camera,
-      features: ["55 cameras", "Fibre backbone", "Full campus coverage", "Remote monitoring"],
+      features: ["55 cameras", "Fibre backbone", "Network termination", "Full campus coverage"],
       link: "/projects/st-josephs-marist-cape-town-cctv"
     },
     {
