@@ -69,6 +69,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Contact from "./pages/Contact";
 import AdminQuickCreate from "./components/admin/AdminQuickCreate";
 import FibreFeasibilityForm from "./pages/FibreFeasibilityForm";
+import Products from "./pages/Products";
 const queryClient = new QueryClient();
 
 function App() {
@@ -85,6 +86,7 @@ function App() {
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<ProjectsIndex />} />
+                <Route path="/products" element={<Products />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/careers" element={<Careers />} />
                 <Route path="/privacy" element={<Privacy />} />
