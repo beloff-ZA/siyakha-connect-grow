@@ -23,13 +23,13 @@ const Projects = () => {
       link: "/projects/marist-brothers-linmeyer"
     },
     {
-      title: "Corporate Office Complex",
-      location: "Sandton, Gauteng", 
-      description: "Comprehensive security and access control system",
-      image: officeProject,
-      icon: Shield,
-      features: ["IP CCTV System", "Access Control", "Intercom Network", "Smart Gate Automation"],
-      link: "/projects/corporate-office-complex"
+      title: "Home Wi-Fi Upgrade",
+      location: "Johannesburg, Gauteng", 
+      description: "Whole-home mesh Wi-Fi 7 installation eliminating dead zones with TP-Link Deco system",
+      image: "/lovable-uploads/home-wifi-upgrade-tplink.png",
+      icon: Wifi,
+      features: ["TP-Link Deco Mesh", "Wi-Fi 7 Certified", "Blind Spot Elimination", "2.5 Gbps Speed"],
+      link: "/contact"
     },
     {
       title: "KFC – National Network Infrastructure Rollout",
