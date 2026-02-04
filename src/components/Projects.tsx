@@ -23,12 +23,12 @@ const Projects = () => {
       link: "/projects/marist-brothers-linmeyer"
     },
     {
-      title: "Guest Wi-Fi Upgrade",
+      title: "Multi-Branch Failover Wi-Fi",
       location: "Johannesburg, Gauteng", 
-      description: "Professional guest Wi-Fi setup with TP-Link router and QR code access for seamless connectivity",
-      image: "/lovable-uploads/guest-wifi-upgrade-tplink.png",
+      description: "Connected multiple beauty & design studio branches with reliable failover Wi-Fi solutions across Johannesburg",
+      image: "/lovable-uploads/multi-branch-failover-wifi.png",
       icon: Wifi,
-      features: ["TP-Link Wi-Fi 6", "QR Code Access", "Guest Network Setup", "Easy Connectivity"],
+      features: ["Multi-Site Connectivity", "LTE Failover", "Rosebank • Woodmead • Midrand", "Business Continuity"],
       link: "/contact"
     },
     {
