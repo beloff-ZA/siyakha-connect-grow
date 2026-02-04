@@ -327,8 +327,68 @@ const MaristBrothersProject = () => {
         </div>
       </section>
 
+      {/* Structured Cabling Section */}
+      <section className="py-16 bg-secondary">
+        <div className="container mx-auto px-4 lg:px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Cable className="w-6 h-6 text-primary" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-primary">
+                Structured Cabling Installation
+              </h2>
+            </div>
+            <p className="text-muted-foreground mb-8">
+              We installed high-quality Cat 6 cabling infrastructure to support reliable, high-speed network connectivity across the campus:
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="rounded-lg overflow-hidden border border-border">
+                <img 
+                  src="/lovable-uploads/marist-outdoor-connectivity.png" 
+                  alt="Campus outdoor connectivity with Grandstream Wi-Fi 6 access point" 
+                  className="w-full h-auto object-cover"
+                />
+                <div className="p-4 bg-card">
+                  <h3 className="font-semibold text-primary mb-1">Campus Outdoor Connectivity</h3>
+                  <p className="text-sm text-muted-foreground">Grandstream Wi-Fi 6 outdoor access points for seamless campus-wide coverage</p>
+                </div>
+              </div>
+              
+              <div className="rounded-lg overflow-hidden border border-border">
+                <img 
+                  src="/lovable-uploads/marist-cat6-cabling.png" 
+                  alt="Server rack with Cat 6 structured cabling installation" 
+                  className="w-full h-auto object-cover"
+                />
+                <div className="p-4 bg-card">
+                  <h3 className="font-semibold text-primary mb-1">Cat 6 Structured Cabling</h3>
+                  <p className="text-sm text-muted-foreground">Professional server rack with certified Cat 6 cabling delivering gigabit speeds</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-card rounded-lg p-4 border border-border text-center">
+                <div className="text-2xl font-bold text-primary mb-1">937+ Mbps</div>
+                <p className="text-sm text-muted-foreground">Download Speed</p>
+              </div>
+              <div className="bg-card rounded-lg p-4 border border-border text-center">
+                <div className="text-2xl font-bold text-primary mb-1">1.5 Gbps</div>
+                <p className="text-sm text-muted-foreground">Upload Speed</p>
+              </div>
+              <div className="bg-card rounded-lg p-4 border border-border text-center">
+                <div className="text-2xl font-bold text-primary mb-1">Cat 6</div>
+                <p className="text-sm text-muted-foreground">Certified Cabling</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Security & CCTV Summary */}
-      <section className="py-12 bg-secondary">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4 lg:px-6">
           <div className="max-w-5xl mx-auto">
             <div className="bg-accent/5 border border-accent/20 rounded-lg p-6 md:p-8">
