@@ -118,6 +118,11 @@ const Header = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
+                <Link to="/products" className="text-foreground hover:text-primary transition-colors font-medium">
+                  Products
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
                 <Link to="/blog" className="text-foreground hover:text-primary transition-colors font-medium">
                   Blog
                 </Link>
@@ -207,6 +212,9 @@ const Header = () => {
               </div>
               <Link to="/projects" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Projects
+              </Link>
+              <Link to="/products" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+                Products
               </Link>
               <Link to="/blog" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Blog
