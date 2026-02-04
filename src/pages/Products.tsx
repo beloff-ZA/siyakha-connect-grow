@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Sun, Wifi, Camera, Eye, Shield, Smartphone } from "lucide-react";
+import { ShoppingCart, Sun, Wifi, Camera, Eye, Shield, Smartphone, Volume2, HardDrive, Battery } from "lucide-react";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 const PAGE_URL = "/products";
@@ -39,6 +39,37 @@ const products = [
     ],
     category: "Security Cameras",
     brand: "TP-Link",
+    warranty: "2 Year",
+    inStock: true,
+  },
+  {
+    id: "tp-tapo-c460-kit",
+    name: "TP-Link Tapo 4K 8MP Solar Security Camera Kit | C460",
+    sku: "TP-TAPO-C460-KIT",
+    manufacturerSku: "Tapo C460 KIT",
+    price: 2548.79,
+    image: "/lovable-uploads/tapo-c460-product.png",
+    boxImage: "/lovable-uploads/tapo-c460-mounted.png",
+    description: "The TP-Link Tapo C460 is a 4K 8MP solar-powered security camera kit designed for outdoor surveillance. It provides ultra-high-definition video and includes a solar panel and high-capacity battery for continuous, maintenance-free operation.",
+    features: [
+      { icon: Camera, text: "4K 8MP Ultra HD Video" },
+      { icon: Sun, text: "Solar Panel Included" },
+      { icon: Battery, text: "High-Capacity Battery" },
+      { icon: Shield, text: "Smart Motion Detection" },
+      { icon: Volume2, text: "Two-Way Audio" },
+      { icon: HardDrive, text: "Local/Cloud Storage" },
+    ],
+    highlights: [
+      "Full-colour night vision day and night",
+      "Intelligent motion detection for people, vehicles and pets",
+      "Two-way audio communication",
+      "Smart notifications to your device",
+      "Local or cloud storage options",
+      "Tapo app for remote viewing and control",
+    ],
+    category: "Security Cameras",
+    brand: "TP-Link",
+    warranty: "2 Year",
     inStock: true,
   },
 ];
