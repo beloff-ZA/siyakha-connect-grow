@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -319,6 +319,38 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.8,
     reviewCount: 11,
+  },
+  {
+    id: "sy-premium-25-50",
+    name: "Premium Support Package | 25–50 Users",
+    sku: "SY-PREMIUM-25-50",
+    price: 6500,
+    image: "/lovable-uploads/premium-support-25-50.png",
+    description: "Comprehensive managed IT support for medium to large businesses with 25–50 users. Includes unlimited remote support, dedicated account manager, 24/7 network monitoring, server management, and priority response times. Perfect for organisations requiring proactive IT management.",
+    features: [
+      { icon: Headphones, text: "Unlimited Support" },
+      { icon: UserCheck, text: "Account Manager" },
+      { icon: Activity, text: "24/7 Monitoring" },
+      { icon: Server, text: "Server Management" },
+      { icon: Shield, text: "Security Monitoring" },
+      { icon: FileText, text: "Monthly Reports" },
+    ],
+    highlights: [
+      "Unlimited remote support for all IT issues",
+      "Dedicated account manager for your business",
+      "Priority support queue with 2–4 hour response SLA",
+      "24/7 network and security monitoring",
+      "Server and cloud infrastructure management",
+      "Email and Microsoft 365 administration",
+      "User onboarding and offboarding management",
+      "Monthly performance and security reports",
+    ],
+    category: "Support Packages",
+    brand: "Siyakha",
+    warranty: "Monthly Subscription",
+    inStock: true,
+    rating: 4.9,
+    reviewCount: 32,
   },
 ];
 
