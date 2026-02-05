@@ -1,6 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { 
   ShoppingCart, 
   Heart, 
@@ -10,7 +16,8 @@ import {
   Eye,
   Truck,
   Plus,
-  Minus
+  Minus,
+  X
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -51,6 +58,7 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [showQuickView, setShowQuickView] = useState(false);
   const { addItem, items } = useQuoteBasket();
 
   const discountPercentage = product.originalPrice 
@@ -242,7 +250,12 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
 
             {/* Quick Actions */}
             <div className="absolute bottom-3 left-3 right-3 flex justify-center gap-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-              <Button size="sm" variant="secondary" className="shadow-lg gap-1.5 bg-background/95 backdrop-blur-sm">
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                className="shadow-lg gap-1.5 bg-background/95 backdrop-blur-sm"
+                onClick={() => setShowQuickView(true)}
+              >
                 <Eye className="w-4 h-4" />
                 Quick View
               </Button>
@@ -378,6 +391,171 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
           </div>
         </div>
       </CardContent>
+
+      {/* Quick View Modal */}
+      <Dialog open={showQuickView} onOpenChange={setShowQuickView}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold pr-8">{product.name}</DialogTitle>
+          </DialogHeader>
+          
+          <div className="grid md:grid-cols-2 gap-6 mt-4">
+            {/* Images */}
+            <div className="space-y-4">
+              <div className="aspect-square bg-gradient-to-br from-secondary via-muted to-secondary/50 rounded-lg overflow-hidden">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-contain p-4"
+                />
+              </div>
+              {product.boxImage && (
+                <div className="aspect-video bg-secondary rounded-lg overflow-hidden">
+                  <img
+                    src={product.boxImage}
+                    alt={`${product.name} alternate view`}
+                    className="w-full h-full object-contain p-2"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Details */}
+            <div className="space-y-4">
+              {/* Brand & Category */}
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="bg-primary/90 text-primary-foreground">
+                  {product.brand}
+                </Badge>
+                <Badge variant="outline">{product.category}</Badge>
+                {product.inStock && (
+                  <Badge className="bg-accent text-accent-foreground">
+                    <Check className="w-3 h-3 mr-1" />
+                    In Stock
+                  </Badge>
+                )}
+              </div>
+
+              {/* Rating */}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${
+                        i < Math.floor(rating) 
+                          ? "fill-amber-400 text-amber-400" 
+                          : "text-muted-foreground/30"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {rating} ({reviewCount} reviews)
+                </span>
+              </div>
+
+              {/* Price */}
+              <div className="border-y border-border py-4">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-bold text-primary">
+                    R{product.price.toLocaleString()}
+                  </span>
+                  {product.originalPrice && (
+                    <span className="text-lg text-muted-foreground line-through">
+                      R{product.originalPrice.toLocaleString()}
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">inc VAT • excl. installation</p>
+              </div>
+
+              {/* Description */}
+              <p className="text-muted-foreground">{product.description}</p>
+
+              {/* Features */}
+              <div>
+                <h4 className="font-semibold mb-2">Key Features</h4>
+                <div className="flex flex-wrap gap-2">
+                  {product.features.map((feature, idx) => (
+                    <div 
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-secondary rounded-lg text-sm font-medium"
+                    >
+                      <feature.icon className="w-4 h-4 text-accent" />
+                      {feature.text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Highlights */}
+              <div>
+                <h4 className="font-semibold mb-2">Highlights</h4>
+                <ul className="space-y-1.5">
+                  {product.highlights.map((highlight, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+                      {highlight}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* SKU & Warranty */}
+              <div className="text-sm text-muted-foreground space-y-1">
+                <p><span className="font-medium">SKU:</span> {product.sku}</p>
+                {product.manufacturerSku && (
+                  <p><span className="font-medium">Manufacturer SKU:</span> {product.manufacturerSku}</p>
+                )}
+                <p><span className="font-medium">Warranty:</span> {product.warranty}</p>
+              </div>
+
+              {/* Actions */}
+              <div className="space-y-3 pt-4 border-t border-border">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center bg-secondary rounded-lg border border-border">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="p-2 hover:bg-muted transition-colors rounded-l-lg"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="w-10 text-center font-medium">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="p-2 hover:bg-muted transition-colors rounded-r-lg"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <Button 
+                    className="flex-1 cta-primary gap-2"
+                    onClick={() => {
+                      handleAddToQuote();
+                      setShowQuickView(false);
+                    }}
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Add to Quote
+                  </Button>
+                </div>
+                <a
+                  href={`https://wa.me/27815012993?text=Hi, I'm interested in the ${product.name} (${product.sku}) - R${product.price}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button variant="outline" className="w-full gap-2">
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp Enquiry
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
