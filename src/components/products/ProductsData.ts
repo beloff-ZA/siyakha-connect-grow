@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -160,6 +160,38 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.8,
     reviewCount: 6,
+  },
+  {
+    id: "gs-gwn7672",
+    name: "Grandstream Enterprise WiFi 7 Indoor Access Point | GWN7672",
+    sku: "GS-GWN7672",
+    manufacturerSku: "GWN7672",
+    price: 4214.41,
+    image: "/lovable-uploads/gwn7672-front.png",
+    boxImage: "/lovable-uploads/gwn7672-back.png",
+    description: "Enterprise-grade Wi-Fi 7 access point designed for medium to high-density environments such as offices, schools, hotels, and large retail spaces. Supports ultra-high-speed wireless connectivity with up to 11Gbps aggregate throughput for demanding applications including HD video streaming, real-time collaboration, and VoIP.",
+    features: [
+      { icon: Wifi, text: "WiFi 7 BE11000" },
+      { icon: Signal, text: "11Gbps Speed" },
+      { icon: Users, text: "384 Clients" },
+      { icon: Radio, text: "175m Range" },
+      { icon: Shield, text: "Secure Boot" },
+      { icon: Server, text: "Embedded Controller" },
+    ],
+    highlights: [
+      "Up to 11Gbps aggregate wireless throughput (BE11000)",
+      "5Gbps aggregate wired throughput",
+      "2x2x2:2 MIMO with MLO, 4KQAM, MRU technology",
+      "Coverage range up to 175 metres",
+      "Supports up to 384 concurrent Wi-Fi clients",
+      "Self-power adaptation with PoE+ auto-detection",
+    ],
+    category: "Wi-Fi",
+    brand: "Grandstream",
+    warranty: "3 Year",
+    inStock: true,
+    rating: 4.9,
+    reviewCount: 15,
   },
 ];
 
