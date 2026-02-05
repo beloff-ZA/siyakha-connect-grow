@@ -492,7 +492,7 @@ export const products: Product[] = [
     name: "Dell Pro 15 Essential 15.6-inch FHD Laptop",
     sku: "DELL-PRO15-ESS",
     manufacturerSku: "Pro 15 Essential",
-    price: 16903.85,
+    price: 14699,
     image: "/lovable-uploads/dell-pro-15-essential.png",
     description: "The Dell Pro 15 Essential is a reliable business laptop featuring a 15.6-inch Full HD display, Intel Core 3 100U processor, 512GB SSD storage, and 8GB RAM. Pre-installed with Windows 11 Pro for enterprise-ready productivity and security features.",
     features: [
