@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -64,6 +64,38 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.5,
     reviewCount: 18,
+  },
+  {
+    id: "gs-gwn7806pl-pro",
+    name: "Grandstream Enterprise L2++ 48 Port Managed GbE PoE Switch 120W",
+    sku: "GS-GWN7806PL-PRO",
+    manufacturerSku: "GWN7806PL-PRO",
+    price: 11878.35,
+    image: "/lovable-uploads/gwn7806pl-pro-front.png",
+    boxImage: "/lovable-uploads/gwn7806pl-pro-back.png",
+    description: "Layer 2++ Managed Network switch with 48x Gigabit RJ45 PoE ports and 120W PoE budget. Enterprise-grade networking solution with advanced management features, VLAN support, and seamless integration with Grandstream's GWN Cloud management platform.",
+    features: [
+      { icon: Network, text: "48 GbE Ports" },
+      { icon: Zap, text: "120W PoE Budget" },
+      { icon: Server, text: "Layer 2++ Managed" },
+      { icon: Shield, text: "Enterprise Security" },
+      { icon: Cable, text: "SFP+ Uplinks" },
+      { icon: Wifi, text: "Cloud Management" },
+    ],
+    highlights: [
+      "48x Gigabit RJ45 PoE ports for high-density deployments",
+      "120W total PoE power budget",
+      "Layer 2++ switching with advanced VLAN support",
+      "GWN Cloud management platform integration",
+      "Enterprise-grade QoS and traffic management",
+      "Rack-mountable 1U form factor",
+    ],
+    category: "Networking",
+    brand: "Grandstream",
+    warranty: "3 Year",
+    inStock: true,
+    rating: 4.6,
+    reviewCount: 8,
   },
 ];
 
