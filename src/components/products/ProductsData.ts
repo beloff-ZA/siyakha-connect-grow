@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -224,6 +224,37 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.8,
     reviewCount: 22,
+  },
+  {
+    id: "zk-bg1145l",
+    name: "ZKTeco 90-Degree Left Folding Barrier Boomgate 3.5m",
+    sku: "ZK-BG1145-L",
+    manufacturerSku: "BG1145-L",
+    price: 25459.95,
+    image: "/placeholder.svg",
+    description: "Professional 90-degree left folding barrier boom gate with 3.5m boom arm. Ideal for parking lots, commercial buildings, and access control points. Features smooth operation, durable construction, and reliable motor system for high-traffic environments.",
+    features: [
+      { icon: Ruler, text: "3.5m Boom Arm" },
+      { icon: Lock, text: "Access Control" },
+      { icon: Car, text: "Vehicle Barrier" },
+      { icon: Shield, text: "Heavy Duty" },
+      { icon: Zap, text: "Fast Operation" },
+      { icon: Server, text: "Motor Control" },
+    ],
+    highlights: [
+      "90-degree left folding design for space efficiency",
+      "3.5m boom arm length for standard lane widths",
+      "Heavy-duty motor for continuous operation",
+      "Anti-collision detection system",
+      "Manual release for emergency situations",
+      "Compatible with access control systems",
+    ],
+    category: "Access Control",
+    brand: "ZKTeco",
+    warranty: "1 Year",
+    inStock: true,
+    rating: 4.4,
+    reviewCount: 7,
   },
 ];
 
