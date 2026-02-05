@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -255,6 +255,38 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.4,
     reviewCount: 7,
+  },
+  {
+    id: "ttk-rut260",
+    name: "Teltonika Industrial LTE CAT 6 Router | RUT260",
+    sku: "TTK-RUT260",
+    manufacturerSku: "RUT260",
+    price: 4458.09,
+    image: "/lovable-uploads/rut260-front.png",
+    boxImage: "/lovable-uploads/rut260-back.png",
+    description: "Versatile and compact 4G LTE Wi-Fi router designed for industrial, IoT, and M2M communications. Known for reliability and advanced features, suitable for industrial automation, remote monitoring, retail POS systems, and transportation connectivity.",
+    features: [
+      { icon: Globe, text: "4G LTE CAT 6" },
+      { icon: Wifi, text: "Wi-Fi Access Point" },
+      { icon: Factory, text: "Industrial Grade" },
+      { icon: Shield, text: "Secure VPN" },
+      { icon: Router, text: "Dual SIM" },
+      { icon: Network, text: "Ethernet Ports" },
+    ],
+    highlights: [
+      "4G LTE CAT 6 with up to 300 Mbps download speeds",
+      "Industrial-grade design for harsh environments",
+      "Dual SIM for network failover and load balancing",
+      "Built-in Wi-Fi access point for local connectivity",
+      "Advanced VPN support for secure remote access",
+      "RMS remote management platform compatible",
+    ],
+    category: "Networking",
+    brand: "Teltonika",
+    warranty: "2 Year",
+    inStock: true,
+    rating: 4.6,
+    reviewCount: 14,
   },
 ];
 
