@@ -97,6 +97,38 @@ export const products: Product[] = [
     rating: 4.6,
     reviewCount: 8,
   },
+  {
+    id: "gs-gwn7806ph-pro",
+    name: "Grandstream Enterprise L2++ 48 Port Managed GbE PoE Switch High-Power",
+    sku: "GS-GWN7806PH-PRO",
+    manufacturerSku: "GWN7806PH-PRO",
+    price: 15742.35,
+    image: "/lovable-uploads/gwn7806ph-pro-front.png",
+    boxImage: "/lovable-uploads/gwn7806ph-pro-angle.png",
+    description: "Layer 2++ Managed Network switch with 48x Gigabit RJ45 PoE ports. High-power enterprise-grade networking solution with advanced management features, VLAN support, and seamless integration with Grandstream's GWN Cloud management platform. Ideal for high-density PoE deployments.",
+    features: [
+      { icon: Network, text: "48 GbE Ports" },
+      { icon: Zap, text: "High-Power PoE" },
+      { icon: Server, text: "Layer 2++ Managed" },
+      { icon: Shield, text: "Enterprise Security" },
+      { icon: Cable, text: "SFP+ Uplinks" },
+      { icon: Wifi, text: "Cloud Management" },
+    ],
+    highlights: [
+      "48x Gigabit RJ45 PoE ports for high-density deployments",
+      "High-power PoE budget for demanding devices",
+      "Layer 2++ switching with advanced VLAN support",
+      "GWN Cloud management platform integration",
+      "Enterprise-grade QoS and traffic management",
+      "Rack-mountable 1U form factor",
+    ],
+    category: "Networking",
+    brand: "Grandstream",
+    warranty: "3 Year",
+    inStock: true,
+    rating: 4.7,
+    reviewCount: 5,
+  },
 ];
 
 export const getCategories = (): string[] => {
