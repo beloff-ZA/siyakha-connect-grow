@@ -17,7 +17,8 @@ import {
   Truck,
   Plus,
   Minus,
-  X
+  X,
+  Share2
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -60,6 +61,16 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(1);
   const [showQuickView, setShowQuickView] = useState(false);
   const { addItem, items } = useQuoteBasket();
+
+  const productUrl = typeof window !== "undefined" 
+    ? `${window.location.origin}/products?product=${product.id}` 
+    : `/products?product=${product.id}`;
+
+  const handleShareWithClient = () => {
+    const shareText = `Check out this product: ${product.name} - R${product.price.toLocaleString()} | ${productUrl}`;
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+  };
 
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -388,6 +399,17 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
                 WhatsApp Enquiry
               </Button>
             </a>
+
+            {/* Share with Clients */}
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="w-full gap-1.5 text-xs"
+              onClick={handleShareWithClient}
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              Share with Clients
+            </Button>
           </div>
         </div>
       </CardContent>
