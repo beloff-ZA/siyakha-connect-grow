@@ -70,6 +70,8 @@ import Contact from "./pages/Contact";
 import AdminQuickCreate from "./components/admin/AdminQuickCreate";
 import FibreFeasibilityForm from "./pages/FibreFeasibilityForm";
 import Products from "./pages/Products";
+import { QuoteBasketProvider } from "./contexts/QuoteBasketContext";
+import QuoteBasket from "./components/products/QuoteBasket";
 const queryClient = new QueryClient();
 
 function App() {
@@ -80,6 +82,7 @@ function App() {
         <Sonner />
         
           <AuthProvider>
+            <QuoteBasketProvider>
             <Router>
               <ScrollToTop />
               <Routes>
@@ -156,7 +159,9 @@ function App() {
               </Routes>
               <AdminQuickCreate />
               <WhatsAppContact />
+              <QuoteBasket />
             </Router>
+            </QuoteBasketProvider>
           </AuthProvider>
         
       </TooltipProvider>

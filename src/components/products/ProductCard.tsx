@@ -8,10 +8,14 @@ import {
   Check, 
   MessageCircle,
   Eye,
-  Truck
+  Truck,
+  Plus,
+  Minus
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useQuoteBasket } from "@/contexts/QuoteBasketContext";
+import { toast } from "sonner";
 
 export interface ProductFeature {
   icon: React.ElementType;
@@ -46,6 +50,8 @@ interface ProductCardProps {
 const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const { addItem, items } = useQuoteBasket();
 
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -53,6 +59,21 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
 
   const rating = product.rating || 4.5;
   const reviewCount = product.reviewCount || 12;
+  
+  const isInBasket = items.some(item => item.id === product.id);
+
+  const handleAddToQuote = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      sku: product.sku,
+      price: product.price,
+      image: product.image,
+      installationPrice: 450,
+    }, quantity);
+    toast.success(`${quantity}x ${product.name} added to quote basket`);
+    setQuantity(1);
+  };
 
   if (viewMode === "list") {
     return (
@@ -166,23 +187,31 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
-                  <a
-                    href={`https://wa.me/27815012993?text=Hi, I'm interested in the ${product.name} (${product.sku}) - R${product.price}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                <div className="flex items-center gap-2">
+                  {/* Quantity Selector */}
+                  <div className="flex items-center bg-secondary rounded-lg border border-border">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="p-2 hover:bg-muted transition-colors rounded-l-lg"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="w-8 text-center text-sm font-medium">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="p-2 hover:bg-muted transition-colors rounded-r-lg"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    className="cta-primary gap-1.5"
+                    onClick={handleAddToQuote}
                   >
-                    <Button size="sm" variant="outline" className="gap-1.5">
-                      <MessageCircle className="w-4 h-4" />
-                      <span className="hidden lg:inline">Enquire</span>
-                    </Button>
-                  </a>
-                  <Link to="/contact#quote-form">
-                    <Button size="sm" className="cta-primary gap-1.5">
-                      <ShoppingCart className="w-4 h-4" />
-                      Get Quote
-                    </Button>
-                  </Link>
+                    <ShoppingCart className="w-4 h-4" />
+                    {isInBasket ? "Add More" : "Add to Quote"}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -307,26 +336,45 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
               inc VAT • excl. installation
             </p>
 
-            {/* Actions */}
-            <div className="flex gap-2">
-              <a
-                href={`https://wa.me/27815012993?text=Hi, I'm interested in the ${product.name} (${product.sku}) - R${product.price}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1"
+            {/* Quantity & Add to Quote */}
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center bg-secondary rounded-lg border border-border">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="p-1.5 hover:bg-muted transition-colors rounded-l-lg"
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="w-6 text-center text-xs font-medium">{quantity}</span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="p-1.5 hover:bg-muted transition-colors rounded-r-lg"
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+              <Button 
+                size="sm" 
+                className="flex-1 cta-primary gap-1.5 text-xs"
+                onClick={handleAddToQuote}
               >
-                <Button size="sm" variant="outline" className="w-full gap-1.5 text-xs">
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  WhatsApp
-                </Button>
-              </a>
-              <Link to="/contact#quote-form" className="flex-1">
-                <Button size="sm" className="w-full cta-primary gap-1.5 text-xs">
-                  <ShoppingCart className="w-3.5 h-3.5" />
-                  Quote
-                </Button>
-              </Link>
+                <ShoppingCart className="w-3.5 h-3.5" />
+                {isInBasket ? "Add More" : "Add to Quote"}
+              </Button>
             </div>
+
+            {/* WhatsApp Enquiry */}
+            <a
+              href={`https://wa.me/27815012993?text=Hi, I'm interested in the ${product.name} (${product.sku}) - R${product.price}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full"
+            >
+              <Button size="sm" variant="outline" className="w-full gap-1.5 text-xs">
+                <MessageCircle className="w-3.5 h-3.5" />
+                WhatsApp Enquiry
+              </Button>
+            </a>
           </div>
         </div>
       </CardContent>
