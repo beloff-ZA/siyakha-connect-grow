@@ -193,6 +193,38 @@ export const products: Product[] = [
     rating: 4.9,
     reviewCount: 15,
   },
+  {
+    id: "gs-gwn7670",
+    name: "Grandstream Enterprise WiFi 7 Indoor Access Point | GWN7670",
+    sku: "GS-GWN7670",
+    manufacturerSku: "GWN7670",
+    price: 2436.85,
+    image: "/lovable-uploads/gwn7670-front.png",
+    boxImage: "/lovable-uploads/gwn7670-angle.png",
+    description: "Enterprise-grade indoor Wi-Fi 7 Access Point designed for small to medium businesses requiring high-performance wireless connectivity. Delivers multi-gigabit speeds and reliable coverage using 2x2:2 MU-MIMO technology and 4096 QAM modulation. Controller-less architecture integrates with GDMS and GWN Manager platforms.",
+    features: [
+      { icon: Wifi, text: "WiFi 7 MU-MIMO" },
+      { icon: Signal, text: "4096 QAM" },
+      { icon: Users, text: "256 Clients" },
+      { icon: Network, text: "2× 2.5GbE PoE+" },
+      { icon: Shield, text: "Secure Boot" },
+      { icon: Server, text: "Controller-less" },
+    ],
+    highlights: [
+      "Wi-Fi 7 with 2x2:2 MU-MIMO and 4096 QAM",
+      "DL/UL OFDMA for improved spectrum efficiency",
+      "2× 2.5GbE ports with PoE+ support",
+      "Supports up to 256 concurrent clients",
+      "Optimised for voice-over-Wi-Fi applications",
+      "Compatible with GDMS and GWN Manager",
+    ],
+    category: "Wi-Fi",
+    brand: "Grandstream",
+    warranty: "3 Year",
+    inStock: true,
+    rating: 4.8,
+    reviewCount: 22,
+  },
 ];
 
 export const getCategories = (): string[] => {
