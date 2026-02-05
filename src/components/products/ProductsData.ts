@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -287,6 +287,38 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.6,
     reviewCount: 14,
+  },
+  {
+    id: "tp-decobe65-3p",
+    name: "TP-Link Deco Wi-Fi 7 Mesh System (3-Pack) | Deco BE65",
+    sku: "TP-DECOBE65-3P",
+    manufacturerSku: "Deco BE65(3-pack)",
+    price: 11777.12,
+    image: "/lovable-uploads/deco-be65-3pack.png",
+    boxImage: "/lovable-uploads/deco-be65-back.png",
+    description: "Whole-home Wi-Fi 7 mesh system with tri-band capabilities achieving speeds up to 11 Gbps. Features 6 GHz, 5 GHz, and 2.4 GHz bands with Multi-Link Operation (MLO) and 320 MHz channels for ultra-fast, low-latency connectivity supporting 200+ devices.",
+    features: [
+      { icon: Wifi, text: "WiFi 7 Tri-Band" },
+      { icon: Signal, text: "11 Gbps Speed" },
+      { icon: Home, text: "Whole-Home Mesh" },
+      { icon: Users, text: "200+ Devices" },
+      { icon: Network, text: "4× 2.5GbE Ports" },
+      { icon: Shield, text: "HomeShield Security" },
+    ],
+    highlights: [
+      "Tri-band WiFi 7 with 6 GHz, 5 GHz, and 2.4 GHz",
+      "Up to 11 Gbps aggregate wireless throughput",
+      "Four 2.5 Gbps ports per unit for wired backhaul",
+      "Multi-Link Operation (MLO) for low latency",
+      "320 MHz channels on 6 GHz band",
+      "TP-Link HomeShield advanced security",
+    ],
+    category: "Wi-Fi",
+    brand: "TP-Link",
+    warranty: "2 Year",
+    inStock: true,
+    rating: 4.8,
+    reviewCount: 11,
   },
 ];
 
