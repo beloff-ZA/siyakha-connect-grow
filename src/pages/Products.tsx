@@ -2,11 +2,11 @@ import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Sun, Wifi, Camera, Eye, Shield, Smartphone, Volume2, HardDrive, Battery } from "lucide-react";
+import { ShoppingCart, Sun, Wifi, Camera, Eye, Shield, Smartphone, Volume2, HardDrive, Battery, Check, MessageCircle } from "lucide-react";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const PAGE_URL = "/products";
 const TITLE = "Security Products & Equipment | Siyakha Technology";
@@ -142,81 +142,124 @@ const Products = () => {
           </div>
         </section>
 
-        {/* Products Grid */}
-        <section className="py-12 md:py-16">
+        {/* Products */}
+        <section className="py-12 md:py-20">
           <div className="container mx-auto px-4 lg:px-6">
-            {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden border-border mb-8">
-                <div className="grid md:grid-cols-2 gap-0">
-                  {/* Product Images */}
-                  <div className="bg-secondary p-8 flex flex-col items-center justify-center">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full max-w-sm h-auto object-contain mb-6"
-                    />
-                    <img
-                      src={product.boxImage}
-                      alt={`${product.name} packaging`}
-                      className="w-full max-w-xs h-auto object-contain"
-                    />
+            <div className="space-y-16">
+              {products.map((product, index) => (
+                <article 
+                  key={product.id} 
+                  className={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-start ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
+                >
+                  {/* Product Images Gallery */}
+                  <div className={`space-y-4 ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
+                    {/* Main Product Image */}
+                    <div className="relative group overflow-hidden rounded-2xl bg-gradient-to-br from-secondary via-secondary/80 to-muted border border-border">
+                      <AspectRatio ratio={4/3}>
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </AspectRatio>
+                      <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                        <Badge className="bg-primary text-primary-foreground shadow-lg">
+                          {product.brand}
+                        </Badge>
+                        {product.inStock && (
+                          <Badge className="bg-accent text-accent-foreground shadow-lg">
+                            <Check className="w-3 h-3 mr-1" />
+                            In Stock
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Secondary Image */}
+                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-muted to-secondary/50 border border-border">
+                      <AspectRatio ratio={16/9}>
+                        <img
+                          src={product.boxImage}
+                          alt={`${product.name} in use`}
+                          className="w-full h-full object-contain p-4"
+                        />
+                      </AspectRatio>
+                    </div>
                   </div>
 
                   {/* Product Details */}
-                  <CardContent className="p-6 md:p-8">
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <Badge variant="secondary">{product.category}</Badge>
-                      <Badge variant="outline">{product.brand}</Badge>
-                      {product.inStock && (
-                        <Badge className="bg-accent text-accent-foreground">In Stock</Badge>
-                      )}
+                  <div className={`space-y-6 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+                    {/* Category & SKU */}
+                    <div className="flex items-center gap-3 text-sm">
+                      <Badge variant="outline" className="rounded-full px-3 py-1">
+                        {product.category}
+                      </Badge>
+                      <span className="text-muted-foreground">SKU: {product.sku}</span>
                     </div>
-
-                    <h2 className="text-2xl md:text-3xl font-bold text-primary mb-2">
+                    
+                    {/* Title */}
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-tight">
                       {product.name}
                     </h2>
-                    <p className="text-sm text-muted-foreground mb-4">SKU: {product.sku}</p>
-
-                    <div className="mb-6">
-                      <span className="text-3xl font-bold text-primary">
+                    
+                    {/* Price Block */}
+                    <div className="flex items-baseline gap-3 pb-4 border-b border-border">
+                      <span className="text-4xl md:text-5xl font-bold text-primary">
                         R{product.price.toLocaleString()}
                       </span>
-                      <span className="text-muted-foreground ml-2">inc VAT (without install)</span>
+                      <div className="flex flex-col text-sm text-muted-foreground">
+                        <span>inc VAT</span>
+                        <span>excl. installation</span>
+                      </div>
                     </div>
-
-                    <p className="text-muted-foreground mb-6">{product.description}</p>
-
-                    {/* Features Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
-                      {product.features.map((feature, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-2 p-3 bg-secondary rounded-lg"
+                    
+                    {/* Description */}
+                    <p className="text-muted-foreground leading-relaxed">
+                      {product.description}
+                    </p>
+                    
+                    {/* Features Pills */}
+                    <div className="flex flex-wrap gap-2">
+                      {product.features.map((feature, idx) => (
+                        <div 
+                          key={idx}
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/80 rounded-full border border-border/50 text-sm font-medium text-foreground"
                         >
-                          <feature.icon className="w-5 h-5 text-accent flex-shrink-0" />
-                          <span className="text-sm font-medium text-foreground">{feature.text}</span>
+                          <feature.icon className="w-4 h-4 text-accent" />
+                          {feature.text}
                         </div>
                       ))}
                     </div>
-
-                    {/* Highlights */}
-                    <div className="mb-6">
-                      <h3 className="font-semibold text-primary mb-3">Key Features:</h3>
-                      <ul className="space-y-2">
-                        {product.highlights.map((highlight, index) => (
-                          <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                            <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 flex-shrink-0" />
+                    
+                    {/* Key Features List */}
+                    <div className="bg-secondary/30 rounded-xl p-5 border border-border/50">
+                      <h3 className="font-semibold text-primary mb-4 flex items-center gap-2">
+                        <Shield className="w-5 h-5 text-accent" />
+                        Key Features
+                      </h3>
+                      <ul className="grid sm:grid-cols-2 gap-3">
+                        {product.highlights.map((highlight, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                            <Check className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
                             {highlight}
                           </li>
                         ))}
                       </ul>
                     </div>
-
+                    
+                    {/* Warranty Badge */}
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-lg border border-primary/10">
+                        <Shield className="w-4 h-4 text-primary" />
+                        <span className="font-medium text-primary">{product.warranty} Warranty</span>
+                      </div>
+                    </div>
+                    
                     {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
                       <Link to="/contact#quote-form" className="flex-1">
-                        <Button className="w-full cta-primary">
-                          <ShoppingCart className="w-4 h-4 mr-2" />
+                        <Button size="lg" className="w-full cta-primary text-base">
+                          <ShoppingCart className="w-5 h-5 mr-2" />
                           Request Quote
                         </Button>
                       </Link>
@@ -226,19 +269,20 @@ const Products = () => {
                         rel="noopener noreferrer"
                         className="flex-1"
                       >
-                        <Button variant="outline" className="w-full">
+                        <Button size="lg" variant="outline" className="w-full text-base">
+                          <MessageCircle className="w-5 h-5 mr-2" />
                           WhatsApp Enquiry
                         </Button>
                       </a>
                     </div>
-
-                    <p className="mt-4 text-xs text-muted-foreground text-center">
+                    
+                    <p className="text-xs text-muted-foreground text-center pt-2">
                       Professional installation available • Contact us for bulk pricing
                     </p>
-                  </CardContent>
-                </div>
-              </Card>
-            ))}
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
