@@ -129,6 +129,38 @@ export const products: Product[] = [
     rating: 4.7,
     reviewCount: 5,
   },
+  {
+    id: "gs-gwn7816p",
+    name: "Grandstream Enterprise L3 48 Port Managed GbE PoE++ Switch 900W",
+    sku: "GS-GWN7816P",
+    manufacturerSku: "GWN7816P",
+    price: 18480.29,
+    image: "/lovable-uploads/gwn7816p-angle1.png",
+    boxImage: "/lovable-uploads/gwn7816p-angle2.png",
+    description: "High-capacity Layer 3 managed switch built for enterprise networks requiring advanced performance, scalability, and security. With 48 Gigabit Ethernet ports and 6 10-Gigabit SFP+ uplinks, it delivers robust connectivity for high-density deployments. PoE, PoE+, and PoE++ support with a 900W power budget ensures reliable power delivery to demanding devices.",
+    features: [
+      { icon: Network, text: "48 GbE + 6 SFP+" },
+      { icon: Zap, text: "900W PoE++" },
+      { icon: Server, text: "Layer 3 Managed" },
+      { icon: Shield, text: "Advanced Security" },
+      { icon: Cable, text: "10G Uplinks" },
+      { icon: Wifi, text: "Stacking Support" },
+    ],
+    highlights: [
+      "48× Gigabit Ethernet ports + 6× 10-Gigabit SFP+ uplinks",
+      "900W PoE budget with PoE/PoE+/PoE++ and dynamic allocation",
+      "Full IPv4 and IPv6 protocol support",
+      "Stacking support for managing multiple switches",
+      "ARP Inspection, IP Source Guard, DHCP snooping security",
+      "Dual boot, link aggregation, and storm control",
+    ],
+    category: "Networking",
+    brand: "Grandstream",
+    warranty: "3 Year",
+    inStock: true,
+    rating: 4.8,
+    reviewCount: 6,
+  },
 ];
 
 export const getCategories = (): string[] => {
