@@ -231,7 +231,7 @@ export const products: Product[] = [
     sku: "ZK-BG1145-L",
     manufacturerSku: "BG1145-L",
     price: 25459.95,
-    image: "/placeholder.svg",
+    image: "/lovable-uploads/zkteco-boomgate.png",
     description: "Professional 90-degree left folding barrier boom gate with 3.5m boom arm. Ideal for parking lots, commercial buildings, and access control points. Features smooth operation, durable construction, and reliable motor system for high-traffic environments.",
     features: [
       { icon: Ruler, text: "3.5m Boom Arm" },
