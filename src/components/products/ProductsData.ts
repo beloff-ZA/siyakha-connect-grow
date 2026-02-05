@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity, Monitor, Cpu, MemoryStick } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -487,7 +487,39 @@ export const products: Product[] = [
     rating: 5.0,
     reviewCount: 8,
   },
+  {
+    id: "dell-pro-15-essential",
+    name: "Dell Pro 15 Essential 15.6-inch FHD Laptop",
+    sku: "DELL-PRO15-ESS",
+    manufacturerSku: "Pro 15 Essential",
+    price: 16903.85,
+    image: "/lovable-uploads/dell-pro-15-essential.png",
+    description: "The Dell Pro 15 Essential is a reliable business laptop featuring a 15.6-inch Full HD display, Intel Core 3 100U processor, 512GB SSD storage, and 8GB RAM. Pre-installed with Windows 11 Pro for enterprise-ready productivity and security features.",
+    features: [
+      { icon: Monitor, text: "15.6\" FHD Display" },
+      { icon: Cpu, text: "Intel Core 3 100U" },
+      { icon: HardDrive, text: "512GB SSD" },
+      { icon: MemoryStick, text: "8GB RAM" },
+      { icon: Shield, text: "Windows 11 Pro" },
+      { icon: Battery, text: "Long Battery Life" },
+    ],
+    highlights: [
+      "15.6-inch Full HD (1920×1080) anti-glare display",
+      "Intel Core 3 100U processor for efficient performance",
+      "512GB M.2 PCIe NVMe SSD for fast boot and load times",
+      "8GB DDR4 RAM for smooth multitasking",
+      "Windows 11 Pro with enterprise security features",
+      "Compact and portable design for professionals",
+    ],
+    category: "Laptops",
+    brand: "Dell",
+    warranty: "1 Year",
+    inStock: true,
+    rating: 4.5,
+    reviewCount: 12,
+  },
 ];
+
 
 export const getCategories = (): string[] => {
   return [...new Set(products.map(p => p.category))];
