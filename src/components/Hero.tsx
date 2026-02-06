@@ -20,10 +20,19 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 lg:px-6 text-center">
         <div className="max-w-4xl mx-auto fade-in">
-          {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent font-medium text-sm mb-6">
-            <span className="w-2 h-2 bg-accent rounded-full mr-2 animate-pulse"></span>
-            BEE Level 1 Certified ICT Partner
+          {/* Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent font-medium text-sm">
+              <span className="w-2 h-2 bg-accent rounded-full mr-2 animate-pulse"></span>
+              BEE Level 1 Certified ICT Partner
+            </div>
+            <div className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/10 border border-white/20">
+              <img 
+                src="/brands/dell-authorized-partner.jpg" 
+                alt="Dell Technologies Authorized Partner" 
+                className="h-8 w-auto"
+              />
+            </div>
           </div>
 
           {/* Main Headline */}
