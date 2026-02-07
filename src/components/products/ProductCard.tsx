@@ -20,7 +20,7 @@ import {
   X,
   Share2
 } from "lucide-react";
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useQuoteBasket } from "@/contexts/QuoteBasketContext";
 import { toast } from "sonner";
@@ -96,7 +96,7 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
 
   if (viewMode === "list") {
     return (
-      <Card className="group overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+      <Card data-product-id={product.id} className="group overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
         <CardContent className="p-0">
           <div className="flex flex-col md:flex-row">
             {/* Image Section */}
@@ -242,7 +242,7 @@ const ProductCard = ({ product, viewMode = "grid" }: ProductCardProps) => {
 
   // Grid View (Default)
   return (
-    <Card className="group overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+    <Card data-product-id={product.id} className="group overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
       <CardContent className="p-0 flex flex-col h-full">
         {/* Image Section */}
         <div className="relative bg-gradient-to-br from-secondary via-muted to-secondary/50">
