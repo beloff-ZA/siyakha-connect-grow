@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import ProductCard from "@/components/products/ProductCard";
 import ProductFilters from "@/components/products/ProductFilters";
+import TechSpecialBanner from "@/components/products/TechSpecialBanner";
 import { products, getCategories, getBrands } from "@/components/products/ProductsData";
 
 const PAGE_URL = "/products";
@@ -117,6 +118,7 @@ const Products = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <TechSpecialBanner />
       <main>
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="container mx-auto px-4 lg:px-6 py-4">
