@@ -713,6 +713,38 @@ export const products: Product[] = [
     rating: 4.6,
     reviewCount: 6,
   },
+  {
+    id: "linkqnet-tpbq34",
+    name: "LinkQNet TPBQ34 27,000mAh PD65W Super Quick Charge Powerbank",
+    sku: "LQN-TPBQ34",
+    manufacturerSku: "TPBQ34",
+    price: 1071.70,
+    image: "/lovable-uploads/linkqnet-powerbank-front.png",
+    boxImage: "/lovable-uploads/linkqnet-powerbank-views.png",
+    description: "High-capacity 27,000mAh Li-Polymer powerbank with PD65W super quick charge. Compatible with laptops (PD65W & PD45W), smartphones and tablets. Features a digital indicator for remaining battery level.",
+    features: [
+      { icon: Battery, text: "27,000mAh Capacity" },
+      { icon: Zap, text: "PD65W Quick Charge" },
+      { icon: Monitor, text: "Laptop Compatible" },
+      { icon: Smartphone, text: "Multi-Device" },
+      { icon: Activity, text: "Digital Indicator" },
+      { icon: Cable, text: "Li-Polymer Battery" },
+    ],
+    highlights: [
+      "27,000mAh high-capacity Li-Polymer battery",
+      "PD65W super quick charge output",
+      "Compatible with laptops (PD65W & PD45W)",
+      "Digital indicator for remaining battery level",
+      "Multiple output ports for simultaneous charging",
+      "Compact portable design with carry strap",
+    ],
+    category: "Networking",
+    brand: "LinkQNet",
+    warranty: "1 Year",
+    inStock: true,
+    rating: 4.5,
+    reviewCount: 12,
+  },
 ];
 
 
