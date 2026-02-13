@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity, Monitor, Cpu, MemoryStick, Lightbulb, Palette } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity, Monitor, Cpu, MemoryStick, Lightbulb, Palette, Navigation, Sparkles } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -576,6 +576,40 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.6,
     reviewCount: 32,
+  },
+  {
+    id: "tp-tapo-rv30-max",
+    name: "TP-Link Tapo RV30 Max Robot Vacuum & Mop – 5300Pa Suction",
+    sku: "TP-TAPO-RV30-MAX",
+    manufacturerSku: "Tapo RV30 Max",
+    price: 5499,
+    image: "/lovable-uploads/tapo-rv30-max-product.png",
+    boxImage: "/lovable-uploads/tapo-rv30-max-box.png",
+    description: "Ultra-powerful 5300Pa robot vacuum and mop with LiDAR + IMU dual navigation, Tapo IQ+ smart cleaning, mesh grid mopping, carpet avoidance, and 4× multi-floor mapping. Works with Amazon Alexa and Google Assistant for voice control.",
+    features: [
+      { icon: Zap, text: "5300Pa Suction" },
+      { icon: Navigation, text: "LiDAR Navigation" },
+      { icon: Sparkles, text: "Tapo IQ+ Smart" },
+      { icon: Smartphone, text: "App Control" },
+      { icon: Volume2, text: "Voice Control" },
+      { icon: Battery, text: "Auto-Charging" },
+    ],
+    highlights: [
+      "Ultra-powerful 5300Pa hyper suction for all floor types",
+      "LiDAR + IMU dual navigation – maps your home in minutes",
+      "Mesh Grid mopping for comprehensive, thorough cleaning",
+      "Carpet avoidance in mopping mode to keep carpets dry",
+      "Tapo IQ+ smart cleaning with advanced sensors & algorithms",
+      "4× multi-floor maps stored locally for whole-home coverage",
+      "Auto-charging – returns to dock and resumes where it left off",
+      "Works with Amazon Alexa and Google Assistant",
+    ],
+    category: "Smart Home",
+    brand: "TP-Link",
+    warranty: "2 Year",
+    inStock: true,
+    rating: 4.7,
+    reviewCount: 18,
   },
 ];
 
