@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity, Monitor, Cpu, MemoryStick, Lightbulb, Palette, Navigation, Sparkles, BellRing, ScanEye } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity, Monitor, Cpu, MemoryStick, Lightbulb, Palette, Navigation, Sparkles, BellRing, ScanEye, Video, Mic } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -678,6 +678,40 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.7,
     reviewCount: 8,
+  },
+  {
+    id: "fanvil-ca400",
+    name: "Fanvil CA400 All-in-One Wireless Conference Solution",
+    sku: "FAN-CA400",
+    manufacturerSku: "CA400",
+    price: 13798.85,
+    image: "/lovable-uploads/fanvil-ca400-kit.png",
+    boxImage: "/lovable-uploads/fanvil-ca400-camera.png",
+    description: "All-in-one wireless conference solution combining a 4K camera with auto-framing (118.5° wide-angle, 5× digital zoom), speakerphone with 8-array microphone and 3W speaker, and wireless receiver hub. Supports 4K screen-sharing, 1080p wireless video streaming, and BYOD via USB-C.",
+    features: [
+      { icon: Video, text: "4K Screen Sharing" },
+      { icon: Camera, text: "4K Auto-Frame Camera" },
+      { icon: Mic, text: "8-Array Microphone" },
+      { icon: Wifi, text: "Wireless Streaming" },
+      { icon: Monitor, text: "BYOD USB-C" },
+      { icon: Volume2, text: "3W Speaker" },
+    ],
+    highlights: [
+      "Wireless 4K screen-sharing for real-time presentations",
+      "All-in-one: speakerphone, 4K camera & receiver hub",
+      "1080p wireless video streaming – clutter-free setup",
+      "8-array mic with AEC, ANS, AGC & vocal enhancement",
+      "118.5° wide-angle camera with 5× digital zoom & auto-framing",
+      "BYOD support via USB Type-C connection",
+      "OSD remote control for camera direction & focal length",
+      "Three-step setup – no tangled cables",
+    ],
+    category: "Collaboration",
+    brand: "Fanvil",
+    warranty: "2 Year",
+    inStock: true,
+    rating: 4.6,
+    reviewCount: 6,
   },
 ];
 
