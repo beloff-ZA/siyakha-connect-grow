@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity, Monitor, Cpu, MemoryStick, Lightbulb, Palette, Navigation, Sparkles } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity, Monitor, Cpu, MemoryStick, Lightbulb, Palette, Navigation, Sparkles, BellRing, ScanEye } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -610,6 +610,40 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.7,
     reviewCount: 18,
+  },
+  {
+    id: "tp-tapo-d235",
+    name: "TP-Link Tapo D235 5MP Video Doorbell Camera",
+    sku: "TP-TAPO-D235",
+    manufacturerSku: "Tapo D235",
+    price: 2599,
+    image: "/lovable-uploads/tapo-d235-product.png",
+    boxImage: "/lovable-uploads/tapo-d235-battery.png",
+    description: "2K 5MP video doorbell camera with 180° ultra-wide view, full-colour night vision, two-way audio, and smart detection for person, vehicle, pet and package. Powered by 10,000mAh battery (up to 8 months) or 8–24V hardwired. IP66 weatherproof with local and cloud storage options.",
+    features: [
+      { icon: Camera, text: "2K 5MP Clarity" },
+      { icon: ScanEye, text: "180° Ultra-Wide" },
+      { icon: Sun, text: "Colour Night Vision" },
+      { icon: Volume2, text: "Two-Way Audio" },
+      { icon: Battery, text: "8-Month Battery" },
+      { icon: BellRing, text: "Quick Response" },
+    ],
+    highlights: [
+      "2K 5MP resolution for crystal-clear detail",
+      "180° ultra-wide field of view – head-to-toe coverage",
+      "Full-colour night vision with built-in spotlight",
+      "Free smart detection: person, vehicle, pet & package alerts",
+      "10,000mAh battery lasts up to 8 months or hardwire 8–24V",
+      "Two-way audio with premium mic and speakers",
+      "IP66 weatherproof – reliable in all conditions",
+      "MicroSD (up to 512GB) and Tapo Care cloud storage",
+    ],
+    category: "Security Cameras",
+    brand: "TP-Link",
+    warranty: "2 Year",
+    inStock: true,
+    rating: 4.8,
+    reviewCount: 14,
   },
 ];
 
