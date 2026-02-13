@@ -1,4 +1,4 @@
-import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity, Monitor, Cpu, MemoryStick } from "lucide-react";
+import { Camera, Sun, Wifi, Shield, Smartphone, Eye, Volume2, HardDrive, Battery, Network, Zap, Server, Cable, Radio, Users, Signal, Car, Lock, Ruler, Router, Globe, Factory, Home, Headphones, Clock, FileText, Mail, UserCheck, Activity, Monitor, Cpu, MemoryStick, Lightbulb, Palette } from "lucide-react";
 import { Product } from "./ProductCard";
 
 export const products: Product[] = [
@@ -542,6 +542,40 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.5,
     reviewCount: 11,
+  },
+  {
+    id: "tp-tapo-l530e",
+    name: "TP-Link Tapo L530E Smart Wi-Fi Light Bulb – Multicolour",
+    sku: "TP-TAPO-L530E",
+    manufacturerSku: "Tapo L530E",
+    price: 859,
+    image: "/lovable-uploads/tapo-l530e-product.png",
+    boxImage: "/lovable-uploads/tapo-l530e-box-2pack.png",
+    description: "Smart Wi-Fi multicolour light bulb with 16 million hues, 806 lumens brightness, and E27 fitting. Control via the Tapo app, Amazon Alexa, or Google Assistant – no hub required. Available in 1, 2, or 4-pack options. Features scheduling, sunrise/sunset modes, and away mode for security.",
+    features: [
+      { icon: Palette, text: "16M Colours" },
+      { icon: Lightbulb, text: "806 Lumens" },
+      { icon: Wifi, text: "Wi-Fi Control" },
+      { icon: Smartphone, text: "App Control" },
+      { icon: Clock, text: "Schedule & Timer" },
+      { icon: Volume2, text: "Voice Control" },
+    ],
+    highlights: [
+      "16,000,000 colour hues with 2500–6500K temperature range",
+      "60W equivalent at only 8.3W – energy class F",
+      "Works with Amazon Alexa and Google Assistant",
+      "No hub required – connects directly to 2.4GHz Wi-Fi",
+      "Schedule, timer, sunrise/sunset automation modes",
+      "Away mode simulates occupancy for security",
+      "Dimmable 1%–100% via Tapo app",
+      "25,000-hour lifespan with 15,000 switching cycles",
+    ],
+    category: "Smart Home",
+    brand: "TP-Link",
+    warranty: "2 Year",
+    inStock: true,
+    rating: 4.6,
+    reviewCount: 32,
   },
 ];
 
