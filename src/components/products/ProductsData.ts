@@ -512,6 +512,37 @@ export const products: Product[] = [
     rating: 4.6,
     reviewCount: 9,
   },
+  {
+    id: "lq-9u-corner",
+    name: "LinkQNet 9U Wall Box Corner Cabinet 600×600",
+    sku: "LQ-9U-CORNER",
+    manufacturerSku: "9U-CORNER-600X600",
+    price: 3264,
+    image: "/lovable-uploads/linkqnet-9u-corner-cabinet.png",
+    description: "Compact 9U corner wall mount cabinet designed to fit neatly into room corners, maximising space efficiency. Features a tempered glass front door for equipment visibility, built-in fan for cooling, and perforated side panels. Ideal for small offices, retail stores, and home networks.",
+    features: [
+      { icon: Server, text: "9U Capacity" },
+      { icon: Eye, text: "Glass Door" },
+      { icon: Lock, text: "Lockable" },
+      { icon: Ruler, text: "600×600mm" },
+      { icon: Home, text: "Corner Mount" },
+      { icon: Network, text: "Standard 19\"" },
+    ],
+    highlights: [
+      "9U rack space in compact corner-mount design",
+      "Tempered glass front door with lock for security",
+      "Built-in cooling fan for equipment ventilation",
+      "600mm wide × 600mm deep footprint",
+      "Perforated side panels for airflow",
+      "Wall mount bracket included for easy installation",
+    ],
+    category: "Cabinets & Racks",
+    brand: "LinkQNet",
+    warranty: "1 Year",
+    inStock: true,
+    rating: 4.5,
+    reviewCount: 11,
+  },
 ];
 
 
