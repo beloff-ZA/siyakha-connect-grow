@@ -30,7 +30,7 @@ export const products: Product[] = [
     brand: "TP-Link",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.7,
+    rating: 5.0,
     reviewCount: 24,
   },
   {
@@ -62,7 +62,7 @@ export const products: Product[] = [
     brand: "TP-Link",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.5,
+    rating: 5.0,
     reviewCount: 18,
   },
   {
@@ -94,7 +94,7 @@ export const products: Product[] = [
     brand: "Grandstream",
     warranty: "3 Year",
     inStock: true,
-    rating: 4.6,
+    rating: 5.0,
     reviewCount: 8,
   },
   {
@@ -126,7 +126,7 @@ export const products: Product[] = [
     brand: "Grandstream",
     warranty: "3 Year",
     inStock: true,
-    rating: 4.7,
+    rating: 5.0,
     reviewCount: 5,
   },
   {
@@ -158,7 +158,7 @@ export const products: Product[] = [
     brand: "Grandstream",
     warranty: "3 Year",
     inStock: true,
-    rating: 4.8,
+    rating: 5.0,
     reviewCount: 6,
   },
   {
@@ -190,7 +190,7 @@ export const products: Product[] = [
     brand: "Grandstream",
     warranty: "3 Year",
     inStock: true,
-    rating: 4.9,
+    rating: 5.0,
     reviewCount: 15,
   },
   {
@@ -222,7 +222,7 @@ export const products: Product[] = [
     brand: "Grandstream",
     warranty: "3 Year",
     inStock: true,
-    rating: 4.8,
+    rating: 5.0,
     reviewCount: 22,
   },
   {
@@ -253,7 +253,7 @@ export const products: Product[] = [
     brand: "ZKTeco",
     warranty: "1 Year",
     inStock: true,
-    rating: 4.4,
+    rating: 5.0,
     reviewCount: 7,
   },
   {
@@ -285,7 +285,7 @@ export const products: Product[] = [
     brand: "Teltonika",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.6,
+    rating: 5.0,
     reviewCount: 14,
   },
   {
@@ -317,7 +317,7 @@ export const products: Product[] = [
     brand: "TP-Link",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.8,
+    rating: 5.0,
     reviewCount: 11,
   },
   {
@@ -349,7 +349,7 @@ export const products: Product[] = [
     brand: "Siyakha",
     warranty: "Monthly Subscription",
     inStock: true,
-    rating: 4.6,
+    rating: 5.0,
     reviewCount: 28,
   },
   {
@@ -382,7 +382,7 @@ export const products: Product[] = [
     brand: "Siyakha",
     warranty: "Monthly Subscription",
     inStock: true,
-    rating: 4.7,
+    rating: 5.0,
     reviewCount: 41,
   },
   {
@@ -447,7 +447,7 @@ export const products: Product[] = [
     brand: "Dell",
     warranty: "1 Year",
     inStock: true,
-    rating: 4.5,
+    rating: 5.0,
     reviewCount: 12,
   },
   {
@@ -478,7 +478,7 @@ export const products: Product[] = [
     brand: "LinkQNet",
     warranty: "1 Year",
     inStock: true,
-    rating: 4.5,
+    rating: 5.0,
     reviewCount: 6,
   },
   {
@@ -509,7 +509,7 @@ export const products: Product[] = [
     brand: "LinkQNet",
     warranty: "1 Year",
     inStock: true,
-    rating: 4.6,
+    rating: 5.0,
     reviewCount: 9,
   },
   {
@@ -540,7 +540,7 @@ export const products: Product[] = [
     brand: "LinkQNet",
     warranty: "1 Year",
     inStock: true,
-    rating: 4.5,
+    rating: 5.0,
     reviewCount: 11,
   },
   {
@@ -574,7 +574,7 @@ export const products: Product[] = [
     brand: "TP-Link",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.6,
+    rating: 5.0,
     reviewCount: 32,
   },
   {
@@ -608,7 +608,7 @@ export const products: Product[] = [
     brand: "TP-Link",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.7,
+    rating: 5.0,
     reviewCount: 18,
   },
   {
@@ -642,7 +642,7 @@ export const products: Product[] = [
     brand: "TP-Link",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.8,
+    rating: 5.0,
     reviewCount: 14,
   },
   {
@@ -676,7 +676,7 @@ export const products: Product[] = [
     brand: "Synology",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.7,
+    rating: 5.0,
     reviewCount: 8,
   },
   {
@@ -710,7 +710,7 @@ export const products: Product[] = [
     brand: "Fanvil",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.6,
+    rating: 5.0,
     reviewCount: 6,
   },
   {
@@ -742,7 +742,7 @@ export const products: Product[] = [
     brand: "LinkQNet",
     warranty: "1 Year",
     inStock: true,
-    rating: 4.5,
+    rating: 5.0,
     reviewCount: 12,
   },
   {
@@ -776,7 +776,7 @@ export const products: Product[] = [
     brand: "Grandstream",
     warranty: "3 Year",
     inStock: true,
-    rating: 4.7,
+    rating: 5.0,
     reviewCount: 18,
   },
   {
@@ -809,7 +809,7 @@ export const products: Product[] = [
     brand: "Grandstream",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.6,
+    rating: 5.0,
     reviewCount: 14,
   },
   {
@@ -840,7 +840,7 @@ export const products: Product[] = [
     brand: "TP-Link",
     warranty: "2 Year",
     inStock: true,
-    rating: 4.5,
+    rating: 5.0,
     reviewCount: 32,
   },
 ];
