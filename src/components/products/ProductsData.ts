@@ -167,8 +167,8 @@ export const products: Product[] = [
     sku: "GS-GWN7672",
     manufacturerSku: "GWN7672",
     price: 3999,
-    image: "/lovable-uploads/gwn7672-front.png",
-    boxImage: "/lovable-uploads/gwn7672-back.png",
+    image: "/lovable-uploads/gwn-wifi7-front.png",
+    boxImage: "/lovable-uploads/gwn-wifi7-angle.png",
     description: "Enterprise-grade Wi-Fi 7 access point designed for medium to high-density environments such as offices, schools, hotels, and large retail spaces. Supports ultra-high-speed wireless connectivity with up to 11Gbps aggregate throughput for demanding applications including HD video streaming, real-time collaboration, and VoIP.",
     features: [
       { icon: Wifi, text: "WiFi 7 BE11000" },
@@ -199,8 +199,8 @@ export const products: Product[] = [
     sku: "GS-GWN7670",
     manufacturerSku: "GWN7670",
     price: 2499,
-    image: "/lovable-uploads/gwn7670-front.png",
-    boxImage: "/lovable-uploads/gwn7670-angle.png",
+    image: "/lovable-uploads/gwn-wifi7-front.png",
+    boxImage: "/lovable-uploads/gwn-wifi7-angle.png",
     description: "Enterprise-grade indoor Wi-Fi 7 Access Point designed for small to medium businesses requiring high-performance wireless connectivity. Delivers multi-gigabit speeds and reliable coverage using 2x2:2 MU-MIMO technology and 4096 QAM modulation. Controller-less architecture integrates with GDMS and GWN Manager platforms.",
     features: [
       { icon: Wifi, text: "WiFi 7 MU-MIMO" },
