@@ -812,6 +812,37 @@ export const products: Product[] = [
     rating: 4.6,
     reviewCount: 14,
   },
+  {
+    id: "tp-deco-e4-2p",
+    name: "TP-Link Deco E4 AC1200 Wireless Whole Home Mesh System (2-Pack)",
+    sku: "TP-DECO-E4-2P",
+    manufacturerSku: "Deco E4(2-pack)",
+    price: 1149,
+    image: "/lovable-uploads/tplink-deco-e4-2pack.png",
+    description: "The Deco E4 delivers seamless whole-home Wi-Fi coverage up to 2,800 sq ft with speeds up to 1167 Mbps. Advanced Mesh Technology creates a unified network with automatic roaming between units. Supports up to 100 devices with parental controls and easy Deco app setup.",
+    features: [
+      { icon: Wifi, text: "AC1200 Dual-Band" },
+      { icon: Home, text: "Whole-Home Mesh" },
+      { icon: Users, text: "100 Devices" },
+      { icon: Shield, text: "Parental Controls" },
+      { icon: Signal, text: "2,800 sq ft Coverage" },
+      { icon: Smartphone, text: "Deco App Setup" },
+    ],
+    highlights: [
+      "Seamless whole-home Wi-Fi up to 2,800 sq ft",
+      "AC1200 speeds up to 1167 Mbps",
+      "Automatic roaming between Deco units",
+      "Supports up to 100 connected devices",
+      "Built-in parental controls with custom profiles",
+      "Easy setup via the Deco app",
+    ],
+    category: "Wi-Fi",
+    brand: "TP-Link",
+    warranty: "2 Year",
+    inStock: true,
+    rating: 4.5,
+    reviewCount: 32,
+  },
 ];
 
 
