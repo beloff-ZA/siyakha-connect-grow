@@ -26,14 +26,14 @@ const Hero = () => {
               <span className="w-2 h-2 bg-accent rounded-full mr-2 animate-pulse"></span>
               BEE Level 1 Certified ICT Partner
             </div>
-            <div className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/10 border border-white/20">
+            <div className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white border border-white/20">
               <img 
                 src="/brands/dell-authorized-partner.jpg" 
                 alt="Dell Technologies Authorized Partner" 
                 className="h-8 w-auto"
               />
             </div>
-            <div className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/10 border border-white/20">
+            <div className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white border border-white/20">
               <img 
                 src="/brands/grandstream-partner.png" 
                 alt="Grandstream Connecting the World Partner" 
