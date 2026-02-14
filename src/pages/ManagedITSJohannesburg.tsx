@@ -85,7 +85,7 @@ const ManagedITSJohannesburg = () => {
             </p>
             <div className="mt-6 flex gap-3">
               <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Request a Proposal</Button></Link>
-              <a href="tel:+27877027411" className="inline-flex"><Button variant="outline">Call 087 702 7411</Button></a>
+              <a href="tel:+27815012993" className="inline-flex"><Button variant="outline">Call 081 501 2993</Button></a>
             </div>
           </div>
         </section>
