@@ -128,6 +128,16 @@ serve(async (req) => {
       });
     }
 
+    // Fetch all users for keep modes
+    const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    if (listErr) {
+      console.error("listUsers error:", listErr);
+      return new Response(JSON.stringify({ error: listErr.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
     const users = list?.users ?? [];
     const keepUser = users.find((u: any) => (u.email || "").toLowerCase() === keepEmail);
 
