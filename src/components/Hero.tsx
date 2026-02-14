@@ -33,6 +33,13 @@ const Hero = () => {
                 className="h-8 w-auto"
               />
             </div>
+            <div className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/10 border border-white/20">
+              <img 
+                src="/brands/grandstream-partner.png" 
+                alt="Grandstream Connecting the World Partner" 
+                className="h-7 w-auto"
+              />
+            </div>
           </div>
 
           {/* Main Headline */}
