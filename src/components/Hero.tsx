@@ -40,6 +40,20 @@ const Hero = () => {
                 className="h-7 w-auto"
               />
             </div>
+            <div className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white border border-white/20">
+              <img 
+                src="/brands/tplink.png" 
+                alt="TP-Link Partner" 
+                className="h-7 w-auto"
+              />
+            </div>
+            <div className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white border border-white/20">
+              <img 
+                src="/brands/hikvision.png" 
+                alt="Hikvision Partner" 
+                className="h-7 w-auto"
+              />
+            </div>
           </div>
 
           {/* Main Headline */}
