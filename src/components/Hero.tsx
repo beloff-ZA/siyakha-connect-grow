@@ -36,15 +36,16 @@ const Hero = () => {
 
           {/* Main Headline */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-            Smart Technology.{" "}
-            <span className="text-accent">Local Expertise.</span>{" "}
-            Real Impact.
+            Field Engineers.{" "}
+            <span className="text-accent">Smart Hands.</span>{" "}
+            Dedicated ICT Support.
           </h1>
 
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Your BEE Level 1 ICT Partner for end-to-end technology infrastructure, 
-            networking, security, and support across South Africa.
+            BEE Level 1 certified with infrastructure technicians, software partners, and 
+            on-site field teams delivering networking, security, and end-to-end 
+            technology support across South Africa.
           </p>
 
           {/* CTA Buttons */}
