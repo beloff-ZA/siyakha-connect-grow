@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, CheckCircle, Users, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
+import ctaVideo from "@/assets/cta-video.mp4";
+
 const LeadMagnet = () => {
   const benefits = [
     "Free technology assessment",
@@ -11,8 +13,15 @@ const LeadMagnet = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-primary via-primary-hover to-primary">
-      <div className="container mx-auto px-4 lg:px-6">
+    <section className="relative py-20 overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0">
+        <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+          <source src={ctaVideo} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 hero-gradient opacity-90"></div>
+      </div>
+      <div className="relative z-10 container mx-auto px-4 lg:px-6">
         <div className="max-w-4xl mx-auto">
           <Card className="border-0 shadow-2xl overflow-hidden">
             <CardContent className="p-0">
