@@ -2,6 +2,7 @@ import { Building2, GraduationCap, Factory, Car, Stethoscope, ShoppingBag, Home,
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import industriesVideo from "@/assets/industries-video.mp4";
 
 const industries = [
   {
@@ -80,8 +81,15 @@ const industries = [
 
 const Industries = () => {
   return (
-    <section id="industries" aria-labelledby="industries-heading" className="py-16 sm:py-20">
-      <div className="container mx-auto px-4">
+    <section id="industries" aria-labelledby="industries-heading" className="relative py-16 sm:py-20 overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0">
+        <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+          <source src={industriesVideo} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-background/92"></div>
+      </div>
+      <div className="relative z-10 container mx-auto px-4">
         <header className="mx-auto max-w-3xl text-center mb-12">
           <h2 id="industries-heading" className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
             Companies & Industries We Support
