@@ -1,18 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
+import heroVideo from "@/assets/hero-video.mp4";
 import heroImage from "@/assets/hero-bg.jpg";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Background Image with Overlay */}
+      {/* Video Background with Overlay */}
       <div className="absolute inset-0">
-        <img 
-          src={heroImage} 
-          alt="Modern technology infrastructure" 
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster={heroImage}
           className="w-full h-full object-cover"
-        />
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
         <div className="absolute inset-0 hero-gradient opacity-85"></div>
         <div className="absolute inset-0 tech-grid opacity-30"></div>
       </div>
