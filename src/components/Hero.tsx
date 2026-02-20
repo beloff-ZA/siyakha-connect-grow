@@ -43,9 +43,9 @@ const Hero = () => {
 
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-            BEE Level 1 certified with infrastructure technicians, software partners, and 
-            on-site field teams delivering networking, security, and end-to-end 
-            technology support across South Africa.
+            We deploy dedicated field engineers, infrastructure technicians, and smart hands 
+            teams to keep your business running — backed by BEE Level 1 certification 
+            and trusted by 100+ organisations across South Africa.
           </p>
 
           {/* CTA Buttons */}
