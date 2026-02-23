@@ -66,32 +66,6 @@ const ProjectsIndex = () => {
         </section>
         <Projects />
         
-        {/* Fibre Feasibility CTA */}
-        <section className="py-16 bg-muted/50 border-t border-border">
-          <div className="container mx-auto px-4 lg:px-6 text-center">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4">
-              Interested in Fibre for Your Community?
-            </h2>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Complete our comprehensive feasibility assessment to evaluate the viability of fibre build in your area. 
-              Get professional analysis and automated scoring within 24 hours.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="/projects/fibre-feasibility"
-                className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 hover:bg-primary/90"
-              >
-                Start Feasibility Assessment
-              </a>
-              <a 
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              >
-                Contact Us Directly
-              </a>
-            </div>
-          </div>
-        </section>
         
         <section className="py-20 bg-gradient-to-b from-background to-secondary/50 border-t border-border" aria-label="Project Gallery">
           <div className="container mx-auto px-4 lg:px-6">

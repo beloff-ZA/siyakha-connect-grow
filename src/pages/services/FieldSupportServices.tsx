@@ -261,11 +261,6 @@ const FieldSupportServices = () => {
                   Request a Quote
                 </Button>
               </Link>
-              <Link to="/careers">
-                <Button variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
-                  Join Our Team
-                </Button>
-              </Link>
             </div>
           </div>
         </section>
