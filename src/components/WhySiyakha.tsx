@@ -1,63 +1,82 @@
-import { CheckCircle, MapPin, Settings, Phone, Lightbulb } from "lucide-react";
+import { Server, ShieldCheck, Clock, TrendingUp, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const WhySiyakha = () => {
-  const features = [
+  const painPoints = [
     {
-      icon: CheckCircle,
-      title: "Level 1 B-BBEE Partner",
-      description: "Certified compliance for your procurement needs"
+      icon: Clock,
+      title: "Tired of Slow IT Response Times?",
+      description: "Our dedicated field engineers are dispatched same-day. No ticket queues, no waiting — just boots on the ground when your business needs it most.",
     },
     {
-      icon: MapPin,
-      title: "100+ Businesses Served Nationwide",
-      description: "Trusted by organizations across South Africa"
+      icon: Server,
+      title: "Network Downtime Costing You Money?",
+      description: "We design, install, and manage resilient network infrastructure — structured cabling, enterprise Wi-Fi, and failover solutions that keep you online.",
     },
     {
-      icon: Settings,
-      title: "Custom IT Solutions for Any Sector",
-      description: "Tailored technology solutions for your industry"
+      icon: ShieldCheck,
+      title: "Worried About Security Gaps?",
+      description: "From CCTV and access control to cybersecurity audits, we close the gaps that leave your business exposed to threats and compliance risks.",
     },
     {
-      icon: Phone,
-      title: "24/7 Support Availability",
-      description: "Round-the-clock technical support when you need it"
+      icon: Users,
+      title: "Scaling Without In-House IT Staff?",
+      description: "Our smart hands teams act as your on-site IT department — handling rollouts, maintenance, and support across multiple branches nationwide.",
     },
     {
-      icon: Lightbulb,
-      title: "Innovative, Scalable, Affordable",
-      description: "Future-proof solutions that grow with your business"
-    }
+      icon: TrendingUp,
+      title: "IT Budget Under Pressure?",
+      description: "Predictable monthly costs with no hidden fees. Our managed service plans give you enterprise-grade support at a fraction of the cost of hiring internally.",
+    },
   ];
 
   return (
-    <section className="py-20 bg-secondary">
+    <section className="py-24 bg-background">
       <div className="container mx-auto px-4 lg:px-6">
-        <div className="text-center mb-16">
+        {/* Header */}
+        <div className="max-w-3xl mb-16">
+          <div className="accent-line mb-4"></div>
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Why Choose Siyakha Technology?
+            The IT Challenges Holding Your Business Back
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Building trust through expertise, reliability, and results-driven technology solutions.
+          <p className="text-lg text-muted-foreground">
+            Every day without reliable ICT infrastructure costs your business time, money, and opportunities. Here's how we solve that.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
-          {features.map((feature, index) => (
-            <div 
+        {/* Pain Points */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          {painPoints.map((item, index) => (
+            <div
               key={index}
-              className="text-center group hover:scale-105 transition-transform duration-300"
+              className="relative p-6 rounded-2xl bg-card border border-border transition-all duration-300 hover:-translate-y-1 hover:border-accent/30 group"
+              style={{ boxShadow: 'var(--shadow-soft)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)')}
+              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-soft)')}
             >
-              <div className="w-16 h-16 mx-auto mb-4 bg-accent/10 rounded-full flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors duration-300">
-                <feature.icon className="w-8 h-8 text-accent group-hover:text-white" />
+              <div className="icon-badge mb-4">
+                <item.icon className="w-6 h-6 text-accent-foreground" />
               </div>
-              <h3 className="text-lg font-semibold text-primary mb-2">
-                {feature.title}
+              <h3 className="text-lg font-semibold text-primary mb-2 group-hover:text-accent transition-colors duration-300">
+                {item.title}
               </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {feature.description}
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {item.description}
               </p>
             </div>
           ))}
+        </div>
+
+        {/* CTA */}
+        <div className="text-center">
+          <Button asChild className="cta-primary text-lg px-8 py-4 group">
+            <Link to="/contact#quote-form">
+              Tell Us What You Need
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </Button>
         </div>
 
         {/* Trust Indicators */}
