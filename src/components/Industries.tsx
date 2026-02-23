@@ -87,7 +87,7 @@ const Industries = () => {
         <video autoPlay loop muted playsInline className="w-full h-full object-cover">
           <source src={industriesVideo} type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-background/92"></div>
+        <div className="absolute inset-0 bg-primary/80 backdrop-blur-[2px]"></div>
       </div>
       <div className="relative z-10 container mx-auto px-4">
         <header className="mx-auto max-w-3xl text-center mb-12">
