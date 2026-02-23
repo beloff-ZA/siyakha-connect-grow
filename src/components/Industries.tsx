@@ -2,7 +2,7 @@ import { Building2, GraduationCap, Factory, Car, Stethoscope, ShoppingBag, Home,
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import industriesVideo from "@/assets/industries-video.mp4";
+import industriesVideo from "@/assets/industries-video-new.mp4";
 
 const industries = [
   {
