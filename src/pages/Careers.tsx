@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JobCard from "@/components/careers/JobCard";
-import JobApplicationForm from "@/components/careers/JobApplicationForm";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Users, Heart, Rocket, Mail } from "lucide-react";
@@ -21,8 +20,6 @@ interface Job {
 }
 
 const Careers = () => {
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [applicationOpen, setApplicationOpen] = useState(false);
 
   useEffect(() => {
     const title = "Careers | Join Siyakha Technology";
@@ -67,11 +64,6 @@ const Careers = () => {
       return data as Job[];
     },
   });
-
-  const handleApply = (job: Job) => {
-    setSelectedJob(job);
-    setApplicationOpen(true);
-  };
 
   const benefits = [
     {
@@ -202,7 +194,7 @@ const Careers = () => {
             ) : jobs && jobs.length > 0 ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {jobs.map((job) => (
-                  <JobCard key={job.id} job={job} onApply={handleApply} />
+                  <JobCard key={job.id} job={job} />
                 ))}
               </div>
             ) : (
@@ -249,13 +241,6 @@ const Careers = () => {
         </section>
       </main>
       <Footer />
-      
-      {/* Application Form Modal */}
-      <JobApplicationForm 
-        job={selectedJob} 
-        open={applicationOpen} 
-        onOpenChange={setApplicationOpen} 
-      />
       
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </div>
