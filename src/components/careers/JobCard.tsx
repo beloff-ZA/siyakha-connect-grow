@@ -16,10 +16,9 @@ interface Job {
 
 interface JobCardProps {
   job: Job;
-  onApply: (job: Job) => void;
 }
 
-const JobCard = ({ job, onApply }: JobCardProps) => {
+const JobCard = ({ job }: JobCardProps) => {
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-accent/30">
       <CardHeader className="pb-3">
@@ -69,13 +68,12 @@ const JobCard = ({ job, onApply }: JobCardProps) => {
           </div>
         )}
 
-        <Button 
-          onClick={() => onApply(job)} 
-          className="w-full cta-primary group/btn"
-        >
-          Apply Now
-          <ChevronRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-        </Button>
+        <a href="mailto:careers@siyakhatechnology.co.za?subject=Application: ${job.title}">
+          <Button className="w-full cta-primary group/btn">
+            Email Your Application
+            <ChevronRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+          </Button>
+        </a>
       </CardContent>
     </Card>
   );
