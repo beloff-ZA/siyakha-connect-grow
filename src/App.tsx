@@ -46,7 +46,7 @@ import FieldSupportComplete from "./pages/blog/FieldSupportComplete";
 import ClassroomPlayback from "./pages/blog/ClassroomPlayback";
 import DRaaS from "./pages/blog/DRaaS";
 // Legal and misc
-import Careers from "./pages/Careers";
+// (Careers removed)
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 
@@ -67,8 +67,7 @@ import ItCompanyAngola from "./pages/ItCompanyAngola";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Contact from "./pages/Contact";
-import AdminQuickCreate from "./components/admin/AdminQuickCreate";
-import FibreFeasibilityForm from "./pages/FibreFeasibilityForm";
+// (AdminQuickCreate and FibreFeasibilityForm removed)
 import Products from "./pages/Products";
 import { QuoteBasketProvider } from "./contexts/QuoteBasketContext";
 import QuoteBasket from "./components/products/QuoteBasket";
@@ -91,7 +90,7 @@ function App() {
                 <Route path="/projects" element={<ProjectsIndex />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/contact" element={<Contact />} />
-                <Route path="/careers" element={<Careers />} />
+                <Route path="/careers" element={<Navigate to="/" replace />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
                 
@@ -143,7 +142,7 @@ function App() {
                 <Route path="/projects/greestone-network-rebuild" element={<GreestoneProject />} />
                 <Route path="/projects/pelican-club-bahrain" element={<PelicanClubBahrainProject />} />
                 <Route path="/projects/campuskey-network-overhaul" element={<CampusKeyProject />} />
-                <Route path="/projects/fibre-feasibility" element={<FibreFeasibilityForm />} />
+                <Route path="/projects/fibre-feasibility" element={<Navigate to="/projects" replace />} />
 
                 <Route path="/it-company-johannesburg" element={<ItCompanyJohannesburg />} />
                 <Route path="/managed-it-services-johannesburg" element={<ManagedITSJohannesburg />} />
@@ -157,7 +156,7 @@ function App() {
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-              <AdminQuickCreate />
+              
               <WhatsAppContact />
               <QuoteBasket />
             </Router>
