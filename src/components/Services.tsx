@@ -1,123 +1,124 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wifi, Shield, Cloud, MessageSquare, ArrowRight, Wrench, Headphones } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Services = () => {
   const services = [
     {
       icon: Wifi,
       title: "Infrastructure & Networking",
-      description: "Data Cabling, Switches, Wi-Fi, Trunking",
-      benefit: "Future-proof your business network with scalable Wi-Fi & cabling.",
+      tags: ["Data Cabling", "Switches", "Wi-Fi", "Trunking"],
+      benefit: "Future-proof your business network with scalable, enterprise-grade infrastructure designed for performance and growth.",
       link: "/services/infrastructure-and-networking",
-      color: "text-blue-600"
     },
     {
       icon: Shield,
       title: "Security & Surveillance",
-      description: "CCTV, Access Control, Electric Fencing, Gate Automation, Alarms",
-      benefit: "Protect your assets with intelligent security systems.",
+      tags: ["CCTV", "Access Control", "Electric Fencing", "Alarms"],
+      benefit: "Protect your people and assets with intelligent, integrated security systems monitored around the clock.",
       link: "/services/security-and-surveillance",
-      color: "text-red-600"
     },
     {
       icon: Cloud,
       title: "Cloud & Edge Solutions",
-      description: "Server Setup, Migration, Backup & Recovery",
-      benefit: "Scale your operations with reliable cloud infrastructure.",
+      tags: ["Server Setup", "Migration", "Backup & Recovery"],
+      benefit: "Scale your operations with reliable cloud infrastructure and disaster recovery you can count on.",
       link: "/services/cloud-and-edge-solutions",
-      color: "text-purple-600"
     },
     {
       icon: MessageSquare,
       title: "Smart Collaboration Tools",
-      description: "VoIP, Remote Work, Microsoft 365, Email Systems",
-      benefit: "Enable seamless communication across your organization.",
+      tags: ["VoIP", "Microsoft 365", "Email Systems", "Remote Work"],
+      benefit: "Enable seamless communication across every office, branch, and remote team member.",
       link: "/services/smart-collaboration-tools",
-      color: "text-green-600"
     },
     {
       icon: Wrench,
       title: "National Field Support",
-      description: "Onsite smart hands across South Africa",
-      benefit: "Dispatch certified techs for rollouts, swaps and break/fix.",
+      tags: ["Smart Hands", "Rollouts", "Swaps", "Break/Fix"],
+      benefit: "Dispatch certified field engineers anywhere in South Africa for on-site installations, maintenance, and emergency support.",
       link: "/services/national-field-support/cutovers-and-sim-replacements",
-      color: "text-amber-600"
     },
     {
       icon: Headphones,
       title: "Field Support Services",
-      description: "Remote IT, Cabling Engineers & Support Network",
-      benefit: "Access our nationwide network of skilled technicians.",
+      tags: ["Remote IT", "Cabling Engineers", "Technician Network"],
+      benefit: "Access our nationwide network of skilled infrastructure technicians and dedicated support teams.",
       link: "/services/field-support-services",
-      color: "text-teal-600"
-    }
+    },
   ];
 
   return (
-    <section id="services" className="py-20 bg-background">
+    <section id="services" className="py-24 bg-secondary">
       <div className="container mx-auto px-4 lg:px-6">
-        <div className="text-center mb-16">
+        {/* Header */}
+        <div className="max-w-3xl mb-16">
+          <div className="accent-line mb-4"></div>
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Our Core Services
+            What We Deliver
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Comprehensive ICT solutions designed to transform your business operations.
+          <p className="text-lg text-muted-foreground">
+            End-to-end ICT services — from infrastructure builds to ongoing managed support. 
+            Every solution is backed by dedicated field engineers and smart hands teams.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Services Grid — 2-column staggered */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {services.map((service, index) => (
-            <Card 
+            <Link
               key={index}
-              className="service-card group cursor-pointer"
-              onClick={() => window.location.href = service.link}
+              to={service.link}
+              className="group relative flex gap-5 p-6 rounded-2xl bg-card border border-border transition-all duration-300 hover:-translate-y-1 hover:border-accent/30"
+              style={{ boxShadow: 'var(--shadow-soft)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)')}
+              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-soft)')}
             >
-              <CardHeader className="text-center pb-4">
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                  <service.icon className={`w-8 h-8 ${service.color} group-hover:text-accent transition-colors duration-300`} />
+              {/* Icon */}
+              <div className="shrink-0">
+                <div className="icon-badge">
+                  <service.icon className="w-6 h-6 text-accent-foreground" />
                 </div>
-                <CardTitle className="text-xl font-semibold text-primary group-hover:text-accent transition-colors duration-300">
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-semibold text-primary mb-2 group-hover:text-accent transition-colors duration-300">
                   {service.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-muted-foreground mb-4 text-sm">
-                  {service.description}
-                </p>
-                <p className="text-primary font-medium text-sm leading-relaxed mb-4">
+                </h3>
+                <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
                   {service.benefit}
                 </p>
-                <Button 
-                  variant="ghost" 
-                  className="text-accent hover:text-accent-hover group/btn p-0 h-auto font-medium"
-                >
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {service.tags.map((tag) => (
+                    <span key={tag} className="feature-tag text-xs">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <span className="inline-flex items-center text-sm font-medium text-accent group-hover:gap-2 transition-all duration-300">
                   Learn More
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                </Button>
-              </CardContent>
-            </Card>
+                  <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+            </Link>
           ))}
         </div>
 
-        {/* Service Features Grid */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div className="p-6 rounded-lg bg-muted">
-            <div className="text-2xl font-bold text-accent mb-2">Same Day</div>
-            <div className="text-sm text-muted-foreground">Site Visits</div>
-          </div>
-          <div className="p-6 rounded-lg bg-muted">
-            <div className="text-2xl font-bold text-accent mb-2">24/7</div>
-            <div className="text-sm text-muted-foreground">Monitoring</div>
-          </div>
-          <div className="p-6 rounded-lg bg-muted">
-            <div className="text-2xl font-bold text-accent mb-2">100%</div>
-            <div className="text-sm text-muted-foreground">Uptime SLA</div>
-          </div>
-          <div className="p-6 rounded-lg bg-muted">
-            <div className="text-2xl font-bold text-accent mb-2">Free</div>
-            <div className="text-sm text-muted-foreground">Consultations</div>
-          </div>
+        {/* Bottom Stats Strip */}
+        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { value: "Same Day", label: "Site Visits" },
+            { value: "24/7", label: "Monitoring" },
+            { value: "100%", label: "Uptime SLA" },
+            { value: "Free", label: "Consultations" },
+          ].map((stat) => (
+            <div key={stat.label} className="stats-card">
+              <div className="text-2xl font-bold text-accent mb-1">{stat.value}</div>
+              <div className="text-sm text-muted-foreground">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
