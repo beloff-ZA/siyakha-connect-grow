@@ -65,6 +65,7 @@ import ItCompanyLondon from "./pages/ItCompanyLondon";
 import ItCompanyAngola from "./pages/ItCompanyAngola";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ClientPortal from "./pages/ClientPortal";
 import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import GiveBack from "./pages/GiveBack";
@@ -107,8 +108,9 @@ function App() {
                 <Route path="/terms" element={<Terms />} />
                 
                 <Route path="/log-it" element={<LogIt />} />
-                <Route path="/portal/tickets" element={<ProtectedRoute><PortalTickets /></ProtectedRoute>} />
-                <Route path="/portal/my-tickets" element={<ProtectedRoute><TicketsList /></ProtectedRoute>} />
+                <Route path="/portal" element={<ProtectedRoute><ClientPortal /></ProtectedRoute>} />
+                <Route path="/portal/tickets" element={<ProtectedRoute><ClientPortal /></ProtectedRoute>} />
+                <Route path="/portal/my-tickets" element={<ProtectedRoute><ClientPortal /></ProtectedRoute>} />
                 <Route path="/portal/tickets/:id" element={<ProtectedRoute><TicketDetail /></ProtectedRoute>} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/need-help" element={<Navigate to="/log-it" replace />} />

@@ -1,6 +1,5 @@
 import { useState } from "react";
-
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, LogIn, LogOut, User, Headphones } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,13 +9,22 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
 
   const services = [
     "Infrastructure & Networking",
-    "Security & Surveillance", 
+    "Security & Surveillance",
     "Cloud & Edge Solutions",
     "Smart Collaboration Tools",
     "National Field Support",
@@ -77,38 +85,23 @@ const Header = () => {
                         {service}
                       </Link>
                     ))}
-<div className="mt-3 border-t border-border pt-3">
-  <Link
-    to="/it-company-johannesburg"
-    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
-  >
-    IT Company Johannesburg
-  </Link>
-  <Link
-    to="/it-company-cape-town"
-    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
-  >
-    IT Company Cape Town
-  </Link>
-  <Link
-    to="/it-company-london"
-    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
-  >
-    IT Company London
-  </Link>
-  <Link
-    to="/it-company-emea"
-    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
-  >
-    IT Company EMEA
-  </Link>
-  <Link
-    to="/it-company-angola"
-    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
-  >
-    IT Company Angola
-  </Link>
-</div>
+                    <div className="mt-3 border-t border-border pt-3">
+                      <Link to="/it-company-johannesburg" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
+                        IT Company Johannesburg
+                      </Link>
+                      <Link to="/it-company-cape-town" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
+                        IT Company Cape Town
+                      </Link>
+                      <Link to="/it-company-london" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
+                        IT Company London
+                      </Link>
+                      <Link to="/it-company-emea" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
+                        IT Company EMEA
+                      </Link>
+                      <Link to="/it-company-angola" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
+                        IT Company Angola
+                      </Link>
+                    </div>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -140,11 +133,39 @@ const Header = () => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* CTA Button & Mobile Menu */}
-<div className="flex items-center space-x-4">
-            {user && (
-              <button onClick={signOut} className="hidden lg:inline text-sm text-foreground hover:text-primary transition-colors">Sign Out</button>
+          {/* Auth Button & Mobile Menu */}
+          <div className="flex items-center space-x-3">
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="hidden lg:flex items-center gap-2">
+                    <User size={16} />
+                    <span className="max-w-[120px] truncate">{user.email?.split('@')[0]}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/portal" className="flex items-center gap-2 cursor-pointer">
+                      <Headphones size={14} />
+                      My Portal
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="flex items-center gap-2 cursor-pointer text-destructive">
+                    <LogOut size={14} />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth">
+                <Button variant="default" size="sm" className="hidden lg:flex items-center gap-2">
+                  <LogIn size={16} />
+                  Sign In
+                </Button>
+              </Link>
             )}
+
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -159,10 +180,10 @@ const Header = () => {
         {isMenuOpen && (
           <div className="lg:hidden border-t border-border bg-background">
             <div className="py-4 space-y-4">
-              <Link to="/" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Home
               </Link>
-              <Link to="/about" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 About
               </Link>
               <div className="px-4">
@@ -178,58 +199,75 @@ const Header = () => {
                 </button>
                 {isServicesOpen && (
                   <div id="mobile-services-submenu" className="pl-4 space-y-2">
-                      <Link to="/services" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
-                        All Services
+                    <Link to="/services" onClick={() => setIsMenuOpen(false)} className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+                      All Services
+                    </Link>
+                    {services.map((service) => (
+                      <Link
+                        key={service}
+                        to={`/services/${service.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block py-1 text-sm text-muted-foreground hover:text-accent transition-colors"
+                      >
+                        {service}
                       </Link>
-                      {services.map((service) => (
-                        <Link
-                          key={service}
-                          to={`/services/${service.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
-                          className="block py-1 text-sm text-muted-foreground hover:text-accent transition-colors"
-                        >
-                          {service}
-                        </Link>
-                      ))}
-<div className="pt-2 border-t border-border">
-  <Link to="/it-company-johannesburg" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
-    IT Company Johannesburg
-  </Link>
-  <Link to="/it-company-cape-town" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
-    IT Company Cape Town
-  </Link>
-  <Link to="/it-company-london" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
-    IT Company London
-  </Link>
-  <Link to="/it-company-emea" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
-    IT Company EMEA
-  </Link>
-  <Link to="/it-company-angola" className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
-    IT Company Angola
-  </Link>
-</div>
+                    ))}
+                    <div className="pt-2 border-t border-border">
+                      <Link to="/it-company-johannesburg" onClick={() => setIsMenuOpen(false)} className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+                        IT Company Johannesburg
+                      </Link>
+                      <Link to="/it-company-cape-town" onClick={() => setIsMenuOpen(false)} className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+                        IT Company Cape Town
+                      </Link>
+                      <Link to="/it-company-london" onClick={() => setIsMenuOpen(false)} className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+                        IT Company London
+                      </Link>
+                      <Link to="/it-company-emea" onClick={() => setIsMenuOpen(false)} className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+                        IT Company EMEA
+                      </Link>
+                      <Link to="/it-company-angola" onClick={() => setIsMenuOpen(false)} className="block py-1 text-sm font-medium text-foreground hover:text-accent transition-colors">
+                        IT Company Angola
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
-              <Link to="/projects" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/projects" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Projects
               </Link>
-              <Link to="/products" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/products" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Products
               </Link>
-              <Link to="/blog" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Blog
               </Link>
-              <Link to="/support-deals" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/support-deals" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Support Deals
               </Link>
-              <Link to="/contact" className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
+              <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Contact
               </Link>
-              {user && (
-                <button onClick={signOut} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                  Sign Out
-                </button>
-              )}
+
+              {/* Mobile Auth */}
+              <div className="border-t border-border pt-4 px-4">
+                {user ? (
+                  <div className="space-y-2">
+                    <Link to="/portal" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground hover:text-primary transition-colors">
+                      <Headphones size={16} />
+                      My Portal
+                    </Link>
+                    <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="flex items-center gap-2 py-2 text-destructive hover:text-destructive/80 transition-colors">
+                      <LogOut size={16} />
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-primary font-medium hover:text-primary/80 transition-colors">
+                    <LogIn size={16} />
+                    Sign In
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         )}
