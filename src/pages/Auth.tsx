@@ -138,19 +138,10 @@ const AuthPage: React.FC = () => {
                     <Label htmlFor="password">Password</Label>
                     <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {mode === 'signin' ? (
+                    <div className="flex flex-wrap gap-2">
                       <Button onClick={signIn} disabled={loading}>Sign In</Button>
-                    ) : (
-                      <Button onClick={signUp} disabled={loading}>Create Account</Button>
-                    )}
-                    <Button variant="outline" type="button" onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}>
-                      {mode === 'signin' ? 'Need an account? Sign Up' : 'Have an account? Sign In'}
-                    </Button>
-                    {mode === 'signin' && (
                       <Button variant="link" type="button" onClick={forgotPassword}>Forgot password?</Button>
-                    )}
-                  </div>
+                    </div>
                 </>
               )}
             </div>
