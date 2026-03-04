@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import AdminLayout from "@/components/helpdesk/AdminLayout";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -174,7 +174,7 @@ const DirectorPA = () => {
   };
 
   return (
-    <AdminLayout>
+    <>
       <div className="flex flex-col h-[calc(100vh-8rem)] max-h-[calc(100vh-8rem)]">
         {/* Header */}
         <div className="flex items-center justify-between mb-4 shrink-0">
@@ -286,7 +286,7 @@ const DirectorPA = () => {
           <p className="text-[10px] text-muted-foreground mt-1">Press Enter to send, Shift+Enter for new line</p>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
