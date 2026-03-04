@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Ticket, Users, UserPlus, Mail, AlertTriangle, CheckCircle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const COLORS = ["hsl(213,90%,18%)", "hsl(190,80%,42%)", "hsl(25,95%,55%)", "hsl(0,84%,60%)", "hsl(150,60%,40%)", "hsl(270,60%,50%)"];
 
@@ -12,9 +14,7 @@ const Dashboard: React.FC = () => {
   const [priorityData, setPriorityData] = useState<{ name: string; count: number }[]>([]);
   const [recentTickets, setRecentTickets] = useState<any[]>([]);
 
-  useEffect(() => {
-    loadStats();
-  }, []);
+  useEffect(() => { loadStats(); }, []);
 
   const loadStats = async () => {
     const [ticketsRes, clientsRes, leadsRes, campaignsRes] = await Promise.all([
@@ -39,26 +39,24 @@ const Dashboard: React.FC = () => {
       emailsSent: totalEmails,
     });
 
-    // Status breakdown
     const statusMap: Record<string, number> = {};
     tickets.forEach(t => { statusMap[t.status] = (statusMap[t.status] || 0) + 1; });
     setStatusData(Object.entries(statusMap).map(([name, value]) => ({ name, value })));
 
-    // Priority breakdown
     const prioMap: Record<string, number> = {};
     tickets.forEach(t => { prioMap[t.priority] = (prioMap[t.priority] || 0) + 1; });
     setPriorityData(Object.entries(prioMap).map(([name, count]) => ({ name, count })));
 
-    setRecentTickets(tickets.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5));
+    setRecentTickets(tickets.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 8));
   };
 
   const statCards = [
-    { label: "Total Tickets", value: stats.tickets, icon: Ticket, color: "text-primary" },
-    { label: "Open Tickets", value: stats.open, icon: AlertTriangle, color: "text-orange-500" },
-    { label: "Resolved", value: stats.resolved, icon: CheckCircle, color: "text-green-600" },
-    { label: "Active Clients", value: stats.clients, icon: Users, color: "text-accent" },
-    { label: "Leads", value: stats.leads, icon: UserPlus, color: "text-purple-600" },
-    { label: "Emails Sent", value: stats.emailsSent, icon: Mail, color: "text-primary" },
+    { label: "Total Tickets", value: stats.tickets, icon: Ticket, color: "text-primary", link: "/helpdesk/tickets" },
+    { label: "Open Tickets", value: stats.open, icon: AlertTriangle, color: "text-orange-500", link: "/helpdesk/tickets" },
+    { label: "Resolved", value: stats.resolved, icon: CheckCircle, color: "text-green-600", link: "/helpdesk/tickets" },
+    { label: "Active Clients", value: stats.clients, icon: Users, color: "text-accent", link: "/helpdesk/clients" },
+    { label: "Leads", value: stats.leads, icon: UserPlus, color: "text-purple-600", link: "/helpdesk/leads" },
+    { label: "Emails Sent", value: stats.emailsSent, icon: Mail, color: "text-primary", link: "/helpdesk/campaigns" },
   ];
 
   return (
@@ -66,15 +64,17 @@ const Dashboard: React.FC = () => {
       {/* Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {statCards.map(s => (
-          <Card key={s.label}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <s.icon className={`h-5 w-5 ${s.color}`} />
-                <span className="text-2xl font-bold">{s.value}</span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
-            </CardContent>
-          </Card>
+          <Link key={s.label} to={s.link}>
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <s.icon className={`h-5 w-5 ${s.color}`} />
+                  <span className="text-2xl font-bold">{s.value}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
 
@@ -93,7 +93,7 @@ const Dashboard: React.FC = () => {
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
-            ) : <p className="text-muted-foreground text-sm">No ticket data yet</p>}
+            ) : <p className="text-muted-foreground text-sm py-8 text-center">No ticket data yet — <Link to="/helpdesk/tickets" className="text-primary underline">create your first ticket</Link></p>}
           </CardContent>
         </Card>
 
@@ -110,32 +110,44 @@ const Dashboard: React.FC = () => {
                   <Bar dataKey="count" fill="hsl(190,80%,42%)" radius={[4,4,0,0]} />
                 </BarChart>
               </ResponsiveContainer>
-            ) : <p className="text-muted-foreground text-sm">No ticket data yet</p>}
+            ) : <p className="text-muted-foreground text-sm py-8 text-center">No ticket data yet</p>}
           </CardContent>
         </Card>
       </div>
 
       {/* Recent Tickets */}
       <Card>
-        <CardHeader><CardTitle className="text-sm">Recent Tickets</CardTitle></CardHeader>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm">Recent Tickets</CardTitle>
+            <Link to="/helpdesk/tickets"><Button variant="ghost" size="sm">View All</Button></Link>
+          </div>
+        </CardHeader>
         <CardContent>
           {recentTickets.length > 0 ? (
             <div className="space-y-2">
               {recentTickets.map(t => (
-                <div key={t.id} className="flex items-center justify-between py-2 border-b last:border-0">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{t.summary}</p>
-                    <p className="text-xs text-muted-foreground">{t.tracking_ref} · {t.caller_company || "—"}</p>
+                <Link key={t.id} to={`/helpdesk/tickets/${t.id}`} className="block">
+                  <div className="flex items-center justify-between py-2 px-2 border-b last:border-0 hover:bg-muted/50 rounded transition-colors">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{t.summary}</p>
+                      <p className="text-xs text-muted-foreground">{t.tracking_ref} · {t.caller_company || "—"} · {new Date(t.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ml-2 ${
+                      t.status === "open" || t.status === "new" ? "bg-orange-100 text-orange-700" :
+                      t.status === "resolved" || t.status === "closed" ? "bg-green-100 text-green-700" :
+                      "bg-blue-100 text-blue-700"
+                    }`}>{t.status.replace(/_/g, " ")}</span>
                   </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    t.status === "open" || t.status === "new" ? "bg-orange-100 text-orange-700" :
-                    t.status === "resolved" || t.status === "closed" ? "bg-green-100 text-green-700" :
-                    "bg-blue-100 text-blue-700"
-                  }`}>{t.status}</span>
-                </div>
+                </Link>
               ))}
             </div>
-          ) : <p className="text-muted-foreground text-sm">No tickets logged yet</p>}
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground text-sm mb-3">No tickets logged yet</p>
+              <Link to="/helpdesk/tickets"><Button size="sm">Create First Ticket</Button></Link>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
