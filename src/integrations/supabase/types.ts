@@ -255,6 +255,107 @@ export type Database = {
         }
         Relationships: []
       }
+      director_costs: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          project_id: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+          vendor: string | null
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          project_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          vendor?: string | null
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          project_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          vendor?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "director_costs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "director_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      director_projects: {
+        Row: {
+          client: string | null
+          created_at: string
+          description: string | null
+          due_date: string | null
+          estimated_value: number | null
+          id: string
+          notes: string | null
+          priority: string
+          start_date: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_value?: number | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          start_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_value?: number | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          start_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       email_campaigns: {
         Row: {
           body_html: string | null
