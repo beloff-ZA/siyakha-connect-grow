@@ -1,1 +1,7 @@
 project_id = "xgnvaemzxfblhqxhsslq"
+
+[functions.bootstrap-admin]
+verify_jwt = false
+
+[functions.send-campaign]
+verify_jwt = false

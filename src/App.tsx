@@ -46,7 +46,6 @@ import FieldSupportComplete from "./pages/blog/FieldSupportComplete";
 import ClassroomPlayback from "./pages/blog/ClassroomPlayback";
 import DRaaS from "./pages/blog/DRaaS";
 // Legal and misc
-// (Careers removed)
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 
@@ -67,12 +66,22 @@ import ItCompanyAngola from "./pages/ItCompanyAngola";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Contact from "./pages/Contact";
-// (AdminQuickCreate and FibreFeasibilityForm removed)
 import Products from "./pages/Products";
 import GiveBack from "./pages/GiveBack";
 import GiveBackButton from "./components/GiveBackButton";
 import { QuoteBasketProvider } from "./contexts/QuoteBasketContext";
 import QuoteBasket from "./components/products/QuoteBasket";
+
+// Helpdesk admin pages
+import AdminRoute from "./components/helpdesk/AdminRoute";
+import HelpdeskDashboard from "./pages/helpdesk/Dashboard";
+import HelpdeskTickets from "./pages/helpdesk/Tickets";
+import HelpdeskTicketView from "./pages/helpdesk/TicketView";
+import HelpdeskClients from "./pages/helpdesk/Clients";
+import HelpdeskLeads from "./pages/helpdesk/Leads";
+import HelpdeskTechnicians from "./pages/helpdesk/Technicians";
+import HelpdeskCampaigns from "./pages/helpdesk/Campaigns";
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -106,6 +115,15 @@ function App() {
                 <Route path="/company" element={<Navigate to="/" replace />} />
                 <Route path="/log-a-call" element={<Navigate to="/log-it" replace />} />
                 <Route path="/support-deals" element={<SupportDeals />} />
+
+                {/* Helpdesk Admin */}
+                <Route path="/helpdesk" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />
+                <Route path="/helpdesk/tickets" element={<AdminRoute><HelpdeskTickets /></AdminRoute>} />
+                <Route path="/helpdesk/tickets/:id" element={<AdminRoute><HelpdeskTicketView /></AdminRoute>} />
+                <Route path="/helpdesk/clients" element={<AdminRoute><HelpdeskClients /></AdminRoute>} />
+                <Route path="/helpdesk/leads" element={<AdminRoute><HelpdeskLeads /></AdminRoute>} />
+                <Route path="/helpdesk/technicians" element={<AdminRoute><HelpdeskTechnicians /></AdminRoute>} />
+                <Route path="/helpdesk/campaigns" element={<AdminRoute><HelpdeskCampaigns /></AdminRoute>} />
 
                 {/* Services */}
                 <Route path="/services/infrastructure-and-networking" element={<InfrastructureAndNetworking />} />
