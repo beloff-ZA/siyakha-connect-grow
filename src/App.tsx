@@ -104,10 +104,10 @@ function App() {
                 <Route path="/terms" element={<Terms />} />
                 
                 <Route path="/log-it" element={<LogIt />} />
-                <Route path="/portal" element={<ProtectedRoute><ClientPortal /></ProtectedRoute>} />
-                <Route path="/portal/tickets" element={<ProtectedRoute><ClientPortal /></ProtectedRoute>} />
-                <Route path="/portal/my-tickets" element={<ProtectedRoute><ClientPortal /></ProtectedRoute>} />
-                <Route path="/portal/tickets/:id" element={<ProtectedRoute><TicketDetail /></ProtectedRoute>} />
+                <Route path="/portal" element={<Navigate to="/helpdesk" replace />} />
+                <Route path="/portal/tickets" element={<Navigate to="/helpdesk" replace />} />
+                <Route path="/portal/my-tickets" element={<Navigate to="/helpdesk" replace />} />
+                <Route path="/portal/tickets/:id" element={<Navigate to="/helpdesk" replace />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/need-help" element={<Navigate to="/log-it" replace />} />
                 <Route path="/company" element={<Navigate to="/" replace />} />

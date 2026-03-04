@@ -18,7 +18,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return <div className="flex items-center justify-center h-screen text-muted-foreground">Loading…</div>;
   }
   if (!user) return <Navigate to="/auth" replace />;
-  if (!isAdmin) return <Navigate to="/portal/tickets" replace />;
+  if (!isAdmin) return <Navigate to="/" replace />;
 
   return <AdminLayout>{children}</AdminLayout>;
 };
