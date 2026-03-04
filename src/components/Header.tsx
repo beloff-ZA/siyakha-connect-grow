@@ -145,9 +145,9 @@ const Header = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
-                    <Link to="/portal" className="flex items-center gap-2 cursor-pointer">
+                    <Link to="/helpdesk" className="flex items-center gap-2 cursor-pointer">
                       <Headphones size={14} />
-                      My Portal
+                      Siyakha AI PA
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -252,9 +252,9 @@ const Header = () => {
               <div className="border-t border-border pt-4 px-4">
                 {user ? (
                   <div className="space-y-2">
-                    <Link to="/portal" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground hover:text-primary transition-colors">
+                    <Link to="/helpdesk" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground hover:text-primary transition-colors">
                       <Headphones size={16} />
-                      My Portal
+                      Siyakha AI PA
                     </Link>
                     <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="flex items-center gap-2 py-2 text-destructive hover:text-destructive/80 transition-colors">
                       <LogOut size={16} />
