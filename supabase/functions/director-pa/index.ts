@@ -32,12 +32,12 @@ serve(async (req) => {
 
     const { messages } = await req.json();
 
-    // Fetch diary entries and calendar events for context
+    // Fetch all director context in parallel
     const now = new Date();
-    const weekAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
-    const weekAhead = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000).toISOString();
+    const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
+    const twoWeeksAhead = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000).toISOString();
 
-    const [diaryRes, eventsRes] = await Promise.all([
+    const [diaryRes, eventsRes, projectsRes, costsRes] = await Promise.all([
       supabase
         .from("diary_entries")
         .select("title, content, mood, tags, entry_date")
@@ -46,13 +46,26 @@ serve(async (req) => {
       supabase
         .from("calendar_events")
         .select("title, description, start_time, end_time, all_day, location, category")
-        .gte("start_time", weekAgo)
-        .lte("start_time", weekAhead)
+        .gte("start_time", twoWeeksAgo)
+        .lte("start_time", twoWeeksAhead)
         .order("start_time"),
+      supabase
+        .from("director_projects")
+        .select("title, client, status, priority, estimated_value, start_date, due_date, description")
+        .in("status", ["pipeline", "proposal", "active", "on_hold"])
+        .order("created_at", { ascending: false })
+        .limit(30),
+      supabase
+        .from("director_costs")
+        .select("title, amount, category, vendor, date, status")
+        .order("date", { ascending: false })
+        .limit(30),
     ]);
 
     const diaryEntries = diaryRes.data || [];
     const calendarEvents = eventsRes.data || [];
+    const projects = projectsRes.data || [];
+    const costs = costsRes.data || [];
 
     const contextBlock = `
 ## CURRENT DATE & TIME
@@ -70,19 +83,33 @@ ${calendarEvents.length === 0 ? "No calendar events found." : calendarEvents.map
   const dateStr = start.toLocaleDateString("en-ZA", { weekday: "short", day: "numeric", month: "short" });
   return `- **${dateStr}, ${timeStr} — ${e.title}** [${e.category}]${e.location ? ` @ ${e.location}` : ""}${e.description ? `\n  ${e.description}` : ""}`;
 }).join("\n")}
+
+## ACTIVE PROJECTS PIPELINE
+${projects.length === 0 ? "No active projects." : projects.map(p =>
+  `- **${p.title}** (${p.status}, ${p.priority} priority)${p.client ? ` — Client: ${p.client}` : ""}${p.estimated_value ? ` — R${Number(p.estimated_value).toLocaleString()}` : ""}${p.due_date ? ` — Due: ${p.due_date}` : ""}${p.description ? `\n  ${p.description}` : ""}`
+).join("\n")}
+
+## RECENT COSTS & EXPENSES (last 30)
+${costs.length === 0 ? "No costs recorded." : (() => {
+  const total = costs.reduce((s, c) => s + Number(c.amount), 0);
+  const pending = costs.filter(c => c.status === "pending").reduce((s, c) => s + Number(c.amount), 0);
+  return `Total: R${total.toLocaleString()} | Pending: R${pending.toLocaleString()}\n` +
+    costs.map(c => `- ${c.date} — **${c.title}** R${Number(c.amount).toLocaleString()} [${c.category}] (${c.status})${c.vendor ? ` — ${c.vendor}` : ""}`).join("\n");
+})()}
 `.trim();
 
     const systemPrompt = `You are the personal AI assistant for Nikita, the Director of Siyakha Technology Solutions — an ICT company based in Johannesburg, South Africa.
 
 Your role is to:
-- Help plan the director's day based on calendar events and diary context
+- Help plan the director's day based on calendar events, projects, costs, and diary context
 - Draft professional communications (emails, WhatsApp messages, proposals)
 - Suggest follow-ups based on diary entries and upcoming meetings
 - Provide strategic business advice relevant to the ICT industry
+- Track project pipeline health and flag overdue or high-priority items
+- Summarise spending patterns and flag cost concerns
 - Help with time management and prioritisation
-- Summarise recent activities and highlight what needs attention
 
-Always be professional but approachable. Use South African business context where relevant. Be concise and actionable.
+Always be professional but approachable. Use South African business context where relevant (ZAR currency, local terminology). Be concise and actionable. When discussing financials, use "R" for Rand.
 
 Here is the director's current context:
 
