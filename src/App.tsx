@@ -82,6 +82,7 @@ import DirectorPA from "./pages/helpdesk/DirectorPA";
 import DirectorProjects from "./pages/helpdesk/DirectorProjects";
 import DirectorCosts from "./pages/helpdesk/DirectorCosts";
 import HelpdeskLeads from "./pages/helpdesk/Leads";
+import DirectorInbox from "./pages/helpdesk/DirectorInbox";
 
 const queryClient = new QueryClient();
 
@@ -126,6 +127,7 @@ function App() {
                 <Route path="/helpdesk/costs" element={<AdminRoute><DirectorCosts /></AdminRoute>} />
                 <Route path="/helpdesk/ai-pa" element={<AdminRoute><DirectorPA /></AdminRoute>} />
                 <Route path="/helpdesk/leads" element={<AdminRoute><HelpdeskLeads /></AdminRoute>} />
+                <Route path="/helpdesk/inbox" element={<AdminRoute><DirectorInbox /></AdminRoute>} />
 
                 {/* Services */}
                 <Route path="/services/infrastructure-and-networking" element={<InfrastructureAndNetworking />} />

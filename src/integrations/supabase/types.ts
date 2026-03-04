@@ -308,6 +308,42 @@ export type Database = {
           },
         ]
       }
+      director_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          source: string | null
+          source_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          source?: string | null
+          source_id?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          source?: string | null
+          source_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       director_projects: {
         Row: {
           client: string | null
@@ -352,6 +388,39 @@ export type Database = {
           status?: string
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      director_sent_emails: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          status: string
+          subject: string
+          to_email: string
+          to_name: string | null
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          status?: string
+          subject: string
+          to_email: string
+          to_name?: string | null
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          status?: string
+          subject?: string
+          to_email?: string
+          to_name?: string | null
           user_id?: string
         }
         Relationships: []
