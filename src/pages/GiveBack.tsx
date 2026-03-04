@@ -1,7 +1,71 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Heart, ExternalLink } from "lucide-react";
+import { Heart, ExternalLink, Droplets, Stethoscope, Home, Truck, GraduationCap, Flame, Globe, Users, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const impactAreas = [
+  {
+    icon: Droplets,
+    title: "Water & Drought Relief",
+    description:
+      "Gift of the Givers has drilled over 340 boreholes across South Africa, providing clean drinking water to drought-stricken communities. Their rapid-response water tanker programme delivers millions of litres to areas facing critical shortages.",
+  },
+  {
+    icon: Stethoscope,
+    title: "Healthcare & Medical Aid",
+    description:
+      "From fully equipped field hospitals to medical supply deliveries, the organisation has provided healthcare interventions worth billions of rands. They supply hospitals with life-saving equipment, medication, and deploy volunteer medical professionals to underserved areas.",
+  },
+  {
+    icon: Home,
+    title: "Disaster Response & Rebuilding",
+    description:
+      "Whether floods in KwaZulu-Natal, earthquakes in Turkey and Syria, or fire-ravaged informal settlements — Gift of the Givers is consistently among the first responders, providing shelter kits, blankets, food parcels, and rebuilding infrastructure.",
+  },
+  {
+    icon: Truck,
+    title: "Food Security & Feeding Programmes",
+    description:
+      "The organisation distributes thousands of food parcels monthly to vulnerable communities, runs community kitchens, and supports feeding schemes at schools and shelters across South Africa and the continent.",
+  },
+  {
+    icon: GraduationCap,
+    title: "Education & Bursaries",
+    description:
+      "Gift of the Givers funds scholarships and bursaries for students who cannot afford tertiary education. They also supply schools with stationery, uniforms, and digital learning equipment to bridge the education gap.",
+  },
+  {
+    icon: Flame,
+    title: "Fire & Emergency Relief",
+    description:
+      "When devastating fires displace families — from Cape Town's informal settlements to the Parliament fire — the organisation provides immediate relief including cooked meals, clothing, hygiene products, and temporary shelter materials.",
+  },
+  {
+    icon: Globe,
+    title: "International Humanitarian Missions",
+    description:
+      "Operating in over 44 countries, Gift of the Givers has responded to crises in Syria, Palestine, Yemen, Somalia, Nepal, Haiti, and beyond — delivering aid regardless of race, religion, or political affiliation.",
+  },
+  {
+    icon: Users,
+    title: "Search & Rescue Operations",
+    description:
+      "The organisation maintains a professional search and rescue unit with trained divers, K9 units, and wilderness search teams that deploy across South Africa to assist in missing-person cases and natural disaster rescues.",
+  },
+  {
+    icon: Shield,
+    title: "Gender-Based Violence Support",
+    description:
+      "Gift of the Givers supports survivors of gender-based violence through counselling services, safe-house provisions, and the distribution of dignity packs containing essential personal care items.",
+  },
+];
+
+const stats = [
+  { value: "R4 Billion+", label: "In aid delivered worldwide" },
+  { value: "44+", label: "Countries reached" },
+  { value: "340+", label: "Boreholes drilled in SA" },
+  { value: "30+", label: "Years of humanitarian service" },
+];
 
 const GiveBack = () => {
   return (
@@ -14,35 +78,153 @@ const GiveBack = () => {
           <Heart className="mx-auto h-14 w-14 mb-6 text-accent" />
           <h1 className="text-3xl md:text-5xl font-bold mb-6">Give Back</h1>
           <p className="text-lg md:text-xl opacity-90">
-            Siyakha Technology encourages anonymous and direct donations to
-            Gift&nbsp;of&nbsp;the&nbsp;Givers — Africa's largest disaster-response NGO.
+            Siyakha Technology proudly supports{" "}
+            <strong>Gift&nbsp;of&nbsp;the&nbsp;Givers</strong> — Africa's largest
+            disaster-response NGO. We encourage anonymous and direct donations to
+            help them continue their extraordinary humanitarian work.
           </p>
         </div>
       </section>
 
-      {/* Donation section */}
+      {/* About Gift of the Givers */}
+      <section className="py-16 md:py-20 bg-secondary">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6 text-center">
+            About Gift of the Givers
+          </h2>
+          <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
+            <p>
+              Founded in 1992 by <strong>Dr Imtiaz Sooliman</strong>, Gift of the
+              Givers has grown into the largest disaster-response non-governmental
+              organisation of African origin on the continent. What began as a
+              single relief mission has evolved into a globally recognised
+              humanitarian force that has delivered aid worth over{" "}
+              <strong>R4&nbsp;billion</strong> across more than{" "}
+              <strong>44&nbsp;countries</strong>.
+            </p>
+            <p>
+              The organisation operates on a simple but powerful principle:{" "}
+              <em>
+                "Best among people are those who benefit mankind."
+              </em>{" "}
+              This ethos drives every intervention — from drilling boreholes in
+              rural South Africa to deploying field hospitals in war-torn regions
+              abroad. Aid is delivered unconditionally, regardless of race,
+              religion, culture, or political affiliation.
+            </p>
+            <p>
+              Gift of the Givers is unique in that it maintains one of the
+              fastest response times of any humanitarian organisation in the
+              world. Within hours of a disaster, their teams are on the ground
+              with supplies, medical professionals, search-and-rescue units, and
+              infrastructure support.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Impact Stats */}
+      <section className="py-12 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {stats.map((stat) => (
+              <div key={stat.label}>
+                <div className="text-3xl md:text-4xl font-bold text-accent mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-sm md:text-base opacity-80">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Projects / Impact Areas */}
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 text-center">
+            Their Projects &amp; Impact Areas
+          </h2>
+          <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
+            Gift of the Givers operates across multiple sectors to address
+            South Africa's and the world's most pressing humanitarian needs.
+          </p>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {impactAreas.map((area) => {
+              const Icon = area.icon;
+              return (
+                <div
+                  key={area.title}
+                  className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                      <Icon className="h-5 w-5 text-accent" />
+                    </div>
+                    <h3 className="font-semibold text-foreground text-lg">
+                      {area.title}
+                    </h3>
+                  </div>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {area.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Siyakha Supports Them */}
+      <section className="py-16 md:py-20 bg-secondary">
+        <div className="container mx-auto px-4 max-w-3xl text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
+            Why Siyakha Supports Gift of the Givers
+          </h2>
+          <div className="text-muted-foreground space-y-4 text-left md:text-center">
+            <p>
+              At Siyakha Technology, we believe that building great technology
+              infrastructure is only meaningful when we also build stronger
+              communities. Gift of the Givers embodies the values we hold dear —
+              rapid action, accountability, and unconditional service.
+            </p>
+            <p>
+              Their transparent operations, zero-overhead donation model, and
+              unwavering commitment to helping those in need make them the
+              partner we trust to channel goodwill where it matters most.
+            </p>
+            <p>
+              We encourage our clients, partners, and visitors to consider
+              making a donation — no matter how small. Every rand contributed
+              goes directly to life-changing projects on the ground.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Donate CTA */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 max-w-2xl text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
+            Make a Donation
+          </h2>
+
           <img
             src="/images/gift-of-givers-qr.png"
             alt="Scan to pay – Gift of the Givers"
             className="mx-auto w-56 h-56 md:w-64 md:h-64 rounded-xl shadow-md mb-8"
           />
 
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Scan to Donate
-          </h2>
           <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
-            Use the QR code above to make an instant donation via Masterpass, or
-            click the button below to donate online. Every contribution — big or
-            small — makes a difference.
+            Scan the QR code above to make an instant donation via Masterpass,
+            or click the button below to donate online. Every contribution —
+            big or small — makes a difference.
           </p>
 
-          <Button
-            asChild
-            size="lg"
-            className="cta-primary text-base px-8"
-          >
+          <Button asChild size="lg" className="cta-primary text-base px-8">
             <a
               href="https://giftofthegivers.org/make-a-difference/donate-with-masterpass/"
               target="_blank"
@@ -54,8 +236,8 @@ const GiveBack = () => {
           </Button>
 
           <p className="mt-10 text-sm text-muted-foreground">
-            Siyakha Technology does not process or handle any donations.
-            All funds go directly to{" "}
+            Siyakha Technology does not process or handle any donations. All
+            funds go directly to{" "}
             <a
               href="https://giftofthegivers.org"
               target="_blank"
