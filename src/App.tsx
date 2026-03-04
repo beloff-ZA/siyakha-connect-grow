@@ -73,15 +73,9 @@ import GiveBackButton from "./components/GiveBackButton";
 import { QuoteBasketProvider } from "./contexts/QuoteBasketContext";
 import QuoteBasket from "./components/products/QuoteBasket";
 
-// Helpdesk admin pages
+// Director PA pages
 import AdminRoute from "./components/helpdesk/AdminRoute";
 import HelpdeskDashboard from "./pages/helpdesk/Dashboard";
-import HelpdeskTickets from "./pages/helpdesk/Tickets";
-import HelpdeskTicketView from "./pages/helpdesk/TicketView";
-import HelpdeskClients from "./pages/helpdesk/Clients";
-import HelpdeskLeads from "./pages/helpdesk/Leads";
-import HelpdeskTechnicians from "./pages/helpdesk/Technicians";
-import HelpdeskCampaigns from "./pages/helpdesk/Campaigns";
 import HelpdeskDiary from "./pages/helpdesk/Diary";
 import HelpdeskCalendar from "./pages/helpdesk/DirectorCalendar";
 
@@ -120,14 +114,8 @@ function App() {
                 <Route path="/log-a-call" element={<Navigate to="/log-it" replace />} />
                 <Route path="/support-deals" element={<SupportDeals />} />
 
-                {/* Helpdesk Admin */}
+                {/* Director PA */}
                 <Route path="/helpdesk" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />
-                <Route path="/helpdesk/tickets" element={<AdminRoute><HelpdeskTickets /></AdminRoute>} />
-                <Route path="/helpdesk/tickets/:id" element={<AdminRoute><HelpdeskTicketView /></AdminRoute>} />
-                <Route path="/helpdesk/clients" element={<AdminRoute><HelpdeskClients /></AdminRoute>} />
-                <Route path="/helpdesk/leads" element={<AdminRoute><HelpdeskLeads /></AdminRoute>} />
-                <Route path="/helpdesk/technicians" element={<AdminRoute><HelpdeskTechnicians /></AdminRoute>} />
-                <Route path="/helpdesk/campaigns" element={<AdminRoute><HelpdeskCampaigns /></AdminRoute>} />
                 <Route path="/helpdesk/diary" element={<AdminRoute><HelpdeskDiary /></AdminRoute>} />
                 <Route path="/helpdesk/calendar" element={<AdminRoute><HelpdeskCalendar /></AdminRoute>} />
 
