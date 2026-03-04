@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays,
-  Briefcase, Sparkles, DollarSign, FolderKanban
+  Briefcase, Sparkles, DollarSign, FolderKanban, Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ const navItems = [
   { label: "Calendar", icon: CalendarDays, path: "/helpdesk/calendar" },
   { label: "Projects", icon: FolderKanban, path: "/helpdesk/projects" },
   { label: "Costs", icon: DollarSign, path: "/helpdesk/costs" },
+  { label: "Leads", icon: Users, path: "/helpdesk/leads" },
   { label: "Diary", icon: BookOpen, path: "/helpdesk/diary" },
 ];
 
