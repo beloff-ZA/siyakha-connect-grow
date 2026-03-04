@@ -3,12 +3,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
-  LayoutDashboard, LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays, Briefcase
+  LayoutDashboard, LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays, Briefcase, Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Command Centre", icon: LayoutDashboard, path: "/helpdesk" },
+  { label: "AI PA", icon: Sparkles, path: "/helpdesk/ai-pa" },
   { label: "Diary", icon: BookOpen, path: "/helpdesk/diary" },
   { label: "Calendar", icon: CalendarDays, path: "/helpdesk/calendar" },
 ];
