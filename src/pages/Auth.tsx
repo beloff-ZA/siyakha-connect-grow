@@ -39,7 +39,7 @@ const AuthPage: React.FC = () => {
       if (session?.user) {
         // Check if admin
         const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: session.user.id, _role: "siyakha_admin" });
-        window.location.replace(isAdmin ? "/helpdesk" : "/portal/tickets");
+        window.location.replace(isAdmin ? "/helpdesk" : "/portal");
       }
     });
     supabase.auth.getSession().then(async ({ data }) => {
@@ -47,7 +47,7 @@ const AuthPage: React.FC = () => {
       const isRecovery = params.get('type') === 'recovery';
       if (data.session?.user && !isRecovery) {
         const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: data.session.user.id, _role: "siyakha_admin" });
-        window.location.replace(isAdmin ? "/helpdesk" : "/portal/tickets");
+        window.location.replace(isAdmin ? "/helpdesk" : "/portal");
       }
     });
     return () => subscription.unsubscribe();
@@ -62,7 +62,7 @@ const AuthPage: React.FC = () => {
 
   const signUp = async () => {
     setLoading(true);
-    const redirectUrl = `${window.location.origin}/portal/tickets`;
+    const redirectUrl = `${window.location.origin}/portal`;
     const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: redirectUrl } });
     if (error) {
       toast({ title: "Sign up failed", description: error.message, variant: "destructive" as any });
@@ -99,7 +99,7 @@ const AuthPage: React.FC = () => {
       toast({ title: "Update failed", description: error.message, variant: "destructive" as any });
     } else {
       toast({ title: "Password updated", description: "Your password has been updated. Redirecting..." });
-      window.location.replace("/portal/tickets");
+      window.location.replace("/portal");
     }
     setLoading(false);
   };
