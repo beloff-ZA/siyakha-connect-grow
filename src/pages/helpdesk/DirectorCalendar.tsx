@@ -20,6 +20,7 @@ import {
   addMonths, subMonths, startOfWeek, endOfWeek, parseISO, isToday
 } from "date-fns";
 import { cn } from "@/lib/utils";
+import { sendTextEmail } from "@/lib/email";
 
 type CalendarEvent = {
   id: string;
@@ -129,6 +130,21 @@ const DirectorCalendar = () => {
       const { error } = await supabase.from("calendar_events").insert(payload);
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       toast({ title: "Event created" });
+    }
+
+    // Send email notification to Nikita about the meeting
+    const eventDate = format(new Date(startTime), "dd MMM yyyy, HH:mm");
+    const action = editing ? "Updated" : "New";
+    const locationLine = location.trim() ? `\nLocation: ${location.trim()}` : "";
+    const descLine = description.trim() ? `\n\n${description.trim()}` : "";
+    try {
+      await sendTextEmail(
+        "nikita@siyakhatechnology.co.za",
+        `${action} Meeting: ${title.trim()} — ${eventDate}`,
+        `${action} calendar event:\n\nTitle: ${title.trim()}\nDate: ${eventDate}${locationLine}\nCategory: ${category}${descLine}`
+      );
+    } catch (emailErr) {
+      console.error("Meeting notification email failed:", emailErr);
     }
     setDialogOpen(false);
     resetForm();
