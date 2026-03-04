@@ -4,12 +4,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, Ticket, Users, UserPlus, Mail, Wrench,
-  LogOut, Menu, X, ChevronRight
+  LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/helpdesk" },
+  { label: "Diary", icon: BookOpen, path: "/helpdesk/diary" },
+  { label: "Calendar", icon: CalendarDays, path: "/helpdesk/calendar" },
   { label: "Tickets", icon: Ticket, path: "/helpdesk/tickets" },
   { label: "Clients", icon: Users, path: "/helpdesk/clients" },
   { label: "Leads", icon: UserPlus, path: "/helpdesk/leads" },

@@ -82,6 +82,8 @@ import HelpdeskClients from "./pages/helpdesk/Clients";
 import HelpdeskLeads from "./pages/helpdesk/Leads";
 import HelpdeskTechnicians from "./pages/helpdesk/Technicians";
 import HelpdeskCampaigns from "./pages/helpdesk/Campaigns";
+import HelpdeskDiary from "./pages/helpdesk/Diary";
+import HelpdeskCalendar from "./pages/helpdesk/DirectorCalendar";
 
 const queryClient = new QueryClient();
 
@@ -126,6 +128,8 @@ function App() {
                 <Route path="/helpdesk/leads" element={<AdminRoute><HelpdeskLeads /></AdminRoute>} />
                 <Route path="/helpdesk/technicians" element={<AdminRoute><HelpdeskTechnicians /></AdminRoute>} />
                 <Route path="/helpdesk/campaigns" element={<AdminRoute><HelpdeskCampaigns /></AdminRoute>} />
+                <Route path="/helpdesk/diary" element={<AdminRoute><HelpdeskDiary /></AdminRoute>} />
+                <Route path="/helpdesk/calendar" element={<AdminRoute><HelpdeskCalendar /></AdminRoute>} />
 
                 {/* Services */}
                 <Route path="/services/infrastructure-and-networking" element={<InfrastructureAndNetworking />} />

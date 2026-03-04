@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      calendar_events: {
+        Row: {
+          all_day: boolean | null
+          category: string | null
+          color: string | null
+          created_at: string
+          description: string | null
+          end_time: string | null
+          id: string
+          is_recurring: boolean | null
+          location: string | null
+          recurrence_rule: string | null
+          reminder_minutes: number | null
+          start_time: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          all_day?: boolean | null
+          category?: string | null
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          is_recurring?: boolean | null
+          location?: string | null
+          recurrence_rule?: string | null
+          reminder_minutes?: number | null
+          start_time: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          all_day?: boolean | null
+          category?: string | null
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          is_recurring?: boolean | null
+          location?: string | null
+          recurrence_rule?: string | null
+          reminder_minutes?: number | null
+          start_time?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       campaign_recipients: {
         Row: {
           campaign_id: string
@@ -164,6 +218,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      diary_entries: {
+        Row: {
+          content: string | null
+          created_at: string
+          entry_date: string
+          id: string
+          mood: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          entry_date?: string
+          id?: string
+          mood?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          entry_date?: string
+          id?: string
+          mood?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       email_campaigns: {
         Row: {
