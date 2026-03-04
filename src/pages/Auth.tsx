@@ -31,19 +31,24 @@ const AuthPage: React.FC = () => {
   }, [mode]);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         setMode('recovery');
         return;
       }
       if (session?.user) {
-        window.location.replace("/portal/tickets");
+        // Check if admin
+        const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: session.user.id, _role: "siyakha_admin" });
+        window.location.replace(isAdmin ? "/helpdesk" : "/portal/tickets");
       }
     });
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       const params = new URLSearchParams(window.location.search);
       const isRecovery = params.get('type') === 'recovery';
-      if (data.session?.user && !isRecovery) window.location.replace("/portal/tickets");
+      if (data.session?.user && !isRecovery) {
+        const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: data.session.user.id, _role: "siyakha_admin" });
+        window.location.replace(isAdmin ? "/helpdesk" : "/portal/tickets");
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
