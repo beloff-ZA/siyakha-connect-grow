@@ -43,7 +43,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex items-center justify-between p-4 border-b border-primary-foreground/10">
-          <Link to="/helpdesk" className="font-bold text-lg tracking-tight">Siyakha Helpdesk</Link>
+          <Link to="/helpdesk" className="font-bold text-lg tracking-tight">Director PA & Diary</Link>
           <button className="md:hidden" onClick={() => setSidebarOpen(false)}><X className="h-5 w-5" /></button>
         </div>
 
@@ -90,7 +90,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Menu className="h-5 w-5 text-foreground" />
           </button>
           <h2 className="text-lg font-semibold text-foreground truncate">
-            {navItems.find(n => pathname === n.path || (n.path !== "/helpdesk" && pathname.startsWith(n.path)))?.label || "Helpdesk"}
+            {navItems.find(n => pathname === n.path || (n.path !== "/helpdesk" && pathname.startsWith(n.path)))?.label || "Director PA"}
           </h2>
           <Link to="/" className="ml-auto text-xs text-muted-foreground hover:text-foreground">← Back to site</Link>
         </header>
