@@ -4,12 +4,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays,
-  Briefcase, Sparkles, DollarSign, FolderKanban, Users
+  Briefcase, Sparkles, DollarSign, FolderKanban, Users, Inbox
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Command Centre", icon: LayoutDashboard, path: "/helpdesk" },
+  { label: "Inbox", icon: Inbox, path: "/helpdesk/inbox" },
   { label: "AI PA", icon: Sparkles, path: "/helpdesk/ai-pa" },
   { label: "Calendar", icon: CalendarDays, path: "/helpdesk/calendar" },
   { label: "Projects", icon: FolderKanban, path: "/helpdesk/projects" },
