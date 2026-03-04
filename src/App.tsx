@@ -69,6 +69,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Contact from "./pages/Contact";
 // (AdminQuickCreate and FibreFeasibilityForm removed)
 import Products from "./pages/Products";
+import GiveBack from "./pages/GiveBack";
+import GiveBackButton from "./components/GiveBackButton";
 import { QuoteBasketProvider } from "./contexts/QuoteBasketContext";
 import QuoteBasket from "./components/products/QuoteBasket";
 const queryClient = new QueryClient();
@@ -91,6 +93,7 @@ function App() {
                 <Route path="/products" element={<Products />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/careers" element={<Navigate to="/" replace />} />
+                <Route path="/give-back" element={<GiveBack />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
                 
@@ -158,6 +161,7 @@ function App() {
               </Routes>
               
               <WhatsAppContact />
+              <GiveBackButton />
               <QuoteBasket />
             </Router>
             </QuoteBasketProvider>
