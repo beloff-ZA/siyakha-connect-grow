@@ -73,6 +73,7 @@ const Index = () => {
       <NetworkInfrastructureFeature />
       <FranchiseFeature />
       <FeaturedProducts />
+      <AdobePartner />
       
       <Industries />
       <Projects />
