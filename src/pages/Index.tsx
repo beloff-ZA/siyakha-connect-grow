@@ -6,6 +6,7 @@ import Services from "@/components/Services";
 import NetworkInfrastructureFeature from "@/components/NetworkInfrastructureFeature";
 import FranchiseFeature from "@/components/FranchiseFeature";
 import FeaturedProducts from "@/components/FeaturedProducts";
+import AdobePartner from "@/components/AdobePartner";
 import Industries from "@/components/Industries";
 import Projects from "@/components/Projects";
 
@@ -72,6 +73,7 @@ const Index = () => {
       <NetworkInfrastructureFeature />
       <FranchiseFeature />
       <FeaturedProducts />
+      <AdobePartner />
       
       <Industries />
       <Projects />
