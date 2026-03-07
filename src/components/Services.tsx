@@ -36,14 +36,14 @@ const Services = () => {
       icon: Wrench,
       title: "National Field Support",
       tags: ["Smart Hands", "Rollouts", "Swaps", "Break/Fix"],
-      benefit: "Dispatch certified field engineers anywhere in South Africa for on-site installations, maintenance, and emergency support.",
+      benefit: "Dispatch certified field engineers across South Africa and Africa for on-site installations, maintenance, and emergency support.",
       link: "/services/national-field-support/cutovers-and-sim-replacements",
     },
     {
       icon: Headphones,
       title: "Field Support Services",
       tags: ["Remote IT", "Cabling Engineers", "Technician Network"],
-      benefit: "Access our nationwide network of skilled infrastructure technicians and dedicated support teams.",
+      benefit: "Access our continent-wide network of skilled infrastructure technicians and dedicated support teams across Africa.",
       link: "/services/field-support-services",
     },
   ];

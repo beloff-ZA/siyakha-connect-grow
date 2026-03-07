@@ -44,7 +44,7 @@ const Hero = () => {
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
             We deploy dedicated field engineers, infrastructure technicians, and smart hands 
-            teams to keep your business running — trusted by 100+ organisations across South Africa.
+            teams to keep your business running — trusted by 100+ organisations across South Africa and the African continent.
           </p>
 
           {/* CTA Buttons */}

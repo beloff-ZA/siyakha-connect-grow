@@ -23,7 +23,7 @@ const WhySiyakha = () => {
     {
       icon: Users,
       title: "Scaling Without In-House IT Staff?",
-      description: "Our smart hands teams act as your on-site IT department — handling rollouts, maintenance, and support across multiple branches nationwide.",
+      description: "Our smart hands teams act as your on-site IT department — handling rollouts, maintenance, and support across multiple branches in South Africa and throughout Africa.",
     },
     {
       icon: TrendingUp,
