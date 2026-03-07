@@ -102,7 +102,7 @@ const SupportDeals = () => {
               <ul className="mt-4 space-y-2 text-foreground list-disc pl-5">
                 <li>EMEA (Europe, Middle East & Africa)</li>
                 <li>North America (incl. California & Canada)</li>
-                <li>Southern Africa (South Africa, Angola, Swaziland, Botswana)</li>
+                <li>Africa (South Africa, Angola, Swaziland, Botswana, Mozambique, Kenya, Nigeria & more)</li>
                 <li>Asia & Eastern Europe (Kazakhstan, UAE, India)</li>
               </ul>
             </div>

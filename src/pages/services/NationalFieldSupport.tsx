@@ -64,7 +64,7 @@ const NationalFieldSupport = () => {
     "@type": "Service",
     name: "National Field Support Technicians",
     provider: { "@type": "Organization", name: "Siyakha Technology" },
-    areaServed: { "@type": "Country", name: "South Africa" },
+    areaServed: [{ "@type": "Country", name: "South Africa" }, { "@type": "Continent", name: "Africa" }],
     serviceType: "Onsite Field Support, Smart Hands, National Dispatch",
     url: `${window.location.origin}${path}`,
     description,
@@ -104,9 +104,9 @@ const NationalFieldSupport = () => {
               National Field Support Technicians
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl">
-              Smart hands, nationwide. We dispatch certified field technicians to your sites for
+              Smart hands across South Africa and Africa. We dispatch certified field technicians to your sites for
               router setups, laptop rollouts, break/fix, POS deployments, cabling and more —
-              ideal for mines, retail chains, franchises and ISPs.
+              ideal for mines, retail chains, franchises, ISPs, and projects across the African continent.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Link to="/contact#quote-form">
@@ -155,9 +155,9 @@ const NationalFieldSupport = () => {
               <div>
                 <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-3">Coverage & SLAs</h2>
                 <p className="text-muted-foreground">
-                  We coordinate nationally with central scheduling and single-point-of-contact. Same-day
-                  dispatch in major metros, and predictable SLAs for regional sites. Flexible models: per
-                  call-out, project-based, or retainer for national accounts.
+                  We coordinate across South Africa and the African continent with central scheduling and single-point-of-contact. Same-day
+                  dispatch in major metros, and predictable SLAs for regional and cross-border sites. Flexible models: per
+                  call-out, project-based, or retainer for continental accounts.
                 </p>
               </div>
 
