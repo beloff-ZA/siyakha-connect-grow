@@ -83,6 +83,14 @@ import DirectorProjects from "./pages/helpdesk/DirectorProjects";
 import DirectorCosts from "./pages/helpdesk/DirectorCosts";
 import HelpdeskLeads from "./pages/helpdesk/Leads";
 import DirectorInbox from "./pages/helpdesk/DirectorInbox";
+import DirectorNotes from "./pages/helpdesk/DirectorNotes";
+import FutureProjects from "./pages/helpdesk/FutureProjects";
+import SitePerformancePage from "./pages/helpdesk/SitePerformance";
+import CustomersPage from "./pages/helpdesk/Customers";
+import SuppliersPage from "./pages/helpdesk/Suppliers";
+import InternetProvidersPage from "./pages/helpdesk/InternetProviders";
+import VoipProvidersPage from "./pages/helpdesk/VoipProviders";
+import PackagesPage from "./pages/helpdesk/Packages";
 
 const queryClient = new QueryClient();
 
@@ -128,6 +136,14 @@ function App() {
                 <Route path="/helpdesk/ai-pa" element={<AdminRoute><DirectorPA /></AdminRoute>} />
                 <Route path="/helpdesk/leads" element={<AdminRoute><HelpdeskLeads /></AdminRoute>} />
                 <Route path="/helpdesk/inbox" element={<AdminRoute><DirectorInbox /></AdminRoute>} />
+                <Route path="/helpdesk/notes" element={<AdminRoute><DirectorNotes /></AdminRoute>} />
+                <Route path="/helpdesk/future-projects" element={<AdminRoute><FutureProjects /></AdminRoute>} />
+                <Route path="/helpdesk/site-performance" element={<AdminRoute><SitePerformancePage /></AdminRoute>} />
+                <Route path="/helpdesk/customers" element={<AdminRoute><CustomersPage /></AdminRoute>} />
+                <Route path="/helpdesk/suppliers" element={<AdminRoute><SuppliersPage /></AdminRoute>} />
+                <Route path="/helpdesk/internet-providers" element={<AdminRoute><InternetProvidersPage /></AdminRoute>} />
+                <Route path="/helpdesk/voip-providers" element={<AdminRoute><VoipProvidersPage /></AdminRoute>} />
+                <Route path="/helpdesk/packages" element={<AdminRoute><PackagesPage /></AdminRoute>} />
 
                 {/* Services */}
                 <Route path="/services/infrastructure-and-networking" element={<InfrastructureAndNetworking />} />
