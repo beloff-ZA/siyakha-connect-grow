@@ -125,7 +125,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Menu className="h-5 w-5 text-foreground" />
           </button>
           <h2 className="text-lg font-semibold text-foreground truncate">
-            {navItems.find(n => pathname === n.path || (n.path !== "/helpdesk" && pathname.startsWith(n.path)))?.label || "Director PA"}
+            {allNavItems.find(n => pathname === n.path || (n.path !== "/helpdesk" && pathname.startsWith(n.path)))?.label || "Director PA"}
           </h2>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
