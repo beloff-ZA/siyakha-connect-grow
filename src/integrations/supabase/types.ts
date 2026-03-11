@@ -219,6 +219,54 @@ export type Database = {
           },
         ]
       }
+      customers: {
+        Row: {
+          address: string | null
+          contact_person: string | null
+          contract_type: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          industry: string | null
+          is_active: boolean | null
+          monthly_value: number | null
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          contact_person?: string | null
+          contract_type?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          industry?: string | null
+          is_active?: boolean | null
+          monthly_value?: number | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          contact_person?: string | null
+          contract_type?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          industry?: string | null
+          is_active?: boolean | null
+          monthly_value?: number | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       diary_entries: {
         Row: {
           content: string | null
@@ -307,6 +355,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      director_notes: {
+        Row: {
+          category: string | null
+          content: string | null
+          created_at: string
+          id: string
+          is_pinned: boolean | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_pinned?: boolean | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_pinned?: boolean | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       director_notifications: {
         Row: {
@@ -464,6 +545,96 @@ export type Database = {
         }
         Relationships: []
       }
+      future_projects: {
+        Row: {
+          client: string | null
+          created_at: string
+          description: string | null
+          estimated_value: number | null
+          id: string
+          notes: string | null
+          priority: string
+          status: string
+          target_date: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_value?: number | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          status?: string
+          target_date?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_value?: number | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          status?: string
+          target_date?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      internet_providers: {
+        Row: {
+          account_manager: string | null
+          contact_person: string | null
+          coverage_areas: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          account_manager?: string | null
+          contact_person?: string | null
+          coverage_areas?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          account_manager?: string | null
+          contact_person?: string | null
+          coverage_areas?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           address: string | null
@@ -524,6 +695,162 @@ export type Database = {
           updated_at?: string | null
           verified?: string | null
           website?: string | null
+        }
+        Relationships: []
+      }
+      packages: {
+        Row: {
+          billing_cycle: string | null
+          contract_end: string | null
+          contract_start: string | null
+          created_at: string | null
+          customer_id: string | null
+          customer_name: string | null
+          description: string | null
+          id: string
+          notes: string | null
+          package_name: string
+          package_type: string | null
+          price: number | null
+          provider_id: string | null
+          provider_name: string
+          provider_type: string
+          speed: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          billing_cycle?: string | null
+          contract_end?: string | null
+          contract_start?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          customer_name?: string | null
+          description?: string | null
+          id?: string
+          notes?: string | null
+          package_name: string
+          package_type?: string | null
+          price?: number | null
+          provider_id?: string | null
+          provider_name: string
+          provider_type?: string
+          speed?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          billing_cycle?: string | null
+          contract_end?: string | null
+          contract_start?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          customer_name?: string | null
+          description?: string | null
+          id?: string
+          notes?: string | null
+          package_name?: string
+          package_type?: string | null
+          price?: number | null
+          provider_id?: string | null
+          provider_name?: string
+          provider_type?: string
+          speed?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      site_performance: {
+        Row: {
+          client_name: string
+          created_at: string
+          id: string
+          issues: string | null
+          next_review: string | null
+          notes: string | null
+          site_name: string
+          status: string
+          update_date: string
+          updated_at: string
+          uptime_percent: number | null
+          user_id: string
+        }
+        Insert: {
+          client_name: string
+          created_at?: string
+          id?: string
+          issues?: string | null
+          next_review?: string | null
+          notes?: string | null
+          site_name: string
+          status?: string
+          update_date?: string
+          updated_at?: string
+          uptime_percent?: number | null
+          user_id: string
+        }
+        Update: {
+          client_name?: string
+          created_at?: string
+          id?: string
+          issues?: string | null
+          next_review?: string | null
+          notes?: string | null
+          site_name?: string
+          status?: string
+          update_date?: string
+          updated_at?: string
+          uptime_percent?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      suppliers: {
+        Row: {
+          account_number: string | null
+          address: string | null
+          category: string | null
+          contact_person: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          notes: string | null
+          payment_terms: string | null
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          account_number?: string | null
+          address?: string | null
+          category?: string | null
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          notes?: string | null
+          payment_terms?: string | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          account_number?: string | null
+          address?: string | null
+          category?: string | null
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          notes?: string | null
+          payment_terms?: string | null
+          phone?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -734,6 +1061,51 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      voip_providers: {
+        Row: {
+          account_manager: string | null
+          contact_person: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          notes: string | null
+          phone: string | null
+          services: string | null
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          account_manager?: string | null
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          services?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          account_manager?: string | null
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          services?: string | null
+          updated_at?: string | null
+          website?: string | null
         }
         Relationships: []
       }
