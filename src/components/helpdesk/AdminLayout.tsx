@@ -75,27 +75,33 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <button className="md:hidden" onClick={() => setSidebarOpen(false)}><X className="h-5 w-5" /></button>
         </div>
 
-        <nav className="flex-1 py-4 space-y-0.5 px-2 overflow-y-auto">
-          {navItems.map((item) => {
-            const active = pathname === item.path || (item.path !== "/helpdesk" && pathname.startsWith(item.path));
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setSidebarOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                  active
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                )}
-              >
-                <item.icon className="h-4 w-4 shrink-0" />
-                {item.label}
-                {active && <ChevronRight className="ml-auto h-4 w-4" />}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 py-4 space-y-1 px-2 overflow-y-auto">
+          {navSections.map((section, idx) => (
+            <div key={section.label}>
+              {idx > 0 && <Separator className="my-2 bg-sidebar-border" />}
+              <p className="px-3 py-1 text-[10px] uppercase tracking-wider text-sidebar-foreground/40 font-semibold">{section.label}</p>
+              {section.items.map((item) => {
+                const active = pathname === item.path || (item.path !== "/helpdesk" && pathname.startsWith(item.path));
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+                      active
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    {item.label}
+                    {active && <ChevronRight className="ml-auto h-4 w-4" />}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         <div className="p-4 border-t border-sidebar-border space-y-2">
