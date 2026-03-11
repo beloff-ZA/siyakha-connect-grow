@@ -83,6 +83,14 @@ import DirectorProjects from "./pages/helpdesk/DirectorProjects";
 import DirectorCosts from "./pages/helpdesk/DirectorCosts";
 import HelpdeskLeads from "./pages/helpdesk/Leads";
 import DirectorInbox from "./pages/helpdesk/DirectorInbox";
+import DirectorNotes from "./pages/helpdesk/DirectorNotes";
+import FutureProjects from "./pages/helpdesk/FutureProjects";
+import SitePerformancePage from "./pages/helpdesk/SitePerformance";
+import CustomersPage from "./pages/helpdesk/Customers";
+import SuppliersPage from "./pages/helpdesk/Suppliers";
+import InternetProvidersPage from "./pages/helpdesk/InternetProviders";
+import VoipProvidersPage from "./pages/helpdesk/VoipProviders";
+import PackagesPage from "./pages/helpdesk/Packages";
 
 const queryClient = new QueryClient();
 
