@@ -4,20 +4,47 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays,
-  Briefcase, Sparkles, DollarSign, FolderKanban, Users, Inbox
+  Briefcase, Sparkles, DollarSign, FolderKanban, Users, Inbox,
+  StickyNote, Rocket, Activity, Building2, Truck, Wifi, Phone, Package
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
-const navItems = [
-  { label: "Command Centre", icon: LayoutDashboard, path: "/helpdesk" },
-  { label: "Inbox", icon: Inbox, path: "/helpdesk/inbox" },
-  { label: "AI PA", icon: Sparkles, path: "/helpdesk/ai-pa" },
-  { label: "Calendar", icon: CalendarDays, path: "/helpdesk/calendar" },
-  { label: "Projects", icon: FolderKanban, path: "/helpdesk/projects" },
-  { label: "Costs", icon: DollarSign, path: "/helpdesk/costs" },
-  { label: "Leads", icon: Users, path: "/helpdesk/leads" },
-  { label: "Diary", icon: BookOpen, path: "/helpdesk/diary" },
+const navSections = [
+  {
+    label: "Operations",
+    items: [
+      { label: "Command Centre", icon: LayoutDashboard, path: "/helpdesk" },
+      { label: "Inbox", icon: Inbox, path: "/helpdesk/inbox" },
+      { label: "AI PA", icon: Sparkles, path: "/helpdesk/ai-pa" },
+      { label: "Calendar", icon: CalendarDays, path: "/helpdesk/calendar" },
+      { label: "Notes", icon: StickyNote, path: "/helpdesk/notes" },
+      { label: "Diary", icon: BookOpen, path: "/helpdesk/diary" },
+    ],
+  },
+  {
+    label: "Planning",
+    items: [
+      { label: "Projects", icon: FolderKanban, path: "/helpdesk/projects" },
+      { label: "Future Projects", icon: Rocket, path: "/helpdesk/future-projects" },
+      { label: "Site Performance", icon: Activity, path: "/helpdesk/site-performance" },
+      { label: "Costs", icon: DollarSign, path: "/helpdesk/costs" },
+      { label: "Leads", icon: Users, path: "/helpdesk/leads" },
+    ],
+  },
+  {
+    label: "CRM",
+    items: [
+      { label: "Customers", icon: Building2, path: "/helpdesk/customers" },
+      { label: "Suppliers", icon: Truck, path: "/helpdesk/suppliers" },
+      { label: "Internet Providers", icon: Wifi, path: "/helpdesk/internet-providers" },
+      { label: "VoIP Providers", icon: Phone, path: "/helpdesk/voip-providers" },
+      { label: "Packages", icon: Package, path: "/helpdesk/packages" },
+    ],
+  },
 ];
+
+const allNavItems = navSections.flatMap((s) => s.items);
 
 const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { pathname } = useLocation();
