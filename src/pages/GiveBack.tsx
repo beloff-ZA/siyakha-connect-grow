@@ -258,6 +258,44 @@ const GiveBack = () => {
               </div>
             </div>
           </div>
+
+          {/* Frederic Place */}
+          <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg mt-12">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="relative aspect-[3/4] md:aspect-auto bg-muted flex items-center justify-center">
+                <div className="p-10 text-center">
+                  <HandHeart className="mx-auto h-16 w-16 text-accent mb-4" />
+                  <h3 className="text-2xl font-bold text-foreground">Frederic Place</h3>
+                  <p className="text-muted-foreground mt-1">Home for the Aged</p>
+                  <p className="text-sm text-muted-foreground mt-1">Est. 1978 · Coronationville, Johannesburg</p>
+                </div>
+              </div>
+              <div className="p-6 md:p-10 flex flex-col justify-center">
+                <span className="inline-block bg-accent/10 text-accent text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4 w-fit">
+                  Elder Care · Registered NPO
+                </span>
+                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
+                  Frederic Place — A Home Where Every Elder Is Family
+                </h3>
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  Since 1978, <strong>Frederic Place</strong> has been Johannesburg's sanctuary of compassion — offering 24/7 nursing care, community, and belonging to vulnerable older persons. Located in Coronationville, this registered Non-Profit Organisation cares for <strong>85 residents</strong>, including 20 in a specialised frail-care wing.
+                </p>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  Residents receive three home-style meals daily, medication management, social enrichment programmes, pastoral support, and round-the-clock nursing supervision. Siyakha Technology proudly supports Frederic Place's mission to ensure that growing old never means growing alone.
+                </p>
+                <Button asChild size="sm" variant="outline" className="w-fit">
+                  <a
+                    href="https://www.fredericplace.org/donate"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Support Frederic Place
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
