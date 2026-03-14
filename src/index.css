@@ -39,6 +39,11 @@ All colors MUST be HSL. Professional tech aesthetic with Navy Blue and Teal acce
     --orange-accent-foreground: 0 0% 100%;
     --orange-hover: 25 95% 45%;
 
+    /* WhatsApp Green */
+    --whatsapp: 142 70% 40%;
+    --whatsapp-foreground: 0 0% 100%;
+    --whatsapp-hover: 142 70% 34%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 

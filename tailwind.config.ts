@@ -54,6 +54,11 @@ export default {
 				foreground: 'hsl(var(--orange-accent-foreground))',
 				hover: 'hsl(var(--orange-hover))'
 			},
+			whatsapp: {
+				DEFAULT: 'hsl(var(--whatsapp))',
+				foreground: 'hsl(var(--whatsapp-foreground))',
+				hover: 'hsl(var(--whatsapp-hover))'
+			},
 			teal: {
 				DEFAULT: 'hsl(var(--accent))',
 				foreground: 'hsl(var(--accent-foreground))'
