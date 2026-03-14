@@ -178,28 +178,28 @@ const GiveBack = () => {
         </div>
       </section>
 
-      {/* Why Siyakha Supports Them */}
+      {/* Why We Give Back */}
       <section className="py-16 md:py-20 bg-secondary">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
-            Why Siyakha Supports Gift of the Givers
+            Why Giving Back Matters to Us
           </h2>
           <div className="text-muted-foreground space-y-4 text-left md:text-center">
             <p>
               At Siyakha Technology, we believe that building great technology
               infrastructure is only meaningful when we also build stronger
-              communities. Gift of the Givers embodies the values we hold dear —
-              rapid action, accountability, and unconditional service.
+              communities. Our giving focuses on children, education, skills
+              development, poverty alleviation, and feeding programmes.
             </p>
             <p>
-              Their transparent operations, zero-overhead donation model, and
-              unwavering commitment to helping those in need make them the
-              partner we trust to channel goodwill where it matters most.
+              We admire organisations that operate with transparency,
+              accountability, and an unconditional commitment to those in need.
+              Below are some of the charities whose work we deeply respect.
             </p>
             <p>
               We encourage our clients, partners, and visitors to consider
-              making a donation — no matter how small. Every rand contributed
-              goes directly to life-changing projects on the ground.
+              donating directly to these causes — no matter how small. Every
+              rand makes a difference.
             </p>
           </div>
         </div>
