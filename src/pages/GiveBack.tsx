@@ -88,37 +88,43 @@ const GiveBack = () => {
 
       {/* About Gift of the Givers */}
       <section className="py-16 md:py-20 bg-secondary">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6 text-center">
             About Gift of the Givers
           </h2>
-          <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
-            <p>
-              Founded in 1992 by <strong>Dr Imtiaz Sooliman</strong>, Gift of the
-              Givers has grown into the largest disaster-response non-governmental
-              organisation of African origin on the continent. What began as a
-              single relief mission has evolved into a globally recognised
-              humanitarian force that has delivered aid worth over{" "}
-              <strong>R4&nbsp;billion</strong> across more than{" "}
-              <strong>44&nbsp;countries</strong>.
-            </p>
-            <p>
-              The organisation operates on a simple but powerful principle:{" "}
-              <em>
-                "Best among people are those who benefit mankind."
-              </em>{" "}
-              This ethos drives every intervention — from drilling boreholes in
-              rural South Africa to deploying field hospitals in war-torn regions
-              abroad. Aid is delivered unconditionally, regardless of race,
-              religion, culture, or political affiliation.
-            </p>
-            <p>
-              Gift of the Givers is unique in that it maintains one of the
-              fastest response times of any humanitarian organisation in the
-              world. Within hours of a disaster, their teams are on the ground
-              with supplies, medical professionals, search-and-rescue units, and
-              infrastructure support.
-            </p>
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <img
+              src="/lovable-uploads/gift-of-givers-relief.png"
+              alt="Gift of the Givers Foundation delivering relief supplies to communities"
+              className="w-full rounded-xl shadow-md object-cover aspect-[4/3]"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
+              <p>
+                Founded in 1992 by <strong>Dr Imtiaz Sooliman</strong>, Gift of the
+                Givers has grown into the largest disaster-response non-governmental
+                organisation of African origin on the continent. What began as a
+                single relief mission has evolved into a globally recognised
+                humanitarian force that has delivered aid worth over{" "}
+                <strong>R4&nbsp;billion</strong> across more than{" "}
+                <strong>44&nbsp;countries</strong>.
+              </p>
+              <p>
+                The organisation operates on a simple but powerful principle:{" "}
+                <em>
+                  "Best among people are those who benefit mankind."
+                </em>{" "}
+                Aid is delivered unconditionally, regardless of race,
+                religion, culture, or political affiliation.
+              </p>
+              <p>
+                They maintain one of the fastest response times of any
+                humanitarian organisation in the world — deploying teams within
+                hours with supplies, medical professionals, and infrastructure
+                support.
+              </p>
+            </div>
           </div>
         </div>
       </section>
