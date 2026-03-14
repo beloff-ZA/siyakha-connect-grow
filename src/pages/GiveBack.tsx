@@ -214,6 +214,41 @@ const GiveBack = () => {
               rand makes a difference.
             </p>
           </div>
+
+          <div className="mt-10 pt-10 border-t border-border">
+            <h3 className="text-xl md:text-2xl font-bold text-foreground mb-6">
+              Our Faith & Guiding Principles
+            </h3>
+            <p className="text-muted-foreground mb-8">
+              Trust God, stay faithful in all actions. Let your efforts and your work reflect the power of God in action — He will build and create opportunities.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-6 text-left">
+              <blockquote className="bg-card border border-border rounded-xl p-5">
+                <p className="text-foreground italic mb-3">
+                  "Commit to the Lord whatever you do, and He will establish your plans."
+                </p>
+                <cite className="text-sm text-accent font-semibold not-italic">— Proverbs 16:3</cite>
+              </blockquote>
+              <blockquote className="bg-card border border-border rounded-xl p-5">
+                <p className="text-foreground italic mb-3">
+                  "And let us not grow weary of doing good, for in due season we will reap, if we do not give up."
+                </p>
+                <cite className="text-sm text-accent font-semibold not-italic">— Galatians 6:9</cite>
+              </blockquote>
+              <blockquote className="bg-card border border-border rounded-xl p-5">
+                <p className="text-foreground italic mb-3">
+                  "Whatever you do, work heartily, as for the Lord and not for men."
+                </p>
+                <cite className="text-sm text-accent font-semibold not-italic">— Colossians 3:23</cite>
+              </blockquote>
+              <blockquote className="bg-card border border-border rounded-xl p-5">
+                <p className="text-foreground italic mb-3">
+                  "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future."
+                </p>
+                <cite className="text-sm text-accent font-semibold not-italic">— Jeremiah 29:11</cite>
+              </blockquote>
+            </div>
+          </div>
         </div>
       </section>
 
