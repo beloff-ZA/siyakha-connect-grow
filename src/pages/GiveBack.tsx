@@ -80,8 +80,9 @@ const GiveBack = () => {
           <p className="text-lg md:text-xl opacity-90">
             Siyakha Technology proudly supports{" "}
             <strong>Gift&nbsp;of&nbsp;the&nbsp;Givers</strong> — Africa's largest
-            disaster-response NGO. We encourage anonymous and direct donations to
-            help them continue their extraordinary humanitarian work.
+            disaster-response NGO. Our charity focus is on Gift of the Givers,
+            and we encourage direct donations to help them continue their
+            extraordinary humanitarian work.
           </p>
         </div>
       </section>
@@ -264,7 +265,7 @@ const GiveBack = () => {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 max-w-2xl text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
-            Make a Donation
+            Our Charity Focus — Gift of the Givers
           </h2>
 
           <img
