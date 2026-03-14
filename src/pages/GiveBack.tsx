@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Heart, ExternalLink, Droplets, Stethoscope, Home, Truck, GraduationCap, Flame, Globe, Users, Shield } from "lucide-react";
+import { Heart, ExternalLink, Droplets, Stethoscope, Home, Truck, GraduationCap, Flame, Globe, Users, Shield, HandHeart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const impactAreas = [
