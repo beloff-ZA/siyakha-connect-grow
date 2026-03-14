@@ -320,7 +320,7 @@ const GiveBack = () => {
                   For over <strong>25 years</strong>, New Jerusalem Children's Home has championed the rights of abandoned, abused, traumatised, orphaned and vulnerable children across Southern Africa. The home currently caters for <strong>120 children</strong>, providing a safe, nurturing, spiritual and loving environment.
                 </p>
                 <p className="text-muted-foreground mb-6 leading-relaxed">
-                  Beyond residential care, the organisation runs <strong>Lanto Montessori International Schools</strong>, a high school development programme, sports facilities, and feeding schemes. Siyakha Technology proudly supports their mission to build hope and futures for vulnerable children through care, education, and community empowerment.
+                  Beyond residential care, the organisation runs <strong>Lanto Montessori International Schools</strong>, a high school development programme, sports facilities, and feeding schemes — building hope and futures for vulnerable children through care, education, and community empowerment.
                 </p>
                 <Button asChild size="sm" variant="outline" className="w-fit">
                   <a
