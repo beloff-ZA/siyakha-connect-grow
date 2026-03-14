@@ -300,13 +300,14 @@ const GiveBack = () => {
           {/* New Jerusalem Children's Home */}
           <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg mt-12">
             <div className="grid md:grid-cols-2 gap-0">
-              <div className="relative aspect-[3/4] md:aspect-auto bg-muted flex items-center justify-center">
-                <div className="p-10 text-center">
-                  <Baby className="mx-auto h-16 w-16 text-accent mb-4" />
-                  <h3 className="text-2xl font-bold text-foreground">New Jerusalem</h3>
-                  <p className="text-muted-foreground mt-1">Children's Home</p>
-                  <p className="text-sm text-muted-foreground mt-1">25+ Years · Southern Africa</p>
-                </div>
+              <div className="relative aspect-[3/4] md:aspect-auto">
+                <img
+                  src="/lovable-uploads/new-jerusalem-childrens-home.png"
+                  alt="New Jerusalem Children's Home — container-based facility in Southern Africa"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <div className="p-6 md:p-10 flex flex-col justify-center">
                 <span className="inline-block bg-accent/10 text-accent text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4 w-fit">
