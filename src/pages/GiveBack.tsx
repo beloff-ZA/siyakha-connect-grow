@@ -372,16 +372,6 @@ const GiveBack = () => {
                 <p className="text-muted-foreground mb-6 leading-relaxed">
                   Through volunteer-driven outreach — including food parcel distributions, Christmas giving campaigns, and children's and youth mentorship programmes — BMC provides safe spaces, dignity, and belonging to those facing poverty or social hardship across surrounding communities.
                 </p>
-                <Button asChild size="sm" variant="outline" className="w-fit">
-                  <a
-                    href="https://www.bryanston.church/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Visit Bryanston Methodist
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </a>
-                </Button>
               </div>
             </div>
           </div>
