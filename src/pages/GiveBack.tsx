@@ -346,6 +346,45 @@ const GiveBack = () => {
               </div>
             </div>
           </div>
+
+          {/* Bryanston Methodist Church */}
+          <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg mt-12">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="relative aspect-[3/4] md:aspect-auto">
+                <img
+                  src="/lovable-uploads/bryanston-methodist-church.png"
+                  alt="Bryanston Methodist Church, Johannesburg"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div className="p-6 md:p-10 flex flex-col justify-center">
+                <span className="inline-block bg-accent/10 text-accent text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4 w-fit">
+                  Faith-Based · Community Outreach
+                </span>
+                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
+                  Bryanston Methodist Church — Compassion in Action
+                </h3>
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  <strong>Bryanston Methodist Church (BMC)</strong> is a faith-based non-profit in Bryanston, Johannesburg, passionately proclaiming Christ for healing and renewal in the community. Beyond spiritual services, BMC runs <strong>feeding programmes, youth development initiatives, and seasonal charity projects</strong> that uplift vulnerable families and individuals.
+                </p>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  Through volunteer-driven outreach — including food parcel distributions, Christmas giving campaigns, and children's and youth mentorship programmes — BMC provides safe spaces, dignity, and belonging to those facing poverty or social hardship across surrounding communities.
+                </p>
+                <Button asChild size="sm" variant="outline" className="w-fit">
+                  <a
+                    href="https://www.bryanston.church/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Visit Bryanston Methodist
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
