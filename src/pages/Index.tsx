@@ -82,6 +82,7 @@ const Index = () => {
       <SmartHandsPartnership />
       <LeadMagnet />
       <BlogPreview showCount={3} />
+      <FaithSection />
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJson) }} />
     </div>
