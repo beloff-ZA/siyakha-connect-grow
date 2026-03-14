@@ -83,6 +83,12 @@ const GiveBack = () => {
             We believe in empowering communities beyond technology, and we
             encourage direct donations to the causes that move you.
           </p>
+          <div className="flex items-center justify-center gap-6 md:gap-10 mt-10">
+            <img src="/lovable-uploads/logo-gift-of-givers.png" alt="Gift of the Givers Foundation" className="h-14 md:h-20 bg-white/90 rounded-lg p-2 object-contain" />
+            <img src="/lovable-uploads/logo-new-jerusalem.png" alt="New Jerusalem Children's Home" className="h-14 md:h-20 bg-white/90 rounded-lg p-2 object-contain" />
+            <img src="/lovable-uploads/logo-frederic-place.png" alt="Frederic Place Home for the Aged" className="h-14 md:h-20 bg-white/90 rounded-lg p-2 object-contain" />
+            <img src="/lovable-uploads/logo-bmc.png" alt="Bryanston Methodist Church" className="h-14 md:h-20 bg-white/90 rounded-lg p-2 object-contain" />
+          </div>
         </div>
       </section>
 
