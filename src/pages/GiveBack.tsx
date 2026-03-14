@@ -296,6 +296,44 @@ const GiveBack = () => {
               </div>
             </div>
           </div>
+
+          {/* New Jerusalem Children's Home */}
+          <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg mt-12">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="relative aspect-[3/4] md:aspect-auto bg-muted flex items-center justify-center">
+                <div className="p-10 text-center">
+                  <Baby className="mx-auto h-16 w-16 text-accent mb-4" />
+                  <h3 className="text-2xl font-bold text-foreground">New Jerusalem</h3>
+                  <p className="text-muted-foreground mt-1">Children's Home</p>
+                  <p className="text-sm text-muted-foreground mt-1">25+ Years · Southern Africa</p>
+                </div>
+              </div>
+              <div className="p-6 md:p-10 flex flex-col justify-center">
+                <span className="inline-block bg-accent/10 text-accent text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4 w-fit">
+                  Children's Care · Education · NPO
+                </span>
+                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
+                  New Jerusalem Children's Home — A Sustainable Future for Orphans
+                </h3>
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  For over <strong>25 years</strong>, New Jerusalem Children's Home has championed the rights of abandoned, abused, traumatised, orphaned and vulnerable children across Southern Africa. The home currently caters for <strong>120 children</strong>, providing a safe, nurturing, spiritual and loving environment.
+                </p>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  Beyond residential care, the organisation runs <strong>Lanto Montessori International Schools</strong>, a high school development programme, sports facilities, and feeding schemes. Siyakha Technology proudly supports their mission to build hope and futures for vulnerable children through care, education, and community empowerment.
+                </p>
+                <Button asChild size="sm" variant="outline" className="w-fit">
+                  <a
+                    href="https://newjerusalemchildrenshome.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Support New Jerusalem
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
