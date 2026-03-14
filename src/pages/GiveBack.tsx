@@ -265,7 +265,7 @@ const GiveBack = () => {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 max-w-2xl text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
-            Make a Donation
+            Our Charity Focus — Gift of the Givers
           </h2>
 
           <img
