@@ -281,7 +281,7 @@ const GiveBack = () => {
                   Since 1978, <strong>Frederic Place</strong> has been Johannesburg's sanctuary of compassion — offering 24/7 nursing care, community, and belonging to vulnerable older persons. Located in Coronationville, this registered Non-Profit Organisation cares for <strong>85 residents</strong>, including 20 in a specialised frail-care wing.
                 </p>
                 <p className="text-muted-foreground mb-6 leading-relaxed">
-                  Residents receive three home-style meals daily, medication management, social enrichment programmes, pastoral support, and round-the-clock nursing supervision. Siyakha Technology proudly supports Frederic Place's mission to ensure that growing old never means growing alone.
+                  Residents receive three home-style meals daily, medication management, social enrichment programmes, pastoral support, and round-the-clock nursing supervision — ensuring that growing old never means growing alone.
                 </p>
                 <Button asChild size="sm" variant="outline" className="w-fit">
                   <a
