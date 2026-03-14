@@ -80,8 +80,9 @@ const GiveBack = () => {
           <p className="text-lg md:text-xl opacity-90">
             Siyakha Technology proudly supports{" "}
             <strong>Gift&nbsp;of&nbsp;the&nbsp;Givers</strong> — Africa's largest
-            disaster-response NGO. We encourage anonymous and direct donations to
-            help them continue their extraordinary humanitarian work.
+            disaster-response NGO. Our charity focus is on Gift of the Givers,
+            and we encourage direct donations to help them continue their
+            extraordinary humanitarian work.
           </p>
         </div>
       </section>
