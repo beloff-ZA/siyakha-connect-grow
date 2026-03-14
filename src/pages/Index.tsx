@@ -14,6 +14,7 @@ import Testimonials from "@/components/Testimonials";
 import LeadMagnet from "@/components/LeadMagnet";
 import SmartHandsPartnership from "@/components/SmartHandsPartnership";
 import BlogPreview from "@/components/BlogPreview";
+import FaithSection from "@/components/FaithSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -81,6 +82,7 @@ const Index = () => {
       <SmartHandsPartnership />
       <LeadMagnet />
       <BlogPreview showCount={3} />
+      <FaithSection />
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJson) }} />
     </div>
