@@ -78,11 +78,10 @@ const GiveBack = () => {
           <Heart className="mx-auto h-14 w-14 mb-6 text-accent" />
           <h1 className="text-3xl md:text-5xl font-bold mb-6">Give Back</h1>
           <p className="text-lg md:text-xl opacity-90">
-            Siyakha Technology proudly supports{" "}
-            <strong>Gift&nbsp;of&nbsp;the&nbsp;Givers</strong> — Africa's largest
-            disaster-response NGO. Our charity focus is on Gift of the Givers,
-            and we encourage direct donations to help them continue their
-            extraordinary humanitarian work.
+            Siyakha Technology has a wide focus in its giving — mainly{" "}
+            <strong>children, education, technology for children, skills development, poverty and feeding projects</strong>.
+            We believe in empowering communities beyond technology, and we
+            encourage direct donations to the causes that move you.
           </p>
         </div>
       </section>
