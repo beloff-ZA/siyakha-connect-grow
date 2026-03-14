@@ -78,11 +78,10 @@ const GiveBack = () => {
           <Heart className="mx-auto h-14 w-14 mb-6 text-accent" />
           <h1 className="text-3xl md:text-5xl font-bold mb-6">Give Back</h1>
           <p className="text-lg md:text-xl opacity-90">
-            Siyakha Technology proudly supports{" "}
-            <strong>Gift&nbsp;of&nbsp;the&nbsp;Givers</strong> — Africa's largest
-            disaster-response NGO. Our charity focus is on Gift of the Givers,
-            and we encourage direct donations to help them continue their
-            extraordinary humanitarian work.
+            Siyakha Technology has a wide focus in its giving — mainly{" "}
+            <strong>children, education, technology for children, skills development, poverty and feeding projects</strong>.
+            We believe in empowering communities beyond technology, and we
+            encourage direct donations to the causes that move you.
           </p>
         </div>
       </section>
@@ -179,28 +178,28 @@ const GiveBack = () => {
         </div>
       </section>
 
-      {/* Why Siyakha Supports Them */}
+      {/* Why We Give Back */}
       <section className="py-16 md:py-20 bg-secondary">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
-            Why Siyakha Supports Gift of the Givers
+            Why Giving Back Matters to Us
           </h2>
           <div className="text-muted-foreground space-y-4 text-left md:text-center">
             <p>
               At Siyakha Technology, we believe that building great technology
               infrastructure is only meaningful when we also build stronger
-              communities. Gift of the Givers embodies the values we hold dear —
-              rapid action, accountability, and unconditional service.
+              communities. Our giving focuses on children, education, skills
+              development, poverty alleviation, and feeding programmes.
             </p>
             <p>
-              Their transparent operations, zero-overhead donation model, and
-              unwavering commitment to helping those in need make them the
-              partner we trust to channel goodwill where it matters most.
+              We admire organisations that operate with transparency,
+              accountability, and an unconditional commitment to those in need.
+              Below are some of the charities whose work we deeply respect.
             </p>
             <p>
               We encourage our clients, partners, and visitors to consider
-              making a donation — no matter how small. Every rand contributed
-              goes directly to life-changing projects on the ground.
+              donating directly to these causes — no matter how small. Every
+              rand makes a difference.
             </p>
           </div>
         </div>
@@ -213,7 +212,7 @@ const GiveBack = () => {
             Facilities We Recommend Giving To
           </h2>
           <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
-            These are the organisations and initiatives Siyakha proudly supports. We encourage our clients and partners to consider donating directly to these causes.
+            These are some of the charities we admire for the incredible work they do. We encourage you to learn more and consider donating directly.
           </p>
 
           <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg">
@@ -282,7 +281,7 @@ const GiveBack = () => {
                   Since 1978, <strong>Frederic Place</strong> has been Johannesburg's sanctuary of compassion — offering 24/7 nursing care, community, and belonging to vulnerable older persons. Located in Coronationville, this registered Non-Profit Organisation cares for <strong>85 residents</strong>, including 20 in a specialised frail-care wing.
                 </p>
                 <p className="text-muted-foreground mb-6 leading-relaxed">
-                  Residents receive three home-style meals daily, medication management, social enrichment programmes, pastoral support, and round-the-clock nursing supervision. Siyakha Technology proudly supports Frederic Place's mission to ensure that growing old never means growing alone.
+                  Residents receive three home-style meals daily, medication management, social enrichment programmes, pastoral support, and round-the-clock nursing supervision — ensuring that growing old never means growing alone.
                 </p>
                 <Button asChild size="sm" variant="outline" className="w-fit">
                   <a
@@ -321,7 +320,7 @@ const GiveBack = () => {
                   For over <strong>25 years</strong>, New Jerusalem Children's Home has championed the rights of abandoned, abused, traumatised, orphaned and vulnerable children across Southern Africa. The home currently caters for <strong>120 children</strong>, providing a safe, nurturing, spiritual and loving environment.
                 </p>
                 <p className="text-muted-foreground mb-6 leading-relaxed">
-                  Beyond residential care, the organisation runs <strong>Lanto Montessori International Schools</strong>, a high school development programme, sports facilities, and feeding schemes. Siyakha Technology proudly supports their mission to build hope and futures for vulnerable children through care, education, and community empowerment.
+                  Beyond residential care, the organisation runs <strong>Lanto Montessori International Schools</strong>, a high school development programme, sports facilities, and feeding schemes — building hope and futures for vulnerable children through care, education, and community empowerment.
                 </p>
                 <Button asChild size="sm" variant="outline" className="w-fit">
                   <a
