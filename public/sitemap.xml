@@ -1,33 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>/projects</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>/contact</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/careers</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>/log-a-call</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>/support-deals</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/services/infrastructure-and-networking</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/services/security-and-surveillance</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/services/cloud-and-edge-solutions</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/services/smart-collaboration-tools</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/blog</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>/blog/understanding-the-power-of-ai-in-modern-business-and-education</loc></url>
-  <url><loc>/blog/5-signs-your-school-needs-a-network-upgrade</loc></url>
-  <url><loc>/blog/why-every-growing-business-should-consider-a-managed-it-service-provider-msp</loc></url>
-  <url><loc>/blog/how-to-know-when-its-time-to-replace-your-wi-fi-system</loc></url>
-  <url><loc>/blog/why-you-need-to-upgrade-your-hardware-before-it-slows-you-down</loc></url>
-  <url><loc>/blog/understanding-cyber-vulnerabilities-and-how-to-protect-your-business</loc></url>
-  <url><loc>/blog/ncomputing-the-smart-affordable-solution-for-schools</loc></url>
-  <url><loc>/projects/marist-brothers-linmeyer</loc></url>
-  <url><loc>/projects/kfc-national-network-rollout</loc></url>
-  <url><loc>/projects/pelican-club-bahrain</loc></url>
-  <url><loc>/projects/campuskey-network-overhaul</loc></url>
-  <url><loc>/it-company-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/managed-it-services-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/it-support-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/cybersecurity-services-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/cloud-services-johannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Core pages -->
+  <url><loc>https://siyakha-connect-grow.lovable.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/products</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/projects</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/services</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/give-back</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/support-deals</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/log-it</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+
+  <!-- Services -->
+  <url><loc>https://siyakha-connect-grow.lovable.app/services/infrastructure-and-networking</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/services/security-and-surveillance</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/services/cloud-and-edge-solutions</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/services/smart-collaboration-tools</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/services/national-field-support</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/services/national-field-support/cutovers-and-sim-replacements</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/services/healthcare-it-support</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/services/field-support-services</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Location pages -->
+  <url><loc>https://siyakha-connect-grow.lovable.app/it-company-johannesburg</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/managed-it-services-johannesburg</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/it-support-johannesburg</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/cybersecurity-services-johannesburg</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/cloud-services-johannesburg</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/it-company-emea</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/it-company-cape-town</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/it-company-london</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/it-company-angola</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Blog -->
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/understanding-the-power-of-ai-in-modern-business-and-education</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/5-signs-your-school-needs-a-network-upgrade</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/why-every-growing-business-should-consider-a-managed-it-service-provider-msp</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/how-to-know-when-its-time-to-replace-your-wi-fi-system</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/why-you-need-to-upgrade-your-hardware-before-it-slows-you-down</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/understanding-cyber-vulnerabilities-and-how-to-protect-your-business</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/ncomputing-the-smart-affordable-solution-for-schools</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/field-support-and-smart-hands-services-south-africa</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/it-migration-services-south-africa</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/voip-phone-rollout-services-south-africa</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/complete-field-support-solutions-on-site-remote-and-dedicated-engineers</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/classroom-playback-technology-zoom-ai-lesson-replay</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/blog/draas</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Projects -->
+  <url><loc>https://siyakha-connect-grow.lovable.app/projects/marist-brothers-linmeyer</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/projects/kfc-national-network-rollout</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/projects/village-bakery-cctv</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/projects/greestone-network-rebuild</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/projects/pelican-club-bahrain</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/projects/campuskey-network-overhaul</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://siyakha-connect-grow.lovable.app/projects/marist-cape-town</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>
