@@ -205,6 +205,61 @@ const GiveBack = () => {
         </div>
       </section>
 
+      {/* Community Events */}
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 text-center">
+            Community Events We Support
+          </h2>
+          <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
+            Siyakha proudly sponsors grassroots community initiatives that uplift and empower young people through sport and dignity.
+          </p>
+
+          <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="relative aspect-[3/4] md:aspect-auto">
+                <img
+                  src="/lovable-uploads/wis-festival-poster.jpeg"
+                  alt="Women-in-Sport Festival 2026 poster — Marist Brothers Linmeyer"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div className="p-6 md:p-10 flex flex-col justify-center">
+                <span className="inline-block bg-accent/10 text-accent text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4 w-fit">
+                  14–15 March 2026
+                </span>
+                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
+                  Women-in-Sport Festival &amp; Sanitary Drive
+                </h3>
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  Marist Brothers Linmeyer, in partnership with Emeris and SOJO Helping Hands Foundation, hosted the annual <strong>Women-in-Sport Festival</strong> — a celebration of girls in sport combined with a community <strong>Sanitary Drive</strong> supporting dignity for young women.
+                </p>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  Siyakha Technology was a proud sponsor of this event, reinforcing our commitment to empowering communities beyond technology. The festival brought together netball, soccer, and basketball athletes while collecting sanitary product donations for girls in need.
+                </p>
+                <div className="flex items-center gap-4">
+                  <img
+                    src="/lovable-uploads/wis-sanitary-drive.jpeg"
+                    alt="Siyakha branded flags at the Sanitary Drive event"
+                    className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg border border-border"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="text-sm text-muted-foreground">
+                    <p className="font-semibold text-foreground">Hosted by</p>
+                    <p>Marist Brothers Linmeyer</p>
+                    <p className="mt-1 font-semibold text-foreground">Partners</p>
+                    <p>Emeris · SOJO · Mall of the South</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Donate CTA */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 max-w-2xl text-center">
