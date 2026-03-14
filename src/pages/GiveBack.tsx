@@ -338,6 +338,11 @@ const GiveBack = () => {
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </a>
                 </Button>
+                <div className="flex items-center gap-3 mt-6">
+                  <img src="/lovable-uploads/nj-food-parcels-1.png" alt="Food parcel donations for New Jerusalem Children's Home" className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg border border-border" loading="lazy" decoding="async" />
+                  <img src="/lovable-uploads/nj-food-parcels-2.png" alt="Groceries and essentials donated to New Jerusalem" className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg border border-border" loading="lazy" decoding="async" />
+                  <img src="/lovable-uploads/nj-food-parcels-3.png" alt="Cleaning supplies and food donated to New Jerusalem" className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg border border-border" loading="lazy" decoding="async" />
+                </div>
               </div>
             </div>
           </div>
