@@ -262,13 +262,14 @@ const GiveBack = () => {
           {/* Frederic Place */}
           <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg mt-12">
             <div className="grid md:grid-cols-2 gap-0">
-              <div className="relative aspect-[3/4] md:aspect-auto bg-muted flex items-center justify-center">
-                <div className="p-10 text-center">
-                  <HandHeart className="mx-auto h-16 w-16 text-accent mb-4" />
-                  <h3 className="text-2xl font-bold text-foreground">Frederic Place</h3>
-                  <p className="text-muted-foreground mt-1">Home for the Aged</p>
-                  <p className="text-sm text-muted-foreground mt-1">Est. 1978 · Coronationville, Johannesburg</p>
-                </div>
+              <div className="relative aspect-[3/4] md:aspect-auto">
+                <img
+                  src="/lovable-uploads/frederic-place-westbury.png"
+                  alt="Frederic Place Home for the Aged — brick building in Westbury, Johannesburg"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <div className="p-6 md:p-10 flex flex-col justify-center">
                 <span className="inline-block bg-accent/10 text-accent text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4 w-fit">
