@@ -210,10 +210,10 @@ const GiveBack = () => {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 text-center">
-            Community Events We Support
+            Facilities We Recommend Giving To
           </h2>
           <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
-            Siyakha proudly sponsors grassroots community initiatives that uplift and empower young people through sport and dignity.
+            These are the organisations and initiatives Siyakha proudly supports. We encourage our clients and partners to consider donating directly to these causes.
           </p>
 
           <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg">
