@@ -212,7 +212,7 @@ const GiveBack = () => {
             Facilities We Recommend Giving To
           </h2>
           <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
-            These are the organisations and initiatives Siyakha proudly supports. We encourage our clients and partners to consider donating directly to these causes.
+            These are some of the charities we admire for the incredible work they do. We encourage you to learn more and consider donating directly.
           </p>
 
           <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg">
