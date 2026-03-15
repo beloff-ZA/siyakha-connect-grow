@@ -126,6 +126,11 @@ const Header = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
+                <Link to="/property" className="text-foreground hover:text-primary transition-colors font-medium">
+                  Property
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
                 <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
                   Contact
                 </Link>
