@@ -114,6 +114,7 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/careers" element={<Navigate to="/" replace />} />
                 <Route path="/give-back" element={<GiveBack />} />
+                <Route path="/property" element={<Property />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
                 
