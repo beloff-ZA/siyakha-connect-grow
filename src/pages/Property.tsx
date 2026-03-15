@@ -186,9 +186,9 @@ const Property = () => {
                   href="https://www.airbnb.com/rooms/903701296297001350?guests=1&adults=1&s=66&source=embed_widget"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-3 text-sm font-medium text-primary hover:underline"
+                  className="inline-block mt-3"
                 >
-                  View on Airbnb →
+                  <Button variant="default" size="sm">Click Here to Book It Online →</Button>
                 </a>
               </div>
             </div>
