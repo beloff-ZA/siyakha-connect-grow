@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Home, Lightbulb, Plug, Wifi, ThermometerSun, Shield, Router, Signal, Smartphone, Camera, Lock, Zap } from "lucide-react";
+import { Home, Lightbulb, Plug, Wifi, ThermometerSun, Shield, Router, Signal, Smartphone, Lock, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
