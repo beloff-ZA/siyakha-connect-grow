@@ -1,10 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Home, Lightbulb, Plug, Wifi, ThermometerSun, Shield, Router, Signal, Smartphone, Lock, Zap, WashingMachine, CookingPot } from "lucide-react";
+import { Home, Lightbulb, Plug, Wifi, ThermometerSun, Shield, Router, Signal, Smartphone, Lock, Zap, WashingMachine, CookingPot, X, Share2, Copy, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "@/hooks/use-toast";
 
 const smartFeatures = [
   { icon: Lightbulb, title: "Smart Lighting", desc: "TP-Link Tapo smart bulbs with colour control, scheduling, and voice assistant integration." },
@@ -46,7 +53,13 @@ const smartTools = [
   { icon: Signal, title: "Grandstream GWN APs", desc: "Commercial-grade Wi-Fi 6/7 access points for high-density smart environments." },
 ];
 
+const AIRBNB_URL = "https://www.airbnb.com/rooms/903701296297001350?guests=1&adults=1&s=66&source=embed_widget";
+
 const Property = () => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+
   useEffect(() => {
     document.title = "Siyakha Property | Smart Home & Wi-Fi Solutions";
     const meta = document.querySelector('meta[name="description"]');
@@ -61,9 +74,90 @@ const Property = () => {
     return () => { document.body.removeChild(script); };
   }, []);
 
+  // Show welcome pop-up after short delay
+  useEffect(() => {
+    const dismissed = sessionStorage.getItem("property-popup-dismissed");
+    if (!dismissed) {
+      const timer = setTimeout(() => setShowPopup(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const dismissPopup = () => {
+    setShowPopup(false);
+    sessionStorage.setItem("property-popup-dismissed", "true");
+  };
+
+  const propertyUrl = typeof window !== "undefined" ? `${window.location.origin}/property` : "/property";
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(propertyUrl);
+    setCopied(true);
+    toast({ title: "Link copied!", description: "Share it with anyone." });
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleShareWhatsApp = () => {
+    const text = encodeURIComponent(`Check out Siyakha Property — Smart Home Airbnb in Sandton 🏠✨\n\n${propertyUrl}`);
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+  };
+
+  const handleShareEmail = () => {
+    const subject = encodeURIComponent("Siyakha Property – Smart Home Airbnb in Sandton");
+    const body = encodeURIComponent(`Hi,\n\nCheck out this smart-enabled Airbnb property by Siyakha Property:\n\n${propertyUrl}\n\nBook directly on Airbnb:\n${AIRBNB_URL}`);
+    window.open(`mailto:?subject=${subject}&body=${body}`, "_blank");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
+
+      {/* Welcome Pop-up */}
+      <Dialog open={showPopup} onOpenChange={(open) => { if (!open) dismissPopup(); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-xl">🏠 Welcome to Siyakha Property</DialogTitle>
+          </DialogHeader>
+          <div className="text-center space-y-4 py-2">
+            <p className="text-muted-foreground">
+              Experience our <span className="font-semibold text-foreground">smart-enabled Airbnb</span> in Sandton — featuring smart Wi-Fi, smart lighting, smart plugs, and more.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href={AIRBNB_URL} target="_blank" rel="noopener noreferrer">
+                <Button className="w-full sm:w-auto">Book on Airbnb →</Button>
+              </a>
+              <Button variant="outline" onClick={() => { dismissPopup(); setShareOpen(true); }} className="gap-2">
+                <Share2 size={16} />
+                Share This Property
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">★ 4.86 rated · Condo in Sandton · 1 bed · 1 bath</p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Share Dialog */}
+      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Share Siyakha Property</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="flex items-center gap-2 p-3 rounded-lg border border-border bg-muted/50">
+              <p className="text-xs text-muted-foreground truncate flex-1">{propertyUrl}</p>
+              <Button variant="ghost" size="sm" onClick={handleCopyLink} className="shrink-0">
+                {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+              </Button>
+            </div>
+            <Button variant="outline" className="w-full justify-start gap-3" onClick={handleShareWhatsApp}>
+              💬 Share via WhatsApp
+            </Button>
+            <Button variant="outline" className="w-full justify-start gap-3" onClick={handleShareEmail}>
+              ✉️ Share via Email
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Hero */}
       <section className="relative py-20 bg-gradient-to-br from-primary/10 via-background to-accent/10">
@@ -74,9 +168,13 @@ const Property = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Smart Living, <span className="text-primary">Tested &amp; Proven</span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Our Airbnb portfolio is a real-world testing ground for smart home technology — Wi-Fi mesh systems, smart plugs, smart lights, cameras, and more. Every solution we recommend, we use ourselves first.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
+            Our Airbnb portfolio is a real-world testing ground for smart home technology — Wi-Fi mesh systems, smart plugs, smart lights, and more. Every solution we recommend, we use ourselves first.
           </p>
+          <Button variant="outline" size="sm" onClick={() => setShareOpen(true)} className="gap-2">
+            <Share2 size={16} />
+            Share This Page
+          </Button>
         </div>
       </section>
 
@@ -146,7 +244,7 @@ const Property = () => {
             Smart Tools We Use
           </h2>
           <p className="text-center text-muted-foreground mb-10 max-w-xl mx-auto">
-            From cameras to robot vacuums — the full smart home toolkit deployed across our properties.
+            From doorbells to robot vacuums — the full smart home toolkit deployed across our properties.
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {smartTools.map((t) => (
@@ -183,14 +281,14 @@ const Property = () => {
               <div className="p-4">
                 <h3 className="font-semibold text-foreground">Condo in Sandton</h3>
                 <p className="text-sm text-muted-foreground">★ 4.86 · 1 bedroom · 1 bed · 1 bath</p>
-                <a
-                  href="https://www.airbnb.com/rooms/903701296297001350?guests=1&adults=1&s=66&source=embed_widget"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block mt-3"
-                >
-                  <Button variant="default" size="sm">Click Here to Book It Online →</Button>
-                </a>
+                <div className="flex items-center gap-2 mt-3">
+                  <a href={AIRBNB_URL} target="_blank" rel="noopener noreferrer">
+                    <Button variant="default" size="sm">Click Here to Book It Online →</Button>
+                  </a>
+                  <Button variant="outline" size="sm" onClick={() => setShareOpen(true)}>
+                    <Share2 size={14} />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
