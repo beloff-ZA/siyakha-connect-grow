@@ -48,7 +48,7 @@ const Property = () => {
   useEffect(() => {
     document.title = "Siyakha Property | Smart Home & Wi-Fi Solutions";
     const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", "Siyakha Property – our Airbnb portfolio where we deploy and test smart Wi-Fi, smart plugs, smart lights, cameras, and residential IoT solutions in Sandton.");
+    if (meta) meta.setAttribute("content", "Siyakha Property – our Airbnb portfolio where we deploy and test smart Wi-Fi, smart plugs, smart lights, and residential IoT solutions in Sandton.");
   }, []);
 
   useEffect(() => {
