@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Home, Lightbulb, Plug, Wifi, ThermometerSun, Shield, Router, Signal, Smartphone, Camera, Lock, Zap } from "lucide-react";
+import { Home, Lightbulb, Plug, Wifi, ThermometerSun, Shield, Router, Signal, Smartphone, Lock, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ const smartFeatures = [
   { icon: Plug, title: "Smart Plugs", desc: "TP-Link Tapo smart plugs with energy monitoring — control any appliance remotely." },
   { icon: Wifi, title: "Smart Wi-Fi (Mesh)", desc: "TP-Link Deco mesh systems for seamless whole-home coverage with zero dead spots." },
   { icon: ThermometerSun, title: "Climate Control", desc: "Smart thermostats and IR blasters to automate air conditioning and heating." },
-  { icon: Shield, title: "Smart Security", desc: "Tapo cameras, smart doorbells, and motion sensors for 24/7 peace of mind." },
+  { icon: Shield, title: "Smart Security", desc: "Smart doorbells, smart locks, and motion sensors for 24/7 peace of mind." },
   { icon: Home, title: "Home Automation", desc: "Centralised control of all devices from one app — lights, plugs, cameras, and more." },
 ];
 
@@ -31,13 +31,12 @@ const wifiSolutions = [
   {
     icon: Smartphone,
     title: "TP-Link Tapo Smart Home Kit",
-    desc: "Smart bulbs, plugs, cameras, and robot vacuums — all managed from the Tapo app ecosystem.",
-    image: "/lovable-uploads/tapo-c660-product.png",
+    desc: "Smart bulbs, plugs, and robot vacuums — all managed from the Tapo app ecosystem.",
+    image: "/lovable-uploads/tapo-l530e-product.png",
   },
 ];
 
 const smartTools = [
-  { icon: Camera, title: "Tapo C460 / C660 Cameras", desc: "AI-powered indoor/outdoor cameras with person detection, night vision, and cloud playback." },
   { icon: Lock, title: "Smart Doorbell (Tapo D235)", desc: "Video doorbell with two-way audio, motion zones, and smartphone notifications." },
   { icon: Lightbulb, title: "Tapo L530E Smart Bulbs", desc: "Multicolour LED bulbs with 16 million colours, schedules, and energy saving modes." },
   { icon: Zap, title: "Tapo RV30 Max Robot Vacuum", desc: "LiDAR navigation robot vacuum and mop — smart cleaning on autopilot." },
@@ -49,7 +48,7 @@ const Property = () => {
   useEffect(() => {
     document.title = "Siyakha Property | Smart Home & Wi-Fi Solutions";
     const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", "Siyakha Property – our Airbnb portfolio where we deploy and test smart Wi-Fi, smart plugs, smart lights, cameras, and residential IoT solutions in Sandton.");
+    if (meta) meta.setAttribute("content", "Siyakha Property – our Airbnb portfolio where we deploy and test smart Wi-Fi, smart plugs, smart lights, and residential IoT solutions in Sandton.");
   }, []);
 
   useEffect(() => {
