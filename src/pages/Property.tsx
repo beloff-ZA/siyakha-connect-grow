@@ -31,8 +31,8 @@ const wifiSolutions = [
   {
     icon: Smartphone,
     title: "TP-Link Tapo Smart Home Kit",
-    desc: "Smart bulbs, plugs, cameras, and robot vacuums — all managed from the Tapo app ecosystem.",
-    image: "/lovable-uploads/tapo-c660-product.png",
+    desc: "Smart bulbs, plugs, and robot vacuums — all managed from the Tapo app ecosystem.",
+    image: "/lovable-uploads/tapo-l530e-product.png",
   },
 ];
 
