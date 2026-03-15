@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Home, Lightbulb, Plug, Wifi, ThermometerSun, Shield, Router, Signal, Smartphone, Lock, Zap } from "lucide-react";
+import { Home, Lightbulb, Plug, Wifi, ThermometerSun, Shield, Router, Signal, Smartphone, Lock, Zap, WashingMachine, CookingPot } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,9 @@ const smartFeatures = [
   { icon: Wifi, title: "Smart Wi-Fi (Mesh)", desc: "TP-Link Deco mesh systems for seamless whole-home coverage with zero dead spots." },
   { icon: ThermometerSun, title: "Climate Control", desc: "Smart thermostats and IR blasters to automate air conditioning and heating." },
   { icon: Shield, title: "Smart Security", desc: "Smart doorbells, smart locks, and motion sensors for 24/7 peace of mind." },
-  { icon: Home, title: "Home Automation", desc: "Centralised control of all devices from one app — lights, plugs, cameras, and more." },
+  { icon: Home, title: "Home Automation", desc: "Centralised control of all devices from one app — lights, plugs, appliances, and more." },
+  { icon: WashingMachine, title: "Smart LG Washing Machine", desc: "Wi-Fi enabled LG washer with app control, cycle scheduling, and energy monitoring." },
+  { icon: CookingPot, title: "Smart Microwave", desc: "App-connected microwave with preset programmes, voice control, and smart cooking modes." },
 ];
 
 const wifiSolutions = [
