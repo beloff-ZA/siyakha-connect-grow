@@ -37,7 +37,6 @@ const wifiSolutions = [
 ];
 
 const smartTools = [
-  { icon: Camera, title: "Tapo C460 / C660 Cameras", desc: "AI-powered indoor/outdoor cameras with person detection, night vision, and cloud playback." },
   { icon: Lock, title: "Smart Doorbell (Tapo D235)", desc: "Video doorbell with two-way audio, motion zones, and smartphone notifications." },
   { icon: Lightbulb, title: "Tapo L530E Smart Bulbs", desc: "Multicolour LED bulbs with 16 million colours, schedules, and energy saving modes." },
   { icon: Zap, title: "Tapo RV30 Max Robot Vacuum", desc: "LiDAR navigation robot vacuum and mop — smart cleaning on autopilot." },
