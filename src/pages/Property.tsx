@@ -11,7 +11,7 @@ const smartFeatures = [
   { icon: Plug, title: "Smart Plugs", desc: "TP-Link Tapo smart plugs with energy monitoring — control any appliance remotely." },
   { icon: Wifi, title: "Smart Wi-Fi (Mesh)", desc: "TP-Link Deco mesh systems for seamless whole-home coverage with zero dead spots." },
   { icon: ThermometerSun, title: "Climate Control", desc: "Smart thermostats and IR blasters to automate air conditioning and heating." },
-  { icon: Shield, title: "Smart Security", desc: "Tapo cameras, smart doorbells, and motion sensors for 24/7 peace of mind." },
+  { icon: Shield, title: "Smart Security", desc: "Smart doorbells, smart locks, and motion sensors for 24/7 peace of mind." },
   { icon: Home, title: "Home Automation", desc: "Centralised control of all devices from one app — lights, plugs, cameras, and more." },
 ];
 
