@@ -270,18 +270,20 @@ const Property = () => {
             Stay in one of our smart-enabled properties and experience the technology first-hand.
           </p>
           <div className="flex flex-wrap justify-center gap-8">
-            <div className="rounded-xl overflow-hidden shadow-lg border border-border bg-card">
-              <div
-                className="airbnb-embed-frame"
-                data-id="903701296297001350"
-                data-view="home"
-                data-hide-price="true"
-                style={{ width: 450, height: 300 }}
-              />
+            <div className="rounded-xl overflow-hidden shadow-lg border border-border bg-card max-w-[480px] w-full">
+              <div className="w-full overflow-hidden">
+                <div
+                  className="airbnb-embed-frame w-full"
+                  data-id="903701296297001350"
+                  data-view="home"
+                  data-hide-price="true"
+                  style={{ width: "100%", maxWidth: 450, height: 300, margin: "0 auto" }}
+                />
+              </div>
               <div className="p-4">
                 <h3 className="font-semibold text-foreground">Condo in Sandton</h3>
                 <p className="text-sm text-muted-foreground">★ 4.86 · 1 bedroom · 1 bed · 1 bath</p>
-                <div className="flex items-center gap-2 mt-3">
+                <div className="flex flex-wrap items-center gap-2 mt-3">
                   <a href={AIRBNB_URL} target="_blank" rel="noopener noreferrer">
                     <Button variant="default" size="sm">Click Here to Book It Online →</Button>
                   </a>
