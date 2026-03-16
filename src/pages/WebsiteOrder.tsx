@@ -739,7 +739,7 @@ ${mockupUrls.length > 0 ? `<p><strong>Reference Images:</strong><br/>${mockupUrl
                       <p className="text-muted-foreground">
                         {hasExistingDomain ? business.currentWebsite || "Existing domain" : checkedDomain || domainInput || "Not specified"}
                       </p>
-                      {!hasExistingDomain && domainStatus === "available" && <Badge className="bg-green-600 text-white text-xs mt-1">Available</Badge>}
+                      {!hasExistingDomain && domainStatus === "available" && <Badge className="bg-primary text-primary-foreground text-xs mt-1">Available</Badge>}
                       {!hasExistingDomain && domainStatus === "taken" && <Badge variant="destructive" className="text-xs mt-1">Taken</Badge>}
                     </div>
                   </div>
