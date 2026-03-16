@@ -524,13 +524,13 @@ ${mockupUrls.length > 0 ? `<p><strong>Reference Images:</strong><br/>${mockupUrl
 
                     {domainStatus !== "idle" && domainStatus !== "checking" && (
                       <div className={`flex items-start gap-3 p-4 rounded-lg border ${
-                        domainStatus === "available" ? "border-green-500/30 bg-green-500/5" :
+                        domainStatus === "available" ? "border-primary/30 bg-primary/5" :
                         domainStatus === "taken" ? "border-destructive/30 bg-destructive/5" :
-                        "border-yellow-500/30 bg-yellow-500/5"
+                        "border-accent/30 bg-accent/5"
                       }`}>
-                        {domainStatus === "available" ? <Check className="w-5 h-5 text-green-600 mt-0.5 shrink-0" /> :
+                        {domainStatus === "available" ? <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" /> :
                          domainStatus === "taken" ? <X className="w-5 h-5 text-destructive mt-0.5 shrink-0" /> :
-                         <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" />}
+                         <AlertCircle className="w-5 h-5 text-accent mt-0.5 shrink-0" />}
                         <div>
                           <p className="font-medium text-foreground">{checkedDomain}</p>
                           <p className="text-sm text-muted-foreground">{domainMessage}</p>
