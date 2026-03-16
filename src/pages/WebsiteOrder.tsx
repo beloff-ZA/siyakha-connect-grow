@@ -159,6 +159,9 @@ const WebsiteOrder = () => {
         </div>
       </section>
 
+      {/* Portfolio Cubes */}
+      <PortfolioCubes />
+
       {/* Form */}
       <section className="py-12">
         <div className="container mx-auto px-4 max-w-2xl">
