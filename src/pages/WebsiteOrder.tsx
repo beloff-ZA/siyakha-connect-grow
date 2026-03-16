@@ -15,9 +15,10 @@ import { supabase } from "@/integrations/supabase/client";
 import PortfolioCubes from "@/components/PortfolioCubes";
 
 const PACKAGES = [
-  { value: "starter", label: "Starter – R299/mo", description: "Single-page website, mobile-friendly" },
-  { value: "business", label: "Business – R499/mo", description: "Multi-page, contact forms, SEO basics" },
-  { value: "premium", label: "Premium – R799/mo", description: "E-commerce ready, analytics, priority support" },
+  { value: "starter", label: "Starter – R199/mo", description: "Single-page website, mobile-friendly, SEO basics" },
+  { value: "business", label: "Business – R399/mo", description: "Multi-page, contact forms, Office 365 email setup" },
+  { value: "premium", label: "Premium – R599/mo", description: "E-commerce ready, Office 365, ESET security, priority support" },
+  { value: "enterprise", label: "Enterprise – R999/mo", description: "Custom build, Office 365 suite, ESET endpoint protection, analytics, dedicated support" },
 ];
 
 const WebsiteOrder = () => {
