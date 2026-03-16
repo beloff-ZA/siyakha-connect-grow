@@ -9,15 +9,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Globe, CheckCircle, Loader2 } from "lucide-react";
+import { Globe, CheckCircle, Loader2, Shield, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import PortfolioCubes from "@/components/PortfolioCubes";
+import websiteOfferBanner from "@/assets/website-offer-banner.png";
 
 const PACKAGES = [
-  { value: "starter", label: "Starter – R299/mo", description: "Single-page website, mobile-friendly" },
-  { value: "business", label: "Business – R499/mo", description: "Multi-page, contact forms, SEO basics" },
-  { value: "premium", label: "Premium – R799/mo", description: "E-commerce ready, analytics, priority support" },
+  { value: "starter", label: "Starter – R199/mo", description: "Single-page website, mobile-friendly, SEO basics" },
+  { value: "business", label: "Business – R399/mo", description: "Multi-page, contact forms, Office 365 email setup" },
+  { value: "premium", label: "Premium – R599/mo", description: "E-commerce ready, Office 365, ESET security, priority support" },
+  { value: "enterprise", label: "Enterprise – R999/mo", description: "Custom build, Office 365 suite, ESET endpoint protection, analytics, dedicated support" },
 ];
 
 const WebsiteOrder = () => {
@@ -148,15 +150,22 @@ const WebsiteOrder = () => {
       {/* Hero */}
       <section className="py-16 bg-gradient-to-br from-primary/5 to-accent/5">
         <div className="container mx-auto px-4 text-center">
-          <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-            <Globe className="w-8 h-8 text-primary" />
-          </div>
+          <img
+            src={websiteOfferBanner}
+            alt="Complete client websites from R199/mo"
+            className="mx-auto w-full max-w-lg rounded-2xl shadow-xl mb-8"
+          />
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
-            Get Your Website – From <span className="text-primary">R299/mo</span>
+            Get Your Website – From <span className="text-primary">R199/mo</span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
             Complete the form below to set up your monthly debit order. No upfront costs – we'll build and host your professional website.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1.5 bg-muted/50 px-3 py-1.5 rounded-full"><Shield className="w-4 h-4 text-primary" /> ESET Security Included</span>
+            <span className="flex items-center gap-1.5 bg-muted/50 px-3 py-1.5 rounded-full"><Mail className="w-4 h-4 text-primary" /> Office 365 Ready</span>
+            <span className="flex items-center gap-1.5 bg-muted/50 px-3 py-1.5 rounded-full"><Globe className="w-4 h-4 text-primary" /> Custom Design</span>
+          </div>
         </div>
       </section>
 

@@ -47,13 +47,14 @@ const WebsiteOfferPopup = () => {
           </DialogHeader>
 
           <div className="flex items-baseline justify-center gap-1">
-            <span className="text-5xl font-extrabold text-primary">R299</span>
+            <span className="text-5xl font-extrabold text-primary">R199</span>
             <span className="text-lg text-muted-foreground font-medium">/month</span>
           </div>
 
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span>No upfront costs · Cancel anytime</span>
+          <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+            <span className="bg-muted/50 px-2 py-1 rounded-full">✓ Office 365</span>
+            <span className="bg-muted/50 px-2 py-1 rounded-full">✓ ESET Security</span>
+            <span className="bg-muted/50 px-2 py-1 rounded-full">✓ No upfront costs</span>
           </div>
 
           <Button
