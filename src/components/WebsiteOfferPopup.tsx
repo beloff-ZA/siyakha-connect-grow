@@ -12,7 +12,7 @@ const WebsiteOfferPopup = () => {
   useEffect(() => {
     const dismissed = sessionStorage.getItem("website-offer-dismissed");
     if (!dismissed) {
-      const timer = setTimeout(() => setOpen(true), 3000);
+      const timer = setTimeout(() => setOpen(true), 1500);
       return () => clearTimeout(timer);
     }
   }, []);
