@@ -25,6 +25,12 @@ const PORTFOLIO_SITES = [
     screenshot: "/portfolio/riviganis.png",
     color: "from-rose-600 to-red-500",
   },
+  {
+    name: "Orex",
+    url: "https://orex.info",
+    screenshot: "/portfolio/orex.png",
+    color: "from-amber-600 to-yellow-500",
+  },
 ];
 
 const PortfolioCubes = () => {
