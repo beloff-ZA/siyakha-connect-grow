@@ -34,7 +34,7 @@ const Header = () => {
   const { user, signOut } = useAuth();
 
   return (
-    <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm">
+    <header className="bg-background/95 border-b border-border sticky top-0 z-50 backdrop-blur-md shadow-sm">
       <div className="container mx-auto px-4 lg:px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -53,88 +53,79 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <NavigationMenu className="hidden lg:flex">
-            <NavigationMenuList className="space-x-8">
+            <NavigationMenuList className="space-x-1">
+              {[
+                { label: "Home", to: "/" },
+                { label: "About", to: "/about" },
+              ].map((item) => (
+                <NavigationMenuItem key={item.label}>
+                  <Link
+                    to={item.to}
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-foreground rounded-md hover:bg-muted hover:text-primary transition-all duration-200"
+                  >
+                    {item.label}
+                  </Link>
+                </NavigationMenuItem>
+              ))}
               <NavigationMenuItem>
-                <Link to="/" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Home
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/about" className="text-foreground hover:text-primary transition-colors font-medium">
-                  About
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-foreground hover:text-primary font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium text-foreground hover:text-primary px-3 py-2 rounded-md hover:bg-muted transition-all duration-200">
                   Services
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
-                  <div className="w-64 p-4 bg-popover rounded-md border border-border shadow-lg">
+                  <div className="w-72 p-3 bg-popover rounded-lg border border-border shadow-xl">
                     <Link
                       to="/services"
-                      className="block px-4 py-2 mb-2 text-sm font-medium text-primary hover:text-accent hover:bg-muted rounded-md transition-colors"
+                      className="flex items-center gap-2 px-3 py-2.5 text-sm font-semibold text-primary hover:bg-primary/5 rounded-md transition-colors"
                     >
                       All Services
                     </Link>
+                    <div className="h-px bg-border my-1.5" />
                     {services.map((service) => (
                       <Link
                         key={service}
                         to={`/services/${service.toLowerCase().replace(/\s+/g, '-').replace('&', 'and')}`}
-                        className="block px-4 py-2 text-sm text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors"
+                        className="block px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-accent rounded-md transition-colors"
                       >
                         {service}
                       </Link>
                     ))}
-                    <div className="mt-3 border-t border-border pt-3">
-                      <Link to="/it-company-johannesburg" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
-                        IT Company Johannesburg
+                    <div className="h-px bg-border my-1.5" />
+                    <p className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Regions</p>
+                    {[
+                      { label: "IT Company Johannesburg", to: "/it-company-johannesburg" },
+                      { label: "IT Company Cape Town", to: "/it-company-cape-town" },
+                      { label: "IT Company London", to: "/it-company-london" },
+                      { label: "IT Company EMEA", to: "/it-company-emea" },
+                      { label: "IT Company Angola", to: "/it-company-angola" },
+                    ].map((region) => (
+                      <Link
+                        key={region.to}
+                        to={region.to}
+                        className="block px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-accent rounded-md transition-colors"
+                      >
+                        {region.label}
                       </Link>
-                      <Link to="/it-company-cape-town" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
-                        IT Company Cape Town
-                      </Link>
-                      <Link to="/it-company-london" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
-                        IT Company London
-                      </Link>
-                      <Link to="/it-company-emea" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
-                        IT Company EMEA
-                      </Link>
-                      <Link to="/it-company-angola" className="block px-4 py-2 text-sm font-medium text-foreground hover:text-accent hover:bg-muted rounded-md transition-colors">
-                        IT Company Angola
-                      </Link>
-                    </div>
+                    ))}
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/projects" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Projects
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/products" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Products
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/blog" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Blog
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/support-deals" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Support Deals
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/property" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Property
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
-                  Contact
-                </Link>
-              </NavigationMenuItem>
+              {[
+                { label: "Projects", to: "/projects" },
+                { label: "Products", to: "/products" },
+                { label: "Blog", to: "/blog" },
+                { label: "Support Deals", to: "/support-deals" },
+                { label: "Property", to: "/property" },
+                { label: "Contact", to: "/contact" },
+              ].map((item) => (
+                <NavigationMenuItem key={item.label}>
+                  <Link
+                    to={item.to}
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-foreground rounded-md hover:bg-muted hover:text-primary transition-all duration-200"
+                  >
+                    {item.label}
+                  </Link>
+                </NavigationMenuItem>
+              ))}
             </NavigationMenuList>
           </NavigationMenu>
 
