@@ -44,7 +44,7 @@ const PortfolioCubes = () => {
           Websites we've built and manage — yours could be next.
         </p>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center max-w-5xl mx-auto">
           {PORTFOLIO_SITES.map((site, i) => (
             <a
               key={site.url}
