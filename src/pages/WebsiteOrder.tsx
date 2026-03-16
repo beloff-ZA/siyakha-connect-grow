@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Globe, CheckCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import PortfolioCubes from "@/components/PortfolioCubes";
 
 const PACKAGES = [
   { value: "starter", label: "Starter – R299/mo", description: "Single-page website, mobile-friendly" },
@@ -158,6 +159,9 @@ const WebsiteOrder = () => {
           </p>
         </div>
       </section>
+
+      {/* Portfolio Cubes */}
+      <PortfolioCubes />
 
       {/* Form */}
       <section className="py-12">
