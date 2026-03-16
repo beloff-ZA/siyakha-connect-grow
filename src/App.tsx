@@ -70,9 +70,11 @@ import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import GiveBack from "./pages/GiveBack";
 import Property from "./pages/Property";
+import WebsiteOrder from "./pages/WebsiteOrder";
 import GiveBackButton from "./components/GiveBackButton";
 import { QuoteBasketProvider } from "./contexts/QuoteBasketContext";
 import QuoteBasket from "./components/products/QuoteBasket";
+import WebsiteOfferPopup from "./components/WebsiteOfferPopup";
 
 // Director PA pages
 import AdminRoute from "./components/helpdesk/AdminRoute";
@@ -115,6 +117,7 @@ function App() {
                 <Route path="/careers" element={<Navigate to="/" replace />} />
                 <Route path="/give-back" element={<GiveBack />} />
                 <Route path="/property" element={<Property />} />
+                <Route path="/website-order" element={<WebsiteOrder />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
                 
@@ -203,6 +206,7 @@ function App() {
               <WhatsAppContact />
               <GiveBackButton />
               <QuoteBasket />
+              <WebsiteOfferPopup />
             </Router>
             </QuoteBasketProvider>
           </AuthProvider>
