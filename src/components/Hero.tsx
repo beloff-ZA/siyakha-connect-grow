@@ -64,15 +64,6 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Right - Laptop Image */}
-          <div className="hidden lg:flex justify-center fade-in" style={{ animationDelay: "0.2s" }}>
-            <img
-              src={heroLaptop}
-              alt="Professional ICT solutions by Siyakha Technology"
-              className="w-full max-w-xl drop-shadow-2xl"
-              loading="eager"
-            />
-          </div>
         </div>
       </div>
 
