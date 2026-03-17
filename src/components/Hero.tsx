@@ -13,8 +13,7 @@ const Hero = () => {
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 lg:px-6">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Text */}
+        <div className="max-w-3xl mx-auto text-center">
           <div className="fade-in">
             {/* Badge */}
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/15 text-accent font-medium text-sm mb-8">
