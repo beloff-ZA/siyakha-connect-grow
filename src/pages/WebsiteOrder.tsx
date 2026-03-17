@@ -171,8 +171,8 @@ const WebsiteOrder = () => {
       case 2: return !!(business.about && business.industry);
       case 3: return !!requirements.pages;
       case 4: return hasExistingDomain || domainStatus === "available" || domainStatus === "unknown" || domainStatus === "taken";
-      case 5: return true;
-      case 6: return !!selectedPackage;
+      case 5: return !!selectedPackage;
+      case 6: return true;
       case 7: return !!(banking.bankName && banking.accountHolder && banking.accountNumber && banking.accountType && banking.branchCode && banking.debitDay && agreeTerms);
       case 8: return true;
       default: return false;
