@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import WhySiyakha from "@/components/WhySiyakha";
+import QuickNeeds from "@/components/QuickNeeds";
 import Services from "@/components/Services";
 import PackagePricing from "@/components/PackagePricing";
 import HardwareShowcase from "@/components/HardwareShowcase";
@@ -66,7 +67,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <Hero />
-      <WhySiyakha />
+      <QuickNeeds />
       <Services />
       <PackagePricing />
       <HardwareShowcase />
