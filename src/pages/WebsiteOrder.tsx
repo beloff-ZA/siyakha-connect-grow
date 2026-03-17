@@ -302,7 +302,7 @@ ${mockupUrls.length > 0 ? `<p><strong>Reference Images:</strong><br/>${mockupUrl
     );
   }
 
-  const stepLabels = ["Profile", "Business", "Website", "Domain", "Add-ons", "Package", "Payment", "Review"];
+  const stepLabels = ["Profile", "Business", "Website", "Domain", "Package", "Add-ons", "Payment", "Review"];
 
   return (
     <div className="min-h-screen bg-background">
