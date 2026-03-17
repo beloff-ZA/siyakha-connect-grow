@@ -171,8 +171,8 @@ const WebsiteOrder = () => {
       case 2: return !!(business.about && business.industry);
       case 3: return !!requirements.pages;
       case 4: return hasExistingDomain || domainStatus === "available" || domainStatus === "unknown" || domainStatus === "taken";
-      case 5: return true;
-      case 6: return !!selectedPackage;
+      case 5: return !!selectedPackage;
+      case 6: return true;
       case 7: return !!(banking.bankName && banking.accountHolder && banking.accountNumber && banking.accountType && banking.branchCode && banking.debitDay && agreeTerms);
       case 8: return true;
       default: return false;
@@ -302,7 +302,7 @@ ${mockupUrls.length > 0 ? `<p><strong>Reference Images:</strong><br/>${mockupUrl
     );
   }
 
-  const stepLabels = ["Profile", "Business", "Website", "Domain", "Add-ons", "Package", "Payment", "Review"];
+  const stepLabels = ["Profile", "Business", "Website", "Domain", "Package", "Add-ons", "Payment", "Review"];
 
   return (
     <div className="min-h-screen bg-background">
@@ -546,8 +546,8 @@ ${mockupUrls.length > 0 ? `<p><strong>Reference Images:</strong><br/>${mockupUrl
             </Card>
           )}
 
-          {/* Step 5: Add-ons */}
-          {step === 5 && (
+          {/* Step 6: Add-ons (after package selection) */}
+          {step === 6 && (
             <Card className="animate-fade-in">
               <CardHeader>
                 <div className="flex items-center gap-2">
@@ -612,8 +612,8 @@ ${mockupUrls.length > 0 ? `<p><strong>Reference Images:</strong><br/>${mockupUrl
             </Card>
           )}
 
-          {/* Step 6: Package */}
-          {step === 6 && (
+          {/* Step 5: Package */}
+          {step === 5 && (
             <Card className="animate-fade-in">
               <CardHeader>
                 <div className="flex items-center gap-2">
