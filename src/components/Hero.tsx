@@ -1,18 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
-import heroLaptop from "@/assets/hero-laptop.png";
+import heroBg from "@/assets/hero-bg.jpg";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-[hsl(213,90%,12%)] via-[hsl(213,90%,18%)] to-[hsl(213,85%,24%)]">
-      {/* Subtle grid */}
-      <div className="absolute inset-0 tech-grid opacity-20"></div>
+    <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+      {/* Full-bleed background image */}
+      <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/65"></div>
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 lg:px-6">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Text */}
+        <div className="max-w-3xl mx-auto text-center">
           <div className="fade-in">
             {/* Badge */}
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/15 text-accent font-medium text-sm mb-8">
@@ -26,12 +27,12 @@ const Hero = () => {
               for Business Growth
             </h1>
 
-            <p className="text-lg text-white/75 mb-10 max-w-lg leading-relaxed">
+            <p className="text-lg text-white/75 mb-10 max-w-lg mx-auto leading-relaxed">
               Field engineers, smart hands, and managed IT support trusted by 100+ organisations across South Africa and the African continent.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild className="cta-primary text-base px-8 py-4 h-auto group">
                 <Link to="/contact#quote-form">
                   Request a Consultation
@@ -47,7 +48,7 @@ const Hero = () => {
             </div>
 
             {/* Stats row */}
-            <div className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-white/10">
+            <div className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-white/10 justify-center">
               {[
                 { value: "100+", label: "Businesses Served" },
                 { value: "24/7", label: "Support Available" },
@@ -62,15 +63,6 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Right - Laptop Image */}
-          <div className="hidden lg:flex justify-center fade-in" style={{ animationDelay: "0.2s" }}>
-            <img
-              src={heroLaptop}
-              alt="Professional ICT solutions by Siyakha Technology"
-              className="w-full max-w-xl drop-shadow-2xl"
-              loading="eager"
-            />
-          </div>
         </div>
       </div>
 
