@@ -164,7 +164,7 @@ const About = () => {
               </p>
             </article>
             <article>
-              <h3 className="text-xl font-semibold text-primary mb-3">Where We Operate</h3>
+              <h3 className="text-xl font-semibold text-primary mb-3">Countries We Have Remotely Supported & Provided Local Engineers</h3>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-foreground">
                 <li>South Africa</li>
                 <li>Angola</li>
