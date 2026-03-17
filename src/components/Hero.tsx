@@ -32,7 +32,7 @@ const Hero = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild className="cta-primary text-base px-8 py-4 h-auto group">
                 <Link to="/contact#quote-form">
                   Request a Consultation
