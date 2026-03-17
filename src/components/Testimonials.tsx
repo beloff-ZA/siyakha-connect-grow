@@ -52,6 +52,15 @@ const Testimonials = () => {
       rating: 5,
       avatar: "B",
     },
+    {
+      name: "Benedict",
+      role: "Client",
+      company: "Helpdesk Review",
+      content:
+        "Ben was very quick in resolving my issue. Excellent service and very responsive — 5 stars all the way!",
+      rating: 5,
+      avatar: "B",
+    },
   ];
 
   const nextTestimonial = () => {
