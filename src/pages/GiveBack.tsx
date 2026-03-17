@@ -416,6 +416,52 @@ const GiveBack = () => {
               </div>
             </div>
           </div>
+
+          {/* Siyakha Feeding Initiative */}
+          <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg mt-12">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="relative aspect-[3/4] md:aspect-auto">
+                <img
+                  src="/lovable-uploads/siyakha-feeding-initiative.png"
+                  alt="Informal picker pushing a cart — Siyakha Feeding Initiative"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div className="p-6 md:p-10 flex flex-col justify-center">
+                <span className="inline-block bg-accent/10 text-accent text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4 w-fit">
+                  Feeding Initiative · 12-Month Commitment
+                </span>
+                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
+                  Siyakha Feeding Initiative — Dignity Through Consistency
+                </h3>
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  In April 2025, Siyakha launched a feeding initiative with a simple but powerful goal — to support the <strong>informal pickers</strong> who work tirelessly in our communities. What started as a small act of giving has grown into a <strong>12-month commitment</strong>, consistently providing meals to those who need it most.
+                </p>
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  Every Tuesday, we support <strong>5 informal pickers</strong> with a simple, nourishing meal: 4 slices of Albany bread, Eskort chicken polony, and a fresh orange.
+                </p>
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className="bg-secondary rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-accent">260</div>
+                    <div className="text-xs text-muted-foreground">Meals Provided</div>
+                  </div>
+                  <div className="bg-secondary rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-accent">260</div>
+                    <div className="text-xs text-muted-foreground">Sandwiches Served</div>
+                  </div>
+                  <div className="bg-secondary rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-accent">52</div>
+                    <div className="text-xs text-muted-foreground">Loaves of Bread</div>
+                  </div>
+                </div>
+                <p className="text-muted-foreground text-sm italic leading-relaxed">
+                  This initiative is about more than food — it's about recognition, dignity, and consistency. It's our way of saying <strong>we see you</strong>, and we appreciate the work you do.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
