@@ -546,8 +546,8 @@ ${mockupUrls.length > 0 ? `<p><strong>Reference Images:</strong><br/>${mockupUrl
             </Card>
           )}
 
-          {/* Step 5: Add-ons */}
-          {step === 5 && (
+          {/* Step 6: Add-ons (after package selection) */}
+          {step === 6 && (
             <Card className="animate-fade-in">
               <CardHeader>
                 <div className="flex items-center gap-2">
