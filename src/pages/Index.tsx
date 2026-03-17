@@ -3,13 +3,10 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import WhySiyakha from "@/components/WhySiyakha";
 import Services from "@/components/Services";
-import NetworkInfrastructureFeature from "@/components/NetworkInfrastructureFeature";
-import FranchiseFeature from "@/components/FranchiseFeature";
-import FeaturedProducts from "@/components/FeaturedProducts";
-import AdobePartner from "@/components/AdobePartner";
+import PackagePricing from "@/components/PackagePricing";
+import HardwareShowcase from "@/components/HardwareShowcase";
 import Industries from "@/components/Industries";
 import Projects from "@/components/Projects";
-
 import Testimonials from "@/components/Testimonials";
 import LeadMagnet from "@/components/LeadMagnet";
 import SmartHandsPartnership from "@/components/SmartHandsPartnership";
@@ -71,11 +68,8 @@ const Index = () => {
       <Hero />
       <WhySiyakha />
       <Services />
-      <NetworkInfrastructureFeature />
-      <FranchiseFeature />
-      <FeaturedProducts />
-      <AdobePartner />
-      
+      <PackagePricing />
+      <HardwareShowcase />
       <Industries />
       <Projects />
       <Testimonials />
