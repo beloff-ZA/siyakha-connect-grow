@@ -48,7 +48,7 @@ const Hero = () => {
             </div>
 
             {/* Stats row */}
-            <div className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-white/10">
+            <div className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-white/10 justify-center">
               {[
                 { value: "100+", label: "Businesses Served" },
                 { value: "24/7", label: "Support Available" },
