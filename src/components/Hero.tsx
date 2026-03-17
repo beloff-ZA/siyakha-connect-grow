@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
-import heroLaptop from "@/assets/hero-laptop.png";
+import heroBg from "@/assets/hero-bg.jpg";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-[hsl(213,90%,12%)] via-[hsl(213,90%,18%)] to-[hsl(213,85%,24%)]">
-      {/* Subtle grid */}
-      <div className="absolute inset-0 tech-grid opacity-20"></div>
+    <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+      {/* Full-bleed background image */}
+      <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/65"></div>
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 lg:px-6">
