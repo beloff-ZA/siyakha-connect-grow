@@ -2,11 +2,13 @@ User-agent: Googlebot
 Allow: /
 Disallow: /helpdesk/
 Disallow: /auth
+Disallow: /portal/
 
 User-agent: Bingbot
 Allow: /
 Disallow: /helpdesk/
 Disallow: /auth
+Disallow: /portal/
 
 User-agent: Twitterbot
 Allow: /
@@ -18,5 +20,6 @@ User-agent: *
 Allow: /
 Disallow: /helpdesk/
 Disallow: /auth
+Disallow: /portal/
 
 Sitemap: https://siyakha-connect-grow.lovable.app/sitemap.xml

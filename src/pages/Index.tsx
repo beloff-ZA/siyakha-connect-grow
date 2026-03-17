@@ -43,25 +43,86 @@ const Index = () => {
     canonical.setAttribute("href", `${window.location.origin}/`);
   }, []);
 
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://siyakha-connect-grow.lovable.app';
+
   const localBusinessJson = useMemo(() => ({
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "ITService",
+    "@id": `${origin}/#organization`,
     name: "Siyakha Tech Solutions (Pty) Ltd",
+    alternateName: "Siyakha Technology",
+    description: "BEE Level 1 managed IT services company in Johannesburg offering networking, Wi-Fi, CCTV, cybersecurity, cloud solutions, and field support across South Africa and internationally.",
     telephone: "+27 81 501 2993",
-    areaServed: ["Johannesburg", "Sandton", "Randburg", "Gauteng", "South Africa"],
-    url: typeof window !== 'undefined' ? window.location.origin : undefined,
+    email: "nikita@siyakhatechnology.co.za",
+    url: origin,
+    logo: `${origin}/lovable-uploads/5dbb43e5-c5a0-4c28-a6aa-36941849d46a.png`,
+    image: `${origin}/lovable-uploads/5dbb43e5-c5a0-4c28-a6aa-36941849d46a.png`,
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Johannesburg",
+      addressRegion: "Gauteng",
+      addressCountry: "ZA"
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: -26.1076,
+      longitude: 28.0567
+    },
+    areaServed: [
+      { "@type": "Country", name: "South Africa" },
+      { "@type": "Country", name: "Angola" },
+      { "@type": "Country", name: "Eswatini" },
+      { "@type": "Country", name: "Bahrain" },
+      { "@type": "Country", name: "Kazakhstan" },
+      { "@type": "Country", name: "Mozambique" },
+      { "@type": "Country", name: "Kenya" },
+      { "@type": "Country", name: "Nigeria" },
+      { "@type": "AdministrativeArea", name: "California, USA" },
+      { "@type": "AdministrativeArea", name: "Europe" }
+    ],
     sameAs: [
       "https://facebook.com/siyakhatechnology",
       "https://www.instagram.com/siyakhatech/",
       "https://linkedin.com/company/siyakhatechnology"
     ],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "48",
+      bestRating: "5"
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "IT Services",
+      itemListElement: [
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Managed IT Support" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Network Infrastructure & Wi-Fi" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "CCTV & Access Control" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Cloud & Microsoft 365" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Field Support & Smart Hands" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Cybersecurity Solutions" } }
+      ]
+    },
     openingHoursSpecification: [{
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
       opens: "08:00",
       closes: "17:00"
     }]
-  }), []);
+  }), [origin]);
+
+  const websiteJson = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Siyakha Technology",
+    url: origin,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${origin}/products?q={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  }), [origin]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -80,6 +141,7 @@ const Index = () => {
       <FaithSection />
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJson) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJson) }} />
     </div>
   );
 };
