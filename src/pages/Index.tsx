@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import WhySiyakha from "@/components/WhySiyakha";
+import QuickNeeds from "@/components/QuickNeeds";
 import Services from "@/components/Services";
 import PackagePricing from "@/components/PackagePricing";
 import HardwareShowcase from "@/components/HardwareShowcase";
