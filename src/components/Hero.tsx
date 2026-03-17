@@ -27,7 +27,7 @@ const Hero = () => {
               for Business Growth
             </h1>
 
-            <p className="text-lg text-white/75 mb-10 max-w-lg leading-relaxed">
+            <p className="text-lg text-white/75 mb-10 max-w-lg mx-auto leading-relaxed">
               Field engineers, smart hands, and managed IT support trusted by 100+ organisations across South Africa and the African continent.
             </p>
 
