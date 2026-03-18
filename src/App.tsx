@@ -206,7 +206,7 @@ function App() {
               <WhatsAppContact />
               <GiveBackButton />
               <QuoteBasket />
-              <WebsiteOfferPopup />
+              
             </Router>
             </QuoteBasketProvider>
           </AuthProvider>
