@@ -58,11 +58,15 @@ import ManagedITSJohannesburg from "./pages/ManagedITSJohannesburg";
 import ITSupportJohannesburg from "./pages/ITSupportJohannesburg";
 import CybersecurityJohannesburg from "./pages/CybersecurityJohannesburg";
 import CloudServicesJohannesburg from "./pages/CloudServicesJohannesburg";
+import ItCompanySandton from "./pages/ItCompanySandton";
 // Regional/City pages
 import ItCompanyEMEA from "./pages/ItCompanyEMEA";
 import ItCompanyCapeTown from "./pages/ItCompanyCapeTown";
 import ItCompanyLondon from "./pages/ItCompanyLondon";
 import ItCompanyAngola from "./pages/ItCompanyAngola";
+// Education
+import SchoolItSupport from "./pages/services/SchoolItSupport";
+import EducationItServices from "./pages/services/EducationItServices";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ClientPortal from "./pages/ClientPortal";
@@ -191,6 +195,7 @@ function App() {
                 <Route path="/projects/fibre-feasibility" element={<Navigate to="/projects" replace />} />
 
                 <Route path="/it-company-johannesburg" element={<ItCompanyJohannesburg />} />
+                <Route path="/it-company-sandton" element={<ItCompanySandton />} />
                 <Route path="/managed-it-services-johannesburg" element={<ManagedITSJohannesburg />} />
                 <Route path="/it-support-johannesburg" element={<ITSupportJohannesburg />} />
                 <Route path="/cybersecurity-services-johannesburg" element={<CybersecurityJohannesburg />} />
@@ -199,6 +204,12 @@ function App() {
                 <Route path="/it-company-cape-town" element={<ItCompanyCapeTown />} />
                 <Route path="/it-company-london" element={<ItCompanyLondon />} />
                 <Route path="/it-company-angola" element={<ItCompanyAngola />} />
+
+                {/* Education IT */}
+                <Route path="/services/school-it-support" element={<SchoolItSupport />} />
+                <Route path="/services/education-it-services" element={<EducationItServices />} />
+                <Route path="/school-it-support" element={<Navigate to="/services/school-it-support" replace />} />
+                <Route path="/education-it" element={<Navigate to="/services/education-it-services" replace />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
