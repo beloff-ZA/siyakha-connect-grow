@@ -58,11 +58,15 @@ import ManagedITSJohannesburg from "./pages/ManagedITSJohannesburg";
 import ITSupportJohannesburg from "./pages/ITSupportJohannesburg";
 import CybersecurityJohannesburg from "./pages/CybersecurityJohannesburg";
 import CloudServicesJohannesburg from "./pages/CloudServicesJohannesburg";
+import ItCompanySandton from "./pages/ItCompanySandton";
 // Regional/City pages
 import ItCompanyEMEA from "./pages/ItCompanyEMEA";
 import ItCompanyCapeTown from "./pages/ItCompanyCapeTown";
 import ItCompanyLondon from "./pages/ItCompanyLondon";
 import ItCompanyAngola from "./pages/ItCompanyAngola";
+// Education
+import SchoolItSupport from "./pages/services/SchoolItSupport";
+import EducationItServices from "./pages/services/EducationItServices";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ClientPortal from "./pages/ClientPortal";
