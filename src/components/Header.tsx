@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, ChevronDown, LogIn, LogOut, User, Headphones } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,15 +8,6 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,7 +22,7 @@ const Header = () => {
     "Healthcare IT Support"
   ];
 
-  const { user, signOut } = useAuth();
+  
 
   return (
     <header className="bg-background/95 border-b border-border sticky top-0 z-50 backdrop-blur-md shadow-sm">
@@ -129,47 +120,13 @@ const Header = () => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Auth Button & Mobile Menu */}
-          <div className="flex items-center space-x-3">
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="hidden lg:flex items-center gap-2">
-                    <User size={16} />
-                    <span className="max-w-[120px] truncate">{user.email?.split('@')[0]}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <Link to="/helpdesk" className="flex items-center gap-2 cursor-pointer">
-                      <Headphones size={14} />
-                      Siyakha AI PA
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="flex items-center gap-2 cursor-pointer text-destructive">
-                    <LogOut size={14} />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link to="/auth">
-                <Button variant="default" size="sm" className="hidden lg:flex items-center gap-2">
-                  <LogIn size={16} />
-                  Sign In
-                </Button>
-              </Link>
-            )}
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 text-foreground hover:text-primary"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="lg:hidden p-2 text-foreground hover:text-primary"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
 
         {/* Mobile Navigation */}
@@ -247,26 +204,6 @@ const Header = () => {
                 Contact
               </Link>
 
-              {/* Mobile Auth */}
-              <div className="border-t border-border pt-4 px-4">
-                {user ? (
-                  <div className="space-y-2">
-                    <Link to="/helpdesk" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground hover:text-primary transition-colors">
-                      <Headphones size={16} />
-                      Siyakha AI PA
-                    </Link>
-                    <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="flex items-center gap-2 py-2 text-destructive hover:text-destructive/80 transition-colors">
-                      <LogOut size={16} />
-                      Sign Out
-                    </button>
-                  </div>
-                ) : (
-                  <Link to="/auth" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-primary font-medium hover:text-primary/80 transition-colors">
-                    <LogIn size={16} />
-                    Sign In
-                  </Link>
-                )}
-              </div>
             </div>
           </div>
         )}
