@@ -66,7 +66,7 @@ export default function TikTokLanding() {
             We've received your request. Our team will contact you shortly.
           </p>
           <Button
-            onClick={() => { setSubmitted(false); setSelected([]); setForm({ company: "", name: "", email: "", phone: "", message: "" }); }}
+            onClick={() => { setSubmitted(false); setSelected([]); setForm({ company: "", name: "", email: "", phone: "", message: "", country: "", businessType: "" }); }}
             className="bg-accent text-accent-foreground hover:bg-accent/90"
           >
             Submit Another Request
