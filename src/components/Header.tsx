@@ -204,26 +204,6 @@ const Header = () => {
                 Contact
               </Link>
 
-              {/* Mobile Auth */}
-              <div className="border-t border-border pt-4 px-4">
-                {user ? (
-                  <div className="space-y-2">
-                    <Link to="/helpdesk" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground hover:text-primary transition-colors">
-                      <Headphones size={16} />
-                      Siyakha AI PA
-                    </Link>
-                    <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="flex items-center gap-2 py-2 text-destructive hover:text-destructive/80 transition-colors">
-                      <LogOut size={16} />
-                      Sign Out
-                    </button>
-                  </div>
-                ) : (
-                  <Link to="/auth" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-primary font-medium hover:text-primary/80 transition-colors">
-                    <LogIn size={16} />
-                    Sign In
-                  </Link>
-                )}
-              </div>
             </div>
           </div>
         )}
