@@ -22,7 +22,7 @@ const Header = () => {
     "Healthcare IT Support"
   ];
 
-  const { user, signOut } = useAuth();
+  
 
   return (
     <header className="bg-background/95 border-b border-border sticky top-0 z-50 backdrop-blur-md shadow-sm">
