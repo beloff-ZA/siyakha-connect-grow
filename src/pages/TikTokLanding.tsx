@@ -158,6 +158,7 @@ export default function TikTokLanding() {
                   <option value="School / Education" className="text-foreground">School / Education</option>
                   <option value="Other" className="text-foreground">Other</option>
                 </select>
+              </div>
               <div>
                 <Label className="text-primary-foreground/80 text-xs">Full Name *</Label>
                 <Input
