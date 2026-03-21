@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, ChevronDown, LogIn, LogOut, User, Headphones } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,15 +8,6 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
