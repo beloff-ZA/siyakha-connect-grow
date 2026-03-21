@@ -47,7 +47,7 @@ export default function TikTokLanding() {
       email: form.email,
       contact_number: form.phone,
       category: "TikTok Lead",
-      description: `Company/Business: ${form.company}\nServices needed: ${chosenServices}\n\nAdditional info:\n${form.message || "None"}`,
+      description: `Company/Business: ${form.company}\nBusiness Type: ${form.businessType}\nCountry: ${form.country}\nServices needed: ${chosenServices}\n\nAdditional info:\n${form.message || "None"}`,
       preferred_channel: "tiktok",
     });
 
