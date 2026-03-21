@@ -80,7 +80,7 @@ export default function TikTokLanding() {
     <div className="min-h-screen bg-gradient-to-br from-primary via-[hsl(213,90%,12%)] to-[hsl(213,90%,6%)]">
       {/* Hero */}
       <div className="text-center pt-10 pb-6 px-4">
-        <img src="/lovable-uploads/346e18e9-2469-4478-b57e-9492a32e5a91.png" alt="Siyakha Technology" className="h-12 mx-auto mb-6" />
+        <img src="/lovable-uploads/18df369d-304c-4290-97b8-53ae2aad27fb.png" alt="Siyakha Technology" className="h-12 mx-auto mb-6" />
         <h1 className="text-3xl md:text-5xl font-extrabold text-primary-foreground leading-tight mb-3">
           IT Solutions That <span className="text-accent">Just Work</span>
         </h1>
