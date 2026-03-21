@@ -19,7 +19,7 @@ const services = [
 
 export default function TikTokLanding() {
   const [selected, setSelected] = useState<string[]>([]);
-  const [form, setForm] = useState({ company: "", name: "", email: "", phone: "", message: "" });
+  const [form, setForm] = useState({ company: "", name: "", email: "", phone: "", message: "", country: "", businessType: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
