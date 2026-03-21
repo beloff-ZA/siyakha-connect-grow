@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
+import TikTokLanding from "./pages/TikTokLanding";
 import MaristBrothersProject from "./pages/projects/MaristBrothers";
 import KFCExmileProject from "./pages/projects/KFCExmile";
 import VillageBakeryProject from "./pages/projects/VillageBakery";
@@ -210,6 +211,7 @@ function App() {
                 <Route path="/services/education-it-services" element={<EducationItServices />} />
                 <Route path="/school-it-support" element={<Navigate to="/services/school-it-support" replace />} />
                 <Route path="/education-it" element={<Navigate to="/services/education-it-services" replace />} />
+                <Route path="/get-started" element={<TikTokLanding />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
