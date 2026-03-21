@@ -19,7 +19,7 @@ const services = [
 
 export default function TikTokLanding() {
   const [selected, setSelected] = useState<string[]>([]);
-  const [form, setForm] = useState({ company: "", name: "", email: "", phone: "", message: "" });
+  const [form, setForm] = useState({ company: "", name: "", email: "", phone: "", message: "", country: "", businessType: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -47,7 +47,7 @@ export default function TikTokLanding() {
       email: form.email,
       contact_number: form.phone,
       category: "TikTok Lead",
-      description: `Company/Business: ${form.company}\nServices needed: ${chosenServices}\n\nAdditional info:\n${form.message || "None"}`,
+      description: `Company/Business: ${form.company}\nBusiness Type: ${form.businessType}\nCountry: ${form.country}\nServices needed: ${chosenServices}\n\nAdditional info:\n${form.message || "None"}`,
       preferred_channel: "tiktok",
     });
 
@@ -66,7 +66,7 @@ export default function TikTokLanding() {
             We've received your request. Our team will contact you shortly.
           </p>
           <Button
-            onClick={() => { setSubmitted(false); setSelected([]); setForm({ company: "", name: "", email: "", phone: "", message: "" }); }}
+            onClick={() => { setSubmitted(false); setSelected([]); setForm({ company: "", name: "", email: "", phone: "", message: "", country: "", businessType: "" }); }}
             className="bg-accent text-accent-foreground hover:bg-accent/90"
           >
             Submit Another Request
@@ -131,6 +131,33 @@ export default function TikTokLanding() {
                   className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/40"
                   required
                 />
+              </div>
+              <div>
+                <Label className="text-primary-foreground/80 text-xs">Country *</Label>
+                <Input
+                  value={form.country}
+                  onChange={(e) => setForm({ ...form, country: e.target.value })}
+                  placeholder="e.g. South Africa"
+                  className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/40"
+                  required
+                />
+              </div>
+              <div>
+                <Label className="text-primary-foreground/80 text-xs">Business Type *</Label>
+                <select
+                  value={form.businessType}
+                  onChange={(e) => setForm({ ...form, businessType: e.target.value })}
+                  className="flex h-10 w-full rounded-md border border-primary-foreground/20 bg-primary-foreground/10 px-3 py-2 text-sm text-primary-foreground"
+                  required
+                >
+                  <option value="" className="text-foreground">Select type...</option>
+                  <option value="Home" className="text-foreground">Home</option>
+                  <option value="Small Business" className="text-foreground">Small Business</option>
+                  <option value="Medium Business" className="text-foreground">Medium Business</option>
+                  <option value="Enterprise" className="text-foreground">Enterprise</option>
+                  <option value="School / Education" className="text-foreground">School / Education</option>
+                  <option value="Other" className="text-foreground">Other</option>
+                </select>
               </div>
               <div>
                 <Label className="text-primary-foreground/80 text-xs">Full Name *</Label>
