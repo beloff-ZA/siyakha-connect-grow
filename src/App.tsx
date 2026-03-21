@@ -211,6 +211,7 @@ function App() {
                 <Route path="/services/education-it-services" element={<EducationItServices />} />
                 <Route path="/school-it-support" element={<Navigate to="/services/school-it-support" replace />} />
                 <Route path="/education-it" element={<Navigate to="/services/education-it-services" replace />} />
+                <Route path="/get-started" element={<TikTokLanding />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
