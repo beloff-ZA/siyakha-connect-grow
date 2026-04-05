@@ -135,7 +135,7 @@ const Index = () => {
       <Hero />
       <QuickNeeds />
       <Services />
-      <PackagePricing />
+      
       <HardwareShowcase />
       <Industries />
       <Projects />
