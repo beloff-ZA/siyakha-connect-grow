@@ -4,6 +4,17 @@ import Footer from "@/components/Footer";
 import Projects from "@/components/Projects";
 import heroImage from "@/assets/hero-bg.jpg";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+
+import serverRack2026 from "@/assets/gallery/server-rack-2026.png";
+import techCabinet2026 from "@/assets/gallery/technician-cabinet-2026.png";
+import dellMonitor2026 from "@/assets/gallery/dell-monitor-setup-2026.png";
+import execWorkstation2026 from "@/assets/gallery/executive-workstation-2026.png";
+import siyakhaOffice2026 from "@/assets/gallery/siyakha-office-2026.png";
+import patchPanel2026 from "@/assets/gallery/patch-panel-switch-2026.png";
+import smartTv2026 from "@/assets/gallery/smart-tv-lounge-2026.png";
+import dualMonitor2026 from "@/assets/gallery/dual-monitor-desk-2026.png";
+import solarInverter2026 from "@/assets/gallery/solar-inverter-2026.png";
+import boardroomAv2026 from "@/assets/gallery/boardroom-av-2026.png";
 const ProjectsIndex = () => {
   useEffect(() => {
     const title = "Projects | Siyakha Technology Solutions — IT Company Johannesburg, Sandton MSP";
