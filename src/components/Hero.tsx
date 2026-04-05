@@ -23,8 +23,8 @@ const Hero = () => {
 
             <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white mb-6 leading-[1.15] tracking-tight">
               IT Company in{" "}
-              <span className="text-accent">Johannesburg</span>{" "}
-              &amp; Northern Suburbs
+              <span className="text-accent">Johannesburg</span>,{" "}
+              Northern Suburbs
             </h1>
 
             <p className="text-lg text-white/75 mb-10 max-w-lg mx-auto leading-relaxed">
