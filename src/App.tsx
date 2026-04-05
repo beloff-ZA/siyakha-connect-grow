@@ -169,6 +169,8 @@ function App() {
                 <Route path="/services/healthcare-it-support" element={<HealthcareItSupport />} />
                 <Route path="/healthcare-it-support" element={<Navigate to="/services/healthcare-it-support" replace />} />
                 <Route path="/services/field-support-services" element={<FieldSupportServices />} />
+                <Route path="/services/remote-it-support" element={<RemoteITSupport />} />
+                <Route path="/remote-it-support" element={<Navigate to="/services/remote-it-support" replace />} />
                 <Route path="/services" element={<ServicesIndex />} />
 
                 {/* Blog */}

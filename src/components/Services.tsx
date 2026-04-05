@@ -46,6 +46,13 @@ const Services = () => {
       benefit: "Access our continent-wide network of skilled infrastructure technicians and dedicated support teams across Africa.",
       link: "/services/field-support-services",
     },
+    {
+      icon: Monitor,
+      title: "Remote IT Support",
+      tags: ["Outsourced Helpdesk", "Server Monitoring", "Microsoft 365", "24/7"],
+      benefit: "Outsource your IT helpdesk to Siyakha — remote desktop support, server monitoring, and cybersecurity management from anywhere in South Africa.",
+      link: "/services/remote-it-support",
+    },
   ];
 
   return (
