@@ -55,11 +55,10 @@ const Services = () => {
         <div className="max-w-3xl mb-16">
           <div className="accent-line mb-4"></div>
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            What We Deliver
+            IT Services We Deliver Across Johannesburg
           </h2>
           <p className="text-lg text-muted-foreground">
-            End-to-end ICT services — from infrastructure builds to ongoing managed support. 
-            Every solution is backed by dedicated field engineers and smart hands teams.
+            End-to-end ICT services for businesses in the Northern Suburbs and greater Johannesburg — from infrastructure builds to ongoing managed support, backed by dedicated field engineers.
           </p>
         </div>
 

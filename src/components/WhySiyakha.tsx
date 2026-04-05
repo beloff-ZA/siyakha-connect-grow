@@ -39,10 +39,10 @@ const WhySiyakha = () => {
         <div className="max-w-3xl mb-16">
           <div className="accent-line mb-4"></div>
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            The IT Challenges Holding Your Business Back
+            IT Challenges Facing Johannesburg Northern Suburbs Businesses
           </h2>
           <p className="text-lg text-muted-foreground">
-            Every day without reliable ICT infrastructure costs your business time, money, and opportunities. Here's how we solve that.
+            From Sandton to Randburg, Fourways to Midrand — every day without reliable ICT infrastructure costs your business time, money, and opportunities. Here's how we solve that.
           </p>
         </div>
 

@@ -85,10 +85,10 @@ const Testimonials = () => {
       <div className="container mx-auto px-4 lg:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Client Testimonials
+            What Johannesburg Businesses Say About Us
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Real feedback from clients across education, clubs, and businesses.
+            Real feedback from clients across education, retail, and businesses in the Northern Suburbs.
           </p>
         </div>
 

@@ -122,9 +122,9 @@ const Industries = () => {
         </div>
 
         <aside className="mt-12 mx-auto max-w-3xl text-center">
-          <h3 className="text-xl font-semibold text-foreground">Why Businesses Choose Us</h3>
+          <h3 className="text-xl font-semibold text-foreground">Why Northern Suburbs Businesses Choose Us</h3>
           <p className="mt-3 text-muted-foreground">
-            Local expertise in Johannesburg, tailored solutions for SMMEs through to enterprises, and a trusted, proactive partnership.
+            Local expertise across Sandton, Randburg, Fourways, Bryanston, and Midrand — tailored IT solutions and a trusted, proactive partnership.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Button asChild>

@@ -11,7 +11,7 @@ const HardwareShowcase = () => {
           <div>
             <div className="accent-line mb-4"></div>
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-              Supply. Install. Configure.
+              IT Hardware Supply &amp; Installation in Johannesburg
             </h2>
             <p className="text-muted-foreground mb-6 leading-relaxed">
               We don't just sell hardware — we deliver complete solutions. Every product comes with professional installation, configuration, and ongoing support from our certified field engineers.

@@ -51,10 +51,10 @@ const QuickNeeds = () => (
     <div className="container mx-auto px-4 lg:px-6">
       <div className="text-center mb-10">
         <h2 className="text-2xl md:text-3xl font-bold text-primary">
-          What Do You Need?
+          IT Solutions for Your Business
         </h2>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Tell us what you're looking for — we'll handle the rest.
+          Tell us what you need — we service Randburg, Sandton, Fourways, Midrand, and all Northern Suburbs.
         </p>
       </div>
 

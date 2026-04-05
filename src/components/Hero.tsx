@@ -22,13 +22,13 @@ const Hero = () => {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white mb-6 leading-[1.15] tracking-tight">
-              Your Dedicated{" "}
-              <span className="text-accent">ICT Partner</span>{" "}
-              for Business Growth
+              IT Company in{" "}
+              <span className="text-accent">Johannesburg</span>{" "}
+              &amp; Northern Suburbs
             </h1>
 
             <p className="text-lg text-white/75 mb-10 max-w-lg mx-auto leading-relaxed">
-              Field engineers, smart hands, and managed IT support trusted by 100+ organisations across South Africa and the African continent.
+              Managed IT support, field engineers, and smart hands trusted by 100+ businesses in Sandton, Randburg, Fourways, Midrand, and across South Africa.
             </p>
 
             {/* CTA Buttons */}

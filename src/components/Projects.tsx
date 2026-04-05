@@ -110,10 +110,10 @@ const Projects = () => {
         <div className="text-center mb-16">
           <div className="accent-line mx-auto mb-4" />
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Featured Project Spotlight
+            IT Projects Across Johannesburg &amp; Beyond
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover how we've transformed businesses with innovative technology solutions.
+            See how we've transformed businesses in Sandton, the Northern Suburbs, and across South Africa with innovative IT solutions.
           </p>
         </div>
 

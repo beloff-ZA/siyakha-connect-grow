@@ -70,15 +70,20 @@ const Index = () => {
       longitude: 28.0567
     },
     areaServed: [
+      { "@type": "City", name: "Johannesburg" },
+      { "@type": "AdministrativeArea", name: "Sandton" },
+      { "@type": "AdministrativeArea", name: "Randburg" },
+      { "@type": "AdministrativeArea", name: "Fourways" },
+      { "@type": "AdministrativeArea", name: "Midrand" },
+      { "@type": "AdministrativeArea", name: "Bryanston" },
+      { "@type": "AdministrativeArea", name: "Roodepoort" },
+      { "@type": "AdministrativeArea", name: "Lonehill" },
       { "@type": "Country", name: "South Africa" },
       { "@type": "Country", name: "Angola" },
       { "@type": "Country", name: "Eswatini" },
       { "@type": "Country", name: "Bahrain" },
-      { "@type": "Country", name: "Kazakhstan" },
-      { "@type": "Country", name: "Mozambique" },
       { "@type": "Country", name: "Kenya" },
       { "@type": "Country", name: "Nigeria" },
-      { "@type": "AdministrativeArea", name: "California, USA" },
       { "@type": "AdministrativeArea", name: "Europe" }
     ],
     sameAs: [
