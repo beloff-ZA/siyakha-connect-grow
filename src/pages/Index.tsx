@@ -17,8 +17,8 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   useEffect(() => {
-    const title = "IT Company Johannesburg (Sandton) MSP | Siyakha";
-    const description = "Managed IT support (MSP) in Johannesburg & Sandton. Business IT services, Wi‑Fi, CCTV, and cloud by Siyakha Tech Solutions.";
+    const title = "IT Company Johannesburg & Northern Suburbs | Siyakha";
+    const description = "Managed IT support in Johannesburg Northern Suburbs — Sandton, Randburg, Fourways, Midrand, Bryanston. Wi‑Fi, CCTV, cloud & cybersecurity by Siyakha.";
     document.title = title;
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
       let tag = document.head.querySelector(`meta[${key}='${value}']`) as HTMLMetaElement | null;
