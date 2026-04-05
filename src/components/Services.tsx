@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Wifi, Shield, Cloud, MessageSquare, ArrowRight, Wrench, Headphones } from "lucide-react";
+import { Wifi, Shield, Cloud, MessageSquare, ArrowRight, Wrench, Headphones, Monitor } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Services = () => {
