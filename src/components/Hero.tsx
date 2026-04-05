@@ -39,10 +39,10 @@ const Hero = () => {
                 </Link>
               </Button>
               <Button asChild variant="outline" className="text-base px-8 py-4 h-auto bg-white/5 border-white/20 text-white hover:bg-white hover:text-primary group">
-                <a href="#packages">
+                <Link to="/services">
                   <Play className="mr-2 h-4 w-4" />
-                  View Packages
-                </a>
+                  View Services
+                </Link>
               </Button>
             </div>
 

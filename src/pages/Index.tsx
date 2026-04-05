@@ -4,7 +4,7 @@ import Hero from "@/components/Hero";
 import WhySiyakha from "@/components/WhySiyakha";
 import QuickNeeds from "@/components/QuickNeeds";
 import Services from "@/components/Services";
-import PackagePricing from "@/components/PackagePricing";
+
 import HardwareShowcase from "@/components/HardwareShowcase";
 import Industries from "@/components/Industries";
 import Projects from "@/components/Projects";
@@ -135,7 +135,7 @@ const Index = () => {
       <Hero />
       <QuickNeeds />
       <Services />
-      <PackagePricing />
+      
       <HardwareShowcase />
       <Industries />
       <Projects />
