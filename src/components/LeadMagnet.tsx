@@ -34,7 +34,7 @@ const LeadMagnet = () => {
                       Free Consultation Available
                     </div>
                     <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-                      Need an ICT Partner You Can Trust?
+                      Trusted IT Partner in Johannesburg Northern Suburbs
                     </h2>
                     <p className="text-lg text-muted-foreground leading-relaxed">
                       We offer free consultations for businesses ready to level up their tech. 

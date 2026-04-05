@@ -17,7 +17,7 @@ const industries = [
     title: "Schools & Educational Institutions",
     icon: GraduationCap,
     points: [
-      "Reliable Wi‑Fi installations and classroom connectivity solutions.",
+      "Reliable Wi-Fi installations and classroom connectivity solutions.",
       "CCTV & access control for student and staff safety.",
     ],
   },
@@ -49,7 +49,7 @@ const industries = [
     title: "Retail & Service Businesses",
     icon: ShoppingBag,
     points: [
-      "Point‑of‑sale support, network troubleshooting, and CCTV monitoring.",
+      "Point-of-sale support, network troubleshooting, and CCTV monitoring.",
       "Scalable IT solutions that grow with your business.",
     ],
   },
@@ -57,7 +57,7 @@ const industries = [
     title: "Residential Complexes & Property Managers",
     icon: Home,
     points: [
-      "Secure Wi‑Fi networks, intercoms, and access control installations.",
+      "Secure Wi-Fi networks, intercoms, and access control installations.",
       "Ongoing technical support for residents and building managers.",
     ],
   },
@@ -65,7 +65,7 @@ const industries = [
     title: "Mining Operations",
     icon: Factory,
     points: [
-      "Ruggedised networking, fibre backbones, and reliable Wi‑Fi for remote and harsh environments.",
+      "Ruggedised networking, fibre backbones, and reliable Wi-Fi for remote and harsh environments.",
       "CCTV, access control, and monitoring solutions for safety and compliance.",
     ],
   },
@@ -92,10 +92,10 @@ const Industries = () => {
       <div className="relative z-10 container mx-auto px-4">
         <header className="mx-auto max-w-3xl text-center mb-12">
           <h2 id="industries-heading" className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-            Companies & Industries We Support
+            Industries We Support in Johannesburg &amp; Northern Suburbs
           </h2>
           <p className="mt-4 text-muted-foreground">
-            At Siyakha Technology, we’re proud to deliver award‑winning IT solutions to a diverse range of clients across South Africa. From small start‑ups to established enterprises, our services are designed to meet the unique needs of every organisation we work with.
+            From SMMEs in Randburg to schools in Fourways and enterprises in Sandton — our IT solutions are tailored for every industry across the Northern Suburbs and greater Johannesburg.
           </p>
         </header>
 
@@ -122,9 +122,9 @@ const Industries = () => {
         </div>
 
         <aside className="mt-12 mx-auto max-w-3xl text-center">
-          <h3 className="text-xl font-semibold text-foreground">Why Businesses Choose Us</h3>
+          <h3 className="text-xl font-semibold text-foreground">Why Northern Suburbs Businesses Choose Us</h3>
           <p className="mt-3 text-muted-foreground">
-            Local expertise in Johannesburg, tailored solutions for SMMEs through to enterprises, and a trusted, proactive partnership.
+            Local expertise across Sandton, Randburg, Fourways, Bryanston, and Midrand — tailored IT solutions and a trusted, proactive partnership.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Button asChild>

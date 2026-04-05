@@ -17,8 +17,8 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   useEffect(() => {
-    const title = "IT Company Johannesburg (Sandton) MSP | Siyakha";
-    const description = "Managed IT support (MSP) in Johannesburg & Sandton. Business IT services, Wi‑Fi, CCTV, and cloud by Siyakha Tech Solutions.";
+    const title = "IT Company Johannesburg & Northern Suburbs | Siyakha";
+    const description = "Managed IT support in Johannesburg Northern Suburbs — Sandton, Randburg, Fourways, Midrand, Bryanston. Wi‑Fi, CCTV, cloud & cybersecurity by Siyakha.";
     document.title = title;
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
       let tag = document.head.querySelector(`meta[${key}='${value}']`) as HTMLMetaElement | null;
@@ -70,15 +70,20 @@ const Index = () => {
       longitude: 28.0567
     },
     areaServed: [
+      { "@type": "City", name: "Johannesburg" },
+      { "@type": "AdministrativeArea", name: "Sandton" },
+      { "@type": "AdministrativeArea", name: "Randburg" },
+      { "@type": "AdministrativeArea", name: "Fourways" },
+      { "@type": "AdministrativeArea", name: "Midrand" },
+      { "@type": "AdministrativeArea", name: "Bryanston" },
+      { "@type": "AdministrativeArea", name: "Roodepoort" },
+      { "@type": "AdministrativeArea", name: "Lonehill" },
       { "@type": "Country", name: "South Africa" },
       { "@type": "Country", name: "Angola" },
       { "@type": "Country", name: "Eswatini" },
       { "@type": "Country", name: "Bahrain" },
-      { "@type": "Country", name: "Kazakhstan" },
-      { "@type": "Country", name: "Mozambique" },
       { "@type": "Country", name: "Kenya" },
       { "@type": "Country", name: "Nigeria" },
-      { "@type": "AdministrativeArea", name: "California, USA" },
       { "@type": "AdministrativeArea", name: "Europe" }
     ],
     sameAs: [
