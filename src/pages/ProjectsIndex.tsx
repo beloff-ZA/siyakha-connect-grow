@@ -4,6 +4,17 @@ import Footer from "@/components/Footer";
 import Projects from "@/components/Projects";
 import heroImage from "@/assets/hero-bg.jpg";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+
+import serverRack2026 from "@/assets/gallery/server-rack-2026.png";
+import techCabinet2026 from "@/assets/gallery/technician-cabinet-2026.png";
+import dellMonitor2026 from "@/assets/gallery/dell-monitor-setup-2026.png";
+import execWorkstation2026 from "@/assets/gallery/executive-workstation-2026.png";
+import siyakhaOffice2026 from "@/assets/gallery/siyakha-office-2026.png";
+import patchPanel2026 from "@/assets/gallery/patch-panel-switch-2026.png";
+import smartTv2026 from "@/assets/gallery/smart-tv-lounge-2026.png";
+import dualMonitor2026 from "@/assets/gallery/dual-monitor-desk-2026.png";
+import solarInverter2026 from "@/assets/gallery/solar-inverter-2026.png";
+import boardroomAv2026 from "@/assets/gallery/boardroom-av-2026.png";
 const ProjectsIndex = () => {
   useEffect(() => {
     const title = "Projects | Siyakha Technology Solutions — IT Company Johannesburg, Sandton MSP";
@@ -65,7 +76,48 @@ const ProjectsIndex = () => {
           </div>
         </section>
         <Projects />
-        
+
+        {/* 2026 Projects Gallery */}
+        <section className="py-20 bg-secondary/50 border-t border-border" aria-label="2026 Projects">
+          <div className="container mx-auto px-4 lg:px-6">
+            <div className="text-center mb-10">
+              <div className="accent-line mx-auto mb-4" />
+              <h2 className="text-2xl md:text-3xl font-bold text-primary">2026 Projects</h2>
+              <p className="text-muted-foreground mt-2 max-w-xl mx-auto">A great variety of deployments this year — from server rooms and boardrooms to solar installations and executive workstations.</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {[
+                { src: serverRack2026, alt: "Server rack and network cabinet installation with HP switches and structured cabling" },
+                { src: techCabinet2026, alt: "Siyakha technician working on network cabinet and CCTV infrastructure" },
+                { src: dellMonitor2026, alt: "Dell monitor and VoIP phone executive desk setup" },
+                { src: execWorkstation2026, alt: "Executive workstation with curved monitor, PC tower, and smart display" },
+                { src: siyakhaOffice2026, alt: "Siyakha branded premium office setup with Dell all-in-one" },
+                { src: patchPanel2026, alt: "Wall-mounted patch panel and switch with neat Cat6 patching" },
+                { src: smartTv2026, alt: "Smart TV and entertainment setup in luxury living space" },
+                { src: dualMonitor2026, alt: "Dual monitor desk setup with conference phone and collaboration tools" },
+                { src: solarInverter2026, alt: "Solar inverter and SVolt battery backup installation" },
+                { src: boardroomAv2026, alt: "Executive boardroom with AV display, whiteboard, and conference technology" },
+              ].map((img) => (
+                <button
+                  key={img.alt}
+                  type="button"
+                  onClick={() => setLightbox(img)}
+                  className="relative group focus:outline-none"
+                  aria-label={`Open image: ${img.alt}`}
+                >
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-36 object-cover rounded-xl border border-border cursor-zoom-in group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 rounded-xl bg-accent/0 group-hover:bg-accent/10 transition-colors duration-300" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
         
         <section className="py-20 bg-gradient-to-b from-background to-secondary/50 border-t border-border" aria-label="Project Gallery">
           <div className="container mx-auto px-4 lg:px-6">
