@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
+import { CartDrawer } from "@/components/shopify/CartDrawer";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -120,13 +121,16 @@ const Header = () => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 text-foreground hover:text-primary"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Cart + Mobile Menu */}
+          <div className="flex items-center gap-2">
+            <CartDrawer />
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="lg:hidden p-2 text-foreground hover:text-primary"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
