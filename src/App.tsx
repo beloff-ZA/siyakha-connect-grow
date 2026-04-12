@@ -122,6 +122,7 @@ function AppContent() {
                 <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<ProjectsIndex />} />
                 <Route path="/products" element={<Products />} />
+                <Route path="/product/:handle" element={<ProductDetail />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/careers" element={<Navigate to="/" replace />} />
                 <Route path="/give-back" element={<GiveBack />} />
@@ -233,6 +234,10 @@ function AppContent() {
       </TooltipProvider>
     </QueryClientProvider>
   );
+}
+
+function App() {
+  return <AppContent />;
 }
 
 export default App;
