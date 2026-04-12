@@ -105,7 +105,8 @@ import PackagesPage from "./pages/helpdesk/Packages";
 
 const queryClient = new QueryClient();
 
-function App() {
+function AppContent() {
+  useCartSync();
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
