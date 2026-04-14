@@ -5,7 +5,6 @@ import WhySiyakha from "@/components/WhySiyakha";
 import QuickNeeds from "@/components/QuickNeeds";
 import Services from "@/components/Services";
 
-import HardwareShowcase from "@/components/HardwareShowcase";
 import Industries from "@/components/Industries";
 
 import Testimonials from "@/components/Testimonials";
@@ -136,7 +135,6 @@ const Index = () => {
       <QuickNeeds />
       <Services />
       
-      <HardwareShowcase />
       <Industries />
       
       <Testimonials />
