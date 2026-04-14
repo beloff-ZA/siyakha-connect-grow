@@ -157,9 +157,8 @@ const InfrastructureAndNetworking = () => {
                   <li>Integrated CCTV and access control for common areas</li>
                   <li>Resident onboarding and support playbooks for smooth operations</li>
                 </ul>
-                <div className="mt-6 flex gap-3">
+                <div className="mt-6">
                   <Link to="/contact#quote-form" className="inline-flex"><Button className="cta-primary">Discuss a Build</Button></Link>
-                  <Link to="/projects" className="inline-flex"><Button variant="outline">View Projects</Button></Link>
                 </div>
               </div>
             </div>

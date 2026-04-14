@@ -130,8 +130,8 @@ const SchoolItSupport = () => {
               <p className="text-foreground font-medium">Proven Track Record in Education</p>
               <p className="text-muted-foreground text-sm">See how we upgraded the full IT infrastructure at Marist Brothers schools in Johannesburg and Cape Town — from structured cabling and server rooms to campus-wide Wi-Fi and CCTV.</p>
             </div>
-            <Link to="/projects/marist-brothers-linmeyer" className="flex-shrink-0">
-              <Button variant="outline" size="sm">View Case Study</Button>
+            <Link to="/contact#quote-form" className="flex-shrink-0">
+              <Button variant="outline" size="sm">Get in Touch</Button>
             </Link>
           </div>
         </section>

@@ -153,12 +153,10 @@ const EducationItServices = () => {
               <div className="p-6 rounded-lg border border-border bg-card">
                 <h3 className="font-semibold text-foreground">Marist Brothers Linmeyer</h3>
                 <p className="text-muted-foreground text-sm mt-2">Complete network rebuild, server room, structured cabling, CCTV, and campus-wide Wi-Fi for 800+ learners.</p>
-                <Link to="/projects/marist-brothers-linmeyer" className="inline-flex mt-3"><Button variant="outline" size="sm">View Project</Button></Link>
               </div>
               <div className="p-6 rounded-lg border border-border bg-card">
                 <h3 className="font-semibold text-foreground">Marist Brothers Cape Town</h3>
                 <p className="text-muted-foreground text-sm mt-2">Cat6 cabling, outdoor access points, and network infrastructure upgrade across the Cape Town campus.</p>
-                <Link to="/projects/marist-brothers-linmeyer" className="inline-flex mt-3"><Button variant="outline" size="sm">View Project</Button></Link>
               </div>
             </div>
           </div>
