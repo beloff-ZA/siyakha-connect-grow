@@ -7,16 +7,8 @@ import { useCartSync } from "@/hooks/useCartSync";
 import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
 import TikTokLanding from "./pages/TikTokLanding";
-import MaristBrothersProject from "./pages/projects/MaristBrothers";
-import KFCExmileProject from "./pages/projects/KFCExmile";
-import VillageBakeryProject from "./pages/projects/VillageBakery";
-import GreestoneProject from "./pages/projects/Greestone";
 import NotFound from "./pages/NotFound";
-import MaristCapeTownProject from "./pages/projects/MaristCapeTown";
-import PelicanClubBahrainProject from "./pages/projects/PelicanClubBahrain";
-import CampusKeyProject from "./pages/projects/CampusKey";
 import About from "./pages/About";
-import ProjectsIndex from "./pages/ProjectsIndex";
 import BlogIndex from "./pages/BlogIndex";
 import LogIt from "./pages/LogIt";
 import PortalTickets from "./pages/PortalTickets";
@@ -120,7 +112,7 @@ function AppContent() {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/projects" element={<ProjectsIndex />} />
+                <Route path="/projects" element={<Navigate to="/" replace />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/product/:handle" element={<ProductDetail />} />
                 <Route path="/contact" element={<Contact />} />
@@ -193,14 +185,6 @@ function AppContent() {
                 <Route path="/blog/classroom-playback-technology-zoom-ai-lesson-replay" element={<ClassroomPlayback />} />
                 <Route path="/blog/draas" element={<DRaaS />} />
 
-                {/* Projects */}
-                <Route path="/projects/marist-brothers-linmeyer" element={<MaristBrothersProject />} />
-                <Route path="/projects/kfc-national-network-rollout" element={<KFCExmileProject />} />
-                <Route path="/projects/village-bakery-cctv" element={<VillageBakeryProject />} />
-                <Route path="/projects/greestone-network-rebuild" element={<GreestoneProject />} />
-                <Route path="/projects/pelican-club-bahrain" element={<PelicanClubBahrainProject />} />
-                <Route path="/projects/campuskey-network-overhaul" element={<CampusKeyProject />} />
-                <Route path="/projects/fibre-feasibility" element={<Navigate to="/projects" replace />} />
 
                 <Route path="/it-company-johannesburg" element={<ItCompanyJohannesburg />} />
                 <Route path="/it-company-sandton" element={<ItCompanySandton />} />
