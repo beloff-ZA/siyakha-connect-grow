@@ -188,9 +188,6 @@ const Header = () => {
               <Link to="/support-deals" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Support Deals
               </Link>
-              <Link to="/property" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Property
-              </Link>
               <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Contact
               </Link>
