@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import PortfolioCubes from "@/components/PortfolioCubes";
+
 import websiteOfferBanner from "@/assets/website-offer-banner.png";
 
 const TOTAL_STEPS = 8;

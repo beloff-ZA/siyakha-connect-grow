@@ -7,7 +7,7 @@ import Services from "@/components/Services";
 
 import HardwareShowcase from "@/components/HardwareShowcase";
 import Industries from "@/components/Industries";
-import Projects from "@/components/Projects";
+
 import Testimonials from "@/components/Testimonials";
 import LeadMagnet from "@/components/LeadMagnet";
 import SmartHandsPartnership from "@/components/SmartHandsPartnership";
@@ -138,7 +138,7 @@ const Index = () => {
       
       <HardwareShowcase />
       <Industries />
-      <Projects />
+      
       <Testimonials />
       <SmartHandsPartnership />
       <LeadMagnet />

@@ -102,7 +102,6 @@ const Header = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               {[
-                { label: "Projects", to: "/projects" },
                 { label: "Products", to: "/products" },
                 { label: "Blog", to: "/blog" },
                 { label: "Support Deals", to: "/support-deals" },
