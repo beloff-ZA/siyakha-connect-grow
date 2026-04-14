@@ -101,7 +101,6 @@ const Header = () => {
               {[
                 { label: "Blog", to: "/blog" },
                 { label: "Support Deals", to: "/support-deals" },
-                { label: "Property", to: "/property" },
                 { label: "Contact", to: "/contact" },
               ].map((item) => (
                 <NavigationMenuItem key={item.label}>
