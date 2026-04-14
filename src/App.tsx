@@ -7,16 +7,8 @@ import { useCartSync } from "@/hooks/useCartSync";
 import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
 import TikTokLanding from "./pages/TikTokLanding";
-import MaristBrothersProject from "./pages/projects/MaristBrothers";
-import KFCExmileProject from "./pages/projects/KFCExmile";
-import VillageBakeryProject from "./pages/projects/VillageBakery";
-import GreestoneProject from "./pages/projects/Greestone";
-
-import MaristCapeTownProject from "./pages/projects/MaristCapeTown";
-import PelicanClubBahrainProject from "./pages/projects/PelicanClubBahrain";
-import CampusKeyProject from "./pages/projects/CampusKey";
+import NotFound from "./pages/NotFound";
 import About from "./pages/About";
-import ProjectsIndex from "./pages/ProjectsIndex";
 import BlogIndex from "./pages/BlogIndex";
 import LogIt from "./pages/LogIt";
 import PortalTickets from "./pages/PortalTickets";

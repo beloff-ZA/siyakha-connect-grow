@@ -791,10 +791,6 @@ ${mockupUrls.length > 0 ? `<p><strong>Reference Images:</strong><br/>${mockupUrl
           </div>
         </div>
       </section>
-
-      {/* Portfolio Cubes */}
-      <PortfolioCubes />
-
       <Footer />
     </div>
   );
