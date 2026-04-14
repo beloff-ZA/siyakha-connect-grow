@@ -188,9 +188,6 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              <Link to="/projects" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Projects
-              </Link>
               <Link to="/products" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Products
               </Link>
