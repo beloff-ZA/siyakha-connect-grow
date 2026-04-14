@@ -3,9 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useCartSync } from "@/hooks/useCartSync";
 import Index from "./pages/Index";
-import ProductDetail from "./pages/ProductDetail";
 import TikTokLanding from "./pages/TikTokLanding";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
@@ -67,14 +65,10 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ClientPortal from "./pages/ClientPortal";
 import Contact from "./pages/Contact";
-import Products from "./pages/Products";
 import GiveBack from "./pages/GiveBack";
 import Property from "./pages/Property";
 import WebsiteOrder from "./pages/WebsiteOrder";
 import GiveBackButton from "./components/GiveBackButton";
-import { QuoteBasketProvider } from "./contexts/QuoteBasketContext";
-import QuoteBasket from "./components/products/QuoteBasket";
-
 
 // Director PA pages
 import AdminRoute from "./components/helpdesk/AdminRoute";
@@ -98,7 +92,6 @@ import PackagesPage from "./pages/helpdesk/Packages";
 const queryClient = new QueryClient();
 
 function AppContent() {
-  useCartSync();
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -106,15 +99,13 @@ function AppContent() {
         <Sonner />
         
           <AuthProvider>
-            <QuoteBasketProvider>
             <Router>
               <ScrollToTop />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<Navigate to="/" replace />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/product/:handle" element={<ProductDetail />} />
+                <Route path="/products" element={<Navigate to="/" replace />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/careers" element={<Navigate to="/" replace />} />
                 <Route path="/give-back" element={<GiveBack />} />
@@ -209,10 +200,8 @@ function AppContent() {
               
               <WhatsAppContact />
               <GiveBackButton />
-              <QuoteBasket />
               
             </Router>
-            </QuoteBasketProvider>
           </AuthProvider>
         
       </TooltipProvider>

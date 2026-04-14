@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { CartDrawer } from "@/components/shopify/CartDrawer";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -22,8 +21,6 @@ const Header = () => {
     "National Field Support",
     "Healthcare IT Support"
   ];
-
-  
 
   return (
     <header className="bg-background/95 border-b border-border sticky top-0 z-50 backdrop-blur-md shadow-sm">
@@ -102,7 +99,6 @@ const Header = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               {[
-                { label: "Products", to: "/products" },
                 { label: "Blog", to: "/blog" },
                 { label: "Support Deals", to: "/support-deals" },
                 { label: "Property", to: "/property" },
@@ -120,9 +116,8 @@ const Header = () => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Cart + Mobile Menu */}
+          {/* Mobile Menu */}
           <div className="flex items-center gap-2">
-            <CartDrawer />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 text-foreground hover:text-primary"
@@ -188,9 +183,6 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              <Link to="/products" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
-                Products
-              </Link>
               <Link to="/blog" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Blog
               </Link>
