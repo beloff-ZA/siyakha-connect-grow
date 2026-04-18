@@ -1,17 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import towers from "@/assets/smart-estate-towers.jpg";
+import towersVideo from "@/assets/smart-estate-towers.mp4.asset.json";
 
 const SmartEstateHero = () => {
   return (
     <section className="relative min-h-[92vh] flex flex-col bg-background overflow-hidden">
-      {/* Architectural still / video bed */}
+      {/* Architectural moving still */}
       <div className="absolute inset-0">
-        <img
-          src={towers}
-          alt="Off-plan luxury residential development at golden hour"
+        <video
+          src={towersVideo.url}
+          poster={towers}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
           className="w-full h-full object-cover"
-          loading="eager"
+          aria-hidden="true"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/10 to-background" />
         <div className="absolute inset-0" style={{ background: 'var(--gradient-emerald-glow)' }} />
