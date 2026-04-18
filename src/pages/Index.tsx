@@ -167,6 +167,7 @@ const Index = () => {
       <CommandCentreSection />
       <SmartCitiesSection />
       <SmartHandsSection />
+      <GlobalConnectivityBanner />
       <DeveloperCTA />
       <FaithSection />
       <Footer />
