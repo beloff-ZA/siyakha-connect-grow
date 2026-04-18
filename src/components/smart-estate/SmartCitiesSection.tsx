@@ -3,12 +3,6 @@ import borderRadarConcept from "@/assets/border-radar-detection.jpg";
 
 const cities = [
   {
-    icon: ScanLine,
-    title: "Digital Border Radar & Human Detection",
-    arabic: "رادار الحدود الرقمي وكشف التواجد البشري",
-    body: "Long-range perimeter radar fused with thermal optics and AI human-detection — kilometre-scale border surveillance that distinguishes people from wildlife, vehicles and weather in real time.",
-  },
-  {
     icon: Wifi,
     title: "Public Area WiFi Solutions",
     arabic: "حلول الواي فاي للأماكن العامة",
