@@ -9,6 +9,7 @@ import VisionStatement from "@/components/smart-estate/VisionStatement";
 import NextGenSolutions from "@/components/smart-estate/NextGenSolutions";
 import BespokeBanner from "@/components/smart-estate/BespokeBanner";
 import SmartCitiesSection from "@/components/smart-estate/SmartCitiesSection";
+import SmartHandsSection from "@/components/smart-estate/SmartHandsSection";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import FaithSection from "@/components/FaithSection";
@@ -162,6 +163,7 @@ const Index = () => {
       <TechPillarsGrid />
       <CommandCentreSection />
       <SmartCitiesSection />
+      <SmartHandsSection />
       <DeveloperCTA />
       <FaithSection />
       <Footer />
