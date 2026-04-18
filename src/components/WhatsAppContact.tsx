@@ -35,10 +35,10 @@ const WhatsAppContact = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          className="fixed bottom-6 right-6 rounded-full shadow-lg h-12 px-5 bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp-hover"
+          className="fixed bottom-6 right-6 rounded-full h-12 px-5 bg-foreground text-background border border-foreground hover:bg-background hover:text-foreground transition-colors shadow-[0_8px_30px_-12px_hsl(var(--foreground)/0.4)]"
           aria-label="Chat with us on WhatsApp"
         >
-          <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
+          <MessageCircle className="mr-2 h-5 w-5" strokeWidth={1.25} /> WhatsApp
         </Button>
       </DialogTrigger>
       <DialogContent>
