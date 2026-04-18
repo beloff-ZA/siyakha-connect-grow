@@ -54,7 +54,7 @@ const Footer = () => {
               href="tel:+971508673469"
               className="block text-muted-foreground hover:text-foreground transition-colors"
             >
-              <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground/60 mr-2">UAE</span>
+              <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground/60 mr-2">EMEA</span>
               +971 50 867 3469
             </a>
           </div>
