@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import towers from "@/assets/smart-estate-towers.jpg";
 import towersVideo from "@/assets/smart-estate-towers.mp4.asset.json";
+import PartnerFormDialog from "./PartnerFormDialog";
 
 const SmartEstateHero = () => {
   return (
@@ -52,11 +53,13 @@ const SmartEstateHero = () => {
               </p>
 
               <div className="flex flex-wrap gap-3">
-                <Button asChild className="cta-primary text-sm">
-                  <a href="mailto:nikita@siyakhatechnology.co.za?subject=Partner%20with%20Siyakha%20Interlink">
-                    Partner With Us <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </Button>
+                <PartnerFormDialog
+                  trigger={
+                    <Button className="cta-primary text-sm">
+                      Partner With Us <ArrowUpRight className="h-4 w-4" />
+                    </Button>
+                  }
+                />
                 <Button asChild variant="ghost" className="cta-secondary text-sm">
                   <a href="#capabilities">Explore Capabilities</a>
                 </Button>
