@@ -163,6 +163,7 @@ const Index = () => {
       <TurnkeyManifesto />
       <EnterpriseWifiBanner />
       <SmartSwitchBanner />
+      <CctvBanner />
       <VisionStatement />
       <NextGenSolutions />
       <CapabilityPillars />
