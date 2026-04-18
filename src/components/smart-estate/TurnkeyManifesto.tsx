@@ -49,6 +49,21 @@ const TurnkeyManifesto = () => {
               We connect buildings globally. We are the future of IT — and we are building the next great ICT company in the world.
             </p>
 
+            <div className="border-l-2 border-background/30 pl-6 py-2 space-y-3">
+              <p className="font-display text-lg md:text-xl text-background/90 leading-[1.9]" dir="rtl" lang="ar">
+                يظن الكثيرون أن الماء هو الأساس، لكن المستقبل يبدأ بالطاقة والتكنولوجيا.
+              </p>
+              <p className="font-display text-lg md:text-xl text-background/90 leading-[1.9]" dir="rtl" lang="ar">
+                إذا لم يكن عقارك مجهزًا رقمياً، فهو أقرب إلى الماضي منه إلى المستقبل.
+              </p>
+              <p className="font-display text-lg md:text-xl text-background/90 leading-[1.9]" dir="rtl" lang="ar">
+                نحن نأخذك إلى الأمام، عبر تزويد منزلك بكل ما يحتاجه من بنية تحتية ذكية ومتكاملة.
+              </p>
+              <p className="text-xs uppercase tracking-[0.22em] text-background/50 pt-2">
+                Many think water is the foundation — but the future begins with power and technology. If your property isn't digitally equipped, it belongs to the past. We take you forward.
+              </p>
+            </div>
+
             <div className="grid sm:grid-cols-2 gap-px bg-background/10 border border-background/10">
               {capabilities.map((c) => (
                 <div key={c.k} className="bg-foreground p-6 md:p-7">
