@@ -3,6 +3,12 @@ import borderRadarConcept from "@/assets/border-radar-detection.jpg";
 
 const cities = [
   {
+    icon: ScanLine,
+    title: "Digital Border Radar & Human Detection",
+    arabic: "رادار الحدود الرقمي وكشف التواجد البشري",
+    body: "Long-range perimeter radar fused with thermal optics and AI human-detection — kilometre-scale border surveillance that distinguishes people from wildlife, vehicles and weather in real time.",
+  },
+  {
     icon: Wifi,
     title: "Public Area WiFi Solutions",
     arabic: "حلول الواي فاي للأماكن العامة",
@@ -102,80 +108,89 @@ const SmartCitiesSection = () => {
           <div className="flex-1 h-px bg-foreground/15" />
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-foreground/10 mt-12">
-          {/* Intruder Detection card — same size as siblings */}
-          <div className="relative bg-background p-8 md:p-10 group hover:bg-foreground/[0.03] transition-colors flex flex-col">
-            <ArabesqueStar className="absolute top-4 right-4 w-5 h-5 text-foreground/15 group-hover:text-accent/40 transition-colors" />
-
-            <div className="relative w-full overflow-hidden bg-foreground/[0.02] border border-foreground/10 mb-6 -mx-8 md:-mx-10 -mt-8 md:-mt-10">
-              <img
-                src={borderRadarConcept}
-                alt="Digital border radar — sketch showing 5km intruder detection range"
-                width={1536}
-                height={1024}
-                loading="lazy"
-                className="w-full h-auto object-contain"
-              />
-              <div className="absolute top-3 left-3 flex items-center gap-2 px-2.5 py-1 bg-background/85 backdrop-blur-md border border-foreground/15 text-[9px] uppercase tracking-[0.22em] text-foreground">
-                <ScanLine className="w-3 h-3 text-accent" strokeWidth={1.5} />
-                Featured
-              </div>
+        {/* Featured: Digital Border Radar — full width */}
+        <div className="mt-12">
+          <div className="relative w-full overflow-hidden bg-foreground/[0.02] border border-foreground/10">
+            <img
+              src={borderRadarConcept}
+              alt="Digital border radar and AI human detection — sketch visualisation showing 5km detection range across terrain"
+              width={1536}
+              height={1024}
+              loading="lazy"
+              className="w-full h-auto object-contain"
+            />
+            <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-background/85 backdrop-blur-md border border-foreground/15 text-[10px] uppercase tracking-[0.22em] text-foreground">
+              <ScanLine className="w-3 h-3 text-accent" strokeWidth={1.5} />
+              Featured Capability
             </div>
-
-            <p className="overline mb-3">Intruder Detection · Built, Not Watched</p>
-            <ScanLine className="h-7 w-7 text-accent mb-4" strokeWidth={1.25} />
-
-            <h3 className="font-display text-xl md:text-2xl text-foreground tracking-tight mb-1 leading-tight">
-              Know the intruder is on route — <span className="italic text-accent">from up to 5km away.</span>
-            </h3>
-            <p
-              className="text-xs tracking-wide text-muted-foreground/80 mb-3"
-              dir="rtl"
-              lang="ar"
-            >
-              اعرف بوجود المتسلل قبل وصوله — من مسافة تصل إلى 5 كيلومترات.
-            </p>
-
-            <p className="text-sm text-muted-foreground/80 italic mb-2">
-              This is not monitoring. This is a building solution that sees, knows and finds the issue — before it reaches the fence.
-            </p>
-            <p
-              className="text-xs text-muted-foreground/70 italic mb-4"
-              dir="rtl"
-              lang="ar"
-            >
-              ليست مجرد مراقبة — بل منظومة متكاملة ترى وتعرف وتحدد التهديد قبل وصوله.
-            </p>
-
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-3">
-              A complete intruder detection system for farms, estates, logistics yards, mines and critical perimeters. Long-range radar fused with thermal optics and AI identifies people, vehicles and drones up to 5km out — and routes verified threats to your response team in seconds.
-            </p>
-            <p
-              className="text-xs md:text-sm text-muted-foreground/90 leading-relaxed mb-5"
-              dir="rtl"
-              lang="ar"
-            >
-              نظام متكامل لكشف المتسللين للمزارع والعقارات والمواقع الحيوية. رادار بعيد المدى مدمج مع كاميرات حرارية وذكاء اصطناعي يكشف الأشخاص والمركبات والطائرات المسيّرة على بُعد 5 كيلومترات — مع تنبيهات لحظية لفريق الاستجابة.
-            </p>
-
-            <p className="overline mb-3 text-foreground/70">Also used for · أيضاً</p>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              {[
-                "5km early-warning radar — detect before the fence line",
-                "Farms, estates, mines, logistics & critical perimeters",
-                "Consumer movement analytics — radar-based footfall, dwell & flow volumes",
-                "AI classification — person · vehicle · drone · livestock",
-                "Verified alerts to command, on-site security & response units",
-                "Build · See · Know · Find — not just record",
-              ].map((item) => (
-                <li key={item} className="flex gap-3 items-start">
-                  <span className="mt-[7px] w-1 h-1 bg-accent rounded-full shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
           </div>
 
+          <div className="bg-background border-x border-b border-foreground/10 p-8 md:p-12 lg:p-14 grid lg:grid-cols-12 gap-8 lg:gap-12 relative">
+            <ArabesqueStar className="absolute top-4 right-4 w-5 h-5 text-foreground/15" />
+
+            <div className="lg:col-span-5">
+              <p className="overline mb-4">Intruder Detection · Built, Not Watched</p>
+              <h3 className="font-display font-light text-3xl md:text-4xl lg:text-5xl text-foreground tracking-tight leading-[1.05] mb-4">
+                Know the intruder is on route —
+                <span className="italic text-accent"> from up to 5km away.</span>
+              </h3>
+              <p
+                className="text-base md:text-lg text-accent/90 mb-3"
+                dir="rtl"
+                lang="ar"
+              >
+                اعرف بوجود المتسلل قبل وصوله — من مسافة تصل إلى 5 كيلومترات.
+              </p>
+              <p className="text-sm text-muted-foreground/80 italic">
+                This is not monitoring. This is a building solution that sees, knows and finds
+                the issue — before it reaches the fence.
+              </p>
+              <p
+                className="text-sm text-muted-foreground/70 italic mt-2"
+                dir="rtl"
+                lang="ar"
+              >
+                ليست مجرد مراقبة — بل منظومة متكاملة ترى وتعرف وتحدد التهديد قبل وصوله.
+              </p>
+            </div>
+
+            <div className="lg:col-span-7 lg:pt-2">
+              <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
+                A complete intruder detection system for farms, estates, logistics yards, mines
+                and critical perimeters. Long-range radar fused with thermal optics and AI
+                identifies people, vehicles and drones up to 5km out — and routes verified
+                threats to your response team in seconds.
+              </p>
+              <p
+                className="text-sm md:text-base text-muted-foreground/90 leading-relaxed mb-6"
+                dir="rtl"
+                lang="ar"
+              >
+                نظام متكامل لكشف المتسللين للمزارع والعقارات والمواقع الحيوية. رادار بعيد المدى
+                مدمج مع كاميرات حرارية وذكاء اصطناعي يكشف الأشخاص والمركبات والطائرات المسيّرة
+                على بُعد 5 كيلومترات — مع تنبيهات لحظية لفريق الاستجابة.
+              </p>
+              <p className="overline mb-3 text-foreground/70">Also used for · أيضاً</p>
+              <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm md:text-base text-muted-foreground">
+                {[
+                  "5km early-warning radar — detect before the fence line",
+                  "Farms, estates, mines, logistics & critical perimeters",
+                  "Consumer movement analytics — radar-based footfall, dwell & flow volumes",
+                  "AI classification — person · vehicle · drone · livestock",
+                  "Verified alerts to command, on-site security & response units",
+                  "Build · See · Know · Find — not just record",
+                ].map((item) => (
+                  <li key={item} className="flex gap-3 items-start">
+                    <span className="mt-[9px] w-1 h-1 bg-accent rounded-full shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-foreground/10 mt-12">
           {cities.map((c) => {
             const Icon = c.icon;
             return (
