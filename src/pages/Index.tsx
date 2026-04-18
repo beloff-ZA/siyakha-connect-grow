@@ -161,13 +161,13 @@ const Index = () => {
       <BespokeBanner />
       <TurnkeyManifesto />
       <EnterpriseWifiBanner />
+      <SmartSwitchBanner />
       <VisionStatement />
       <NextGenSolutions />
       <CapabilityPillars />
       <OffPlanProcess />
       <TechPillarsGrid />
       <QsfpBanner />
-      <SmartSwitchBanner />
       <CommandCentreSection />
       <SmartCitiesSection />
       <SmartHandsSection />
