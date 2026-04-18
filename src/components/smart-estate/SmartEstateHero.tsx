@@ -48,12 +48,12 @@ const SmartEstateHero = () => {
 
               <div className="flex flex-wrap gap-3">
                 <Button asChild className="cta-primary text-sm">
-                  <Link to="/smart-estates">
+                  <a href="mailto:nikita@siyakhatechnology.co.za?subject=Partner%20with%20Siyakha%20Interlink">
                     Partner With Us <ArrowUpRight className="h-4 w-4" />
-                  </Link>
+                  </a>
                 </Button>
                 <Button asChild variant="ghost" className="cta-secondary text-sm">
-                  <Link to="#capabilities">Explore Capabilities</Link>
+                  <a href="#capabilities">Explore Capabilities</a>
                 </Button>
               </div>
             </div>
