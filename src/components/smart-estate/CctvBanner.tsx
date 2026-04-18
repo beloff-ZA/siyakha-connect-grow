@@ -11,7 +11,7 @@ const CctvBanner = () => {
           loop
           playsInline
           preload="metadata"
-          className="absolute inset-0 w-full h-full object-contain object-bottom"
+          className="absolute inset-0 w-full h-full object-cover object-center"
           aria-label="AI surveillance PTZ cameras in motion"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 via-foreground/40 to-foreground/10" />
