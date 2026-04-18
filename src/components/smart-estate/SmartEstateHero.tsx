@@ -1,10 +1,65 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import towers from "@/assets/smart-estate-towers.jpg";
 import towersVideo from "@/assets/smart-estate-towers.mp4.asset.json";
 import PartnerFormDialog from "./PartnerFormDialog";
 
+type Slide = {
+  lang: "en" | "ar";
+  dir: "ltr" | "rtl";
+  overline: string;
+  headline: React.ReactNode;
+  body: string;
+};
+
+const slides: Slide[] = [
+  {
+    lang: "en",
+    dir: "ltr",
+    overline: "Build · Design · Technology · EMEA",
+    headline: (
+      <>
+        Interlinking the
+        <br />
+        <span className="italic font-extralight text-accent">build, design</span> &amp;
+        <br />
+        technology of tomorrow.
+      </>
+    ),
+    body:
+      "Siyakha Interlink is the integrated build, design and technology partner for development projects across EMEA — from fibre backbones and AI surveillance to tenant experience platforms inside refined real estate.",
+  },
+  {
+    lang: "ar",
+    dir: "rtl",
+    overline: "بناء · تصميم · تكنولوجيا · الشرق الأوسط وأفريقيا",
+    headline: (
+      <>
+        احلم أكثر، وأدخل
+        <br />
+        <span className="italic font-extralight text-accent">التكنولوجيا</span> إلى مساحاتك
+        <br />
+        لنرتقِ بمبانيك إلى المستقبل.
+      </>
+    ),
+    body:
+      "سياخا إنترلينك هي شريككم المتكامل في البناء والتصميم والتكنولوجيا لمشاريع التطوير عبر الشرق الأوسط وأفريقيا — من شبكات الألياف البصرية والمراقبة بالذكاء الاصطناعي إلى منصات تجربة المستأجرين داخل عقارات راقية.",
+  },
+];
+
 const SmartEstateHero = () => {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(id);
+  }, []);
+
+  const current = slides[index];
+
   return (
     <section className="relative min-h-[92vh] flex flex-col bg-background overflow-hidden">
       {/* Architectural moving still */}
@@ -35,22 +90,34 @@ const SmartEstateHero = () => {
       {/* Main editorial block */}
       <div className="relative z-10 flex-1 flex items-end pb-16 md:pb-24">
         <div className="container mx-auto px-6 lg:px-10">
-          <div className="max-w-5xl fade-in">
-            <p className="overline mb-6">Build · Design · Technology · EMEA</p>
-            <h1 className="font-display font-light text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.02] tracking-[-0.02em] text-foreground">
-              Interlinking the
-              <br />
-              <span className="italic font-extralight text-accent">build, design</span> &amp;
-              <br />
-              technology of tomorrow.
-            </h1>
+          <div className="max-w-5xl">
+            <div
+              key={index}
+              dir={current.dir}
+              lang={current.lang}
+              className="animate-fade-in"
+            >
+              <p className={`overline mb-6 ${current.dir === "rtl" ? "tracking-normal text-sm" : ""}`}>
+                {current.overline}
+              </p>
+              <h1
+                className={`font-display font-light text-5xl md:text-7xl lg:text-[5.5rem] tracking-[-0.02em] text-foreground ${
+                  current.dir === "rtl" ? "leading-[1.25]" : "leading-[1.02]"
+                }`}
+              >
+                {current.headline}
+              </h1>
+            </div>
 
             <div className="mt-10 grid md:grid-cols-[1fr_auto] gap-8 md:items-end">
-              <div className="max-w-xl bg-background/40 backdrop-blur-md border border-foreground/10 rounded-lg px-6 py-5 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.4)]">
+              <div
+                key={`body-${index}`}
+                dir={current.dir}
+                lang={current.lang}
+                className="max-w-xl bg-background/40 backdrop-blur-md border border-foreground/10 rounded-lg px-6 py-5 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.4)] animate-fade-in"
+              >
                 <p className="text-base md:text-lg text-foreground leading-relaxed">
-                  Siyakha Interlink is the integrated build, design and technology partner
-                  for development projects across EMEA — from fibre backbones
-                  and AI surveillance to tenant experience platforms inside refined real estate.
+                  {current.body}
                 </p>
               </div>
 
@@ -66,6 +133,23 @@ const SmartEstateHero = () => {
                   <a href="#capabilities">Explore Capabilities</a>
                 </Button>
               </div>
+            </div>
+
+            {/* Slide indicators */}
+            <div className="mt-8 flex items-center gap-2" role="tablist" aria-label="Hero language slides">
+              {slides.map((s, i) => (
+                <button
+                  key={s.lang}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === index}
+                  aria-label={s.lang === "en" ? "English" : "Arabic"}
+                  onClick={() => setIndex(i)}
+                  className={`h-px transition-all duration-500 ${
+                    i === index ? "w-12 bg-foreground" : "w-6 bg-foreground/30 hover:bg-foreground/60"
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </div>
