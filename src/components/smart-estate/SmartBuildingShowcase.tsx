@@ -20,7 +20,7 @@ const SmartBuildingShowcase = () => {
               <img
                 src={marina}
                 alt="Future 100 Concept Building, Dubai — architectural sketch with floor plans and elevations"
-                className="w-full h-[500px] md:h-[680px] object-contain"
+                className="w-full h-[500px] md:h-[680px] object-cover"
                 loading="lazy"
               />
               <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between text-background">
