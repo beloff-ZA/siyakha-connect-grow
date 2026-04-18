@@ -6,12 +6,12 @@ const Header = () => {
   return (
     <header className="bg-background/90 border-b border-border sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-6 lg:px-10">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-28">
           <Link to="/" aria-label="Siyakha Interlink home" className="flex items-center gap-4 md:gap-5">
             <img
               src={interlinkLogo}
               alt="Siyakha Interlink logo"
-              className="h-9 w-auto md:h-11"
+              className="h-14 w-auto md:h-20"
               decoding="async"
             />
             <span className="h-6 md:h-7 w-px bg-border" aria-hidden="true" />

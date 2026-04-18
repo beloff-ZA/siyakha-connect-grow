@@ -12,7 +12,7 @@ const Footer = () => {
             <img
               src={interlinkLogo}
               alt="Siyakha Interlink logo"
-              className="h-10 w-auto mb-6"
+              className="h-16 w-auto mb-6"
               loading="lazy"
             />
             <p className="text-muted-foreground max-w-md leading-relaxed">
@@ -26,7 +26,7 @@ const Footer = () => {
               <img
                 src={interlinkLogo}
                 alt="Siyakha Interlink mark"
-                className="h-7 w-auto"
+                className="h-12 w-auto"
                 loading="lazy"
               />
               <span className="h-6 w-px bg-border" aria-hidden="true" />
