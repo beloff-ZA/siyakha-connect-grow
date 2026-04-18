@@ -140,7 +140,7 @@ const SmartCitiesSection = () => {
         </div>
 
         <div className="mt-12 flex flex-wrap items-center gap-6 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-          <span>Dubai · Riyadh · Doha</span>
+          <span>Dubai · Abu Dhabi · Fujairah · Riyadh · Doha</span>
           <span className="opacity-30">·</span>
           <span>Johannesburg · London</span>
           <span className="opacity-30">·</span>
