@@ -110,16 +110,16 @@ const SmartCitiesSection = () => {
 
         {/* Featured: Digital Border Radar — full width */}
         <div className="mt-12">
-          <div className="relative w-full overflow-hidden bg-background border border-foreground/10 group">
+          <div className="relative w-full overflow-hidden bg-foreground/[0.02] border border-foreground/10">
             <img
               src={borderRadarConcept}
-              alt="Digital border radar and AI human detection visualisation across desert terrain"
-              width={1920}
-              height={760}
+              alt="Digital border radar and AI human detection — sketch visualisation showing 5km detection range across terrain"
+              width={1536}
+              height={1024}
               loading="lazy"
-              className="w-full h-auto object-cover aspect-[16/7] md:aspect-[21/8]"
+              className="w-full h-auto object-contain"
             />
-            <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-background/80 backdrop-blur-md border border-foreground/15 text-[10px] uppercase tracking-[0.22em] text-foreground">
+            <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-background/85 backdrop-blur-md border border-foreground/15 text-[10px] uppercase tracking-[0.22em] text-foreground">
               <ScanLine className="w-3 h-3 text-accent" strokeWidth={1.5} />
               Featured Capability
             </div>
