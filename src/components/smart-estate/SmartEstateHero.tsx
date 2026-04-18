@@ -46,11 +46,13 @@ const SmartEstateHero = () => {
             </h1>
 
             <div className="mt-10 grid md:grid-cols-[1fr_auto] gap-8 md:items-end">
-              <p className="max-w-xl text-base md:text-lg text-foreground/75 leading-relaxed">
-                Siyakha Interlink is the integrated build, design and technology partner
-                for development projects across EMEA — from fibre backbones
-                and AI surveillance to tenant experience platforms inside refined real estate.
-              </p>
+              <div className="max-w-xl bg-background/40 backdrop-blur-md border border-foreground/10 rounded-lg px-6 py-5 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.4)]">
+                <p className="text-base md:text-lg text-foreground leading-relaxed">
+                  Siyakha Interlink is the integrated build, design and technology partner
+                  for development projects across EMEA — from fibre backbones
+                  and AI surveillance to tenant experience platforms inside refined real estate.
+                </p>
+              </div>
 
               <div className="flex flex-wrap gap-3">
                 <PartnerFormDialog
