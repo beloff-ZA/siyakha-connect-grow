@@ -64,22 +64,17 @@ const TurnkeyManifesto = () => {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-px bg-background/10 border border-background/10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-background/10 border border-background/10">
               {capabilities.map((c) => (
-                <div key={c.k} className="bg-foreground p-6 md:p-7">
-                  <div className="flex items-baseline justify-between gap-3 mb-2">
-                    <p className="text-[10px] uppercase tracking-[0.24em] text-background/50">
-                      {c.k}
-                    </p>
-                    <p className="text-[11px] text-background/40 tracking-normal" dir="rtl" lang="ar">
-                      {c.ka}
-                    </p>
-                  </div>
-                  <p className="text-sm text-background/85 leading-relaxed">
-                    {c.v}
+                <div key={c.k} className="bg-foreground p-3.5 md:p-4">
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-background/55 leading-tight mb-1.5">
+                    {c.k}
                   </p>
-                  <p className="mt-2 text-xs text-background/55 leading-relaxed" dir="rtl" lang="ar">
-                    {c.va}
+                  <p className="text-[10px] text-background/40 tracking-normal mb-2 leading-tight" dir="rtl" lang="ar">
+                    {c.ka}
+                  </p>
+                  <p className="text-[11px] text-background/80 leading-snug">
+                    {c.v}
                   </p>
                 </div>
               ))}
