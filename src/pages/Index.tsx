@@ -1,23 +1,18 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import WhySiyakha from "@/components/WhySiyakha";
-import QuickNeeds from "@/components/QuickNeeds";
-import Services from "@/components/Services";
-
-import Industries from "@/components/Industries";
-
-import Testimonials from "@/components/Testimonials";
-import LeadMagnet from "@/components/LeadMagnet";
-import SmartHandsPartnership from "@/components/SmartHandsPartnership";
-import BlogPreview from "@/components/BlogPreview";
+import SmartEstateHero from "@/components/smart-estate/SmartEstateHero";
+import CapabilityPillars from "@/components/smart-estate/CapabilityPillars";
+import OffPlanProcess from "@/components/smart-estate/OffPlanProcess";
+import SmartBuildingShowcase from "@/components/smart-estate/SmartBuildingShowcase";
+import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
+import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import FaithSection from "@/components/FaithSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
   useEffect(() => {
-    const title = "IT Company Johannesburg & Northern Suburbs | Siyakha";
-    const description = "Managed IT support in Johannesburg Northern Suburbs — Sandton, Randburg, Fourways, Midrand, Bryanston. Wi‑Fi, CCTV, cloud & cybersecurity by Siyakha.";
+    const title = "Smart Building & Commercial Real Estate Technology | Siyakha";
+    const description = "Siyakha engineers the intelligence inside off-plan and commercial real estate developments — IoT, AI surveillance, fibre, tenant platforms and 24/7 command-centre operations.";
     document.title = title;
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
       let tag = document.head.querySelector(`meta[${key}='${value}']`) as HTMLMetaElement | null;
@@ -42,53 +37,33 @@ const Index = () => {
     canonical.setAttribute("href", `${window.location.origin}/`);
   }, []);
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://siyakha-connect-grow.lovable.app';
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://siyakhatechnology.co.za';
 
-  const localBusinessJson = useMemo(() => ({
+  const organisationJson = useMemo(() => ({
     "@context": "https://schema.org",
-    "@type": "ITService",
+    "@type": "ProfessionalService",
     "@id": `${origin}/#organization`,
     name: "Siyakha Tech Solutions (Pty) Ltd",
     alternateName: "Siyakha Technology",
-    description: "BEE Level 1 managed IT services company in Johannesburg offering networking, Wi-Fi, CCTV, cybersecurity, cloud solutions, and field support across South Africa and internationally.",
+    description: "Smart building and commercial real estate technology partner. Off-plan IoT, AI surveillance, fibre infrastructure, tenant platforms and 24/7 command centre operations.",
     telephone: "+27 81 501 2993",
     email: "nikita@siyakhatechnology.co.za",
     url: origin,
     logo: `${origin}/lovable-uploads/5dbb43e5-c5a0-4c28-a6aa-36941849d46a.png`,
     image: `${origin}/lovable-uploads/5dbb43e5-c5a0-4c28-a6aa-36941849d46a.png`,
-    priceRange: "$$",
+    priceRange: "$$$",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Johannesburg",
       addressRegion: "Gauteng",
       addressCountry: "ZA"
     },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: -26.1076,
-      longitude: 28.0567
-    },
     areaServed: [
-      { "@type": "City", name: "Johannesburg" },
-      { "@type": "AdministrativeArea", name: "Sandton" },
-      { "@type": "AdministrativeArea", name: "Randburg" },
-      { "@type": "AdministrativeArea", name: "Fourways" },
-      { "@type": "AdministrativeArea", name: "Midrand" },
-      { "@type": "AdministrativeArea", name: "Bryanston" },
-      { "@type": "AdministrativeArea", name: "Roodepoort" },
-      { "@type": "AdministrativeArea", name: "Lonehill" },
       { "@type": "Country", name: "South Africa" },
       { "@type": "Country", name: "Angola" },
-      { "@type": "Country", name: "Eswatini" },
-      { "@type": "Country", name: "Bahrain" },
       { "@type": "Country", name: "Kenya" },
-      { "@type": "Country", name: "Nigeria" },
-      { "@type": "AdministrativeArea", name: "Europe" }
-    ],
-    sameAs: [
-      "https://facebook.com/siyakhatechnology",
-      "https://www.instagram.com/siyakhatech/",
-      "https://linkedin.com/company/siyakhatechnology"
+      { "@type": "Country", name: "United Kingdom" },
+      { "@type": "AdministrativeArea", name: "EMEA" }
     ],
     aggregateRating: {
       "@type": "AggregateRating",
@@ -98,22 +73,15 @@ const Index = () => {
     },
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "IT Services",
+      name: "Smart Estate Capabilities",
       itemListElement: [
-        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Managed IT Support" } },
-        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Network Infrastructure & Wi-Fi" } },
-        { "@type": "Offer", itemOffered: { "@type": "Service", name: "CCTV & Access Control" } },
-        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Cloud & Microsoft 365" } },
-        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Field Support & Smart Hands" } },
-        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Cybersecurity Solutions" } }
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Smart Building Technology — IoT, access, energy" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Connectivity Infrastructure — Wi-Fi, fibre, ISP" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "AI Security & Surveillance with Command Centre" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Digital Experience Platforms & Tenant Apps" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Predictive Maintenance & AI Analytics" } }
       ]
-    },
-    openingHoursSpecification: [{
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "08:00",
-      closes: "17:00"
-    }]
+    }
   }), [origin]);
 
   const websiteJson = useMemo(() => ({
@@ -121,29 +89,20 @@ const Index = () => {
     "@type": "WebSite",
     name: "Siyakha Technology",
     url: origin,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${origin}/products?q={search_term_string}`,
-      "query-input": "required name=search_term_string"
-    }
   }), [origin]);
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Hero />
-      <QuickNeeds />
-      <Services />
-      
-      <Industries />
-      
-      <Testimonials />
-      <SmartHandsPartnership />
-      <LeadMagnet />
-      <BlogPreview showCount={3} />
+      <SmartEstateHero />
+      <CapabilityPillars />
+      <OffPlanProcess />
+      <SmartBuildingShowcase />
+      <CommandCentreSection />
+      <DeveloperCTA />
       <FaithSection />
       <Footer />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJson) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationJson) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJson) }} />
     </div>
   );
