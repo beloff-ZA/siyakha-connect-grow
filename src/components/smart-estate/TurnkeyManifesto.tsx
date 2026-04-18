@@ -1,12 +1,12 @@
 const capabilities = [
-  { k: "Turnkey ICT", v: "End-to-end deployment for any space — design, supply, install, operate." },
-  { k: "Holistic Solutions", v: "Networks, hardware, security and software delivered as one programme." },
-  { k: "IT Hardware", v: "Procurement, staging and rollout of enterprise-grade equipment at scale." },
-  { k: "Remote Engineers", v: "On-demand specialist engineers embedded into your projects, anywhere." },
-  { k: "Schools & Campuses", v: "Digitalised classrooms, campus Wi-Fi, smartboards and learning platforms." },
-  { k: "Business & Commercial", v: "Offices, retail and corporate HQs — productive, secure and connected." },
-  { k: "Mining & Industrial", v: "Hardened technical support for mines and remote operational sites." },
-  { k: "Global Connectivity", v: "We connect buildings across continents — one architecture, every site." },
+  { k: "Turnkey ICT", ka: "تكنولوجيا متكاملة", v: "End-to-end deployment for any space — design, supply, install, operate.", va: "تنفيذ شامل لأي مساحة — تصميم، توريد، تركيب، تشغيل." },
+  { k: "Holistic Solutions", ka: "حلول متكاملة", v: "Networks, hardware, security and software delivered as one programme.", va: "شبكات وأجهزة وأمن وبرمجيات تُسلَّم كبرنامج واحد." },
+  { k: "IT Hardware", ka: "أجهزة تقنية", v: "Procurement, staging and rollout of enterprise-grade equipment at scale.", va: "توريد وتجهيز ونشر معدات بمستوى المؤسسات على نطاق واسع." },
+  { k: "Remote Engineers", ka: "مهندسون عن بُعد", v: "On-demand specialist engineers embedded into your projects, anywhere.", va: "مهندسون متخصصون عند الطلب يعملون ضمن مشاريعكم في أي مكان." },
+  { k: "Schools & Campuses", ka: "المدارس والجامعات", v: "Digitalised classrooms, campus Wi-Fi, smartboards and learning platforms.", va: "فصول رقمية وشبكات واي فاي للحرم وسبورات ذكية ومنصات تعلّم." },
+  { k: "Business & Commercial", ka: "الأعمال والتجارة", v: "Offices, retail and corporate HQs — productive, secure and connected.", va: "مكاتب ومتاجر ومقرات شركات — منتجة وآمنة ومتصلة." },
+  { k: "Mining & Industrial", ka: "التعدين والصناعة", v: "Hardened technical support for mines and remote operational sites.", va: "دعم تقني متين للمناجم والمواقع التشغيلية النائية." },
+  { k: "Global Connectivity", ka: "اتصال عالمي", v: "We connect buildings across continents — one architecture, every site.", va: "نربط المباني عبر القارات — بنية واحدة لكل موقع." },
 ];
 
 const sectors = ["Schools", "Businesses", "Mines", "Hospitals", "Hospitality", "Retail", "Estates"];
