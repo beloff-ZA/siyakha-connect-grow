@@ -1,6 +1,12 @@
-import { Recycle, Truck, PlaneTakeoff, Eye, Radar, Flame } from "lucide-react";
+import { Recycle, Truck, PlaneTakeoff, Eye, Radar, Flame, Wifi } from "lucide-react";
 
 const cities = [
+  {
+    icon: Wifi,
+    title: "Public Area WiFi Solutions",
+    arabic: "حلول الواي فاي للأماكن العامة",
+    body: "Carrier-grade public WiFi for airports, malls, hotels and city precincts — captive portals, multilingual onboarding and seamless roaming for international guests and visitors.",
+  },
   {
     icon: Recycle,
     title: "Smart Waste Management",
