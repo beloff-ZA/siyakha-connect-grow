@@ -65,7 +65,7 @@ function buildBrandedHtml(subject: string, safeText: string) {
         <tr>
           <td style="padding:16px 24px;border-top:1px solid #1f2937;">
             <div style="font-size:12px;color:#94a3b8;">
-              Siyakha Technology • support@siyakhatechnology.co.za<br/>
+              Siyakha Technology • nikita@siyakhatechnology.co.za<br/>
               This is an automated message. Please do not reply directly to this email.
             </div>
           </td>
