@@ -20,6 +20,7 @@ import HotelBedsideBanner from "@/components/smart-estate/HotelBedsideBanner";
 import StudentAccommodationBanner from "@/components/smart-estate/StudentAccommodationBanner";
 import SmartFailoverBanner from "@/components/smart-estate/SmartFailoverBanner";
 import FranchiseAutomationBanner from "@/components/smart-estate/FranchiseAutomationBanner";
+import MineDroneBanner from "@/components/smart-estate/MineDroneBanner";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import FaithSection from "@/components/FaithSection";
@@ -176,6 +177,7 @@ const Index = () => {
       <HotelBedsideBanner />
       <FranchiseAutomationBanner />
       <StudentAccommodationBanner />
+      <MineDroneBanner />
       <div id="vision"><VisionStatement /></div>
       <div id="solutions"><NextGenSolutions /></div>
       <div id="capabilities"><CapabilityPillars /></div>
