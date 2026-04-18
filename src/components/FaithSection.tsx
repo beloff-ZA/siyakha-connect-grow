@@ -21,25 +21,43 @@ const verses = [
 
 const FaithSection = () => {
   return (
-    <section className="py-16 md:py-20 bg-secondary">
-      <div className="container mx-auto px-4 max-w-4xl text-center">
-        <BookOpen className="mx-auto h-10 w-10 text-accent mb-4" />
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-          Our Faith & Guiding Principles
-        </h2>
-        <p className="text-muted-foreground mb-10 max-w-2xl mx-auto">
-          Trust God, stay faithful in all actions. Let your efforts and your work
-          reflect the power of God in action — He will build and create
-          opportunities.
-        </p>
-        <div className="grid sm:grid-cols-2 gap-6 text-left">
+    <section className="py-20 md:py-28 bg-secondary border-t border-border">
+      <div className="container mx-auto px-6 lg:px-10 max-w-5xl">
+        <div className="text-center mb-14">
+          <BookOpen className="mx-auto h-8 w-8 text-accent mb-5" strokeWidth={1.5} />
+          <p className="overline mb-5">Our Faith &amp; Guiding Principles</p>
+          <h2 className="font-display font-light text-3xl md:text-5xl leading-[1.1] tracking-[-0.02em] text-foreground max-w-3xl mx-auto">
+            With God, we will go far —
+            <br />
+            <span className="italic text-accent">build, grow</span> and trust Him through everything.
+          </h2>
+
+          {/* Arabic translation */}
+          <p
+            dir="rtl"
+            lang="ar"
+            className="mt-8 font-display text-xl md:text-2xl text-foreground/85 leading-[1.8] max-w-3xl mx-auto"
+          >
+            بِعَوْنِ اللهِ نَمْضِي بَعِيدًا، نَبْنِي وَنَنْمُو، وَنَتَوَكَّلُ عَلَيْهِ فِي كُلِّ شَيْءٍ.
+          </p>
+
+          <p className="mt-8 text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Every project we touch — from Johannesburg to Dubai — is built on the
+            conviction that faithful work, done with excellence, becomes a quiet
+            testimony. We trust God with the outcome and labour with our hands.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-px bg-border border border-border">
           {verses.map((v) => (
             <blockquote
               key={v.ref}
-              className="bg-card border border-border rounded-xl p-5"
+              className="bg-background p-7 md:p-8"
             >
-              <p className="text-foreground italic mb-3">"{v.text}"</p>
-              <cite className="text-sm text-accent font-semibold not-italic">
+              <p className="font-display text-lg md:text-xl font-light text-foreground leading-snug mb-4">
+                &ldquo;{v.text}&rdquo;
+              </p>
+              <cite className="text-[11px] uppercase tracking-[0.22em] text-accent not-italic">
                 — {v.ref}
               </cite>
             </blockquote>
