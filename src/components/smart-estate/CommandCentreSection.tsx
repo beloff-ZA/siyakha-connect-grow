@@ -37,7 +37,6 @@ const CommandCentreSection = () => {
               {[
                 "AI-validated incident response within 90 seconds",
                 "Predictive failure alerts on critical infrastructure",
-                "Tenant satisfaction scoring per building",
                 "Quarterly board-grade portfolio reports",
               ].map((line) => (
                 <li key={line} className="flex gap-4 items-start">
