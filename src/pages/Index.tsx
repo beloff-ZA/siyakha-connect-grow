@@ -7,6 +7,7 @@ import TechPillarsGrid from "@/components/smart-estate/TechPillarsGrid";
 import TurnkeyManifesto from "@/components/smart-estate/TurnkeyManifesto";
 import VisionStatement from "@/components/smart-estate/VisionStatement";
 import NextGenSolutions from "@/components/smart-estate/NextGenSolutions";
+import SmartCitiesSection from "@/components/smart-estate/SmartCitiesSection";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import FaithSection from "@/components/FaithSection";
@@ -105,6 +106,7 @@ const Index = () => {
       <OffPlanProcess />
       <TechPillarsGrid />
       <CommandCentreSection />
+      <SmartCitiesSection />
       <DeveloperCTA />
       <FaithSection />
       <Footer />
