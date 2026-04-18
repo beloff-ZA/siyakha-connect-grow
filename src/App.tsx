@@ -13,6 +13,7 @@ import PortalTickets from "./pages/PortalTickets";
 import TicketsList from "./pages/TicketsList";
 import TicketDetail from "./pages/TicketDetail";
 import AuthPage from "./pages/Auth";
+import SmartEstates from "./pages/SmartEstates";
 
 // Services
 import InfrastructureAndNetworking from "./pages/services/InfrastructureAndNetworking";
@@ -103,6 +104,7 @@ function AppContent() {
               <ScrollToTop />
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/smart-estates" element={<SmartEstates />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<Navigate to="/" replace />} />
                 <Route path="/products" element={<Navigate to="/" replace />} />
