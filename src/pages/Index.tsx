@@ -4,6 +4,7 @@ import SmartEstateHero from "@/components/smart-estate/SmartEstateHero";
 import CapabilityPillars from "@/components/smart-estate/CapabilityPillars";
 import OffPlanProcess from "@/components/smart-estate/OffPlanProcess";
 import SmartBuildingShowcase from "@/components/smart-estate/SmartBuildingShowcase";
+import TechPillarsGrid from "@/components/smart-estate/TechPillarsGrid";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import FaithSection from "@/components/FaithSection";
@@ -97,6 +98,7 @@ const Index = () => {
       <SmartEstateHero />
       <CapabilityPillars />
       <OffPlanProcess />
+      <TechPillarsGrid />
       <SmartBuildingShowcase />
       <CommandCentreSection />
       <DeveloperCTA />
