@@ -112,10 +112,17 @@ const PartnerFormDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-xl bg-background border-foreground/15">
-        <DialogHeader>
-          <DialogTitle className="font-display font-light text-2xl tracking-tight">{title}</DialogTitle>
-          <DialogDescription className="text-muted-foreground">{subtitle}</DialogDescription>
+      <DialogContent className="max-w-xl border border-foreground/10 bg-background/70 backdrop-blur-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] rounded-xl p-8">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/30 to-transparent" />
+        <DialogHeader className="space-y-3">
+          <p className="overline text-[10px] tracking-[0.28em] text-muted-foreground">Siyakha Interlink</p>
+          <DialogTitle className="font-display font-light text-3xl md:text-4xl tracking-[-0.02em] leading-tight">
+            {title}
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground/90 text-sm leading-relaxed max-w-md">
+            {subtitle}
+          </DialogDescription>
+          <div className="hairline mt-2" />
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
