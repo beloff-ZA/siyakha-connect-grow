@@ -1,0 +1,44 @@
+import { Button } from "@/components/ui/button";
+import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const DeveloperCTA = () => {
+  return (
+    <section className="py-24 md:py-32 bg-background">
+      <div className="container mx-auto px-6 lg:px-10">
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="overline mb-6">For Developers, Owners & Operators</p>
+          <h2 className="font-display font-light text-4xl md:text-6xl lg:text-7xl leading-[1.02] tracking-[-0.025em] text-foreground">
+            Building something
+            <span className="italic text-accent"> remarkable?</span>
+            <br />
+            Let's engineer the intelligence inside it.
+          </h2>
+
+          <p className="mt-10 max-w-xl mx-auto text-muted-foreground text-base md:text-lg leading-relaxed">
+            Bring us in at concept stage and we'll deliver a building that
+            performs from the day the keys are handed over.
+          </p>
+
+          <div className="mt-12 flex flex-wrap gap-4 justify-center">
+            <Button asChild className="cta-primary">
+              <Link to="/contact#quote-form">
+                Start a Conversation <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" className="cta-secondary">
+              <Link to="/smart-estates">Read the Capability Brief</Link>
+            </Button>
+          </div>
+
+          <div className="mt-20 hairline" />
+          <p className="mt-8 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+            Siyakha Tech Solutions · Johannesburg · Cape Town · London · EMEA
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default DeveloperCTA;
