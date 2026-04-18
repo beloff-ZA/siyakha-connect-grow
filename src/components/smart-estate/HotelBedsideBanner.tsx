@@ -40,7 +40,7 @@ const HotelBedsideBanner = () => {
               </p>
 
               <div className="mt-10 flex flex-wrap gap-2">
-                {["Dubai · DIFC", "Abu Dhabi", "Riyadh", "Doha", "Cape Town", "Zanzibar"].map((c) => (
+                {["Dubai · DIFC", "Abu Dhabi", "Fujairah", "Riyadh", "Doha", "Cape Town", "Zanzibar"].map((c) => (
                   <span
                     key={c}
                     className="text-[10px] uppercase tracking-[0.22em] text-background/70 border border-background/20 px-3 py-1.5"

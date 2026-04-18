@@ -45,7 +45,7 @@ const SmartHomeUaeBanner = () => {
               </p>
 
               <div className="mt-8 flex flex-wrap gap-2">
-                {["Dubai", "Abu Dhabi", "Sharjah", "RAK", "Ajman"].map((c) => (
+                {["Dubai", "Abu Dhabi", "Sharjah", "RAK", "Ajman", "Fujairah", "UAQ"].map((c) => (
                   <span
                     key={c}
                     className="text-[10px] uppercase tracking-[0.22em] text-background/70 border border-background/20 px-3 py-1.5"
