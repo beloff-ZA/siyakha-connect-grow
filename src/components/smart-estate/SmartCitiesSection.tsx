@@ -1,5 +1,5 @@
 import { Recycle, Truck, PlaneTakeoff, Eye, Radar, Flame, Wifi, ScanLine } from "lucide-react";
-import borderRadarConcept from "@/assets/border-detection-concept.jpg";
+import borderRadarConcept from "@/assets/border-radar-detection.jpg";
 
 const cities = [
   {
