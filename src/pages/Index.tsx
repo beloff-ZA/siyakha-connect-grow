@@ -159,6 +159,7 @@ const Index = () => {
       <SmartEstateHero />
       <BespokeBanner />
       <TurnkeyManifesto />
+      <EnterpriseWifiBanner />
       <VisionStatement />
       <NextGenSolutions />
       <CapabilityPillars />
@@ -168,7 +169,6 @@ const Index = () => {
       <CommandCentreSection />
       <SmartCitiesSection />
       <SmartHandsSection />
-      <EnterpriseWifiBanner />
       <GlobalConnectivityBanner />
       <DeveloperCTA />
       <FaithSection />
