@@ -33,8 +33,8 @@ const pillars = [
     num: "05",
     icon: Sparkles,
     title: "AI & Automation",
-    desc: "Predictive maintenance, tenant management AI and smart analytics that turn buildings into intelligent assets.",
-    items: ["Predictive maintenance", "Tenant management AI", "Analytics dashboards"],
+    desc: "Predictive maintenance and smart analytics that turn buildings into intelligent, self-reporting assets.",
+    items: ["Predictive maintenance", "Smart analytics", "Automated reporting"],
   },
 ];
 

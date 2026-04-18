@@ -1,11 +1,9 @@
 import museum from "@/assets/smart-estate-museum.jpg";
-import { Activity, Eye, Bell, Cpu } from "lucide-react";
+import { Activity, Eye } from "lucide-react";
 
 const tiles = [
-  { icon: Eye, k: "Live cameras", v: "1,284" },
-  { icon: Activity, k: "Sites monitored", v: "57" },
-  { icon: Bell, k: "Alerts (24h)", v: "12" },
-  { icon: Cpu, k: "AI confidence", v: "98.6%" },
+  { icon: Eye, k: "Cameras installed", v: "1,000+" },
+  { icon: Activity, k: "Sites monitored", v: "50+" },
 ];
 
 const CommandCentreSection = () => {
@@ -39,7 +37,6 @@ const CommandCentreSection = () => {
               {[
                 "AI-validated incident response within 90 seconds",
                 "Predictive failure alerts on critical infrastructure",
-                "Tenant satisfaction scoring per building",
                 "Quarterly board-grade portfolio reports",
               ].map((line) => (
                 <li key={line} className="flex gap-4 items-start">
