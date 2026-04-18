@@ -108,6 +108,57 @@ const SmartCitiesSection = () => {
           <div className="flex-1 h-px bg-foreground/15" />
         </div>
 
+        {/* Featured: Digital Border Radar */}
+        <div className="mt-12 grid lg:grid-cols-5 gap-px bg-foreground/10">
+          <div className="lg:col-span-3 relative bg-background overflow-hidden group">
+            <img
+              src={borderRadarConcept}
+              alt="Digital border radar and AI human detection visualisation across desert terrain"
+              width={1920}
+              height={1080}
+              loading="lazy"
+              className="w-full h-full object-cover aspect-[16/10] lg:aspect-auto lg:min-h-[420px] grayscale-[15%] group-hover:grayscale-0 transition-all duration-700"
+            />
+            <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-background/80 backdrop-blur-md border border-foreground/15 text-[10px] uppercase tracking-[0.22em] text-foreground">
+              <ScanLine className="w-3 h-3 text-accent" strokeWidth={1.5} />
+              Featured Capability
+            </div>
+          </div>
+          <div className="lg:col-span-2 bg-background p-8 md:p-10 lg:p-12 flex flex-col justify-center relative">
+            <ArabesqueStar className="absolute top-4 right-4 w-5 h-5 text-foreground/15" />
+            <p className="overline mb-4">Border Intelligence</p>
+            <h3 className="font-display font-light text-2xl md:text-3xl lg:text-4xl text-foreground tracking-tight leading-[1.15] mb-3">
+              Digital Border Radar &
+              <span className="italic text-accent"> Human Detection</span>
+            </h3>
+            <p
+              className="text-sm md:text-base text-accent/90 mb-5"
+              dir="rtl"
+              lang="ar"
+            >
+              رادار الحدود الرقمي وكشف التواجد البشري
+            </p>
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-6">
+              Kilometre-scale perimeter awareness fusing long-range radar, thermal PTZ optics and
+              AI behaviour analytics. Distinguishes humans from wildlife, vehicles and weather —
+              with real-time alerts to command centres, border posts and rapid-response units.
+            </p>
+            <ul className="space-y-2 text-xs md:text-sm text-muted-foreground">
+              {[
+                "Long-range radar detection across kilometres of terrain",
+                "Thermal & optical zoom (x38) for positive human ID",
+                "AI classification — person, vehicle, animal, drone",
+                "Live geo-fenced alerts to command & response teams",
+              ].map((item) => (
+                <li key={item} className="flex gap-3 items-start">
+                  <span className="mt-[7px] w-1 h-1 bg-accent rounded-full shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-foreground/10 mt-px">
           {cities.map((c) => {
             const Icon = c.icon;
