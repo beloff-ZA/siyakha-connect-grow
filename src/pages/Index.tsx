@@ -11,6 +11,7 @@ import BespokeBanner from "@/components/smart-estate/BespokeBanner";
 import SmartCitiesSection from "@/components/smart-estate/SmartCitiesSection";
 import SmartHandsSection from "@/components/smart-estate/SmartHandsSection";
 import QsfpBanner from "@/components/smart-estate/QsfpBanner";
+import SmartSwitchBanner from "@/components/smart-estate/SmartSwitchBanner";
 import GlobalConnectivityBanner from "@/components/smart-estate/GlobalConnectivityBanner";
 import EnterpriseWifiBanner from "@/components/smart-estate/EnterpriseWifiBanner";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
@@ -166,6 +167,7 @@ const Index = () => {
       <OffPlanProcess />
       <TechPillarsGrid />
       <QsfpBanner />
+      <SmartSwitchBanner />
       <CommandCentreSection />
       <SmartCitiesSection />
       <SmartHandsSection />
