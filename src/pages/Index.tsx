@@ -14,6 +14,7 @@ import QsfpBanner from "@/components/smart-estate/QsfpBanner";
 import SmartSwitchBanner from "@/components/smart-estate/SmartSwitchBanner";
 import GlobalConnectivityBanner from "@/components/smart-estate/GlobalConnectivityBanner";
 import EnterpriseWifiBanner from "@/components/smart-estate/EnterpriseWifiBanner";
+import CctvBanner from "@/components/smart-estate/CctvBanner";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import FaithSection from "@/components/FaithSection";
