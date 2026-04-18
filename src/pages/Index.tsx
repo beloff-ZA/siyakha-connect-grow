@@ -16,6 +16,8 @@ import GlobalConnectivityBanner from "@/components/smart-estate/GlobalConnectivi
 import EnterpriseWifiBanner from "@/components/smart-estate/EnterpriseWifiBanner";
 import CctvBanner from "@/components/smart-estate/CctvBanner";
 import SmartHomeUaeBanner from "@/components/smart-estate/SmartHomeUaeBanner";
+import HotelBedsideBanner from "@/components/smart-estate/HotelBedsideBanner";
+import StudentAccommodationBanner from "@/components/smart-estate/StudentAccommodationBanner";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import FaithSection from "@/components/FaithSection";
@@ -168,6 +170,8 @@ const Index = () => {
       <SmartSwitchBanner />
       <CctvBanner />
       <SmartHomeUaeBanner />
+      <HotelBedsideBanner />
+      <StudentAccommodationBanner />
       <div id="vision"><VisionStatement /></div>
       <div id="solutions"><NextGenSolutions /></div>
       <div id="capabilities"><CapabilityPillars /></div>
