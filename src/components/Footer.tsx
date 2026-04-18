@@ -1,4 +1,5 @@
 import interlinkLogo from "@/assets/interlink-logo.png";
+import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -20,7 +21,22 @@ const Footer = () => {
             </p>
           </div>
 
-          <div className="text-left md:text-right space-y-3">
+          <div className="text-left md:text-right space-y-4">
+            <div className="flex items-center gap-5 md:justify-end">
+              <img
+                src={interlinkLogo}
+                alt="Siyakha Interlink mark"
+                className="h-7 w-auto"
+                loading="lazy"
+              />
+              <span className="h-6 w-px bg-border" aria-hidden="true" />
+              <img
+                src={siyakhaWordmark}
+                alt="Siyakha wordmark"
+                className="h-5 w-auto"
+                loading="lazy"
+              />
+            </div>
             <a
               href="mailto:nikita@siyakhatechnology.co.za"
               className="block font-display text-lg text-foreground hover:text-accent transition-colors"
