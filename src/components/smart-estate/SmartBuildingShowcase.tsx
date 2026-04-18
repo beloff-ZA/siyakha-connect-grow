@@ -1,4 +1,4 @@
-import marina from "@/assets/smart-estate-marina.jpg";
+import marina from "@/assets/future-100-dubai.png";
 
 const features = [
   { label: "Multi-dwelling Wi-Fi", value: "Wi-Fi 6E mesh, 10 Gbps backbone" },
@@ -16,18 +16,18 @@ const SmartBuildingShowcase = () => {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Editorial image — magazine style */}
           <div className="lg:col-span-7 relative">
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden bg-secondary">
               <img
                 src={marina}
-                alt="Marina-front commercial development with twisted tower architecture"
-                className="w-full h-[500px] md:h-[680px] object-cover"
+                alt="Future 100 Concept Building, Dubai — architectural sketch with floor plans and elevations"
+                className="w-full h-[500px] md:h-[680px] object-contain"
                 loading="lazy"
               />
               <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between text-background">
                 <span className="text-[11px] uppercase tracking-[0.22em] bg-foreground/80 backdrop-blur px-3 py-1.5">
-                  Case Study · Marina Heights
+                  Case Study · Future 100 · Dubai
                 </span>
-                <span className="font-display text-3xl md:text-5xl font-light italic">
+                <span className="font-display text-3xl md:text-5xl font-light italic text-foreground">
                   N°&nbsp;002
                 </span>
               </div>
