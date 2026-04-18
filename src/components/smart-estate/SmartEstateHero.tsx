@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import towers from "@/assets/smart-estate-towers.jpg";
+import heroVideo from "@/assets/hero-dubai-smart-estate.mp4.asset.json";
 import PartnerFormDialog from "./PartnerFormDialog";
 
-const HERO_VIDEO = "/videos/hero-smart-estate.mp4";
+const HERO_VIDEO = heroVideo.url;
 
 type Slide = {
   lang: "en" | "ar";
