@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
+import PartnerFormDialog from "./PartnerFormDialog";
 
 const DeveloperCTA = () => {
   return (
@@ -20,11 +21,16 @@ const DeveloperCTA = () => {
           </p>
 
           <div className="mt-12 flex flex-wrap gap-4 justify-center">
-            <Button asChild className="cta-primary">
-              <a href="mailto:nikita@siyakhatechnology.co.za?subject=Start%20a%20Conversation">
-                Start a Conversation <ArrowUpRight className="h-4 w-4" />
-              </a>
-            </Button>
+            <PartnerFormDialog
+              defaultSubject="Start a Conversation"
+              title="Start a Conversation"
+              subtitle="Bring us in at concept stage. Share your project and we'll respond within one business day."
+              trigger={
+                <Button className="cta-primary">
+                  Start a Conversation <ArrowUpRight className="h-4 w-4" />
+                </Button>
+              }
+            />
             <Button asChild variant="ghost" className="cta-secondary">
               <a href="https://wa.me/27815012993?text=Hi%20Siyakha%20Interlink%2C%20I%27d%20like%20to%20discuss%20a%20development%20project." target="_blank" rel="noopener noreferrer">
                 WhatsApp the Team
