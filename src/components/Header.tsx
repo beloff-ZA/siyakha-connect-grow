@@ -24,6 +24,14 @@ const Header = () => {
             <span className="sr-only">Siyakha Interlink</span>
           </Link>
 
+          <p
+            className="hidden md:block flex-1 text-center font-display font-extralight text-base lg:text-lg text-foreground/80 tracking-normal px-4 truncate"
+            dir="rtl"
+            lang="ar"
+          >
+            تمكين المدن الذكية والحياة الرقمية
+          </p>
+
           <a
             href="mailto:nikita@siyakhatechnology.co.za?subject=Project%20Enquiry"
             className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] md:tracking-[0.22em] text-foreground/80 hover:text-accent transition-colors text-right flex-shrink-0"
