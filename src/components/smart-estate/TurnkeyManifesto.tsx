@@ -1,12 +1,12 @@
 const capabilities = [
-  { k: "Turnkey ICT", v: "End-to-end deployment for any space — design, supply, install, operate." },
-  { k: "Holistic Solutions", v: "Networks, hardware, security and software delivered as one programme." },
-  { k: "IT Hardware", v: "Procurement, staging and rollout of enterprise-grade equipment at scale." },
-  { k: "Remote Engineers", v: "On-demand specialist engineers embedded into your projects, anywhere." },
-  { k: "Schools & Campuses", v: "Digitalised classrooms, campus Wi-Fi, smartboards and learning platforms." },
-  { k: "Business & Commercial", v: "Offices, retail and corporate HQs — productive, secure and connected." },
-  { k: "Mining & Industrial", v: "Hardened technical support for mines and remote operational sites." },
-  { k: "Global Connectivity", v: "We connect buildings across continents — one architecture, every site." },
+  { k: "Turnkey ICT", ka: "تكنولوجيا متكاملة", v: "End-to-end deployment for any space — design, supply, install, operate.", va: "تنفيذ شامل لأي مساحة — تصميم، توريد، تركيب، تشغيل." },
+  { k: "Holistic Solutions", ka: "حلول متكاملة", v: "Networks, hardware, security and software delivered as one programme.", va: "شبكات وأجهزة وأمن وبرمجيات تُسلَّم كبرنامج واحد." },
+  { k: "IT Hardware", ka: "أجهزة تقنية", v: "Procurement, staging and rollout of enterprise-grade equipment at scale.", va: "توريد وتجهيز ونشر معدات بمستوى المؤسسات على نطاق واسع." },
+  { k: "Remote Engineers", ka: "مهندسون عن بُعد", v: "On-demand specialist engineers embedded into your projects, anywhere.", va: "مهندسون متخصصون عند الطلب يعملون ضمن مشاريعكم في أي مكان." },
+  { k: "Schools & Campuses", ka: "المدارس والجامعات", v: "Digitalised classrooms, campus Wi-Fi, smartboards and learning platforms.", va: "فصول رقمية وشبكات واي فاي للحرم وسبورات ذكية ومنصات تعلّم." },
+  { k: "Business & Commercial", ka: "الأعمال والتجارة", v: "Offices, retail and corporate HQs — productive, secure and connected.", va: "مكاتب ومتاجر ومقرات شركات — منتجة وآمنة ومتصلة." },
+  { k: "Mining & Industrial", ka: "التعدين والصناعة", v: "Hardened technical support for mines and remote operational sites.", va: "دعم تقني متين للمناجم والمواقع التشغيلية النائية." },
+  { k: "Global Connectivity", ka: "اتصال عالمي", v: "We connect buildings across continents — one architecture, every site.", va: "نربط المباني عبر القارات — بنية واحدة لكل موقع." },
 ];
 
 const sectors = ["Schools", "Businesses", "Mines", "Hospitals", "Hospitality", "Retail", "Estates"];
@@ -52,11 +52,19 @@ const TurnkeyManifesto = () => {
             <div className="grid sm:grid-cols-2 gap-px bg-background/10 border border-background/10">
               {capabilities.map((c) => (
                 <div key={c.k} className="bg-foreground p-6 md:p-7">
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-background/50 mb-2">
-                    {c.k}
-                  </p>
+                  <div className="flex items-baseline justify-between gap-3 mb-2">
+                    <p className="text-[10px] uppercase tracking-[0.24em] text-background/50">
+                      {c.k}
+                    </p>
+                    <p className="text-[11px] text-background/40 tracking-normal" dir="rtl" lang="ar">
+                      {c.ka}
+                    </p>
+                  </div>
                   <p className="text-sm text-background/85 leading-relaxed">
                     {c.v}
+                  </p>
+                  <p className="mt-2 text-xs text-background/55 leading-relaxed" dir="rtl" lang="ar">
+                    {c.va}
                   </p>
                 </div>
               ))}
