@@ -129,33 +129,56 @@ const SmartCitiesSection = () => {
             <ArabesqueStar className="absolute top-4 right-4 w-5 h-5 text-foreground/15" />
 
             <div className="lg:col-span-5">
-              <p className="overline mb-4">Border Intelligence</p>
+              <p className="overline mb-4">Intruder Detection · Built, Not Watched</p>
               <h3 className="font-display font-light text-3xl md:text-4xl lg:text-5xl text-foreground tracking-tight leading-[1.05] mb-4">
-                Digital Border Radar &
-                <span className="italic text-accent"> Human Detection</span>
+                Know the intruder is on route —
+                <span className="italic text-accent"> from up to 5km away.</span>
               </h3>
               <p
-                className="text-base md:text-lg text-accent/90"
+                className="text-base md:text-lg text-accent/90 mb-3"
                 dir="rtl"
                 lang="ar"
               >
-                رادار الحدود الرقمي وكشف التواجد البشري
+                اعرف بوجود المتسلل قبل وصوله — من مسافة تصل إلى 5 كيلومترات.
+              </p>
+              <p className="text-sm text-muted-foreground/80 italic">
+                This is not monitoring. This is a building solution that sees, knows and finds
+                the issue — before it reaches the fence.
+              </p>
+              <p
+                className="text-sm text-muted-foreground/70 italic mt-2"
+                dir="rtl"
+                lang="ar"
+              >
+                ليست مجرد مراقبة — بل منظومة متكاملة ترى وتعرف وتحدد التهديد قبل وصوله.
               </p>
             </div>
 
             <div className="lg:col-span-7 lg:pt-2">
-              <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-6">
-                Kilometre-scale perimeter awareness fusing long-range radar, thermal PTZ optics
-                and AI behaviour analytics. Distinguishes humans from wildlife, vehicles and
-                weather — with real-time alerts to command centres, border posts and
-                rapid-response units.
+              <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
+                A complete intruder detection system for farms, estates, logistics yards, mines
+                and critical perimeters. Long-range radar fused with thermal optics and AI
+                identifies people, vehicles and drones up to 5km out — and routes verified
+                threats to your response team in seconds.
               </p>
+              <p
+                className="text-sm md:text-base text-muted-foreground/90 leading-relaxed mb-6"
+                dir="rtl"
+                lang="ar"
+              >
+                نظام متكامل لكشف المتسللين للمزارع والعقارات والمواقع الحيوية. رادار بعيد المدى
+                مدمج مع كاميرات حرارية وذكاء اصطناعي يكشف الأشخاص والمركبات والطائرات المسيّرة
+                على بُعد 5 كيلومترات — مع تنبيهات لحظية لفريق الاستجابة.
+              </p>
+              <p className="overline mb-3 text-foreground/70">Also used for · أيضاً</p>
               <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm md:text-base text-muted-foreground">
                 {[
-                  "Long-range radar detection across kilometres of terrain",
-                  "Thermal & optical zoom (x38) for positive human ID",
-                  "AI classification — person, vehicle, animal, drone",
-                  "Live geo-fenced alerts to command & response teams",
+                  "5km early-warning radar — detect before the fence line",
+                  "Farms, estates, mines, logistics & critical perimeters",
+                  "Consumer movement analytics — radar-based footfall, dwell & flow volumes",
+                  "AI classification — person · vehicle · drone · livestock",
+                  "Verified alerts to command, on-site security & response units",
+                  "Build · See · Know · Find — not just record",
                 ].map((item) => (
                   <li key={item} className="flex gap-3 items-start">
                     <span className="mt-[9px] w-1 h-1 bg-accent rounded-full shrink-0" />
