@@ -45,12 +45,13 @@ const Header = () => {
             <NavigationMenuList className="space-x-1">
               {[
                 { label: "Home", to: "/" },
+                { label: "Smart Estates", to: "/smart-estates" },
                 { label: "About", to: "/about" },
               ].map((item) => (
                 <NavigationMenuItem key={item.label}>
                   <Link
                     to={item.to}
-                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-foreground rounded-md hover:bg-muted hover:text-primary transition-all duration-200"
+                    className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-muted transition-all duration-200 ${item.label === "Smart Estates" ? "text-accent hover:text-accent" : "text-foreground hover:text-primary"}`}
                   >
                     {item.label}
                   </Link>
@@ -132,6 +133,9 @@ const Header = () => {
             <div className="py-4 space-y-4">
               <Link to="/" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 Home
+              </Link>
+              <Link to="/smart-estates" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-accent font-medium hover:text-accent-hover transition-colors">
+                Smart Estates
               </Link>
               <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-foreground hover:text-primary transition-colors">
                 About

@@ -19,7 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				primary: ['Poppins', 'sans-serif'],
+				primary: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+				display: ['Sora', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
