@@ -11,40 +11,40 @@ const features = [
 
 const SmartBuildingShowcase = () => {
   return (
-    <section className="py-24 md:py-32 bg-background">
-      <div className="container mx-auto px-6 lg:px-10">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          {/* Editorial image — magazine style */}
-          <div className="lg:col-span-7 relative">
-            <div className="relative overflow-hidden bg-secondary">
-              <img
-                src={marina}
-                alt="Future 100 Concept Building, Dubai — architectural sketch with floor plans and elevations"
-                className="w-full h-[500px] md:h-[680px] object-cover"
-                loading="lazy"
-              />
-              <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between text-background">
-                <span className="text-[11px] uppercase tracking-[0.22em] bg-foreground/80 backdrop-blur px-3 py-1.5">
-                  Case Study · Future 100 · Dubai
-                </span>
-                <span className="font-display text-3xl md:text-5xl font-light italic text-foreground">
-                  N°&nbsp;002
-                </span>
-              </div>
-            </div>
-          </div>
+    <section className="bg-background">
+      {/* Full-bleed editorial image */}
+      <div className="relative w-full overflow-hidden bg-secondary">
+        <img
+          src={marina}
+          alt="Future 100 Concept Building, Dubai — architectural sketch with floor plans and elevations"
+          className="w-full h-auto block"
+          loading="lazy"
+        />
+        <div className="absolute bottom-6 left-6 right-6 md:bottom-10 md:left-10 md:right-10 flex items-end justify-between">
+          <span className="text-[11px] uppercase tracking-[0.22em] bg-foreground/80 text-background backdrop-blur px-3 py-1.5">
+            Case Study · Future 100 · Dubai
+          </span>
+          <span className="font-display text-3xl md:text-5xl font-light italic text-foreground">
+            N°&nbsp;002
+          </span>
+        </div>
+      </div>
 
-          {/* Spec ledger */}
-          <div className="lg:col-span-5 lg:pt-8">
+      {/* Spec ledger below */}
+      <div className="container mx-auto px-6 lg:px-10 py-24 md:py-32">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
+          <div className="lg:col-span-5">
             <p className="overline mb-5">Inside the Building</p>
             <h2 className="font-display font-light text-3xl md:text-4xl lg:text-5xl leading-[1.1] tracking-[-0.02em] text-foreground mb-8">
               Every signal, accounted for.
             </h2>
-            <p className="text-muted-foreground leading-relaxed mb-10">
+            <p className="text-muted-foreground leading-relaxed">
               An anatomy of a Siyakha-engineered estate. Each layer is specified,
               installed and certified — then handed over with documentation a developer can be proud of.
             </p>
+          </div>
 
+          <div className="lg:col-span-7">
             <dl className="border-t border-border">
               {features.map((f) => (
                 <div
