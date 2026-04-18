@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import towers from "@/assets/smart-estate-towers.jpg";
-import towersVideo from "@/assets/smart-estate-towers.mp4.asset.json";
 import PartnerFormDialog from "./PartnerFormDialog";
+
+const HERO_VIDEO = "/videos/hero-smart-estate.mp4";
 
 type Slide = {
   lang: "en" | "ar";
@@ -65,14 +66,14 @@ const SmartEstateHero = () => {
       {/* Architectural moving still */}
       <div className="absolute inset-0">
         <video
-          src={towersVideo.url}
+          src={HERO_VIDEO}
           poster={towers}
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
-          className="w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
           aria-hidden="true"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/10 to-background" />
