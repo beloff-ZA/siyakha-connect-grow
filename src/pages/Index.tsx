@@ -7,6 +7,7 @@ import TechPillarsGrid from "@/components/smart-estate/TechPillarsGrid";
 import TurnkeyManifesto from "@/components/smart-estate/TurnkeyManifesto";
 import VisionStatement from "@/components/smart-estate/VisionStatement";
 import NextGenSolutions from "@/components/smart-estate/NextGenSolutions";
+import BespokeBanner from "@/components/smart-estate/BespokeBanner";
 import SmartCitiesSection from "@/components/smart-estate/SmartCitiesSection";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
@@ -152,6 +153,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <SmartEstateHero />
+      <BespokeBanner />
       <TurnkeyManifesto />
       <VisionStatement />
       <NextGenSolutions />
