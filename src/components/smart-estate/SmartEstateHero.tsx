@@ -66,9 +66,9 @@ const SmartEstateHero = () => {
         <div className="container mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-foreground/10">
             {[
-              { k: "BEE Level 1", v: "Certified Partner" },
+              { k: "UAE & EMEA", v: "Build · Design · Tech" },
               { k: "50+", v: "Sites Engineered" },
-              { k: "5 Countries", v: "ZA · Angola · Kenya · UK · UAE-ready" },
+              { k: "1,000+", v: "Cameras Installed" },
               { k: "24/7", v: "Command Centre" },
             ].map((s, i) => (
               <div key={s.k} className={`py-6 ${i > 0 ? 'pl-6' : ''} pr-4`}>
