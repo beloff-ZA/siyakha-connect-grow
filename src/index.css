@@ -239,4 +239,13 @@
   .num-marker {
     @apply font-display text-xs tracking-[0.2em] text-muted-foreground;
   }
+
+  /* Hide scrollbar for mini nav */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
