@@ -11,8 +11,8 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   useEffect(() => {
-    const title = "Smart Building & Commercial Real Estate Technology | Siyakha";
-    const description = "Siyakha engineers the intelligence inside off-plan and commercial real estate developments — IoT, AI surveillance, fibre, tenant platforms and 24/7 command-centre operations.";
+    const title = "Siyakha Interlink — Build, Design & Technology for UAE & EMEA Developments";
+    const description = "Siyakha Interlink delivers integrated build, design and technology solutions for development projects across the UAE and EMEA — smart buildings, AI surveillance, fibre, tenant platforms and 24/7 command-centre operations.";
     document.title = title;
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
       let tag = document.head.querySelector(`meta[${key}='${value}']`) as HTMLMetaElement | null;
@@ -43,9 +43,9 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": `${origin}/#organization`,
-    name: "Siyakha Tech Solutions (Pty) Ltd",
-    alternateName: "Siyakha Technology",
-    description: "Smart building and commercial real estate technology partner. Off-plan IoT, AI surveillance, fibre infrastructure, tenant platforms and 24/7 command centre operations.",
+    name: "Siyakha Interlink",
+    alternateName: "Siyakha Tech Solutions (Pty) Ltd",
+    description: "Integrated build, design and technology partner for development projects across the UAE and EMEA. Smart buildings, AI surveillance, fibre infrastructure, tenant platforms and 24/7 command centre operations.",
     telephone: "+27 81 501 2993",
     email: "nikita@siyakhatechnology.co.za",
     url: origin,
