@@ -7,7 +7,7 @@ const CctvBanner = () => {
         <img
           src={cctvImage}
           alt="Hikvision PTZ AI surveillance cameras for smart estates and command centres"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-top"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 via-foreground/40 to-transparent" />
