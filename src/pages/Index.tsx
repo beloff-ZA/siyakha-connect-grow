@@ -14,8 +14,8 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   useEffect(() => {
-    const title = "Siyakha Interlink — Build, Design & Technology for UAE & EMEA Developments";
-    const description = "Siyakha Interlink delivers integrated build, design and technology solutions for development projects across the UAE and EMEA — smart buildings, AI surveillance, fibre, tenant platforms and 24/7 command-centre operations.";
+    const title = "Siyakha Interlink — Build, Design & Technology for EMEA Developments";
+    const description = "Siyakha Interlink delivers integrated build, design and technology solutions for development projects across EMEA — smart buildings, AI surveillance, fibre, tenant platforms and 24/7 command-centre operations.";
     document.title = title;
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
       let tag = document.head.querySelector(`meta[${key}='${value}']`) as HTMLMetaElement | null;
@@ -48,7 +48,7 @@ const Index = () => {
     "@id": `${origin}/#organization`,
     name: "Siyakha Interlink",
     alternateName: "Siyakha Tech Solutions (Pty) Ltd",
-    description: "Integrated build, design and technology partner for development projects across the UAE and EMEA. Smart buildings, AI surveillance, fibre infrastructure, tenant platforms and 24/7 command centre operations.",
+    description: "Integrated build, design and technology partner for development projects across EMEA. Smart buildings, AI surveillance, fibre infrastructure, tenant platforms and 24/7 command centre operations.",
     telephone: ["+27 81 501 2993", "+971 50 867 3469"],
     email: "nikita@siyakhatechnology.co.za",
     url: origin,

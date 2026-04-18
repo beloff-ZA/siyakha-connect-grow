@@ -16,8 +16,8 @@ const Footer = () => {
               loading="lazy"
             />
             <p className="text-muted-foreground max-w-md leading-relaxed">
-              Build, design and technology for development projects across the
-              UAE and EMEA. Engineered with intention. Delivered with faith.
+              Build, design and technology for development projects across EMEA.
+              Engineered with intention. Delivered with faith.
             </p>
           </div>
 
