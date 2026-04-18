@@ -11,6 +11,7 @@ import BespokeBanner from "@/components/smart-estate/BespokeBanner";
 import SmartCitiesSection from "@/components/smart-estate/SmartCitiesSection";
 import SmartHandsSection from "@/components/smart-estate/SmartHandsSection";
 import QsfpBanner from "@/components/smart-estate/QsfpBanner";
+import GlobalConnectivityBanner from "@/components/smart-estate/GlobalConnectivityBanner";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import FaithSection from "@/components/FaithSection";
@@ -166,6 +167,7 @@ const Index = () => {
       <CommandCentreSection />
       <SmartCitiesSection />
       <SmartHandsSection />
+      <GlobalConnectivityBanner />
       <DeveloperCTA />
       <FaithSection />
       <Footer />
