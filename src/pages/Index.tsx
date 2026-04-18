@@ -162,6 +162,7 @@ const Index = () => {
       <CapabilityPillars />
       <OffPlanProcess />
       <TechPillarsGrid />
+      <QsfpBanner />
       <CommandCentreSection />
       <SmartCitiesSection />
       <SmartHandsSection />
