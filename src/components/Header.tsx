@@ -8,6 +8,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
+import interlinkLogo from "@/assets/interlink-logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,16 +28,14 @@ const Header = () => {
       <div className="container mx-auto px-4 lg:px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" aria-label="Siyakha Technology home" className="flex items-center">
+            <Link to="/" aria-label="Siyakha Interlink home" className="flex items-center">
               <img
-                src="/lovable-uploads/18df369d-304c-4290-97b8-53ae2aad27fb.png"
-                alt="Siyakha Technology logo"
-                width="199"
-                height="51"
-                className="h-8 w-auto md:h-9"
+                src={interlinkLogo}
+                alt="Siyakha Interlink logo"
+                className="h-9 w-auto md:h-11"
                 decoding="async"
               />
-              <span className="sr-only">Siyakha Technology</span>
+              <span className="sr-only">Siyakha Interlink</span>
             </Link>
           </div>
 
