@@ -20,7 +20,7 @@ const SmartEstateHero = () => {
       {/* Top meta strip */}
       <div className="relative z-10 container mx-auto px-6 lg:px-10 pt-10">
         <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-foreground/70">
-          <span>Siyakha Interlink · UAE · EMEA</span>
+          <span>Siyakha Interlink · EMEA</span>
           <span className="hidden md:inline">No. 001 — A New Address for Intelligence</span>
         </div>
       </div>
@@ -29,7 +29,7 @@ const SmartEstateHero = () => {
       <div className="relative z-10 flex-1 flex items-end pb-16 md:pb-24">
         <div className="container mx-auto px-6 lg:px-10">
           <div className="max-w-5xl fade-in">
-            <p className="overline mb-6">Build · Design · Technology · UAE & EMEA</p>
+            <p className="overline mb-6">Build · Design · Technology · EMEA</p>
             <h1 className="font-display font-light text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.02] tracking-[-0.02em] text-foreground">
               Interlinking the
               <br />
@@ -41,7 +41,7 @@ const SmartEstateHero = () => {
             <div className="mt-10 grid md:grid-cols-[1fr_auto] gap-8 md:items-end">
               <p className="max-w-xl text-base md:text-lg text-foreground/75 leading-relaxed">
                 Siyakha Interlink is the integrated build, design and technology partner
-                for development projects across the UAE and EMEA — from fibre backbones
+                for development projects across EMEA — from fibre backbones
                 and AI surveillance to tenant experience platforms inside refined real estate.
               </p>
 
@@ -65,7 +65,7 @@ const SmartEstateHero = () => {
         <div className="container mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-foreground/10">
             {[
-              { k: "UAE & EMEA", v: "Build · Design · Tech" },
+              { k: "EMEA", v: "Build · Design · Tech" },
               { k: "50+", v: "Sites Engineered" },
               { k: "1,000+", v: "Cameras Installed" },
               { k: "24/7", v: "Command Centre" },
