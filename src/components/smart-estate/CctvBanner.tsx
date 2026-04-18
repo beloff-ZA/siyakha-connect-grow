@@ -3,15 +3,15 @@ import cctvImage from "@/assets/hikvision-ptz-cameras.png";
 const CctvBanner = () => {
   return (
     <section className="relative bg-foreground border-t border-background/10 overflow-hidden">
-      <div className="relative w-full h-[38vh] md:h-[52vh] lg:h-[58vh]">
+      <div className="relative w-full min-h-[60vh] md:min-h-[75vh] lg:min-h-[80vh]">
         <img
           src={cctvImage}
           alt="Hikvision PTZ AI surveillance cameras for smart estates and command centres"
-          className="absolute inset-0 w-full h-full object-contain object-center md:object-right"
+          className="absolute inset-0 w-full h-full object-contain object-bottom"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 via-foreground/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-foreground/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 via-foreground/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-foreground/20" />
 
         <div className="relative z-10 h-full container mx-auto px-6 lg:px-10 flex items-center">
           <div className="max-w-2xl">
