@@ -3,7 +3,6 @@ import Header from "@/components/Header";
 import SmartEstateHero from "@/components/smart-estate/SmartEstateHero";
 import CapabilityPillars from "@/components/smart-estate/CapabilityPillars";
 import OffPlanProcess from "@/components/smart-estate/OffPlanProcess";
-import SmartBuildingShowcase from "@/components/smart-estate/SmartBuildingShowcase";
 import TechPillarsGrid from "@/components/smart-estate/TechPillarsGrid";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
@@ -99,7 +98,6 @@ const Index = () => {
       <CapabilityPillars />
       <OffPlanProcess />
       <TechPillarsGrid />
-      <SmartBuildingShowcase />
       <CommandCentreSection />
       <DeveloperCTA />
       <FaithSection />
