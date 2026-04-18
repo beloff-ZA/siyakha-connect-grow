@@ -1,19 +1,23 @@
-import cctvImage from "@/assets/hikvision-ptz-cameras.png";
+import cctvVideo from "@/assets/ai-surveillance-cameras.mp4.asset.json";
 
 const CctvBanner = () => {
   return (
     <section className="relative bg-foreground border-t border-background/10 overflow-hidden">
       <div className="relative w-full min-h-[60vh] md:min-h-[75vh] lg:min-h-[80vh]">
-        <img
-          src={cctvImage}
-          alt="Hikvision PTZ AI surveillance cameras for smart estates and command centres"
+        <video
+          src={cctvVideo.url}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-contain object-bottom"
-          loading="lazy"
+          aria-label="AI surveillance PTZ cameras in motion"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 via-foreground/30 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-foreground/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 via-foreground/40 to-foreground/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-foreground/20" />
 
-        <div className="relative z-10 h-full container mx-auto px-6 lg:px-10 flex items-center">
+        <div className="relative z-10 h-full container mx-auto px-6 lg:px-10 py-16 md:py-24 flex items-center min-h-[60vh] md:min-h-[75vh] lg:min-h-[80vh]">
           <div className="max-w-2xl">
             <p className="text-[11px] uppercase tracking-[0.28em] text-background/70 mb-3">
               Surveillance · AI Optics · PTZ
