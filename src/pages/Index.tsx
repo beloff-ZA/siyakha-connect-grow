@@ -79,7 +79,7 @@ const Index = () => {
         { "@type": "Offer", itemOffered: { "@type": "Service", name: "Connectivity Infrastructure — Wi-Fi, fibre, ISP" } },
         { "@type": "Offer", itemOffered: { "@type": "Service", name: "AI Security & Surveillance with Command Centre" } },
         { "@type": "Offer", itemOffered: { "@type": "Service", name: "Digital Experience Platforms & Tenant Apps" } },
-        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Predictive Maintenance & AI Analytics" } }
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Predictive Maintenance & Smart Analytics" } }
       ]
     }
   }), [origin]);
