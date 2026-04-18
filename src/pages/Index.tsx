@@ -49,7 +49,7 @@ const Index = () => {
     name: "Siyakha Interlink",
     alternateName: "Siyakha Tech Solutions (Pty) Ltd",
     description: "Integrated build, design and technology partner for development projects across the UAE and EMEA. Smart buildings, AI surveillance, fibre infrastructure, tenant platforms and 24/7 command centre operations.",
-    telephone: "+27 81 501 2993",
+    telephone: ["+27 81 501 2993", "+971 50 867 3469"],
     email: "nikita@siyakhatechnology.co.za",
     url: origin,
     logo: `${origin}/lovable-uploads/5dbb43e5-c5a0-4c28-a6aa-36941849d46a.png`,
