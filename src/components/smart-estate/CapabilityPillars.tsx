@@ -48,6 +48,9 @@ const CapabilityPillars = () => {
             A complete technology architecture
             <span className="italic text-accent"> — for buildings that earn their address.</span>
           </h2>
+          <p className="mt-5 font-display text-lg md:text-xl text-muted-foreground/80" dir="rtl" lang="ar">
+            بنية تقنية متكاملة — لمبانٍ تستحق عنوانها.
+          </p>
           <div className="hairline mt-10" />
         </div>
 
