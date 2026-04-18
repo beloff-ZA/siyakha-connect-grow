@@ -20,6 +20,7 @@ import CommandCentreSection from "@/components/smart-estate/CommandCentreSection
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import FaithSection from "@/components/FaithSection";
 import Footer from "@/components/Footer";
+import MiniNav from "@/components/MiniNav";
 
 const CANONICAL_DOMAIN = "https://siyakhatechnology.co.za";
 
@@ -159,6 +160,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <MiniNav />
       <SmartEstateHero />
       <BespokeBanner />
       <TurnkeyManifesto />
@@ -166,17 +168,17 @@ const Index = () => {
       <SmartSwitchBanner />
       <CctvBanner />
       <SmartHomeUaeBanner />
-      <VisionStatement />
-      <NextGenSolutions />
-      <CapabilityPillars />
-      <OffPlanProcess />
+      <div id="vision"><VisionStatement /></div>
+      <div id="solutions"><NextGenSolutions /></div>
+      <div id="capabilities"><CapabilityPillars /></div>
+      <div id="process"><OffPlanProcess /></div>
       <TechPillarsGrid />
       <QsfpBanner />
-      <CommandCentreSection />
-      <SmartCitiesSection />
+      <div id="command"><CommandCentreSection /></div>
+      <div id="cities"><SmartCitiesSection /></div>
       <SmartHandsSection />
       <GlobalConnectivityBanner />
-      <DeveloperCTA />
+      <div id="contact"><DeveloperCTA /></div>
       <FaithSection />
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationJson) }} />
