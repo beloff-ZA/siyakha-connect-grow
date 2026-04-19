@@ -170,6 +170,7 @@ const Index = () => {
       <SmartEstateHero />
       <BespokeBanner />
       <TurnkeyManifesto />
+      <BrandsWeTrust />
       <EnterpriseWifiBanner />
       <SmartSwitchBanner />
       <CctvBanner />
@@ -189,7 +190,6 @@ const Index = () => {
       <div id="cities"><SmartCitiesSection /></div>
       <SmartHandsSection />
       <GlobalConnectivityBanner />
-      <BrandsWeTrust />
       <div id="contact"><DeveloperCTA /></div>
       <FaithSection />
       <Footer />
