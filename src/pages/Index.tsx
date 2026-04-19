@@ -24,6 +24,7 @@ import MineDroneBanner from "@/components/smart-estate/MineDroneBanner";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import BrandsWeTrust from "@/components/smart-estate/BrandsWeTrust";
+import CablingInfrastructureBanner from "@/components/smart-estate/CablingInfrastructureBanner";
 import FaithSection from "@/components/FaithSection";
 import Footer from "@/components/Footer";
 import MiniNav from "@/components/MiniNav";
@@ -171,6 +172,7 @@ const Index = () => {
       <BespokeBanner />
       <TurnkeyManifesto />
       <BrandsWeTrust />
+      <CablingInfrastructureBanner />
       <EnterpriseWifiBanner />
       <SmartSwitchBanner />
       <CctvBanner />
