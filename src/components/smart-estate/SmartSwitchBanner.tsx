@@ -4,14 +4,17 @@ const SmartSwitchBanner = () => {
   return (
     <section className="relative bg-foreground border-t border-background/10 overflow-hidden">
       <div className="relative w-full min-h-[58vh] md:min-h-[68vh] lg:min-h-[74vh]">
+        {/* Full-width white plate so the switch image (white background) blends edge-to-edge */}
+        <div className="absolute inset-0 bg-background" />
         <img
           src={switchImage}
           alt="HPE Aruba Networking CX 6300 switch series stack — high-capacity managed core switching"
-          className="absolute inset-0 w-full h-full object-contain object-right opacity-90"
+          className="absolute inset-y-0 right-0 h-full w-full md:w-[70%] lg:w-[60%] object-contain object-right"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground via-foreground/80 to-foreground/10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-foreground/30" />
+        {/* Left-side dark wash for text legibility, fading into the white plate */}
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground via-foreground/85 via-40% to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent" />
 
         <div className="relative z-10 container mx-auto px-6 lg:px-10 py-20 md:py-28">
           <div className="grid lg:grid-cols-12 gap-10 items-start">
