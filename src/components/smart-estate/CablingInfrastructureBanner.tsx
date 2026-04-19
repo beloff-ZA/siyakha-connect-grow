@@ -25,19 +25,19 @@ const CablingInfrastructureBanner = () => {
           <div className="relative md:col-span-2 aspect-[16/10] md:aspect-auto md:min-h-[520px] bg-foreground overflow-hidden">
             <img
               src={rackImage}
-              alt="Floor-to-ceiling network cabinet — multiple CAT6 patch panels dressed with white patch leads, fibre uplinks to core switch"
+              alt="Siyakha Property Collective Panduit data cabinet — colour-coded CAT6A patch leads dressed across multiple 48-port patch panels with full labelling"
               className="absolute inset-0 w-full h-full object-cover"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/30 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-foreground/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-foreground/50 via-transparent to-transparent" />
             <div className="absolute inset-0 flex items-end">
               <div className="px-6 md:px-10 pb-8 md:pb-12 max-w-2xl">
                 <p className="text-[10px] uppercase tracking-[0.28em] text-background/70 mb-3">
-                  Live install · Full cabinet dress · Fibre uplink to core
+                  Panduit cabinet · Colour-coded CAT6A · Fully labelled & tested
                 </p>
                 <h3 className="font-display font-light text-2xl md:text-4xl lg:text-5xl text-background tracking-[-0.02em] leading-[1.05]">
-                  Perfect <span className="italic font-extralight">network point</span> installs.
+                  Perfect <span className="italic font-extralight">data point</span> installs.
                 </h3>
               </div>
             </div>
