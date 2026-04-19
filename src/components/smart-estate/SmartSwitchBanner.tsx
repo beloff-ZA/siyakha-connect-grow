@@ -1,4 +1,4 @@
-import switchImage from "@/assets/hpe-aruba-cx-6300-switch.png";
+import switchImage from "@/assets/hpe-aruba-switch-stack.webp";
 
 const SmartSwitchBanner = () => {
   return (
