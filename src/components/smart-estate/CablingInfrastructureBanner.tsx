@@ -1,4 +1,6 @@
-import networkVideo from "@/assets/network-points-install.mp4.asset.json";
+import rackImage from "@/assets/network-rack-clean-install.webp";
+import patchPanelImage from "@/assets/patch-panel-detail.webp";
+import cableTrayImage from "@/assets/cable-tray-run.webp";
 
 const cableStandards = [
   { brand: "Molex", spec: "CAT6A / CAT7 STP", note: "Shielded enterprise" },
@@ -16,26 +18,61 @@ const stats = [
 const CablingInfrastructureBanner = () => {
   return (
     <section className="relative bg-background border-t border-border overflow-hidden">
-      {/* Video showcase */}
-      <div className="relative w-full aspect-[21/9] md:aspect-[21/8] bg-foreground overflow-hidden border-b border-border">
-        <video
-          src={networkVideo.url}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-transparent to-transparent" />
-        <div className="absolute inset-0 flex items-end">
-          <div className="container mx-auto px-6 lg:px-10 pb-10 md:pb-14">
-            <p className="text-[10px] uppercase tracking-[0.28em] text-background/70 mb-3">
-              Live build · Patch panel dressing · Labelled & tested
-            </p>
-            <h3 className="font-display font-light text-2xl md:text-4xl lg:text-5xl text-background tracking-[-0.02em] leading-[1.05] max-w-3xl">
-              Perfect <span className="italic font-extralight">network point</span> installs.
-            </h3>
+      {/* Real install gallery — three frames, edge-to-edge */}
+      <div className="relative w-full bg-foreground border-b border-border">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
+          {/* Hero frame — full rack */}
+          <div className="relative md:col-span-2 aspect-[16/10] md:aspect-auto md:min-h-[520px] bg-foreground overflow-hidden">
+            <img
+              src={rackImage}
+              alt="Floor-to-ceiling network cabinet — multiple CAT6 patch panels dressed with white patch leads, fibre uplinks to core switch"
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-foreground/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 flex items-end">
+              <div className="px-6 md:px-10 pb-8 md:pb-12 max-w-2xl">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-background/70 mb-3">
+                  Live install · Full cabinet dress · Fibre uplink to core
+                </p>
+                <h3 className="font-display font-light text-2xl md:text-4xl lg:text-5xl text-background tracking-[-0.02em] leading-[1.05]">
+                  Perfect <span className="italic font-extralight">network point</span> installs.
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          {/* Right column — two stacked detail shots */}
+          <div className="grid grid-rows-2 gap-px bg-border">
+            <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[260px] bg-foreground overflow-hidden">
+              <img
+                src={patchPanelImage}
+                alt="Close-up of patch panel terminations — labelled blue CAT6 patch leads with consistent service loops"
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 px-5 py-4">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-background/85">
+                  Labelled · Service-loop dressed
+                </p>
+              </div>
+            </div>
+            <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[260px] bg-foreground overflow-hidden">
+              <img
+                src={cableTrayImage}
+                alt="Bundled CAT6 cable run on overhead cable tray — velcro-tied, parallel and combed before termination"
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 px-5 py-4">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-background/85">
+                  Combed runs · Tray-routed · Velcro-tied
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
