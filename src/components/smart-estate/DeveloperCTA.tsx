@@ -40,7 +40,7 @@ const DeveloperCTA = () => {
 
           <div className="mt-20 hairline" />
           <p className="mt-8 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            Siyakha Tech Solutions · Johannesburg · Cape Town · London · EMEA
+            Siyakha Tech Solutions · Johannesburg · Cape Town · Durban · Pretoria · Dubai · Abu Dhabi · Fujairah · Riyadh · Doha · London · EMEA
           </p>
         </div>
       </div>
