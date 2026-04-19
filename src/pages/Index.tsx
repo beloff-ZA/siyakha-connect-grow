@@ -23,6 +23,7 @@ import FranchiseAutomationBanner from "@/components/smart-estate/FranchiseAutoma
 import MineDroneBanner from "@/components/smart-estate/MineDroneBanner";
 import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
+import BrandsWeTrust from "@/components/smart-estate/BrandsWeTrust";
 import FaithSection from "@/components/FaithSection";
 import Footer from "@/components/Footer";
 import MiniNav from "@/components/MiniNav";
@@ -188,6 +189,7 @@ const Index = () => {
       <div id="cities"><SmartCitiesSection /></div>
       <SmartHandsSection />
       <GlobalConnectivityBanner />
+      <BrandsWeTrust />
       <div id="contact"><DeveloperCTA /></div>
       <FaithSection />
       <Footer />
