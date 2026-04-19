@@ -1,3 +1,5 @@
+import networkVideo from "@/assets/network-points-install.mp4.asset.json";
+
 const cableStandards = [
   { brand: "Molex", spec: "CAT6A / CAT7 STP", note: "Shielded enterprise" },
   { brand: "CommScope", spec: "SYSTIMAX CAT6A", note: "Data centre grade" },
@@ -13,8 +15,32 @@ const stats = [
 
 const CablingInfrastructureBanner = () => {
   return (
-    <section className="relative bg-background border-t border-border py-24 md:py-32 overflow-hidden">
-      <div className="container mx-auto px-6 lg:px-10">
+    <section className="relative bg-background border-t border-border overflow-hidden">
+      {/* Video showcase */}
+      <div className="relative w-full aspect-[21/9] md:aspect-[21/8] bg-foreground overflow-hidden border-b border-border">
+        <video
+          src={networkVideo.url}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 flex items-end">
+          <div className="container mx-auto px-6 lg:px-10 pb-10 md:pb-14">
+            <p className="text-[10px] uppercase tracking-[0.28em] text-background/70 mb-3">
+              Live build · Patch panel dressing · Labelled & tested
+            </p>
+            <h3 className="font-display font-light text-2xl md:text-4xl lg:text-5xl text-background tracking-[-0.02em] leading-[1.05] max-w-3xl">
+              Perfect <span className="italic font-extralight">network point</span> installs.
+            </h3>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 lg:px-10 py-24 md:py-32">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left: Headline + manifesto */}
           <div className="lg:col-span-7">
