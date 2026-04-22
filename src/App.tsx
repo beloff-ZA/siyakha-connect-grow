@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/Auth";
+import RegionalServices from "./pages/RegionalServices";
 import WhatsAppContact from "./components/WhatsAppContact";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -46,6 +47,9 @@ function App() {
 
               {/* Auth (required for backend access) */}
               <Route path="/auth" element={<AuthPage />} />
+
+              {/* Regional services — Africa web design & development */}
+              <Route path="/regional-services" element={<RegionalServices />} />
 
               {/* Director PA / Helpdesk — protected backend */}
               <Route path="/helpdesk" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />

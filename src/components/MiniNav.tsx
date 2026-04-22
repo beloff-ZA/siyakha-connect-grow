@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 
 const links = [
   { id: "vision", label: "Vision" },
@@ -6,13 +8,33 @@ const links = [
   { id: "capabilities", label: "Capabilities" },
   { id: "process", label: "Process" },
   { id: "command", label: "Command" },
-  { id: "cities", label: "Cities" },
   { id: "contact", label: "Contact" },
+];
+
+const citiesMenu = [
+  { to: "/regional-services#angola", label: "Luanda · Angola" },
+  { to: "/regional-services#zambia", label: "Lusaka · Zambia" },
+  { to: "/regional-services#mozambique", label: "Maputo · Mozambique" },
+  { to: "/regional-services#namibia", label: "Windhoek · Namibia" },
+  { to: "/regional-services#botswana", label: "Gaborone · Botswana" },
+  { to: "/regional-services#tanzania", label: "Dar es Salaam · Tanzania" },
+  { to: "/regional-services#kenya", label: "Nairobi · Kenya" },
+  { to: "/regional-services#drc", label: "Kinshasa · DRC" },
+];
+
+const supportMenu = [
+  { to: "/regional-services", label: "Web Design" },
+  { to: "/regional-services", label: "Web Development" },
+  { to: "/regional-services", label: "Web Apps & SaaS" },
+  { to: "/regional-services", label: "Mobile-First & PWA" },
+  { to: "/regional-services", label: "Local SEO" },
+  { to: "/regional-services", label: "Hosting & Security" },
 ];
 
 const MiniNav = () => {
   const [active, setActive] = useState<string>("");
   const [scrolled, setScrolled] = useState(false);
+  const [openMenu, setOpenMenu] = useState<null | "cities" | "support">(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -74,6 +96,78 @@ const MiniNav = () => {
               </li>
             );
           })}
+
+          {/* Cities dropdown */}
+          <li className="flex-shrink-0 relative">
+            <button
+              type="button"
+              onMouseEnter={() => setOpenMenu("cities")}
+              onMouseLeave={() => setOpenMenu(null)}
+              onClick={() => setOpenMenu(openMenu === "cities" ? null : "cities")}
+              aria-haspopup="true"
+              aria-expanded={openMenu === "cities"}
+              className="inline-flex items-center gap-1 text-[10px] md:text-[11px] uppercase tracking-[0.22em] px-3 py-2 text-foreground/60 hover:text-foreground transition-colors border-b border-transparent"
+            >
+              Cities <ChevronDown className="w-3 h-3" />
+            </button>
+            {openMenu === "cities" && (
+              <div
+                onMouseEnter={() => setOpenMenu("cities")}
+                onMouseLeave={() => setOpenMenu(null)}
+                className="absolute left-0 top-full mt-0 min-w-[260px] bg-background border border-border shadow-lg z-50"
+              >
+                <ul className="py-2">
+                  {citiesMenu.map((m) => (
+                    <li key={m.label}>
+                      <Link
+                        to={m.to}
+                        onClick={() => setOpenMenu(null)}
+                        className="block px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] text-foreground/70 hover:text-foreground hover:bg-foreground/[0.04] transition-colors"
+                      >
+                        {m.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </li>
+
+          {/* Support / Services Offered dropdown */}
+          <li className="flex-shrink-0 relative">
+            <button
+              type="button"
+              onMouseEnter={() => setOpenMenu("support")}
+              onMouseLeave={() => setOpenMenu(null)}
+              onClick={() => setOpenMenu(openMenu === "support" ? null : "support")}
+              aria-haspopup="true"
+              aria-expanded={openMenu === "support"}
+              className="inline-flex items-center gap-1 text-[10px] md:text-[11px] uppercase tracking-[0.22em] px-3 py-2 text-foreground/60 hover:text-foreground transition-colors border-b border-transparent"
+            >
+              Services <ChevronDown className="w-3 h-3" />
+            </button>
+            {openMenu === "support" && (
+              <div
+                onMouseEnter={() => setOpenMenu("support")}
+                onMouseLeave={() => setOpenMenu(null)}
+                className="absolute left-0 top-full mt-0 min-w-[240px] bg-background border border-border shadow-lg z-50"
+              >
+                <ul className="py-2">
+                  {supportMenu.map((m) => (
+                    <li key={m.label}>
+                      <Link
+                        to={m.to}
+                        onClick={() => setOpenMenu(null)}
+                        className="block px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] text-foreground/70 hover:text-foreground hover:bg-foreground/[0.04] transition-colors"
+                      >
+                        {m.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </li>
         </ul>
       </div>
     </nav>
