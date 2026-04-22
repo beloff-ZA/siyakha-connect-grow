@@ -14,6 +14,7 @@ type Country = {
   flag: string;
   blurb: string;
   focus: string[];
+  languages: string[];
 };
 
 const countries: Country[] = [
@@ -25,6 +26,7 @@ const countries: Country[] = [
     blurb:
       "Bilingual Portuguese & English web platforms for Luanda's energy, logistics and hospitality sectors. Hosted on resilient regional infrastructure with offline-capable PWAs for low-bandwidth environments.",
     focus: ["Corporate websites", "E-commerce (kwanza & USD)", "Logistics dashboards", "Bilingual PT/EN"],
+    languages: ["Portuguese", "English", "Umbundu", "Kimbundu", "Kikongo"],
   },
   {
     slug: "zambia",
@@ -34,6 +36,7 @@ const countries: Country[] = [
     blurb:
       "Web design and SaaS builds for Lusaka and the Copperbelt — mining suppliers, fintech, agritech and tourism. Mobile-money ready (Airtel, MTN, Zamtel) with locally tuned SEO.",
     focus: ["Mining supplier portals", "Mobile-money checkout", "Tourism & lodge sites", "SEO for Lusaka"],
+    languages: ["English", "Bemba", "Nyanja (Chewa)", "Tonga", "Lozi"],
   },
   {
     slug: "mozambique",
@@ -43,6 +46,7 @@ const countries: Country[] = [
     blurb:
       "Portuguese-first websites and booking systems for Maputo, Beira and Pemba — hospitality, gas, agribusiness. Lightweight builds optimised for 3G coverage and high-DPI mobile.",
     focus: ["Hospitality booking", "Portuguese SEO", "Gas & agri portals", "Mobile-first design"],
+    languages: ["Portuguese", "English", "Makhuwa", "Changana", "Sena"],
   },
   {
     slug: "namibia",
@@ -52,6 +56,7 @@ const countries: Country[] = [
     blurb:
       "Polished corporate sites and tourism platforms for Windhoek, Walvis Bay and Swakopmund — tour operators, mining services, conservation. Multi-currency NAD/ZAR/USD checkout.",
     focus: ["Tourism operators", "Mining services", "Conservation NGOs", "NAD/ZAR/USD"],
+    languages: ["English", "Afrikaans", "Oshiwambo", "Otjiherero", "Damara/Nama"],
   },
   {
     slug: "botswana",
@@ -61,6 +66,7 @@ const countries: Country[] = [
     blurb:
       "Web platforms for Gaborone, Francistown and Maun — financial services, safari operators, government suppliers. Built on enterprise stacks with strict data-residency awareness.",
     focus: ["Financial services", "Safari & lodge", "Gov supplier portals", "Compliance-ready"],
+    languages: ["English", "Setswana", "Kalanga", "Sekgalagadi"],
   },
   {
     slug: "tanzania",
@@ -70,6 +76,7 @@ const countries: Country[] = [
     blurb:
       "Swahili & English web platforms for Dar es Salaam, Arusha and Zanzibar — tourism, port logistics, fintech. M-Pesa Tanzania, Tigo Pesa and Airtel Money integrations standard.",
     focus: ["Swahili/English UX", "Tourism & safari", "Port & logistics", "Mobile-money APIs"],
+    languages: ["Swahili", "English", "Sukuma", "Chagga", "Haya"],
   },
   {
     slug: "kenya",
@@ -79,6 +86,7 @@ const countries: Country[] = [
     blurb:
       "Nairobi-grade SaaS, marketplaces and corporate sites for fintech, agritech and B2B services. Native M-Pesa Daraja integration, Kenyan Shilling pricing and AWS Africa (Cape Town) hosting.",
     focus: ["M-Pesa Daraja", "SaaS & marketplaces", "Agritech platforms", "Nairobi SEO"],
+    languages: ["English", "Swahili", "Kikuyu", "Luo", "Kalenjin", "Sheng"],
   },
   {
     slug: "drc",
@@ -88,6 +96,7 @@ const countries: Country[] = [
     blurb:
       "French-language web platforms for Kinshasa and Lubumbashi — mining, NGOs, telecoms. Lightweight, low-bandwidth builds with offline support and locally hosted assets.",
     focus: ["French-first UX", "Mining & NGO", "Low-bandwidth PWAs", "USD/CDF pricing"],
+    languages: ["French", "Lingala", "Swahili", "Kikongo", "Tshiluba"],
   },
   {
     slug: "malawi",
@@ -97,6 +106,7 @@ const countries: Country[] = [
     blurb:
       "Web design and development for Lilongwe, Blantyre and Mzuzu — agribusiness, NGOs, tourism and SME platforms. Lightweight, low-bandwidth builds with Airtel Money and TNM Mpamba checkout.",
     focus: ["Agribusiness portals", "NGO & donor sites", "Airtel Money / Mpamba", "Lake Malawi tourism"],
+    languages: ["English", "Chichewa", "Tumbuka", "Yao", "Lomwe"],
   },
 ];
 
