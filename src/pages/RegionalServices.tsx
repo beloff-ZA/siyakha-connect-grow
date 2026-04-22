@@ -30,8 +30,6 @@ const countries: Country[] = [
     languages: ["Portuguese", "English", "Umbundu", "Kimbundu", "Kikongo"],
     localPitches: [
       { lang: "Portuguese", code: "pt-AO", text: "Oferecemos design e desenvolvimento web profissional em Luanda — sites, lojas online e aplicações web para empresas angolanas." },
-      { lang: "Umbundu", code: "umb", text: "Tu lingisa okupanga olojango violupale (web design) kuenda omangelo wovipange viapa kuetu Luanda." },
-      { lang: "Kimbundu", code: "kmb", text: "Tu bhana o sálu ya kupanga ma-website ni ma-aplicação web mu Luanda ni Angola yoso." },
     ],
   },
   {
@@ -44,9 +42,7 @@ const countries: Country[] = [
     focus: ["Mining supplier portals", "Mobile-money checkout", "Tourism & lodge sites", "SEO for Lusaka"],
     languages: ["English", "Bemba", "Nyanja (Chewa)", "Tonga", "Lozi"],
     localPitches: [
-      { lang: "Bemba", code: "bem", text: "Tulapanga website ne web apps mu Lusaka — twapelako amabusiness yenu pa intaneti pa mutengo unono." },
       { lang: "Nyanja", code: "nya", text: "Timapanga ma website ndi ma web apps mu Lusaka — tikuthandizani kukula bizinesi yanu pa intaneti." },
-      { lang: "Tonga", code: "toi", text: "Tulapanga ma website abantu ba Zambia — micito yesu ilijisi muulo uunini alimwi ngiibotezya." },
     ],
   },
   {
@@ -60,8 +56,6 @@ const countries: Country[] = [
     languages: ["Portuguese", "English", "Makhuwa", "Changana", "Sena"],
     localPitches: [
       { lang: "Portuguese", code: "pt-MZ", text: "Oferecemos criação de sites, lojas online e aplicações web em Maputo, Beira e Pemba — soluções rápidas e acessíveis para empresas moçambicanas." },
-      { lang: "Changana", code: "tso", text: "Hi endla ma website ni ma web apps eMaputo — hi pfuna mabindzu ya wena ku kula eka internet." },
-      { lang: "Makhuwa", code: "vmw", text: "Ninnipaka ma website ni ma web apps wa Mozambique — nlipaka micito ya nyuwo wikhalele wa internet." },
     ],
   },
   {
@@ -75,8 +69,6 @@ const countries: Country[] = [
     languages: ["English", "Afrikaans", "Oshiwambo", "Otjiherero", "Damara/Nama"],
     localPitches: [
       { lang: "Afrikaans", code: "af", text: "Ons bied professionele webontwerp en webontwikkeling in Windhoek — webwerwe, aanlynwinkels en web-toepassings vir Namibiese ondernemings." },
-      { lang: "Oshiwambo", code: "kj", text: "Ohatu ningi omawebsite nomawebapps mOvenduka — ohatu kwafele oongeshefa dheni di kule kointaneta." },
-      { lang: "Otjiherero", code: "hz", text: "Eṱe tu unganisa omawebsite nomawebapps mOvenduka kOuhona wa Namibia." },
     ],
   },
   {
@@ -90,7 +82,6 @@ const countries: Country[] = [
     languages: ["English", "Setswana", "Kalanga", "Sekgalagadi"],
     localPitches: [
       { lang: "Setswana", code: "tn", text: "Re dira diwebsite le di-web app mo Gaborone — re thusa dikgwebo tsa Botswana go gola mo inthaneteng ka tlhwatlhwa e e kwa tlase." },
-      { lang: "Kalanga", code: "kck", text: "Tinopanga mawebsite ne web apps muGaborone — tinobatsira mabhindzuko enyu kukula painternet." },
     ],
   },
   {
@@ -104,7 +95,6 @@ const countries: Country[] = [
     languages: ["Swahili", "English", "Sukuma", "Chagga", "Haya"],
     localPitches: [
       { lang: "Swahili", code: "sw-TZ", text: "Tunatoa huduma za usanifu na utengenezaji wa tovuti na programu za wavuti Dar es Salaam, Arusha na Zanzibar — kwa bei nafuu na ubora wa kimataifa." },
-      { lang: "Sukuma", code: "suk", text: "Tukukola masaiti na web apps Dar es Salaam — tukukwambilija mashughuli genu kukula mu mtandao." },
     ],
   },
   {
@@ -118,9 +108,6 @@ const countries: Country[] = [
     languages: ["English", "Swahili", "Kikuyu", "Luo", "Kalenjin", "Sheng"],
     localPitches: [
       { lang: "Swahili", code: "sw-KE", text: "Tunatengeneza tovuti, programu za wavuti na mifumo ya SaaS Nairobi — pamoja na muunganisho wa M-Pesa Daraja kwa biashara za Kenya." },
-      { lang: "Kikuyu", code: "ki", text: "Nĩ tũthondekaga website na web apps Nairobi — nĩ tũteithagia bishabu cianyu gũkũra mwena-inĩ wa internet." },
-      { lang: "Luo", code: "luo", text: "Wagero website kod web apps e Nairobi — wakonyo ohala mau medo dongruok e intaneti." },
-      { lang: "Sheng", code: "sw-KE-x-sheng", text: "Tunadunga ma-website na ma-web app fiti Nairobi — biashara yako ipande digital bila stress, bei poa." },
     ],
   },
   {
@@ -134,8 +121,6 @@ const countries: Country[] = [
     languages: ["French", "Lingala", "Swahili", "Kikongo", "Tshiluba"],
     localPitches: [
       { lang: "French", code: "fr-CD", text: "Nous offrons des services de conception et développement web à Kinshasa et Lubumbashi — sites internet, boutiques en ligne et applications web pour les entreprises congolaises." },
-      { lang: "Lingala", code: "ln", text: "Tosalaka ba website mpe ba web apps na Kinshasa — tosungaka ba mombongo na bino mpo bakola na internet." },
-      { lang: "Swahili (DRC)", code: "sw-CD", text: "Tunaunda tovuti na programu za wavuti Lubumbashi na Kinshasa — kwa biashara za Kongo na NGO." },
     ],
   },
   {
