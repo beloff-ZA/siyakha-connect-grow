@@ -34,13 +34,15 @@ const WhatsAppContact = () => {
   return (
     <>
       <a
-        href="tel:+27815012993"
-        aria-label="Call +27 81 501 2993"
+        href="https://wa.me/27815012993?call=1"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="WhatsApp Call +27 81 501 2993"
         className="fixed bottom-6 right-44 z-50 inline-flex items-center justify-center rounded-full h-12 px-5 bg-background text-foreground border border-foreground hover:bg-foreground hover:text-background transition-colors shadow-[0_8px_30px_-12px_hsl(var(--foreground)/0.4)] text-sm font-medium"
       >
         <Phone className="mr-2 h-5 w-5" strokeWidth={1.25} />
-        <span className="hidden sm:inline">Call +27 81 501 2993</span>
-        <span className="sm:hidden">Call</span>
+        <span className="hidden sm:inline">WhatsApp Call +27 81 501 2993</span>
+        <span className="sm:hidden">WhatsApp Call</span>
       </a>
 
       <Dialog open={open} onOpenChange={setOpen}>
