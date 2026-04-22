@@ -134,8 +134,6 @@ const countries: Country[] = [
     languages: ["English", "Chichewa", "Tumbuka", "Yao", "Lomwe"],
     localPitches: [
       { lang: "Chichewa", code: "ny", text: "Timapanga ma website ndi ma web apps mu Lilongwe ndi Blantyre — timathandiza mabizinesi a ku Malawi kukula pa intaneti pa mtengo wotsika." },
-      { lang: "Tumbuka", code: "tum", text: "Tikupanga mawebsite na web apps mu Mzuzu na Lilongwe — tikovwira mabizinesi ghinu kukura pa intaneti." },
-      { lang: "Yao", code: "yao", text: "Tukutenda ma website ni ma web apps ku Malawi — tukukamuchisya mabizinesi genu kukula pa intaneti." },
     ],
   },
 ];
