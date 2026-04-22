@@ -98,7 +98,7 @@ const MiniNav = () => {
       }`}
     >
       <div className="container mx-auto px-6 lg:px-10">
-        <ul className="flex items-center gap-1 md:gap-2 overflow-x-auto no-scrollbar h-11 md:h-12">
+        <ul className="flex items-center gap-1 md:gap-2 md:overflow-visible overflow-x-auto no-scrollbar h-11 md:h-12">
           {links.map((l) => {
             const isActive = active === l.id;
             return (
