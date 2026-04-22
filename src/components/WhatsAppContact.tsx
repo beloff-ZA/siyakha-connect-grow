@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 
 const services = [
   { value: "infrastructure-and-networking", label: "Infrastructure & Networking" },
@@ -32,15 +32,26 @@ const WhatsAppContact = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className="fixed bottom-6 right-6 rounded-full h-12 px-5 bg-foreground text-background border border-foreground hover:bg-background hover:text-foreground transition-colors shadow-[0_8px_30px_-12px_hsl(var(--foreground)/0.4)]"
-          aria-label="Chat with us on WhatsApp"
-        >
-          <MessageCircle className="mr-2 h-5 w-5" strokeWidth={1.25} /> WhatsApp
-        </Button>
-      </DialogTrigger>
+    <>
+      <a
+        href="tel:+27815012993"
+        aria-label="Call +27 81 501 2993"
+        className="fixed bottom-6 right-44 z-50 inline-flex items-center justify-center rounded-full h-12 px-5 bg-background text-foreground border border-foreground hover:bg-foreground hover:text-background transition-colors shadow-[0_8px_30px_-12px_hsl(var(--foreground)/0.4)] text-sm font-medium"
+      >
+        <Phone className="mr-2 h-5 w-5" strokeWidth={1.25} />
+        <span className="hidden sm:inline">Call +27 81 501 2993</span>
+        <span className="sm:hidden">Call</span>
+      </a>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button
+            className="fixed bottom-6 right-6 z-50 rounded-full h-12 px-5 bg-foreground text-background border border-foreground hover:bg-background hover:text-foreground transition-colors shadow-[0_8px_30px_-12px_hsl(var(--foreground)/0.4)]"
+            aria-label="Chat with us on WhatsApp"
+          >
+            <MessageCircle className="mr-2 h-5 w-5" strokeWidth={1.25} /> WhatsApp
+          </Button>
+        </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Quick WhatsApp Enquiry</DialogTitle>
@@ -85,7 +96,8 @@ const WhatsAppContact = () => {
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 };
 
