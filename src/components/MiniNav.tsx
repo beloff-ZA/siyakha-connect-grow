@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 
@@ -35,6 +35,26 @@ const MiniNav = () => {
   const [active, setActive] = useState<string>("");
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<null | "cities" | "support">(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navRef = useRef<HTMLElement | null>(null);
+
+  const openWith = (key: "cities" | "support") => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpenMenu(key);
+  };
+  const scheduleClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpenMenu(null), 150);
+  };
+
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (!navRef.current) return;
+      if (!navRef.current.contains(e.target as Node)) setOpenMenu(null);
+    };
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -71,13 +91,14 @@ const MiniNav = () => {
 
   return (
     <nav
+      ref={navRef}
       aria-label="Section navigation"
       className={`sticky top-20 md:top-28 z-40 border-b border-border bg-background/80 backdrop-blur-md transition-opacity duration-300 ${
         scrolled ? "opacity-100" : "opacity-95"
       }`}
     >
       <div className="container mx-auto px-6 lg:px-10">
-        <ul className="flex items-center gap-1 md:gap-2 overflow-x-auto no-scrollbar h-11 md:h-12">
+        <ul className="flex items-center gap-1 md:gap-2 md:overflow-visible overflow-x-auto no-scrollbar h-11 md:h-12">
           {links.map((l) => {
             const isActive = active === l.id;
             return (
@@ -98,11 +119,13 @@ const MiniNav = () => {
           })}
 
           {/* Cities dropdown */}
-          <li className="flex-shrink-0 relative">
+          <li
+            className="flex-shrink-0 relative"
+            onMouseEnter={() => openWith("cities")}
+            onMouseLeave={scheduleClose}
+          >
             <button
               type="button"
-              onMouseEnter={() => setOpenMenu("cities")}
-              onMouseLeave={() => setOpenMenu(null)}
               onClick={() => setOpenMenu(openMenu === "cities" ? null : "cities")}
               aria-haspopup="true"
               aria-expanded={openMenu === "cities"}
@@ -112,11 +135,9 @@ const MiniNav = () => {
             </button>
             {openMenu === "cities" && (
               <div
-                onMouseEnter={() => setOpenMenu("cities")}
-                onMouseLeave={() => setOpenMenu(null)}
-                className="absolute left-0 top-full mt-0 min-w-[260px] bg-background border border-border shadow-lg z-50"
+                className="absolute left-0 top-full pt-1 min-w-[260px] z-50"
               >
-                <ul className="py-2">
+                <ul className="py-2 bg-background border border-border shadow-lg">
                   {citiesMenu.map((m) => (
                     <li key={m.label}>
                       <Link
@@ -134,11 +155,13 @@ const MiniNav = () => {
           </li>
 
           {/* Support / Services Offered dropdown */}
-          <li className="flex-shrink-0 relative">
+          <li
+            className="flex-shrink-0 relative"
+            onMouseEnter={() => openWith("support")}
+            onMouseLeave={scheduleClose}
+          >
             <button
               type="button"
-              onMouseEnter={() => setOpenMenu("support")}
-              onMouseLeave={() => setOpenMenu(null)}
               onClick={() => setOpenMenu(openMenu === "support" ? null : "support")}
               aria-haspopup="true"
               aria-expanded={openMenu === "support"}
@@ -148,11 +171,9 @@ const MiniNav = () => {
             </button>
             {openMenu === "support" && (
               <div
-                onMouseEnter={() => setOpenMenu("support")}
-                onMouseLeave={() => setOpenMenu(null)}
-                className="absolute left-0 top-full mt-0 min-w-[240px] bg-background border border-border shadow-lg z-50"
+                className="absolute left-0 top-full pt-1 min-w-[240px] z-50"
               >
-                <ul className="py-2">
+                <ul className="py-2 bg-background border border-border shadow-lg">
                   {supportMenu.map((m) => (
                     <li key={m.label}>
                       <Link
