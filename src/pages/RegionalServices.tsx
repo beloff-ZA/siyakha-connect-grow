@@ -295,6 +295,21 @@ const RegionalServices = () => {
                   </span>
                 </div>
                 <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-6">{c.blurb}</p>
+                <div className="mb-6">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-3">
+                    Languages we build in
+                  </p>
+                  <ul className="flex flex-wrap gap-1.5">
+                    {c.languages.map((lang) => (
+                      <li
+                        key={lang}
+                        className="text-[10px] uppercase tracking-[0.16em] bg-foreground/[0.06] px-2.5 py-1 text-foreground/80"
+                      >
+                        {lang}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 <ul className="flex flex-wrap gap-2 mb-6">
                   {c.focus.map((f) => (
                     <li
