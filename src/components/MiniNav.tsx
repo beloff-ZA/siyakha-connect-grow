@@ -20,6 +20,7 @@ const citiesMenu = [
   { to: "/regional-services#tanzania", label: "Dar es Salaam · Tanzania" },
   { to: "/regional-services#kenya", label: "Nairobi · Kenya" },
   { to: "/regional-services#drc", label: "Kinshasa · DRC" },
+  { to: "/regional-services#malawi", label: "Lilongwe · Malawi" },
 ];
 
 const supportMenu = [
