@@ -238,6 +238,23 @@ const RegionalServices = () => {
       areaServed: countries.map((c) => ({ "@type": "Country", name: c.name })),
       description:
         "Web design, web development, SaaS and mobile-first PWA builds across Angola, Zambia, Mozambique, Namibia, Botswana, Tanzania, Kenya and DRC.",
+      availableLanguage: Array.from(
+        new Set(countries.flatMap((c) => c.localPitches.map((p) => p.code)))
+      ).map((code) => ({ "@type": "Language", name: code })),
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Localised web services across Africa",
+        itemListElement: countries.map((c) => ({
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: `Web design & development — ${c.capital}, ${c.name}`,
+            areaServed: { "@type": "Country", name: c.name },
+            availableLanguage: c.localPitches.map((p) => ({ "@type": "Language", name: p.code })),
+            description: c.localPitches.map((p) => `[${p.lang}] ${p.text}`).join(" \n "),
+          },
+        })),
+      },
     }),
     []
   );
@@ -354,6 +371,24 @@ const RegionalServices = () => {
                       </li>
                     ))}
                   </ul>
+                </div>
+                <div className="mb-6 border-l-2 border-foreground/15 pl-4 space-y-3">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                    We offer this service in your language
+                  </p>
+                  {c.localPitches.map((p) => (
+                    <p
+                      key={p.code}
+                      lang={p.code}
+                      dir={p.dir ?? "ltr"}
+                      className="text-sm text-foreground/85 leading-relaxed"
+                    >
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mr-2">
+                        {p.lang} ·
+                      </span>
+                      {p.text}
+                    </p>
+                  ))}
                 </div>
                 <ul className="flex flex-wrap gap-2 mb-6">
                   {c.focus.map((f) => (
