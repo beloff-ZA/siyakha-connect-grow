@@ -5,7 +5,7 @@ const stack = [
   { k: "React · Next.js", v: "Modern web frontends" },
   { k: "Node · Python", v: "APIs & services" },
   { k: "Supabase · Postgres", v: "Auth, data, realtime" },
-  { k: "Lovable · No-code", v: "Rapid prototyping" },
+  { k: "No-code platforms", v: "Rapid prototyping" },
   { k: "Flutter · React Native", v: "Mobile apps" },
   { k: "Stripe · Paddle", v: "Payments & billing" },
 ];
