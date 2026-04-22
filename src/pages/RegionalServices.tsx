@@ -89,6 +89,15 @@ const countries: Country[] = [
       "French-language web platforms for Kinshasa and Lubumbashi — mining, NGOs, telecoms. Lightweight, low-bandwidth builds with offline support and locally hosted assets.",
     focus: ["French-first UX", "Mining & NGO", "Low-bandwidth PWAs", "USD/CDF pricing"],
   },
+  {
+    slug: "malawi",
+    name: "Malawi",
+    capital: "Lilongwe",
+    flag: "🇲🇼",
+    blurb:
+      "Web design and development for Lilongwe, Blantyre and Mzuzu — agribusiness, NGOs, tourism and SME platforms. Lightweight, low-bandwidth builds with Airtel Money and TNM Mpamba checkout.",
+    focus: ["Agribusiness portals", "NGO & donor sites", "Airtel Money / Mpamba", "Lake Malawi tourism"],
+  },
 ];
 
 const services = [
