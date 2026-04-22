@@ -15,6 +15,7 @@ type Country = {
   blurb: string;
   focus: string[];
   languages: string[];
+  localPitches: { lang: string; code: string; text: string; dir?: "ltr" | "rtl" }[];
 };
 
 const countries: Country[] = [
@@ -27,6 +28,11 @@ const countries: Country[] = [
       "Bilingual Portuguese & English web platforms for Luanda's energy, logistics and hospitality sectors. Hosted on resilient regional infrastructure with offline-capable PWAs for low-bandwidth environments.",
     focus: ["Corporate websites", "E-commerce (kwanza & USD)", "Logistics dashboards", "Bilingual PT/EN"],
     languages: ["Portuguese", "English", "Umbundu", "Kimbundu", "Kikongo"],
+    localPitches: [
+      { lang: "Portuguese", code: "pt-AO", text: "Oferecemos design e desenvolvimento web profissional em Luanda — sites, lojas online e aplicações web para empresas angolanas." },
+      { lang: "Umbundu", code: "umb", text: "Tu lingisa okupanga olojango violupale (web design) kuenda omangelo wovipange viapa kuetu Luanda." },
+      { lang: "Kimbundu", code: "kmb", text: "Tu bhana o sálu ya kupanga ma-website ni ma-aplicação web mu Luanda ni Angola yoso." },
+    ],
   },
   {
     slug: "zambia",
@@ -37,6 +43,11 @@ const countries: Country[] = [
       "Web design and SaaS builds for Lusaka and the Copperbelt — mining suppliers, fintech, agritech and tourism. Mobile-money ready (Airtel, MTN, Zamtel) with locally tuned SEO.",
     focus: ["Mining supplier portals", "Mobile-money checkout", "Tourism & lodge sites", "SEO for Lusaka"],
     languages: ["English", "Bemba", "Nyanja (Chewa)", "Tonga", "Lozi"],
+    localPitches: [
+      { lang: "Bemba", code: "bem", text: "Tulapanga website ne web apps mu Lusaka — twapelako amabusiness yenu pa intaneti pa mutengo unono." },
+      { lang: "Nyanja", code: "nya", text: "Timapanga ma website ndi ma web apps mu Lusaka — tikuthandizani kukula bizinesi yanu pa intaneti." },
+      { lang: "Tonga", code: "toi", text: "Tulapanga ma website abantu ba Zambia — micito yesu ilijisi muulo uunini alimwi ngiibotezya." },
+    ],
   },
   {
     slug: "mozambique",
@@ -47,6 +58,11 @@ const countries: Country[] = [
       "Portuguese-first websites and booking systems for Maputo, Beira and Pemba — hospitality, gas, agribusiness. Lightweight builds optimised for 3G coverage and high-DPI mobile.",
     focus: ["Hospitality booking", "Portuguese SEO", "Gas & agri portals", "Mobile-first design"],
     languages: ["Portuguese", "English", "Makhuwa", "Changana", "Sena"],
+    localPitches: [
+      { lang: "Portuguese", code: "pt-MZ", text: "Oferecemos criação de sites, lojas online e aplicações web em Maputo, Beira e Pemba — soluções rápidas e acessíveis para empresas moçambicanas." },
+      { lang: "Changana", code: "tso", text: "Hi endla ma website ni ma web apps eMaputo — hi pfuna mabindzu ya wena ku kula eka internet." },
+      { lang: "Makhuwa", code: "vmw", text: "Ninnipaka ma website ni ma web apps wa Mozambique — nlipaka micito ya nyuwo wikhalele wa internet." },
+    ],
   },
   {
     slug: "namibia",
@@ -57,6 +73,11 @@ const countries: Country[] = [
       "Polished corporate sites and tourism platforms for Windhoek, Walvis Bay and Swakopmund — tour operators, mining services, conservation. Multi-currency NAD/ZAR/USD checkout.",
     focus: ["Tourism operators", "Mining services", "Conservation NGOs", "NAD/ZAR/USD"],
     languages: ["English", "Afrikaans", "Oshiwambo", "Otjiherero", "Damara/Nama"],
+    localPitches: [
+      { lang: "Afrikaans", code: "af", text: "Ons bied professionele webontwerp en webontwikkeling in Windhoek — webwerwe, aanlynwinkels en web-toepassings vir Namibiese ondernemings." },
+      { lang: "Oshiwambo", code: "kj", text: "Ohatu ningi omawebsite nomawebapps mOvenduka — ohatu kwafele oongeshefa dheni di kule kointaneta." },
+      { lang: "Otjiherero", code: "hz", text: "Eṱe tu unganisa omawebsite nomawebapps mOvenduka kOuhona wa Namibia." },
+    ],
   },
   {
     slug: "botswana",
@@ -67,6 +88,10 @@ const countries: Country[] = [
       "Web platforms for Gaborone, Francistown and Maun — financial services, safari operators, government suppliers. Built on enterprise stacks with strict data-residency awareness.",
     focus: ["Financial services", "Safari & lodge", "Gov supplier portals", "Compliance-ready"],
     languages: ["English", "Setswana", "Kalanga", "Sekgalagadi"],
+    localPitches: [
+      { lang: "Setswana", code: "tn", text: "Re dira diwebsite le di-web app mo Gaborone — re thusa dikgwebo tsa Botswana go gola mo inthaneteng ka tlhwatlhwa e e kwa tlase." },
+      { lang: "Kalanga", code: "kck", text: "Tinopanga mawebsite ne web apps muGaborone — tinobatsira mabhindzuko enyu kukula painternet." },
+    ],
   },
   {
     slug: "tanzania",
@@ -77,6 +102,10 @@ const countries: Country[] = [
       "Swahili & English web platforms for Dar es Salaam, Arusha and Zanzibar — tourism, port logistics, fintech. M-Pesa Tanzania, Tigo Pesa and Airtel Money integrations standard.",
     focus: ["Swahili/English UX", "Tourism & safari", "Port & logistics", "Mobile-money APIs"],
     languages: ["Swahili", "English", "Sukuma", "Chagga", "Haya"],
+    localPitches: [
+      { lang: "Swahili", code: "sw-TZ", text: "Tunatoa huduma za usanifu na utengenezaji wa tovuti na programu za wavuti Dar es Salaam, Arusha na Zanzibar — kwa bei nafuu na ubora wa kimataifa." },
+      { lang: "Sukuma", code: "suk", text: "Tukukola masaiti na web apps Dar es Salaam — tukukwambilija mashughuli genu kukula mu mtandao." },
+    ],
   },
   {
     slug: "kenya",
@@ -87,6 +116,12 @@ const countries: Country[] = [
       "Nairobi-grade SaaS, marketplaces and corporate sites for fintech, agritech and B2B services. Native M-Pesa Daraja integration, Kenyan Shilling pricing and AWS Africa (Cape Town) hosting.",
     focus: ["M-Pesa Daraja", "SaaS & marketplaces", "Agritech platforms", "Nairobi SEO"],
     languages: ["English", "Swahili", "Kikuyu", "Luo", "Kalenjin", "Sheng"],
+    localPitches: [
+      { lang: "Swahili", code: "sw-KE", text: "Tunatengeneza tovuti, programu za wavuti na mifumo ya SaaS Nairobi — pamoja na muunganisho wa M-Pesa Daraja kwa biashara za Kenya." },
+      { lang: "Kikuyu", code: "ki", text: "Nĩ tũthondekaga website na web apps Nairobi — nĩ tũteithagia bishabu cianyu gũkũra mwena-inĩ wa internet." },
+      { lang: "Luo", code: "luo", text: "Wagero website kod web apps e Nairobi — wakonyo ohala mau medo dongruok e intaneti." },
+      { lang: "Sheng", code: "sw-KE-x-sheng", text: "Tunadunga ma-website na ma-web app fiti Nairobi — biashara yako ipande digital bila stress, bei poa." },
+    ],
   },
   {
     slug: "drc",
@@ -97,6 +132,11 @@ const countries: Country[] = [
       "French-language web platforms for Kinshasa and Lubumbashi — mining, NGOs, telecoms. Lightweight, low-bandwidth builds with offline support and locally hosted assets.",
     focus: ["French-first UX", "Mining & NGO", "Low-bandwidth PWAs", "USD/CDF pricing"],
     languages: ["French", "Lingala", "Swahili", "Kikongo", "Tshiluba"],
+    localPitches: [
+      { lang: "French", code: "fr-CD", text: "Nous offrons des services de conception et développement web à Kinshasa et Lubumbashi — sites internet, boutiques en ligne et applications web pour les entreprises congolaises." },
+      { lang: "Lingala", code: "ln", text: "Tosalaka ba website mpe ba web apps na Kinshasa — tosungaka ba mombongo na bino mpo bakola na internet." },
+      { lang: "Swahili (DRC)", code: "sw-CD", text: "Tunaunda tovuti na programu za wavuti Lubumbashi na Kinshasa — kwa biashara za Kongo na NGO." },
+    ],
   },
   {
     slug: "malawi",
@@ -107,6 +147,11 @@ const countries: Country[] = [
       "Web design and development for Lilongwe, Blantyre and Mzuzu — agribusiness, NGOs, tourism and SME platforms. Lightweight, low-bandwidth builds with Airtel Money and TNM Mpamba checkout.",
     focus: ["Agribusiness portals", "NGO & donor sites", "Airtel Money / Mpamba", "Lake Malawi tourism"],
     languages: ["English", "Chichewa", "Tumbuka", "Yao", "Lomwe"],
+    localPitches: [
+      { lang: "Chichewa", code: "ny", text: "Timapanga ma website ndi ma web apps mu Lilongwe ndi Blantyre — timathandiza mabizinesi a ku Malawi kukula pa intaneti pa mtengo wotsika." },
+      { lang: "Tumbuka", code: "tum", text: "Tikupanga mawebsite na web apps mu Mzuzu na Lilongwe — tikovwira mabizinesi ghinu kukura pa intaneti." },
+      { lang: "Yao", code: "yao", text: "Tukutenda ma website ni ma web apps ku Malawi — tukukamuchisya mabizinesi genu kukula pa intaneti." },
+    ],
   },
 ];
 
@@ -193,6 +238,23 @@ const RegionalServices = () => {
       areaServed: countries.map((c) => ({ "@type": "Country", name: c.name })),
       description:
         "Web design, web development, SaaS and mobile-first PWA builds across Angola, Zambia, Mozambique, Namibia, Botswana, Tanzania, Kenya and DRC.",
+      availableLanguage: Array.from(
+        new Set(countries.flatMap((c) => c.localPitches.map((p) => p.code)))
+      ).map((code) => ({ "@type": "Language", name: code })),
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Localised web services across Africa",
+        itemListElement: countries.map((c) => ({
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: `Web design & development — ${c.capital}, ${c.name}`,
+            areaServed: { "@type": "Country", name: c.name },
+            availableLanguage: c.localPitches.map((p) => ({ "@type": "Language", name: p.code })),
+            description: c.localPitches.map((p) => `[${p.lang}] ${p.text}`).join(" \n "),
+          },
+        })),
+      },
     }),
     []
   );
@@ -309,6 +371,24 @@ const RegionalServices = () => {
                       </li>
                     ))}
                   </ul>
+                </div>
+                <div className="mb-6 border-l-2 border-foreground/15 pl-4 space-y-3">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                    We offer this service in your language
+                  </p>
+                  {c.localPitches.map((p) => (
+                    <p
+                      key={p.code}
+                      lang={p.code}
+                      dir={p.dir ?? "ltr"}
+                      className="text-sm text-foreground/85 leading-relaxed"
+                    >
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mr-2">
+                        {p.lang} ·
+                      </span>
+                      {p.text}
+                    </p>
+                  ))}
                 </div>
                 <ul className="flex flex-wrap gap-2 mb-6">
                   {c.focus.map((f) => (
