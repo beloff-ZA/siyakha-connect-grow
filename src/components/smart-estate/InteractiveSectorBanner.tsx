@@ -55,21 +55,22 @@ const InteractiveSectorBanner = ({
       className="relative bg-background border-t border-foreground/10 overflow-hidden group"
     >
       <div className="relative w-full overflow-hidden">
-        {/* Background image with hover zoom */}
+        {/* Background image — desaturated by default, returns to colour on hover */}
         <img
           src={image}
           alt={imageAlt}
-          className="w-full h-auto block transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+          className="w-full h-auto block grayscale contrast-[1.05] transition-all duration-[1200ms] ease-out group-hover:grayscale-0 group-hover:scale-[1.04] group-hover:contrast-100"
           loading="lazy"
         />
 
-        {/* Subtle bottom-up gradient that intensifies on hover */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
+        {/* Layered gradients for legibility — strong bottom + subtle left vignette */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent transition-opacity duration-700" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent transition-opacity duration-700" />
 
         {/* Top-right CTA chip — fades in */}
         <a
           href={ctaHref}
-          className={`absolute top-6 right-6 md:top-10 md:right-10 inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 bg-background/90 backdrop-blur-sm text-foreground text-[10px] md:text-[11px] uppercase tracking-[0.22em] border border-foreground/15 hover:bg-background hover:border-foreground transition-all duration-300 ${
+          className={`absolute top-6 right-6 md:top-10 md:right-10 inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 bg-white/95 backdrop-blur-sm text-black text-[10px] md:text-[11px] uppercase tracking-[0.22em] border border-white/30 hover:bg-white hover:border-white transition-all duration-300 ${
             visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
           }`}
           style={{ transitionProperty: "opacity, transform, background-color, border-color", transitionDuration: "700ms" }}
@@ -87,24 +88,24 @@ const InteractiveSectorBanner = ({
           >
             {/* Eyebrow + hairline */}
             <div className="flex items-center gap-3 mb-4 md:mb-6">
-              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.28em] text-background/80">
+              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.32em] text-white/90 font-medium">
                 {eyebrow}
               </span>
-              <span className="h-px flex-1 max-w-[120px] bg-background/40" />
+              <span className="h-px flex-1 max-w-[120px] bg-white/50" />
             </div>
 
-            {/* Title — only show on mobile/tablet since the image already has it baked in for desktop */}
-            <div className="md:hidden mb-5">
-              <p className="font-display italic font-light text-2xl text-background leading-none">
+            {/* Title — rendered in DOM (sharper than baked-in image text) */}
+            <div className="mb-5 md:mb-7">
+              <p className="font-display italic font-light text-3xl md:text-5xl lg:text-6xl text-white leading-[0.95] drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)]">
                 {titleItalic}
               </p>
-              <p className="font-display font-bold uppercase text-3xl tracking-tight text-background leading-none mt-1">
+              <p className="font-display font-bold uppercase text-4xl md:text-6xl lg:text-7xl tracking-[-0.02em] text-white leading-[0.95] mt-1 drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)]">
                 {titleBold}
               </p>
             </div>
 
             {/* Tagline */}
-            <p className="text-sm md:text-base text-background/85 max-w-xl mb-5 md:mb-7">
+            <p className="text-sm md:text-base text-white/90 max-w-xl mb-5 md:mb-7 leading-relaxed">
               {tagline}
             </p>
 
@@ -120,8 +121,8 @@ const InteractiveSectorBanner = ({
                   onBlur={() => setActiveFeature(null)}
                   className={`px-3.5 py-2 md:px-4 md:py-2.5 text-[10px] md:text-[11px] uppercase tracking-[0.18em] border transition-all duration-300 ${
                     activeFeature === idx
-                      ? "bg-background text-foreground border-background"
-                      : "bg-transparent text-background/90 border-background/30 hover:border-background/70"
+                      ? "bg-white text-black border-white"
+                      : "bg-black/30 backdrop-blur-sm text-white border-white/40 hover:border-white hover:bg-black/50"
                   } ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
                   style={{ transitionDelay: visible ? `${200 + idx * 80}ms` : "0ms" }}
                   aria-expanded={activeFeature === idx}
@@ -137,8 +138,8 @@ const InteractiveSectorBanner = ({
                 activeFeature !== null ? "max-h-32 opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              <div className="border-l-2 border-background pl-4 max-w-2xl">
-                <p className="text-sm md:text-base text-background leading-relaxed">
+              <div className="border-l-2 border-white pl-4 max-w-2xl">
+                <p className="text-sm md:text-base text-white leading-relaxed">
                   {activeFeature !== null ? features[activeFeature].detail : ""}
                 </p>
               </div>
