@@ -55,21 +55,22 @@ const InteractiveSectorBanner = ({
       className="relative bg-background border-t border-foreground/10 overflow-hidden group"
     >
       <div className="relative w-full overflow-hidden">
-        {/* Background image with hover zoom */}
+        {/* Background image — desaturated by default, returns to colour on hover */}
         <img
           src={image}
           alt={imageAlt}
-          className="w-full h-auto block transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+          className="w-full h-auto block grayscale contrast-[1.05] transition-all duration-[1200ms] ease-out group-hover:grayscale-0 group-hover:scale-[1.04] group-hover:contrast-100"
           loading="lazy"
         />
 
-        {/* Subtle bottom-up gradient that intensifies on hover */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
+        {/* Layered gradients for legibility — strong bottom + subtle left vignette */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent transition-opacity duration-700" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent transition-opacity duration-700" />
 
         {/* Top-right CTA chip — fades in */}
         <a
           href={ctaHref}
-          className={`absolute top-6 right-6 md:top-10 md:right-10 inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 bg-background/90 backdrop-blur-sm text-foreground text-[10px] md:text-[11px] uppercase tracking-[0.22em] border border-foreground/15 hover:bg-background hover:border-foreground transition-all duration-300 ${
+          className={`absolute top-6 right-6 md:top-10 md:right-10 inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 bg-white/95 backdrop-blur-sm text-black text-[10px] md:text-[11px] uppercase tracking-[0.22em] border border-white/30 hover:bg-white hover:border-white transition-all duration-300 ${
             visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
           }`}
           style={{ transitionProperty: "opacity, transform, background-color, border-color", transitionDuration: "700ms" }}
