@@ -27,6 +27,7 @@ import BrandsWeTrust from "@/components/smart-estate/BrandsWeTrust";
 import CablingInfrastructureBanner from "@/components/smart-estate/CablingInfrastructureBanner";
 import WebAppsSaasBanner from "@/components/smart-estate/WebAppsSaasBanner";
 import SmartWaterBanner from "@/components/smart-estate/SmartWaterBanner";
+import RetailSolutionsBanner from "@/components/smart-estate/RetailSolutionsBanner";
 import FaithSection from "@/components/FaithSection";
 import Footer from "@/components/Footer";
 import MiniNav from "@/components/MiniNav";
@@ -185,6 +186,7 @@ const Index = () => {
       <FranchiseAutomationBanner />
       <StudentAccommodationBanner />
       <MineDroneBanner />
+      <RetailSolutionsBanner />
       <WebAppsSaasBanner />
       <div id="vision"><VisionStatement /></div>
       <div id="solutions"><NextGenSolutions /></div>
