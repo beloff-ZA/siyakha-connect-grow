@@ -88,24 +88,24 @@ const InteractiveSectorBanner = ({
           >
             {/* Eyebrow + hairline */}
             <div className="flex items-center gap-3 mb-4 md:mb-6">
-              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.28em] text-background/80">
+              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.32em] text-white/90 font-medium">
                 {eyebrow}
               </span>
-              <span className="h-px flex-1 max-w-[120px] bg-background/40" />
+              <span className="h-px flex-1 max-w-[120px] bg-white/50" />
             </div>
 
-            {/* Title — only show on mobile/tablet since the image already has it baked in for desktop */}
-            <div className="md:hidden mb-5">
-              <p className="font-display italic font-light text-2xl text-background leading-none">
+            {/* Title — rendered in DOM (sharper than baked-in image text) */}
+            <div className="mb-5 md:mb-7">
+              <p className="font-display italic font-light text-3xl md:text-5xl lg:text-6xl text-white leading-[0.95] drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)]">
                 {titleItalic}
               </p>
-              <p className="font-display font-bold uppercase text-3xl tracking-tight text-background leading-none mt-1">
+              <p className="font-display font-bold uppercase text-4xl md:text-6xl lg:text-7xl tracking-[-0.02em] text-white leading-[0.95] mt-1 drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)]">
                 {titleBold}
               </p>
             </div>
 
             {/* Tagline */}
-            <p className="text-sm md:text-base text-background/85 max-w-xl mb-5 md:mb-7">
+            <p className="text-sm md:text-base text-white/90 max-w-xl mb-5 md:mb-7 leading-relaxed">
               {tagline}
             </p>
 
@@ -121,8 +121,8 @@ const InteractiveSectorBanner = ({
                   onBlur={() => setActiveFeature(null)}
                   className={`px-3.5 py-2 md:px-4 md:py-2.5 text-[10px] md:text-[11px] uppercase tracking-[0.18em] border transition-all duration-300 ${
                     activeFeature === idx
-                      ? "bg-background text-foreground border-background"
-                      : "bg-transparent text-background/90 border-background/30 hover:border-background/70"
+                      ? "bg-white text-black border-white"
+                      : "bg-black/30 backdrop-blur-sm text-white border-white/40 hover:border-white hover:bg-black/50"
                   } ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
                   style={{ transitionDelay: visible ? `${200 + idx * 80}ms` : "0ms" }}
                   aria-expanded={activeFeature === idx}
@@ -138,8 +138,8 @@ const InteractiveSectorBanner = ({
                 activeFeature !== null ? "max-h-32 opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              <div className="border-l-2 border-background pl-4 max-w-2xl">
-                <p className="text-sm md:text-base text-background leading-relaxed">
+              <div className="border-l-2 border-white pl-4 max-w-2xl">
+                <p className="text-sm md:text-base text-white leading-relaxed">
                   {activeFeature !== null ? features[activeFeature].detail : ""}
                 </p>
               </div>
