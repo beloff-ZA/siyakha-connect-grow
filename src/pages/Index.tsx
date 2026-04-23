@@ -179,13 +179,13 @@ const Index = () => {
       <SmartSwitchBanner />
       <CctvBanner />
       <SmartHomeUaeBanner />
+      <SmartWaterBanner />
       <SmartFailoverBanner />
       <HotelBedsideBanner />
       <FranchiseAutomationBanner />
       <StudentAccommodationBanner />
       <MineDroneBanner />
       <WebAppsSaasBanner />
-      <SmartWaterBanner />
       <div id="vision"><VisionStatement /></div>
       <div id="solutions"><NextGenSolutions /></div>
       <div id="capabilities"><CapabilityPillars /></div>
