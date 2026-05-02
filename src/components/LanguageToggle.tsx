@@ -19,9 +19,8 @@ const clearGoogTransCookie = () => {
 };
 
 const setGoogTransCookie = (lang: "en" | "ar") => {
-  // Always clear first so switching back to EN fully restores the original page
   clearGoogTransCookie();
-  if (lang === "en") return; // No cookie => Google Translate stays off, page is original English
+  if (lang === "en") return;
   const value = `/en/${lang}`;
   document.cookie = `googtrans=${value};path=/`;
   const host = window.location.hostname;
@@ -32,51 +31,79 @@ const setGoogTransCookie = (lang: "en" | "ar") => {
   }
 };
 
+const ensureGtStyles = () => {
+  if (document.getElementById("gt-style-overrides")) return;
+  const style = document.createElement("style");
+  style.id = "gt-style-overrides";
+  // Hide Google's top banner / tooltip artefacts so the page stays clean
+  style.textContent = `
+    .goog-te-banner-frame.skiptranslate,
+    .goog-te-gadget,
+    iframe.goog-te-banner-frame { display: none !important; }
+    body { top: 0 !important; }
+    .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
+    #google_translate_element { position: absolute; left: -9999px; top: -9999px; visibility: hidden; }
+  `;
+  document.head.appendChild(style);
+};
+
+const ensureTranslateLoaded = () => {
+  ensureGtStyles();
+
+  if (!document.getElementById("google_translate_element")) {
+    const div = document.createElement("div");
+    div.id = "google_translate_element";
+    document.body.appendChild(div);
+  }
+
+  if (!window.googleTranslateElementInit) {
+    window.googleTranslateElementInit = () => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        new (window.google as any).translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "en,ar",
+            autoDisplay: false,
+            layout: 0,
+          },
+          "google_translate_element"
+        );
+      } catch (e) {
+        // ignore
+      }
+    };
+  }
+
+  if (!document.querySelector('script[data-gtranslate]')) {
+    const s = document.createElement("script");
+    s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    s.async = true;
+    s.defer = true;
+    s.dataset.gtranslate = "true";
+    document.body.appendChild(s);
+  }
+};
+
 const LanguageToggle = () => {
   const [lang, setLang] = useState<"en" | "ar">("en");
 
   useEffect(() => {
-    // Inject hidden Google Translate container + script (only once)
-    if (!document.getElementById("google_translate_element")) {
-      const div = document.createElement("div");
-      div.id = "google_translate_element";
-      div.style.display = "none";
-      document.body.appendChild(div);
-    }
+    ensureTranslateLoaded();
 
-    if (!window.googleTranslateElementInit) {
-      window.googleTranslateElementInit = () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        new (window.google as any).translate.TranslateElement(
-          { pageLanguage: "en", includedLanguages: "en,ar", autoDisplay: false },
-          "google_translate_element"
-        );
-      };
-    }
-
-    if (!document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')) {
-      const s = document.createElement("script");
-      s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-      s.async = true;
-      document.body.appendChild(s);
-    }
-
-    // Restore previous selection
     const match = document.cookie.match(/googtrans=\/en\/(en|ar)/);
-    if (match && (match[1] === "ar" || match[1] === "en")) {
-      setLang(match[1] as "en" | "ar");
-      document.documentElement.dir = match[1] === "ar" ? "rtl" : "ltr";
-      document.documentElement.lang = match[1];
-    }
+    const current = (match?.[1] as "en" | "ar") || "en";
+    setLang(current);
+    document.documentElement.dir = current === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = current;
   }, []);
 
   const toggle = () => {
     const next = lang === "en" ? "ar" : "en";
-    setLang(next);
     setGoogTransCookie(next);
     document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = next;
-    // Reload so Google Translate applies the cookie selection across the page
+    // Hard reload so Google Translate re-evaluates the cookie cleanly
     window.location.reload();
   };
 
