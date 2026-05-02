@@ -7,9 +7,22 @@ declare global {
   }
 }
 
+const clearGoogTransCookie = () => {
+  const expire = "Thu, 01 Jan 1970 00:00:00 GMT";
+  document.cookie = `googtrans=;path=/;expires=${expire}`;
+  const host = window.location.hostname;
+  const parts = host.split(".");
+  if (parts.length > 1) {
+    const domain = "." + parts.slice(-2).join(".");
+    document.cookie = `googtrans=;path=/;domain=${domain};expires=${expire}`;
+  }
+};
+
 const setGoogTransCookie = (lang: "en" | "ar") => {
+  // Always clear first so switching back to EN fully restores the original page
+  clearGoogTransCookie();
+  if (lang === "en") return; // No cookie => Google Translate stays off, page is original English
   const value = `/en/${lang}`;
-  // Set on current host and parent domain so it survives reloads
   document.cookie = `googtrans=${value};path=/`;
   const host = window.location.hostname;
   const parts = host.split(".");
