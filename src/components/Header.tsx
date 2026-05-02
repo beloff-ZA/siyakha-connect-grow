@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import interlinkLogo from "@/assets/interlink-logo.png";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const Header = () => {
   return (
@@ -32,13 +33,16 @@ const Header = () => {
             تمكين المدن الذكية والحياة الرقمية
           </p>
 
-          <a
-            href="mailto:nikita@siyakhatechnology.co.za?subject=Project%20Enquiry"
-            className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] md:tracking-[0.22em] text-foreground/80 hover:text-accent transition-colors text-right flex-shrink-0"
-          >
-            <span className="hidden sm:inline">Start a Conversation →</span>
-            <span className="sm:hidden">Contact →</span>
-          </a>
+          <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+            <a
+              href="mailto:nikita@siyakhatechnology.co.za?subject=Project%20Enquiry"
+              className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] md:tracking-[0.22em] text-foreground/80 hover:text-accent transition-colors text-right"
+            >
+              <span className="hidden sm:inline">Start a Conversation →</span>
+              <span className="sm:hidden">Contact →</span>
+            </a>
+            <LanguageToggle />
+          </div>
         </div>
       </div>
     </header>
