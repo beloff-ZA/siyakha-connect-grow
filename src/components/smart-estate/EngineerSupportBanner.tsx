@@ -1,5 +1,6 @@
 import { ArrowRight, Headphones, Wrench, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const ICONS = [Wrench, Headphones, ShieldCheck];
 
@@ -29,13 +30,22 @@ const EngineerSupportBanner = () => {
               <span className="text-background">{t("engineerSupport.bodyHighlight2")}</span>{" "}
               {t("engineerSupport.bodyPost")}
             </p>
-            <a
-              href="mailto:nikita@siyakhatechnology.co.za?subject=L2%20%26%20L3%20Engineer%20Support%20Enquiry"
-              className="mt-8 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-background hover:text-background/70 transition-colors border-b border-background/40 hover:border-background/20 pb-1"
-            >
-              {t("engineerSupport.cta")}
-              <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
-            </a>
+            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+              <Link
+                to="/partner-engineers"
+                className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-background hover:text-background/70 transition-colors border-b border-background/40 hover:border-background/20 pb-1"
+              >
+                Become a partner engineer
+                <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
+              </Link>
+              <a
+                href="mailto:nikita@siyakhatechnology.co.za?subject=L2%20%26%20L3%20Engineer%20Support%20Enquiry"
+                className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-background/70 hover:text-background transition-colors border-b border-background/20 hover:border-background/40 pb-1"
+              >
+                {t("engineerSupport.cta")}
+                <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
+              </a>
+            </div>
           </div>
         </div>
 
