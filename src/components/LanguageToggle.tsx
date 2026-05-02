@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-type LangCode = "en" | "ar" | "fr" | "it" | "es" | "pt";
+type LangCode = "en" | "ar" | "fr" | "it" | "es" | "pt" | "zh-CN";
 
 const LANGUAGES: { code: LangCode; label: string; native: string }[] = [
   { code: "en", label: "EN", native: "English" },
@@ -16,6 +16,7 @@ const LANGUAGES: { code: LangCode; label: string; native: string }[] = [
   { code: "it", label: "IT", native: "Italiano" },
   { code: "es", label: "ES", native: "Español" },
   { code: "pt", label: "PT", native: "Português" },
+  { code: "zh-CN", label: "ZH", native: "中文" },
 ];
 
 const RTL_LANGS: LangCode[] = ["ar"];
