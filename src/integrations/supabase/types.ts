@@ -545,6 +545,53 @@ export type Database = {
         }
         Relationships: []
       }
+      engineer_certificates: {
+        Row: {
+          created_at: string
+          engineer_id: string
+          expiry_date: string | null
+          file_name: string | null
+          file_path: string | null
+          id: string
+          issue_date: string | null
+          issuer: string | null
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          engineer_id: string
+          expiry_date?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          issue_date?: string | null
+          issuer?: string | null
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          engineer_id?: string
+          expiry_date?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          issue_date?: string | null
+          issuer?: string | null
+          name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engineer_certificates_engineer_id_fkey"
+            columns: ["engineer_id"]
+            isOneToOne: false
+            referencedRelation: "partner_engineers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       future_projects: {
         Row: {
           client: string | null
@@ -758,6 +805,69 @@ export type Database = {
           speed?: string | null
           status?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      partner_engineers: {
+        Row: {
+          address: string | null
+          bio: string | null
+          city: string | null
+          company_name: string
+          company_registration: string | null
+          contact_person: string
+          country: string | null
+          created_at: string
+          email: string
+          id: string
+          notes: string | null
+          phone: string
+          service_regions: string[]
+          skills: string[]
+          status: string
+          updated_at: string
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          address?: string | null
+          bio?: string | null
+          city?: string | null
+          company_name: string
+          company_registration?: string | null
+          contact_person: string
+          country?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          notes?: string | null
+          phone: string
+          service_regions?: string[]
+          skills?: string[]
+          status?: string
+          updated_at?: string
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          address?: string | null
+          bio?: string | null
+          city?: string | null
+          company_name?: string
+          company_registration?: string | null
+          contact_person?: string
+          country?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          notes?: string | null
+          phone?: string
+          service_regions?: string[]
+          skills?: string[]
+          status?: string
+          updated_at?: string
+          user_id?: string
+          years_experience?: number | null
         }
         Relationships: []
       }
@@ -1127,7 +1237,12 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user" | "siyakha_admin"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "siyakha_admin"
+        | "partner_engineer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1255,7 +1370,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user", "siyakha_admin"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "siyakha_admin",
+        "partner_engineer",
+      ],
     },
   },
 } as const
