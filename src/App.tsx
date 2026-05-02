@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/Auth";
 import RegionalServices from "./pages/RegionalServices";
+import PartnerEngineers from "./pages/PartnerEngineers";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -49,6 +50,9 @@ function App() {
 
               {/* Regional services — Africa web design & development */}
               <Route path="/regional-services" element={<RegionalServices />} />
+
+              {/* Partner engineer registration */}
+              <Route path="/partner-engineers" element={<PartnerEngineers />} />
 
               {/* Director PA / Helpdesk — protected backend */}
               <Route path="/helpdesk" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />
