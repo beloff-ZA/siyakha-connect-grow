@@ -21,7 +21,6 @@ import StudentAccommodationBanner from "@/components/smart-estate/StudentAccommo
 import SmartFailoverBanner from "@/components/smart-estate/SmartFailoverBanner";
 import FranchiseAutomationBanner from "@/components/smart-estate/FranchiseAutomationBanner";
 import MineDroneBanner from "@/components/smart-estate/MineDroneBanner";
-import CommandCentreSection from "@/components/smart-estate/CommandCentreSection";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import BrandsWeTrust from "@/components/smart-estate/BrandsWeTrust";
 import CablingInfrastructureBanner from "@/components/smart-estate/CablingInfrastructureBanner";
@@ -198,7 +197,6 @@ const Index = () => {
       <div id="process"><OffPlanProcess /></div>
       <TechPillarsGrid />
       <QsfpBanner />
-      <div id="command"><CommandCentreSection /></div>
       <div id="cities"><SmartCitiesSection /></div>
       <SmartHandsSection />
       <GlobalConnectivityBanner />
