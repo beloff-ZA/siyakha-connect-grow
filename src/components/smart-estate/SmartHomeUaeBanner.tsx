@@ -26,26 +26,28 @@ const SmartHomeUaeBanner = () => {
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             <div className="lg:col-span-7">
               <p className="text-[11px] uppercase tracking-[0.28em] text-background/70 mb-5">
-                Smart Home UAE · 2026 Focus
+                UAE Smart Standard · Delivered in South Africa
               </p>
               <h2 className="font-display font-light text-3xl md:text-5xl lg:text-6xl tracking-[-0.02em] text-background leading-[1.05]">
                 The UAE is going
                 <span className="italic font-extralight"> fully smart</span>.
-                <br />We bring your home with it.
+                <br />We're bringing it home to South Africa.
               </h2>
               <p className="mt-6 max-w-xl text-sm md:text-base text-background/80 leading-relaxed">
-                In 2026, every major UAE development — from Dubai South to Yas Island, Saadiyat to MBR City —
-                is being built around smart-home standards. Lighting, climate, security, entertainment and
-                energy are no longer add-ons. They are the baseline.
+                Across the UAE — from Dubai South to Yas Island, Saadiyat to MBR City — every new
+                development is built around smart-home standards. Lighting, climate, security,
+                entertainment and energy are no longer add-ons. They are the baseline. Siyakha is
+                bringing that exact standard to South African estates, villas and apartments.
               </p>
               <p className="mt-4 max-w-xl text-sm md:text-base text-background/70 leading-relaxed">
-                Siyakha Interlink retrofits existing villas, apartments and townhouses — and delivers
-                turnkey smart-home packages for new owners — so your property meets the
-                <span className="text-background"> 2026 UAE smart living standard</span> without the construction overhead.
+                From Sandton and Umhlanga to Cape Town and Stellenbosch, we retrofit existing homes and
+                deliver turnkey smart-home packages for new builds — so your South African property meets
+                the <span className="text-background">UAE smart living standard</span> without the
+                construction overhead, engineered locally by our SMME and engineer network.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-2">
-                {["Dubai", "Abu Dhabi", "Sharjah", "RAK", "Ajman", "Fujairah", "UAQ"].map((c) => (
+                {["Johannesburg", "Sandton", "Pretoria", "Cape Town", "Umhlanga", "Stellenbosch", "Ballito"].map((c) => (
                   <span
                     key={c}
                     className="text-[10px] uppercase tracking-[0.22em] text-background/70 border border-background/20 px-3 py-1.5"
