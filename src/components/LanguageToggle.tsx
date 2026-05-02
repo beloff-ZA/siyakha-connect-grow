@@ -106,18 +106,6 @@ const LanguageToggle = () => {
     // Hard reload so Google Translate re-evaluates the cookie cleanly
     window.location.reload();
   };
-    }
-  }, []);
-
-  const toggle = () => {
-    const next = lang === "en" ? "ar" : "en";
-    setLang(next);
-    setGoogTransCookie(next);
-    document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
-    document.documentElement.lang = next;
-    // Reload so Google Translate applies the cookie selection across the page
-    window.location.reload();
-  };
 
   return (
     <button
