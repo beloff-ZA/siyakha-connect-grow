@@ -1,33 +1,21 @@
-const capabilities = [
-  { k: "Turnkey ICT", ka: "تكنولوجيا متكاملة", v: "End-to-end deployment for any space — design, supply, install, operate.", va: "تنفيذ شامل لأي مساحة — تصميم، توريد، تركيب، تشغيل." },
-  { k: "Holistic Solutions", ka: "حلول متكاملة", v: "Networks, hardware, security and software delivered as one programme.", va: "شبكات وأجهزة وأمن وبرمجيات تُسلَّم كبرنامج واحد." },
-  { k: "IT Hardware", ka: "أجهزة تقنية", v: "Procurement, staging and rollout of enterprise-grade equipment at scale.", va: "توريد وتجهيز ونشر معدات بمستوى المؤسسات على نطاق واسع." },
-  { k: "Remote Engineers", ka: "مهندسون عن بُعد", v: "On-demand specialist engineers embedded into your projects, anywhere.", va: "مهندسون متخصصون عند الطلب يعملون ضمن مشاريعكم في أي مكان." },
-  { k: "Schools & Campuses", ka: "المدارس والجامعات", v: "Digitalised classrooms, campus Wi-Fi, smartboards and learning platforms.", va: "فصول رقمية وشبكات واي فاي للحرم وسبورات ذكية ومنصات تعلّم." },
-  { k: "Business & Commercial", ka: "الأعمال والتجارة", v: "Offices, retail and corporate HQs — productive, secure and connected.", va: "مكاتب ومتاجر ومقرات شركات — منتجة وآمنة ومتصلة." },
-  { k: "Mining & Industrial", ka: "التعدين والصناعة", v: "Hardened technical support for mines and remote operational sites.", va: "دعم تقني متين للمناجم والمواقع التشغيلية النائية." },
-  { k: "Global Connectivity", ka: "اتصال عالمي", v: "We connect buildings across continents — one architecture, every site.", va: "نربط المباني عبر القارات — بنية واحدة لكل موقع." },
-];
-
-const sectors = ["Schools", "Businesses", "Mines", "Hospitals", "Hospitality", "Retail", "Estates"];
-
+import { useTranslation } from "react-i18next";
 
 const TurnkeyManifesto = () => {
+  const { t } = useTranslation();
+  const sectors = (t("turnkey.sectors", { returnObjects: true }) as string[]) || [];
+  const capabilities = (t("turnkey.capabilities", { returnObjects: true }) as { k: string; v: string }[]) || [];
   return (
     <section className="py-24 md:py-32 bg-foreground text-background border-t border-border">
       <div className="container mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           <div className="lg:col-span-5">
             <p className="text-[11px] uppercase tracking-[0.28em] text-background/60 mb-6">
-              Interlink × Siyakha
+              {t("turnkey.overline")}
             </p>
             <h2 className="font-display font-light text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-[-0.02em]">
-              We digitalise schools, businesses
-              <span className="italic font-extralight"> & every space in between.</span>
+              {t("turnkey.headlineL1")}
+              <span className="italic font-extralight"> {t("turnkey.headlineL2")}</span>
             </h2>
-            <p className="mt-5 font-display text-lg md:text-xl text-background/70" dir="rtl" lang="ar">
-              نُرقمن المدارس والشركات وكل مساحة بينهما.
-            </p>
 
             <div className="mt-8 flex flex-wrap gap-2">
               {sectors.map((s) => (
@@ -43,24 +31,15 @@ const TurnkeyManifesto = () => {
 
           <div className="lg:col-span-7 space-y-8">
             <p className="text-base md:text-lg leading-relaxed text-background/80 font-light">
-              We deliver holistic ICT across schools, businesses, mines and entire estates — turnkey IT hardware, structured networks, security architecture and remote engineering crews mobilised on demand. Classrooms going digital, mines needing technical support, operators scaling across borders: <span className="text-background">Siyakha has the team.</span>
+              {t("turnkey.body1Pre")} <span className="text-background">{t("turnkey.body1Highlight")}</span>
             </p>
             <p className="text-base md:text-lg leading-relaxed text-background/70 font-light">
-              We connect buildings globally. We are the future of IT — and we are building the next great ICT company in the world.
+              {t("turnkey.body2")}
             </p>
 
             <div className="border-l-2 border-background/30 pl-6 py-2 space-y-3">
-              <p className="font-display text-lg md:text-xl text-background/90 leading-[1.9]" dir="rtl" lang="ar">
-                يظن الكثيرون أن الماء هو الأساس، لكن المستقبل يبدأ بالطاقة والتكنولوجيا.
-              </p>
-              <p className="font-display text-lg md:text-xl text-background/90 leading-[1.9]" dir="rtl" lang="ar">
-                إذا لم يكن عقارك مجهزًا رقمياً، فهو أقرب إلى الماضي منه إلى المستقبل.
-              </p>
-              <p className="font-display text-lg md:text-xl text-background/90 leading-[1.9]" dir="rtl" lang="ar">
-                نحن نأخذك إلى الأمام، عبر تزويد منزلك بكل ما يحتاجه من بنية تحتية ذكية ومتكاملة.
-              </p>
-              <p className="text-xs uppercase tracking-[0.22em] text-background/50 pt-2">
-                Many think water is the foundation — but the future begins with power and technology. If your property isn't digitally equipped, it belongs to the past. We take you forward.
+              <p className="font-display text-lg md:text-xl text-background/90 leading-[1.9]">
+                {t("turnkey.callout")}
               </p>
             </div>
 
@@ -69,9 +48,6 @@ const TurnkeyManifesto = () => {
                 <div key={c.k} className="bg-foreground p-3.5 md:p-4">
                   <p className="text-[9px] uppercase tracking-[0.2em] text-background/55 leading-tight mb-1.5">
                     {c.k}
-                  </p>
-                  <p className="text-[10px] text-background/40 tracking-normal mb-2 leading-tight" dir="rtl" lang="ar">
-                    {c.ka}
                   </p>
                   <p className="text-[11px] text-background/80 leading-snug">
                     {c.v}
@@ -84,8 +60,6 @@ const TurnkeyManifesto = () => {
               <span>Interlink</span>
               <span className="h-px w-8 bg-background/30" aria-hidden="true" />
               <span>Siyakha</span>
-              <span className="h-px w-8 bg-background/30" aria-hidden="true" />
-              <span dir="rtl" lang="ar" className="tracking-normal text-sm">انترلينك · سياخا</span>
             </div>
           </div>
         </div>

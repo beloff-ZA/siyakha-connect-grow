@@ -1,0 +1,195 @@
+{
+  "header": {
+    "selectYourLanguage": "Selecione o seu idioma →",
+    "language": "Idioma →",
+    "tagline": "A capacitar cidades inteligentes e a vida digital"
+  },
+  "languageToggle": {
+    "ariaLabel": "Alterar idioma"
+  },
+  "miniNav": {
+    "vision": "Visão",
+    "solutions": "Soluções",
+    "capabilities": "Capacidades",
+    "process": "Processo",
+    "command": "Comando",
+    "contact": "Contacto",
+    "cities": "Cidades",
+    "services": "Serviços"
+  },
+  "hero": {
+    "topMetaLeft": "Siyakha Interlink · EMEA",
+    "topMetaRight": "N.º 001 — Uma Nova Morada para a Inteligência",
+    "overline": "Construção · Design · Tecnologia · EMEA",
+    "headlineL1": "A interligar a",
+    "headlineL2a": "construção, o design",
+    "headlineL2b": "&",
+    "headlineL3": "tecnologia do amanhã.",
+    "body": "A Siyakha Interlink é o parceiro integrado de construção, design e tecnologia para projetos de desenvolvimento em toda a EMEA — desde infraestruturas de fibra e vigilância por IA a plataformas de experiência de inquilino em imobiliário de luxo.",
+    "ctaPartner": "Seja nosso parceiro",
+    "ctaExplore": "Explorar Capacidades",
+    "stats": {
+      "regionLabel": "Construção · Design · Tecnologia",
+      "sitesLabel": "Locais Projetados",
+      "camerasLabel": "Câmaras Instaladas",
+      "commandLabel": "Centro de Comando"
+    }
+  },
+  "bespoke": {
+    "overline": "Personalizado · À Prova de Futuro · Projetado",
+    "headlineL1": "Designs personalizados merecem",
+    "headlineL2Italic": "tecnologia personalizada",
+    "headlineL2End": ",",
+    "headlineL3": "soluções e conceitos.",
+    "body": "Preparamos a sua casa para o futuro com a mais recente tecnologia — projetada em torno da sua arquitetura, do seu estilo de vida e da década que se avizinha."
+  },
+  "vision": {
+    "overline": "A Visão Siyakha",
+    "headlineL1": "Pegamos numa morada",
+    "headlineL2": "e tornamo-la inteligente.",
+    "subhead": "Tornamo-la",
+    "see": "ver",
+    "feel": "sentir",
+    "and": "e",
+    "flow": "fluir",
+    "different": "de forma diferente.",
+    "tagline1": "Siyakha é uma visão.",
+    "tagline2": "Siyakha é um sentimento."
+  },
+  "turnkey": {
+    "overline": "Interlink × Siyakha",
+    "headlineL1": "Digitalizamos escolas, empresas",
+    "headlineL2": "e todos os espaços intermédios.",
+    "sectors": [
+      "Escolas",
+      "Empresas",
+      "Minas",
+      "Hospitais",
+      "Hotelaria",
+      "Retalho",
+      "Propriedades"
+    ],
+    "body1Pre": "Fornecemos soluções de ICT holísticas para escolas, empresas, minas e propriedades inteiras — hardware de TI chave na mão, redes estruturadas, arquitetura de segurança e equipas de engenharia remotas mobilizadas a pedido. Salas de aula a tornarem-se digitais, minas a necessitarem de suporte técnico, operadores a expandirem-se além-fronteiras:",
+    "body1Highlight": "A Siyakha tem a equipa.",
+    "body2": "Conectamos edifícios globalmente. Somos o futuro das TI — e estamos a construir a próxima grande empresa de ICT do mundo.",
+    "callout": "Muitos pensam que a água é a base — mas o futuro começa com energia e tecnologia. Se a sua propriedade não está equipada digitalmente, pertence ao passado. Nós levamo-lo para o futuro.",
+    "capabilities": [
+      {
+        "k": "ICT Chave na Mão",
+        "v": "Implementação de ponta a ponta para qualquer espaço — design, fornecimento, instalação, operação."
+      },
+      {
+        "k": "Soluções Holísticas",
+        "v": "Redes, hardware, segurança e software entregues como um programa único."
+      },
+      {
+        "k": "Hardware de TI",
+        "v": "Aquisição, preparação e implementação de equipamento de nível empresarial em grande escala."
+      },
+      {
+        "k": "Engenheiros Remotos",
+        "v": "Engenheiros especialistas a pedido, integrados nos seus projetos, em qualquer lugar."
+      },
+      {
+        "k": "Escolas e Campus",
+        "v": "Salas de aula digitalizadas, Wi-Fi no campus, quadros interativos e plataformas de aprendizagem."
+      },
+      {
+        "k": "Empresarial e Comercial",
+        "v": "Escritórios, retalho e sedes corporativas — produtivos, seguros e conectados."
+      },
+      {
+        "k": "Mineração e Industrial",
+        "v": "Suporte técnico robusto para minas e locais operacionais remotos."
+      },
+      {
+        "k": "Conectividade Global",
+        "v": "Conectamos edifícios entre continentes — uma arquitetura, todos os locais."
+      }
+    ]
+  },
+  "engineerSupport": {
+    "overline": "Capacidade de Engenharia · África Austral",
+    "headlineP1": "Fornecemos",
+    "headlineItalic": "engenheiros L2 e L3",
+    "headlineP2": "para suporte no terreno e dedicado",
+    "headlineP3": "em toda a África Austral.",
+    "bodyPre": "Desde intervenções pontuais (\"smart-hands\") a equipas de projeto completas — a Siyakha é o parceiro de execução em que fornecedores globais, MSPs e integradores confiam para",
+    "bodyHighlight1": "engenheiros de campo L2 certificados",
+    "bodyAnd": "e",
+    "bodyHighlight2": "engenheiros de suporte dedicado L3",
+    "bodyPost": "no terreno na África do Sul e na região mais vasta da SADC.",
+    "cta": "Solicitar Suporte de Engenharia",
+    "pillars": [
+      {
+        "title": "Engenheiros de Campo L2",
+        "body": "Execução prática no local — instalações, substituições, resolução de problemas, comissionamento e suporte à implementação de projetos em toda a África Austral."
+      },
+      {
+        "title": "Suporte Dedicado L3",
+        "body": "Engenheiros seniores que efetuam diagnósticos avançados, escalonamentos, validação de design e remediação a nível de arquitetura para ambientes de missão crítica."
+      },
+      {
+        "title": "Cobertura de Projetos e Programas",
+        "body": "Capacidade de engenharia integrada para OEMs, MSPs e integradores — para que os seus projetos nunca fiquem parados à espera de competências no terreno."
+      }
+    ]
+  },
+  "developerCta": {
+    "overline": "Para Promotores, Proprietários e Operadores",
+    "headlineL1": "A construir algo",
+    "headlineItalic": "notável?",
+    "headlineL2": "Vamos projetar a inteligência no seu interior.",
+    "body": "Envolva-nos na fase de conceito e entregaremos um edifício com desempenho excecional desde o dia da entrega das chaves.",
+    "ctaConversation": "Iniciar uma Conversa",
+    "dialogTitle": "Iniciar uma Conversa",
+    "dialogSubtitle": "Envolva-nos na fase de conceito. Partilhe o seu projeto e responderemos no prazo de um dia útil.",
+    "ctaWhatsapp": "Contactar a Equipa por WhatsApp",
+    "footerLine": "Siyakha Tech Solutions · Johannesburg · Cape Town · Durban · Pretoria · Dubai · Abu Dhabi · Fujairah · Riyadh · Doha · London · EMEA"
+  },
+  "footer": {
+    "tagline": "Construção, design e tecnologia para projetos de desenvolvimento em toda a EMEA. Projetado com intenção. Entregue com fé.",
+    "rights": "Todos os direitos reservados.",
+    "regions": "EAU · EMEA · África Austral"
+  },
+  "faith": {
+    "overline": "A Nossa Fé e Princípios Orientadores",
+    "headlineL1": "Com Deus, iremos longe —",
+    "headlineL2Italic": "construir, crescer",
+    "headlineL2End": "e confiar n'Ele em tudo.",
+    "body": "Cada projeto em que tocamos — de Johannesburg a Dubai — assenta na convicção de que o trabalho fiel, realizado com excelência, se torna um testemunho silencioso. Confiamos a Deus o resultado e trabalhamos com as nossas mãos."
+  },
+  "whatsapp": {
+    "callButtonFull": "Chamada WhatsApp +27 81 501 2993",
+    "callButtonShort": "Chamada WhatsApp",
+    "chatButton": "WhatsApp",
+    "dialogTitle": "Pedido Rápido por WhatsApp",
+    "dialogDescription": "Diga-nos como podemos contactá-lo e do que precisa. Iniciaremos uma conversa no WhatsApp com os seus dados.",
+    "fullName": "Nome Completo",
+    "email": "Email",
+    "phone": "Telefone",
+    "service": "Serviço",
+    "selectService": "Selecione um serviço",
+    "messageOptional": "Mensagem (opcional)",
+    "messagePlaceholder": "Descreva brevemente a sua necessidade",
+    "submit": "Iniciar Conversa no WhatsApp",
+    "services": [
+      {
+        "value": "infrastructure-and-networking",
+        "label": "Infraestrutura e Redes"
+      },
+      {
+        "value": "security-and-surveillance",
+        "label": "Segurança e Vigilância"
+      },
+      {
+        "value": "cloud-and-edge-solutions",
+        "label": "Soluções de Cloud e Edge"
+      },
+      {
+        "value": "smart-collaboration-tools",
+        "label": "Ferramentas de Colaboração Inteligentes"
+      }
+    ]
+  }
+}

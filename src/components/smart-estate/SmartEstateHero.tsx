@@ -1,66 +1,14 @@
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import towers from "@/assets/smart-estate-towers.jpg";
 import heroVideo from "@/assets/hero-dubai-smart-estate.mp4.asset.json";
 import PartnerFormDialog from "./PartnerFormDialog";
+import { useTranslation } from "react-i18next";
 
 const HERO_VIDEO = heroVideo.url;
 
-type Slide = {
-  lang: "en" | "ar";
-  dir: "ltr" | "rtl";
-  overline: string;
-  headline: React.ReactNode;
-  body: string;
-};
-
-const slides: Slide[] = [
-  {
-    lang: "en",
-    dir: "ltr",
-    overline: "Build · Design · Technology · EMEA",
-    headline: (
-      <>
-        Interlinking the
-        <br />
-        <span className="italic font-extralight text-accent">build, design</span> &amp;
-        <br />
-        technology of tomorrow.
-      </>
-    ),
-    body:
-      "Siyakha Interlink is the integrated build, design and technology partner for development projects across EMEA — from fibre backbones and AI surveillance to tenant experience platforms inside refined real estate.",
-  },
-  {
-    lang: "ar",
-    dir: "rtl",
-    overline: "بناء · تصميم · تكنولوجيا · الشرق الأوسط وأفريقيا",
-    headline: (
-      <>
-        احلم أكثر، وأدخل
-        <br />
-        <span className="italic font-extralight text-accent">التكنولوجيا</span> إلى مساحاتك
-        <br />
-        لنرتقِ بمبانيك إلى المستقبل.
-      </>
-    ),
-    body:
-      "سياخا إنترلينك هي شريككم المتكامل في البناء والتصميم والتكنولوجيا لمشاريع التطوير عبر الشرق الأوسط وأفريقيا — من شبكات الألياف البصرية والمراقبة بالذكاء الاصطناعي إلى منصات تجربة المستأجرين داخل عقارات راقية.",
-  },
-];
-
 const SmartEstateHero = () => {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(id);
-  }, []);
-
-  const current = slides[index];
+  const { t } = useTranslation();
 
   return (
     <section className="relative min-h-[92vh] flex flex-col bg-background overflow-hidden">
@@ -84,8 +32,8 @@ const SmartEstateHero = () => {
       {/* Top meta strip */}
       <div className="relative z-10 container mx-auto px-6 lg:px-10 pt-10">
         <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-foreground/70">
-          <span>Siyakha Interlink · EMEA</span>
-          <span className="hidden md:inline">No. 001 — A New Address for Intelligence</span>
+          <span>{t("hero.topMetaLeft")}</span>
+          <span className="hidden md:inline">{t("hero.topMetaRight")}</span>
         </div>
       </div>
 
@@ -93,33 +41,21 @@ const SmartEstateHero = () => {
       <div className="relative z-10 flex-1 flex items-end pb-16 md:pb-24">
         <div className="container mx-auto px-6 lg:px-10">
           <div className="max-w-5xl">
-            <div
-              key={index}
-              dir={current.dir}
-              lang={current.lang}
-              className="animate-fade-in"
-            >
-              <p className={`overline mb-6 ${current.dir === "rtl" ? "tracking-normal text-sm" : ""}`}>
-                {current.overline}
-              </p>
-              <h1
-                className={`font-display font-light text-5xl md:text-7xl lg:text-[5.5rem] tracking-[-0.02em] text-foreground ${
-                  current.dir === "rtl" ? "leading-[1.25]" : "leading-[1.02]"
-                }`}
-              >
-                {current.headline}
+            <div className="animate-fade-in">
+              <p className="overline mb-6">{t("hero.overline")}</p>
+              <h1 className="font-display font-light text-5xl md:text-7xl lg:text-[5.5rem] tracking-[-0.02em] text-foreground leading-[1.02]">
+                {t("hero.headlineL1")}
+                <br />
+                <span className="italic font-extralight text-accent">{t("hero.headlineL2a")}</span> {t("hero.headlineL2b")}
+                <br />
+                {t("hero.headlineL3")}
               </h1>
             </div>
 
             <div className="mt-10 grid md:grid-cols-[1fr_auto] gap-8 md:items-end">
-              <div
-                key={`body-${index}`}
-                dir={current.dir}
-                lang={current.lang}
-                className="max-w-xl bg-background/40 backdrop-blur-md border border-foreground/10 rounded-lg px-6 py-5 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.4)] animate-fade-in"
-              >
+              <div className="max-w-xl bg-background/40 backdrop-blur-md border border-foreground/10 rounded-lg px-6 py-5 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.4)] animate-fade-in">
                 <p className="text-base md:text-lg text-foreground leading-relaxed">
-                  {current.body}
+                  {t("hero.body")}
                 </p>
               </div>
 
@@ -127,31 +63,14 @@ const SmartEstateHero = () => {
                 <PartnerFormDialog
                   trigger={
                     <Button className="cta-primary text-sm">
-                      Partner With Us <ArrowUpRight className="h-4 w-4" />
+                      {t("hero.ctaPartner")} <ArrowUpRight className="h-4 w-4" />
                     </Button>
                   }
                 />
                 <Button asChild variant="ghost" className="cta-secondary text-sm">
-                  <a href="#capabilities">Explore Capabilities</a>
+                  <a href="#capabilities">{t("hero.ctaExplore")}</a>
                 </Button>
               </div>
-            </div>
-
-            {/* Slide indicators */}
-            <div className="mt-8 flex items-center gap-2" role="tablist" aria-label="Hero language slides">
-              {slides.map((s, i) => (
-                <button
-                  key={s.lang}
-                  type="button"
-                  role="tab"
-                  aria-selected={i === index}
-                  aria-label={s.lang === "en" ? "English" : "Arabic"}
-                  onClick={() => setIndex(i)}
-                  className={`h-px transition-all duration-500 ${
-                    i === index ? "w-12 bg-foreground" : "w-6 bg-foreground/30 hover:bg-foreground/60"
-                  }`}
-                />
-              ))}
             </div>
           </div>
         </div>
@@ -162,10 +81,10 @@ const SmartEstateHero = () => {
         <div className="container mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-foreground/10">
             {[
-              { k: "EMEA", v: "Build · Design · Tech" },
-              { k: "50+", v: "Sites Engineered" },
-              { k: "1,000+", v: "Cameras Installed" },
-              { k: "24/7", v: "Command Centre" },
+              { k: "EMEA", v: t("hero.stats.regionLabel") },
+              { k: "50+", v: t("hero.stats.sitesLabel") },
+              { k: "1,000+", v: t("hero.stats.camerasLabel") },
+              { k: "24/7", v: t("hero.stats.commandLabel") },
             ].map((s, i) => (
               <div key={s.k} className={`py-6 ${i > 0 ? 'pl-6' : ''} pr-4`}>
                 <div className="font-display text-xl md:text-2xl text-foreground">{s.k}</div>

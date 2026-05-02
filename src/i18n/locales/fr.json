@@ -1,0 +1,195 @@
+{
+  "header": {
+    "selectYourLanguage": "Sélectionnez votre langue →",
+    "language": "Langue →",
+    "tagline": "Au service des villes intelligentes et de la vie numérique"
+  },
+  "languageToggle": {
+    "ariaLabel": "Changer de langue"
+  },
+  "miniNav": {
+    "vision": "Vision",
+    "solutions": "Solutions",
+    "capabilities": "Compétences",
+    "process": "Processus",
+    "command": "Commandement",
+    "contact": "Contact",
+    "cities": "Villes",
+    "services": "Services"
+  },
+  "hero": {
+    "topMetaLeft": "Siyakha Interlink · EMEA",
+    "topMetaRight": "N° 001 — Une nouvelle adresse pour l'intelligence",
+    "overline": "Construction · Conception · Technologie · EMEA",
+    "headlineL1": "Interconnecter la",
+    "headlineL2a": "construction, la conception",
+    "headlineL2b": "&",
+    "headlineL3": "la technologie de demain.",
+    "body": "Siyakha Interlink est le partenaire intégré pour la construction, la conception et la technologie des projets de développement dans la région EMEA — des backbones fibre optique et de la surveillance par IA aux plateformes d'expérience locataire au sein de projets immobiliers d'exception.",
+    "ctaPartner": "Devenez notre partenaire",
+    "ctaExplore": "Découvrir nos compétences",
+    "stats": {
+      "regionLabel": "Construction · Conception · Tech",
+      "sitesLabel": "Sites conçus",
+      "camerasLabel": "Caméras installées",
+      "commandLabel": "Centre de commandement"
+    }
+  },
+  "bespoke": {
+    "overline": "Sur mesure · Évolutif · Conçu",
+    "headlineL1": "Une conception d'exception mérite",
+    "headlineL2Italic": "une technologie d'exception",
+    "headlineL2End": ",",
+    "headlineL3": "des solutions et concepts uniques.",
+    "body": "Nous pérennisons votre maison avec les dernières technologies — conçues autour de votre architecture, de votre style de vie et pour la décennie à venir."
+  },
+  "vision": {
+    "overline": "La Vision Siyakha",
+    "headlineL1": "Nous partons d'une adresse",
+    "headlineL2": "pour la rendre intelligente.",
+    "subhead": "Nous la faisons",
+    "see": "voir",
+    "feel": "sentir",
+    "and": "et",
+    "flow": "vivre",
+    "different": "différemment.",
+    "tagline1": "Siyakha est une vision.",
+    "tagline2": "Siyakha est une sensation."
+  },
+  "turnkey": {
+    "overline": "Interlink × Siyakha",
+    "headlineL1": "Nous numérisons les écoles, les entreprises",
+    "headlineL2": "& tous les espaces intermédiaires.",
+    "sectors": [
+      "Écoles",
+      "Entreprises",
+      "Mines",
+      "Hôpitaux",
+      "Hôtellerie",
+      "Commerce de détail",
+      "Domaines"
+    ],
+    "body1Pre": "Nous fournissons des solutions ICT globales pour les écoles, les entreprises, les mines et des domaines entiers — matériel informatique clé en main, réseaux structurés, architecture de sécurité et équipes d'ingénieurs à distance mobilisées sur demande. Salles de classe en pleine transition numérique, mines nécessitant un soutien technique, opérateurs se développant à l'international :",
+    "body1Highlight": "Siyakha a l'équipe qu'il faut.",
+    "body2": "Nous connectons les bâtiments à l'échelle mondiale. Nous sommes l'avenir de l'informatique — et nous construisons la prochaine grande entreprise ICT au monde.",
+    "callout": "Beaucoup pensent que l'eau est le fondement — mais l'avenir commence avec l'énergie et la technologie. Si votre propriété n'est pas équipée numériquement, elle appartient au passé. Nous vous faisons entrer dans le futur.",
+    "capabilities": [
+      {
+        "k": "Solutions ICT clés en main",
+        "v": "Déploiement de bout en bout pour tout espace — conception, fourniture, installation, exploitation."
+      },
+      {
+        "k": "Solutions globales",
+        "v": "Réseaux, matériel, sécurité et logiciels livrés en un programme unique."
+      },
+      {
+        "k": "Matériel informatique",
+        "v": "Achat, préparation et déploiement à grande échelle d'équipements de niveau entreprise."
+      },
+      {
+        "k": "Ingénieurs à distance",
+        "v": "Ingénieurs spécialistes sur demande, intégrés à vos projets, partout dans le monde."
+      },
+      {
+        "k": "Écoles et campus",
+        "v": "Salles de classe numérisées, Wi-Fi sur le campus, tableaux intelligents et plateformes d'apprentissage."
+      },
+      {
+        "k": "Entreprises et commerces",
+        "v": "Bureaux, commerces et sièges sociaux — productifs, sécurisés et connectés."
+      },
+      {
+        "k": "Secteur minier et industriel",
+        "v": "Support technique renforcé pour les mines et les sites opérationnels distants."
+      },
+      {
+        "k": "Connectivité mondiale",
+        "v": "Nous connectons les bâtiments sur tous les continents — une seule architecture, pour chaque site."
+      }
+    ]
+  },
+  "engineerSupport": {
+    "overline": "Capacité d'ingénierie · Afrique australe",
+    "headlineP1": "Nous fournissons des",
+    "headlineItalic": "ingénieurs L2 & L3",
+    "headlineP2": "pour le support sur le terrain et le support dédié",
+    "headlineP3": "dans toute l'Afrique australe.",
+    "bodyPre": "Des interventions 'smart-hands' sur site unique aux équipes de projet complètes — Siyakha est le partenaire d'exécution sur lequel les fournisseurs mondiaux, les MSPs et les intégrateurs s'appuient pour obtenir des",
+    "bodyHighlight1": "ingénieurs de terrain certifiés L2",
+    "bodyAnd": "et des",
+    "bodyHighlight2": "ingénieurs de support dédié L3",
+    "bodyPost": "sur le terrain en Afrique du Sud et dans la région SADC élargie.",
+    "cta": "Demander un support d'ingénierie",
+    "pillars": [
+      {
+        "title": "Ingénieurs de terrain L2",
+        "body": "Exécution pratique sur site — installations, remplacements, dépannage, mise en service et support au déploiement de projets dans toute l'Afrique australe."
+      },
+      {
+        "title": "Support dédié L3",
+        "body": "Ingénieurs seniors assurant les diagnostics avancés, la remontée d'incidents, la validation de la conception et la remédiation au niveau de l'architecture pour les environnements critiques."
+      },
+      {
+        "title": "Couverture de projets et programmes",
+        "body": "Capacité d'ingénierie intégrée pour les OEMs, MSPs et intégrateurs — pour que vos projets ne soient jamais retardés par un manque de compétences sur le terrain."
+      }
+    ]
+  },
+  "developerCta": {
+    "overline": "Pour les promoteurs, propriétaires et exploitants",
+    "headlineL1": "Vous construisez quelque chose de",
+    "headlineItalic": "remarquable ?",
+    "headlineL2": "Concevons ensemble l'intelligence qui l'animera.",
+    "body": "Impliquez-nous dès la phase de conception et nous livrerons un bâtiment performant dès le jour de la remise des clés.",
+    "ctaConversation": "Démarrer une conversation",
+    "dialogTitle": "Démarrer une conversation",
+    "dialogSubtitle": "Impliquez-nous dès la phase de conception. Décrivez-nous votre projet et nous vous répondrons sous un jour ouvrable.",
+    "ctaWhatsapp": "Contacter l'équipe sur WhatsApp",
+    "footerLine": "Siyakha Tech Solutions · Johannesburg · Cape Town · Durban · Pretoria · Dubai · Abu Dhabi · Fujairah · Riyadh · Doha · London · EMEA"
+  },
+  "footer": {
+    "tagline": "Construction, conception et technologie pour les projets de développement dans la région EMEA. Conçu avec intention. Livré avec foi.",
+    "rights": "Tous droits réservés.",
+    "regions": "EAU · EMEA · Afrique australe"
+  },
+  "faith": {
+    "overline": "Notre foi et nos principes directeurs",
+    "headlineL1": "Avec Dieu, nous irons loin —",
+    "headlineL2Italic": "construire, croître",
+    "headlineL2End": "et Lui faire confiance en toutes choses.",
+    "body": "Chaque projet que nous entreprenons — de Johannesburg à Dubai — repose sur la conviction qu'un travail fidèle, accompli avec excellence, devient un témoignage discret. Nous confions le résultat à Dieu et travaillons de nos mains."
+  },
+  "whatsapp": {
+    "callButtonFull": "Appel WhatsApp +27 81 501 2993",
+    "callButtonShort": "Appel WhatsApp",
+    "chatButton": "WhatsApp",
+    "dialogTitle": "Demande rapide via WhatsApp",
+    "dialogDescription": "Indiquez-nous comment vous contacter et ce dont vous avez besoin. Nous lancerons une discussion WhatsApp avec vos informations.",
+    "fullName": "Nom complet",
+    "email": "Email",
+    "phone": "Téléphone",
+    "service": "Service",
+    "selectService": "Sélectionnez un service",
+    "messageOptional": "Message (facultatif)",
+    "messagePlaceholder": "Décrivez brièvement votre besoin",
+    "submit": "Démarrer la discussion WhatsApp",
+    "services": [
+      {
+        "value": "infrastructure-and-networking",
+        "label": "Infrastructure et réseaux"
+      },
+      {
+        "value": "security-and-surveillance",
+        "label": "Sécurité et surveillance"
+      },
+      {
+        "value": "cloud-and-edge-solutions",
+        "label": "Solutions Cloud et Edge"
+      },
+      {
+        "value": "smart-collaboration-tools",
+        "label": "Outils de collaboration intelligente"
+      }
+    ]
+  }
+}
