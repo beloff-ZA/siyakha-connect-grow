@@ -270,18 +270,33 @@ const PartnerEngineers: React.FC = () => {
         <section className="bg-foreground text-background border-b border-border">
           <div className="container mx-auto px-6 lg:px-10 py-16 md:py-24">
             <p className="text-[11px] uppercase tracking-[0.28em] text-background/60 mb-6">
-              Partner Engineer Network · Southern Africa
+              The Siyakha Network · SMMEs & Engineers · Southern Africa
             </p>
             <h1 className="font-display font-light text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-[-0.02em] max-w-4xl">
-              Become a <span className="italic font-extralight">partner engineer</span>.
+              Join the <span className="italic font-extralight">Siyakha Network</span>.
               <br />
-              Register your company, your skills, your region.
+              An installer & engineer network built with SMMEs, for projects.
             </h1>
             <p className="mt-8 max-w-2xl text-base md:text-lg text-background/75 leading-relaxed font-light">
-              Join our network of L2 & L3 engineers and technicians delivering smart estate, fibre,
-              CCTV and connectivity work across South Africa and the SADC region. Setup your profile,
-              upload your certificates, and get matched to projects.
+              We're building a national network of SMMEs, installers and L2/L3 engineers to deliver
+              smart estate, fibre, CCTV and connectivity projects across South Africa and SADC.
+              Register your company, list your skills and regions, upload your certificates — and
+              get deployed on live projects in your area.
             </p>
+            <div className="mt-10 grid sm:grid-cols-3 gap-px bg-background/10 max-w-3xl">
+              <div className="bg-foreground p-5">
+                <p className="text-2xl font-display font-light">SMME-first</p>
+                <p className="text-xs text-background/60 mt-1 uppercase tracking-[0.18em]">Built with small businesses</p>
+              </div>
+              <div className="bg-foreground p-5">
+                <p className="text-2xl font-display font-light">Project work</p>
+                <p className="text-xs text-background/60 mt-1 uppercase tracking-[0.18em]">Real deployments, paid scopes</p>
+              </div>
+              <div className="bg-foreground p-5">
+                <p className="text-2xl font-display font-light">Pan-SADC</p>
+                <p className="text-xs text-background/60 mt-1 uppercase tracking-[0.18em]">South Africa & neighbours</p>
+              </div>
+            </div>
           </div>
         </section>
 
