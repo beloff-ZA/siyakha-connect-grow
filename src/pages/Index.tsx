@@ -26,6 +26,7 @@ import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import BrandsWeTrust from "@/components/smart-estate/BrandsWeTrust";
 import CablingInfrastructureBanner from "@/components/smart-estate/CablingInfrastructureBanner";
 import WebAppsSaasBanner from "@/components/smart-estate/WebAppsSaasBanner";
+import EngineerSupportBanner from "@/components/smart-estate/EngineerSupportBanner";
 import RetailSolutionsBanner from "@/components/smart-estate/RetailSolutionsBanner";
 import FarmSolutionsBanner from "@/components/smart-estate/FarmSolutionsBanner";
 import FaithSection from "@/components/FaithSection";
@@ -174,6 +175,7 @@ const Index = () => {
       <SmartEstateHero />
       <BespokeBanner />
       <TurnkeyManifesto />
+      <EngineerSupportBanner />
       <BrandsWeTrust />
       <CablingInfrastructureBanner />
       <EnterpriseWifiBanner />
