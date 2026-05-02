@@ -34,13 +34,10 @@ const Header = () => {
           </p>
 
           <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-            <a
-              href="mailto:nikita@siyakhatechnology.co.za?subject=Project%20Enquiry"
-              className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] md:tracking-[0.22em] text-foreground/80 hover:text-accent transition-colors text-right"
-            >
-              <span className="hidden sm:inline">Start a Conversation →</span>
-              <span className="sm:hidden">Contact →</span>
-            </a>
+            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] md:tracking-[0.22em] text-foreground/80 text-right">
+              <span className="hidden sm:inline">Select Your Language →</span>
+              <span className="sm:hidden">Language →</span>
+            </span>
             <LanguageToggle />
           </div>
         </div>
