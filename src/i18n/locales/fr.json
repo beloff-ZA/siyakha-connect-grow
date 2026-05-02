@@ -1,142 +1,195 @@
 {
   "header": {
-    "selectYourLanguage": "Select Your Language →",
-    "language": "Language →",
-    "tagline": "Empowering smart cities and digital living"
+    "selectYourLanguage": "Sélectionnez votre langue →",
+    "language": "Langue →",
+    "tagline": "Au service des villes intelligentes et de la vie numérique"
   },
   "languageToggle": {
-    "ariaLabel": "Change language"
+    "ariaLabel": "Changer de langue"
   },
   "miniNav": {
     "vision": "Vision",
     "solutions": "Solutions",
-    "capabilities": "Capabilities",
-    "process": "Process",
-    "command": "Command",
+    "capabilities": "Compétences",
+    "process": "Processus",
+    "command": "Commandement",
     "contact": "Contact",
-    "cities": "Cities",
+    "cities": "Villes",
     "services": "Services"
   },
   "hero": {
     "topMetaLeft": "Siyakha Interlink · EMEA",
-    "topMetaRight": "No. 001 — A New Address for Intelligence",
-    "overline": "Build · Design · Technology · EMEA",
-    "headlineL1": "Interlinking the",
-    "headlineL2a": "build, design",
+    "topMetaRight": "N° 001 — Une nouvelle adresse pour l'intelligence",
+    "overline": "Construction · Conception · Technologie · EMEA",
+    "headlineL1": "Interconnecter la",
+    "headlineL2a": "construction, la conception",
     "headlineL2b": "&",
-    "headlineL3": "technology of tomorrow.",
-    "body": "Siyakha Interlink is the integrated build, design and technology partner for development projects across EMEA — from fibre backbones and AI surveillance to tenant experience platforms inside refined real estate.",
-    "ctaPartner": "Partner With Us",
-    "ctaExplore": "Explore Capabilities",
+    "headlineL3": "la technologie de demain.",
+    "body": "Siyakha Interlink est le partenaire intégré pour la construction, la conception et la technologie des projets de développement dans la région EMEA — des backbones fibre optique et de la surveillance par IA aux plateformes d'expérience locataire au sein de projets immobiliers d'exception.",
+    "ctaPartner": "Devenez notre partenaire",
+    "ctaExplore": "Découvrir nos compétences",
     "stats": {
-      "regionLabel": "Build · Design · Tech",
-      "sitesLabel": "Sites Engineered",
-      "camerasLabel": "Cameras Installed",
-      "commandLabel": "Command Centre"
+      "regionLabel": "Construction · Conception · Tech",
+      "sitesLabel": "Sites conçus",
+      "camerasLabel": "Caméras installées",
+      "commandLabel": "Centre de commandement"
     }
   },
   "bespoke": {
-    "overline": "Bespoke · Future-Proof · Engineered",
-    "headlineL1": "Bespoke designs deserve",
-    "headlineL2Italic": "bespoke technology",
+    "overline": "Sur mesure · Évolutif · Conçu",
+    "headlineL1": "Une conception d'exception mérite",
+    "headlineL2Italic": "une technologie d'exception",
     "headlineL2End": ",",
-    "headlineL3": "solutions and concepts.",
-    "body": "We future-proof your home with the latest technology — engineered around your architecture, your lifestyle and the decade ahead."
+    "headlineL3": "des solutions et concepts uniques.",
+    "body": "Nous pérennisons votre maison avec les dernières technologies — conçues autour de votre architecture, de votre style de vie et pour la décennie à venir."
   },
   "vision": {
-    "overline": "The Siyakha Vision",
-    "headlineL1": "We take an address",
-    "headlineL2": "and make it intelligent.",
-    "subhead": "We make it",
-    "see": "see",
-    "feel": "feel",
-    "and": "and",
-    "flow": "flow",
-    "different": "different.",
-    "tagline1": "Siyakha is a vision.",
-    "tagline2": "Siyakha is a feeling."
+    "overline": "La Vision Siyakha",
+    "headlineL1": "Nous partons d'une adresse",
+    "headlineL2": "pour la rendre intelligente.",
+    "subhead": "Nous la faisons",
+    "see": "voir",
+    "feel": "sentir",
+    "and": "et",
+    "flow": "vivre",
+    "different": "différemment.",
+    "tagline1": "Siyakha est une vision.",
+    "tagline2": "Siyakha est une sensation."
   },
   "turnkey": {
     "overline": "Interlink × Siyakha",
-    "headlineL1": "We digitalise schools, businesses",
-    "headlineL2": "& every space in between.",
-    "sectors": ["Schools", "Businesses", "Mines", "Hospitals", "Hospitality", "Retail", "Estates"],
-    "body1Pre": "We deliver holistic ICT across schools, businesses, mines and entire estates — turnkey IT hardware, structured networks, security architecture and remote engineering crews mobilised on demand. Classrooms going digital, mines needing technical support, operators scaling across borders:",
-    "body1Highlight": "Siyakha has the team.",
-    "body2": "We connect buildings globally. We are the future of IT — and we are building the next great ICT company in the world.",
-    "callout": "Many think water is the foundation — but the future begins with power and technology. If your property isn't digitally equipped, it belongs to the past. We take you forward.",
+    "headlineL1": "Nous numérisons les écoles, les entreprises",
+    "headlineL2": "& tous les espaces intermédiaires.",
+    "sectors": [
+      "Écoles",
+      "Entreprises",
+      "Mines",
+      "Hôpitaux",
+      "Hôtellerie",
+      "Commerce de détail",
+      "Domaines"
+    ],
+    "body1Pre": "Nous fournissons des solutions ICT globales pour les écoles, les entreprises, les mines et des domaines entiers — matériel informatique clé en main, réseaux structurés, architecture de sécurité et équipes d'ingénieurs à distance mobilisées sur demande. Salles de classe en pleine transition numérique, mines nécessitant un soutien technique, opérateurs se développant à l'international :",
+    "body1Highlight": "Siyakha a l'équipe qu'il faut.",
+    "body2": "Nous connectons les bâtiments à l'échelle mondiale. Nous sommes l'avenir de l'informatique — et nous construisons la prochaine grande entreprise ICT au monde.",
+    "callout": "Beaucoup pensent que l'eau est le fondement — mais l'avenir commence avec l'énergie et la technologie. Si votre propriété n'est pas équipée numériquement, elle appartient au passé. Nous vous faisons entrer dans le futur.",
     "capabilities": [
-      { "k": "Turnkey ICT", "v": "End-to-end deployment for any space — design, supply, install, operate." },
-      { "k": "Holistic Solutions", "v": "Networks, hardware, security and software delivered as one programme." },
-      { "k": "IT Hardware", "v": "Procurement, staging and rollout of enterprise-grade equipment at scale." },
-      { "k": "Remote Engineers", "v": "On-demand specialist engineers embedded into your projects, anywhere." },
-      { "k": "Schools & Campuses", "v": "Digitalised classrooms, campus Wi-Fi, smartboards and learning platforms." },
-      { "k": "Business & Commercial", "v": "Offices, retail and corporate HQs — productive, secure and connected." },
-      { "k": "Mining & Industrial", "v": "Hardened technical support for mines and remote operational sites." },
-      { "k": "Global Connectivity", "v": "We connect buildings across continents — one architecture, every site." }
+      {
+        "k": "Solutions ICT clés en main",
+        "v": "Déploiement de bout en bout pour tout espace — conception, fourniture, installation, exploitation."
+      },
+      {
+        "k": "Solutions globales",
+        "v": "Réseaux, matériel, sécurité et logiciels livrés en un programme unique."
+      },
+      {
+        "k": "Matériel informatique",
+        "v": "Achat, préparation et déploiement à grande échelle d'équipements de niveau entreprise."
+      },
+      {
+        "k": "Ingénieurs à distance",
+        "v": "Ingénieurs spécialistes sur demande, intégrés à vos projets, partout dans le monde."
+      },
+      {
+        "k": "Écoles et campus",
+        "v": "Salles de classe numérisées, Wi-Fi sur le campus, tableaux intelligents et plateformes d'apprentissage."
+      },
+      {
+        "k": "Entreprises et commerces",
+        "v": "Bureaux, commerces et sièges sociaux — productifs, sécurisés et connectés."
+      },
+      {
+        "k": "Secteur minier et industriel",
+        "v": "Support technique renforcé pour les mines et les sites opérationnels distants."
+      },
+      {
+        "k": "Connectivité mondiale",
+        "v": "Nous connectons les bâtiments sur tous les continents — une seule architecture, pour chaque site."
+      }
     ]
   },
   "engineerSupport": {
-    "overline": "Engineering Capacity · Southern Africa",
-    "headlineP1": "We provide",
-    "headlineItalic": "L2 & L3 engineers",
-    "headlineP2": "for field and dedicated support",
-    "headlineP3": "across Southern Africa.",
-    "bodyPre": "From single-site smart-hands to full project teams — Siyakha is the execution partner global vendors, MSPs and integrators rely on for",
-    "bodyHighlight1": "certified L2 field engineers",
-    "bodyAnd": "and",
-    "bodyHighlight2": "L3 dedicated support engineers",
-    "bodyPost": "on the ground in South Africa and the broader SADC region.",
-    "cta": "Request Engineering Support",
+    "overline": "Capacité d'ingénierie · Afrique australe",
+    "headlineP1": "Nous fournissons des",
+    "headlineItalic": "ingénieurs L2 & L3",
+    "headlineP2": "pour le support sur le terrain et le support dédié",
+    "headlineP3": "dans toute l'Afrique australe.",
+    "bodyPre": "Des interventions 'smart-hands' sur site unique aux équipes de projet complètes — Siyakha est le partenaire d'exécution sur lequel les fournisseurs mondiaux, les MSPs et les intégrateurs s'appuient pour obtenir des",
+    "bodyHighlight1": "ingénieurs de terrain certifiés L2",
+    "bodyAnd": "et des",
+    "bodyHighlight2": "ingénieurs de support dédié L3",
+    "bodyPost": "sur le terrain en Afrique du Sud et dans la région SADC élargie.",
+    "cta": "Demander un support d'ingénierie",
     "pillars": [
-      { "title": "L2 Field Engineers", "body": "Hands-on execution at site — installs, swaps, troubleshooting, commissioning and project rollout support across Southern Africa." },
-      { "title": "L3 Dedicated Support", "body": "Senior engineers running advanced diagnostics, escalations, design validation and architecture-level remediation for mission-critical environments." },
-      { "title": "Project & Programme Cover", "body": "Embedded engineering capacity for OEMs, MSPs and integrators — so your projects never stall waiting for skills on the ground." }
+      {
+        "title": "Ingénieurs de terrain L2",
+        "body": "Exécution pratique sur site — installations, remplacements, dépannage, mise en service et support au déploiement de projets dans toute l'Afrique australe."
+      },
+      {
+        "title": "Support dédié L3",
+        "body": "Ingénieurs seniors assurant les diagnostics avancés, la remontée d'incidents, la validation de la conception et la remédiation au niveau de l'architecture pour les environnements critiques."
+      },
+      {
+        "title": "Couverture de projets et programmes",
+        "body": "Capacité d'ingénierie intégrée pour les OEMs, MSPs et intégrateurs — pour que vos projets ne soient jamais retardés par un manque de compétences sur le terrain."
+      }
     ]
   },
   "developerCta": {
-    "overline": "For Developers, Owners & Operators",
-    "headlineL1": "Building something",
-    "headlineItalic": "remarkable?",
-    "headlineL2": "Let's engineer the intelligence inside it.",
-    "body": "Bring us in at concept stage and we'll deliver a building that performs from the day the keys are handed over.",
-    "ctaConversation": "Start a Conversation",
-    "dialogTitle": "Start a Conversation",
-    "dialogSubtitle": "Bring us in at concept stage. Share your project and we'll respond within one business day.",
-    "ctaWhatsapp": "WhatsApp the Team",
+    "overline": "Pour les promoteurs, propriétaires et exploitants",
+    "headlineL1": "Vous construisez quelque chose de",
+    "headlineItalic": "remarquable ?",
+    "headlineL2": "Concevons ensemble l'intelligence qui l'animera.",
+    "body": "Impliquez-nous dès la phase de conception et nous livrerons un bâtiment performant dès le jour de la remise des clés.",
+    "ctaConversation": "Démarrer une conversation",
+    "dialogTitle": "Démarrer une conversation",
+    "dialogSubtitle": "Impliquez-nous dès la phase de conception. Décrivez-nous votre projet et nous vous répondrons sous un jour ouvrable.",
+    "ctaWhatsapp": "Contacter l'équipe sur WhatsApp",
     "footerLine": "Siyakha Tech Solutions · Johannesburg · Cape Town · Durban · Pretoria · Dubai · Abu Dhabi · Fujairah · Riyadh · Doha · London · EMEA"
   },
   "footer": {
-    "tagline": "Build, design and technology for development projects across EMEA. Engineered with intention. Delivered with faith.",
-    "rights": "All rights reserved.",
-    "regions": "UAE · EMEA · Southern Africa"
+    "tagline": "Construction, conception et technologie pour les projets de développement dans la région EMEA. Conçu avec intention. Livré avec foi.",
+    "rights": "Tous droits réservés.",
+    "regions": "EAU · EMEA · Afrique australe"
   },
   "faith": {
-    "overline": "Our Faith & Guiding Principles",
-    "headlineL1": "With God, we will go far —",
-    "headlineL2Italic": "build, grow",
-    "headlineL2End": "and trust Him through everything.",
-    "body": "Every project we touch — from Johannesburg to Dubai — is built on the conviction that faithful work, done with excellence, becomes a quiet testimony. We trust God with the outcome and labour with our hands."
+    "overline": "Notre foi et nos principes directeurs",
+    "headlineL1": "Avec Dieu, nous irons loin —",
+    "headlineL2Italic": "construire, croître",
+    "headlineL2End": "et Lui faire confiance en toutes choses.",
+    "body": "Chaque projet que nous entreprenons — de Johannesburg à Dubai — repose sur la conviction qu'un travail fidèle, accompli avec excellence, devient un témoignage discret. Nous confions le résultat à Dieu et travaillons de nos mains."
   },
   "whatsapp": {
-    "callButtonFull": "WhatsApp Call +27 81 501 2993",
-    "callButtonShort": "WhatsApp Call",
+    "callButtonFull": "Appel WhatsApp +27 81 501 2993",
+    "callButtonShort": "Appel WhatsApp",
     "chatButton": "WhatsApp",
-    "dialogTitle": "Quick WhatsApp Enquiry",
-    "dialogDescription": "Tell us how to reach you and what you need. We'll start a WhatsApp chat with your details.",
-    "fullName": "Full Name",
+    "dialogTitle": "Demande rapide via WhatsApp",
+    "dialogDescription": "Indiquez-nous comment vous contacter et ce dont vous avez besoin. Nous lancerons une discussion WhatsApp avec vos informations.",
+    "fullName": "Nom complet",
     "email": "Email",
-    "phone": "Phone",
+    "phone": "Téléphone",
     "service": "Service",
-    "selectService": "Select a service",
-    "messageOptional": "Message (optional)",
-    "messagePlaceholder": "Briefly describe your need",
-    "submit": "Start WhatsApp Chat",
+    "selectService": "Sélectionnez un service",
+    "messageOptional": "Message (facultatif)",
+    "messagePlaceholder": "Décrivez brièvement votre besoin",
+    "submit": "Démarrer la discussion WhatsApp",
     "services": [
-      { "value": "infrastructure-and-networking", "label": "Infrastructure & Networking" },
-      { "value": "security-and-surveillance", "label": "Security & Surveillance" },
-      { "value": "cloud-and-edge-solutions", "label": "Cloud & Edge Solutions" },
-      { "value": "smart-collaboration-tools", "label": "Smart Collaboration Tools" }
+      {
+        "value": "infrastructure-and-networking",
+        "label": "Infrastructure et réseaux"
+      },
+      {
+        "value": "security-and-surveillance",
+        "label": "Sécurité et surveillance"
+      },
+      {
+        "value": "cloud-and-edge-solutions",
+        "label": "Solutions Cloud et Edge"
+      },
+      {
+        "value": "smart-collaboration-tools",
+        "label": "Outils de collaboration intelligente"
+      }
     ]
   }
 }

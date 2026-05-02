@@ -1,142 +1,195 @@
 {
   "header": {
-    "selectYourLanguage": "Select Your Language →",
-    "language": "Language →",
-    "tagline": "Empowering smart cities and digital living"
+    "selectYourLanguage": "选择您的语言 →",
+    "language": "语言 →",
+    "tagline": "赋能智慧城市和数字生活"
   },
   "languageToggle": {
-    "ariaLabel": "Change language"
+    "ariaLabel": "切换语言"
   },
   "miniNav": {
-    "vision": "Vision",
-    "solutions": "Solutions",
-    "capabilities": "Capabilities",
-    "process": "Process",
-    "command": "Command",
-    "contact": "Contact",
-    "cities": "Cities",
-    "services": "Services"
+    "vision": "愿景",
+    "solutions": "解决方案",
+    "capabilities": "能力",
+    "process": "流程",
+    "command": "指挥中心",
+    "contact": "联系我们",
+    "cities": "城市",
+    "services": "服务"
   },
   "hero": {
     "topMetaLeft": "Siyakha Interlink · EMEA",
-    "topMetaRight": "No. 001 — A New Address for Intelligence",
-    "overline": "Build · Design · Technology · EMEA",
-    "headlineL1": "Interlinking the",
-    "headlineL2a": "build, design",
+    "topMetaRight": "No. 001 — 智能新址",
+    "overline": "建筑 · 设计 · 技术 · EMEA",
+    "headlineL1": "互联",
+    "headlineL2a": "建筑、设计",
     "headlineL2b": "&",
-    "headlineL3": "technology of tomorrow.",
-    "body": "Siyakha Interlink is the integrated build, design and technology partner for development projects across EMEA — from fibre backbones and AI surveillance to tenant experience platforms inside refined real estate.",
-    "ctaPartner": "Partner With Us",
-    "ctaExplore": "Explore Capabilities",
+    "headlineL3": "明日科技。",
+    "body": "Siyakha Interlink 是 EMEA 地区开发项目的综合建筑、设计和技术合作伙伴——从光纤骨干网和人工智能监控，到高端房地产内的租户体验平台。",
+    "ctaPartner": "成为我们的合作伙伴",
+    "ctaExplore": "探索我们的能力",
     "stats": {
-      "regionLabel": "Build · Design · Tech",
-      "sitesLabel": "Sites Engineered",
-      "camerasLabel": "Cameras Installed",
-      "commandLabel": "Command Centre"
+      "regionLabel": "建筑 · 设计 · 技术",
+      "sitesLabel": "构建的站点",
+      "camerasLabel": "安装的摄像头",
+      "commandLabel": "指挥中心"
     }
   },
   "bespoke": {
-    "overline": "Bespoke · Future-Proof · Engineered",
-    "headlineL1": "Bespoke designs deserve",
-    "headlineL2Italic": "bespoke technology",
-    "headlineL2End": ",",
-    "headlineL3": "solutions and concepts.",
-    "body": "We future-proof your home with the latest technology — engineered around your architecture, your lifestyle and the decade ahead."
+    "overline": "定制 · 前瞻 · 精工",
+    "headlineL1": "定制化设计值得",
+    "headlineL2Italic": "专属定制的技术",
+    "headlineL2End": "，",
+    "headlineL3": "解决方案与理念。",
+    "body": "我们用最新技术为您的家打造面向未来的保障——围绕您的建筑、您的生活方式以及未来十年进行精心设计。"
   },
   "vision": {
-    "overline": "The Siyakha Vision",
-    "headlineL1": "We take an address",
-    "headlineL2": "and make it intelligent.",
-    "subhead": "We make it",
-    "see": "see",
-    "feel": "feel",
-    "and": "and",
-    "flow": "flow",
-    "different": "different.",
-    "tagline1": "Siyakha is a vision.",
-    "tagline2": "Siyakha is a feeling."
+    "overline": "Siyakha 的愿景",
+    "headlineL1": "我们取一处地址，",
+    "headlineL2": "赋予其智能。",
+    "subhead": "我们让它",
+    "see": "看见",
+    "feel": "感知",
+    "and": "与",
+    "flow": "流动",
+    "different": "与众不同。",
+    "tagline1": "Siyakha 是一种愿景。",
+    "tagline2": "Siyakha 是一种感觉。"
   },
   "turnkey": {
     "overline": "Interlink × Siyakha",
-    "headlineL1": "We digitalise schools, businesses",
-    "headlineL2": "& every space in between.",
-    "sectors": ["Schools", "Businesses", "Mines", "Hospitals", "Hospitality", "Retail", "Estates"],
-    "body1Pre": "We deliver holistic ICT across schools, businesses, mines and entire estates — turnkey IT hardware, structured networks, security architecture and remote engineering crews mobilised on demand. Classrooms going digital, mines needing technical support, operators scaling across borders:",
-    "body1Highlight": "Siyakha has the team.",
-    "body2": "We connect buildings globally. We are the future of IT — and we are building the next great ICT company in the world.",
-    "callout": "Many think water is the foundation — but the future begins with power and technology. If your property isn't digitally equipped, it belongs to the past. We take you forward.",
+    "headlineL1": "我们为学校、企业",
+    "headlineL2": "& 两者间的每个空间实现数字化。",
+    "sectors": [
+      "学校",
+      "企业",
+      "矿山",
+      "医院",
+      "酒店业",
+      "零售业",
+      "庄园地产"
+    ],
+    "body1Pre": "我们为学校、企业、矿山和整个庄园地产提供全面的 ICT 服务——包括交钥匙 IT 硬件、结构化网络、安全架构以及按需调动的远程工程团队。无论是教室数字化、矿山技术支持，还是运营商的跨境扩展：",
+    "body1Highlight": "Siyakha 团队都能胜任。",
+    "body2": "我们连接全球的建筑。我们是 IT 的未来——我们正在打造世界下一个伟大的 ICT 公司。",
+    "callout": "许多人认为水是基础——但未来始于电力和技术。如果您的物业没有进行数字化装备，它就属于过去。我们带您走向未来。",
     "capabilities": [
-      { "k": "Turnkey ICT", "v": "End-to-end deployment for any space — design, supply, install, operate." },
-      { "k": "Holistic Solutions", "v": "Networks, hardware, security and software delivered as one programme." },
-      { "k": "IT Hardware", "v": "Procurement, staging and rollout of enterprise-grade equipment at scale." },
-      { "k": "Remote Engineers", "v": "On-demand specialist engineers embedded into your projects, anywhere." },
-      { "k": "Schools & Campuses", "v": "Digitalised classrooms, campus Wi-Fi, smartboards and learning platforms." },
-      { "k": "Business & Commercial", "v": "Offices, retail and corporate HQs — productive, secure and connected." },
-      { "k": "Mining & Industrial", "v": "Hardened technical support for mines and remote operational sites." },
-      { "k": "Global Connectivity", "v": "We connect buildings across continents — one architecture, every site." }
+      {
+        "k": "交钥匙 ICT",
+        "v": "为任何空间提供端到端部署——设计、供应、安装、运营。"
+      },
+      {
+        "k": "整体解决方案",
+        "v": "将网络、硬件、安全和软件作为一个统一项目交付。"
+      },
+      {
+        "k": "IT 硬件",
+        "v": "企业级设备的大规模采购、准备和部署。"
+      },
+      {
+        "k": "远程工程师",
+        "v": "将按需提供的专业工程师嵌入到您在任何地方的项目中。"
+      },
+      {
+        "k": "学校与校园",
+        "v": "数字化教室、校园 Wi-Fi、智能白板和学习平台。"
+      },
+      {
+        "k": "商业与企业",
+        "v": "办公室、零售店和公司总部——高效、安全、互联。"
+      },
+      {
+        "k": "矿业与工业",
+        "v": "为矿山和远程作业现场提供强化的技术支持。"
+      },
+      {
+        "k": "全球互联",
+        "v": "我们连接各大洲的建筑——统一架构，覆盖每个站点。"
+      }
     ]
   },
   "engineerSupport": {
-    "overline": "Engineering Capacity · Southern Africa",
-    "headlineP1": "We provide",
-    "headlineItalic": "L2 & L3 engineers",
-    "headlineP2": "for field and dedicated support",
-    "headlineP3": "across Southern Africa.",
-    "bodyPre": "From single-site smart-hands to full project teams — Siyakha is the execution partner global vendors, MSPs and integrators rely on for",
-    "bodyHighlight1": "certified L2 field engineers",
-    "bodyAnd": "and",
-    "bodyHighlight2": "L3 dedicated support engineers",
-    "bodyPost": "on the ground in South Africa and the broader SADC region.",
-    "cta": "Request Engineering Support",
+    "overline": "工程能力 · 南部非洲",
+    "headlineP1": "我们提供",
+    "headlineItalic": "L2 & L3 工程师",
+    "headlineP2": "用于现场和专属支持",
+    "headlineP3": "覆盖整个南部非洲。",
+    "bodyPre": "从单一站点的智能现场支持到完整的项目团队——Siyakha 是全球供应商、MSPs 和集成商所信赖的执行合作伙伴，为他们提供",
+    "bodyHighlight1": "认证的 L2 现场工程师",
+    "bodyAnd": "和",
+    "bodyHighlight2": "L3 专属支持工程师",
+    "bodyPost": "派驻在南非和更广泛的 SADC 地区。",
+    "cta": "请求工程支持",
     "pillars": [
-      { "title": "L2 Field Engineers", "body": "Hands-on execution at site — installs, swaps, troubleshooting, commissioning and project rollout support across Southern Africa." },
-      { "title": "L3 Dedicated Support", "body": "Senior engineers running advanced diagnostics, escalations, design validation and architecture-level remediation for mission-critical environments." },
-      { "title": "Project & Programme Cover", "body": "Embedded engineering capacity for OEMs, MSPs and integrators — so your projects never stall waiting for skills on the ground." }
+      {
+        "title": "L2 现场工程师",
+        "body": "现场实际操作执行——在南部非洲范围内提供安装、更换、故障排除、调试和项目推广支持。"
+      },
+      {
+        "title": "L3 专属支持",
+        "body": "高级工程师为关键任务环境进行高级诊断、问题升级、设计验证和架构级修复。"
+      },
+      {
+        "title": "项目与计划支持",
+        "body": "为 OEMs、MSPs 和集成商提供嵌入式工程能力——确保您的项目不会因等待当地技术人员而停滞。"
+      }
     ]
   },
   "developerCta": {
-    "overline": "For Developers, Owners & Operators",
-    "headlineL1": "Building something",
-    "headlineItalic": "remarkable?",
-    "headlineL2": "Let's engineer the intelligence inside it.",
-    "body": "Bring us in at concept stage and we'll deliver a building that performs from the day the keys are handed over.",
-    "ctaConversation": "Start a Conversation",
-    "dialogTitle": "Start a Conversation",
-    "dialogSubtitle": "Bring us in at concept stage. Share your project and we'll respond within one business day.",
-    "ctaWhatsapp": "WhatsApp the Team",
+    "overline": "致开发者、业主与运营商",
+    "headlineL1": "正在打造一项",
+    "headlineItalic": "非凡工程？",
+    "headlineL2": "让我们为其注入智能。",
+    "body": "在概念阶段就让我们参与进来，我们将交付一栋从交钥匙之日起就性能卓越的建筑。",
+    "ctaConversation": "开启对话",
+    "dialogTitle": "开启对话",
+    "dialogSubtitle": "在概念阶段就让我们参与。分享您的项目，我们将在一个工作日内答复。",
+    "ctaWhatsapp": "通过 WhatsApp 联系团队",
     "footerLine": "Siyakha Tech Solutions · Johannesburg · Cape Town · Durban · Pretoria · Dubai · Abu Dhabi · Fujairah · Riyadh · Doha · London · EMEA"
   },
   "footer": {
-    "tagline": "Build, design and technology for development projects across EMEA. Engineered with intention. Delivered with faith.",
-    "rights": "All rights reserved.",
-    "regions": "UAE · EMEA · Southern Africa"
+    "tagline": "为 EMEA 地区的开发项目提供建筑、设计和技术。精心构思，诚信交付。",
+    "rights": "版权所有。",
+    "regions": "阿联酋 · EMEA · 南部非洲"
   },
   "faith": {
-    "overline": "Our Faith & Guiding Principles",
-    "headlineL1": "With God, we will go far —",
-    "headlineL2Italic": "build, grow",
-    "headlineL2End": "and trust Him through everything.",
-    "body": "Every project we touch — from Johannesburg to Dubai — is built on the conviction that faithful work, done with excellence, becomes a quiet testimony. We trust God with the outcome and labour with our hands."
+    "overline": "我们的信仰与指导原则",
+    "headlineL1": "倚靠上帝，我们将行稳致远——",
+    "headlineL2Italic": "建设、成长",
+    "headlineL2End": "并在一切事上信靠祂。",
+    "body": "我们接触的每一个项目——从 Johannesburg 到 Dubai——都建立在这样的信念之上：忠实卓越地工作，本身就是无声的见证。我们将结果交托给上帝，并亲手劳作。"
   },
   "whatsapp": {
     "callButtonFull": "WhatsApp Call +27 81 501 2993",
     "callButtonShort": "WhatsApp Call",
     "chatButton": "WhatsApp",
-    "dialogTitle": "Quick WhatsApp Enquiry",
-    "dialogDescription": "Tell us how to reach you and what you need. We'll start a WhatsApp chat with your details.",
-    "fullName": "Full Name",
-    "email": "Email",
-    "phone": "Phone",
-    "service": "Service",
-    "selectService": "Select a service",
-    "messageOptional": "Message (optional)",
-    "messagePlaceholder": "Briefly describe your need",
-    "submit": "Start WhatsApp Chat",
+    "dialogTitle": "快速 WhatsApp 咨询",
+    "dialogDescription": "请告诉我们如何联系您以及您的需求。我们将使用您提供的信息发起 WhatsApp 聊天。",
+    "fullName": "全名",
+    "email": "电子邮箱",
+    "phone": "电话",
+    "service": "服务",
+    "selectService": "选择一项服务",
+    "messageOptional": "留言（可选）",
+    "messagePlaceholder": "简要描述您的需求",
+    "submit": "开始 WhatsApp 聊天",
     "services": [
-      { "value": "infrastructure-and-networking", "label": "Infrastructure & Networking" },
-      { "value": "security-and-surveillance", "label": "Security & Surveillance" },
-      { "value": "cloud-and-edge-solutions", "label": "Cloud & Edge Solutions" },
-      { "value": "smart-collaboration-tools", "label": "Smart Collaboration Tools" }
+      {
+        "value": "infrastructure-and-networking",
+        "label": "基础设施与网络"
+      },
+      {
+        "value": "security-and-surveillance",
+        "label": "安全与监控"
+      },
+      {
+        "value": "cloud-and-edge-solutions",
+        "label": "云与边缘解决方案"
+      },
+      {
+        "value": "smart-collaboration-tools",
+        "label": "智能协作工具"
+      }
     ]
   }
 }
