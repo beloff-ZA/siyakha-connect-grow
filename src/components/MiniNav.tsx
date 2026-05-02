@@ -1,15 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const links = [
-  { id: "vision", label: "Vision" },
-  { id: "solutions", label: "Solutions" },
-  { id: "capabilities", label: "Capabilities" },
-  { id: "process", label: "Process" },
-  { id: "command", label: "Command" },
-  { id: "contact", label: "Contact" },
-];
+const linkIds = ["vision", "solutions", "capabilities", "process", "command", "contact"] as const;
 
 const citiesMenu = [
   { to: "/regional-services#angola", label: "Luanda · Angola" },
@@ -33,6 +27,8 @@ const supportMenu = [
 ];
 
 const MiniNav = () => {
+  const { t } = useTranslation();
+  const links = linkIds.map((id) => ({ id, label: t(`miniNav.${id}`) as string }));
   const [active, setActive] = useState<string>("");
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<null | "cities" | "support">(null);
@@ -74,8 +70,8 @@ const MiniNav = () => {
       },
       { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
     );
-    links.forEach((l) => {
-      const el = document.getElementById(l.id);
+    linkIds.forEach((id) => {
+      const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
@@ -132,7 +128,7 @@ const MiniNav = () => {
               aria-expanded={openMenu === "cities"}
               className="inline-flex items-center gap-1 text-[10px] md:text-[11px] uppercase tracking-[0.22em] px-3 py-2 text-foreground/60 hover:text-foreground transition-colors border-b border-transparent"
             >
-              Cities <ChevronDown className="w-3 h-3" />
+              {t("miniNav.cities")} <ChevronDown className="w-3 h-3" />
             </button>
             {openMenu === "cities" && (
               <div
@@ -168,7 +164,7 @@ const MiniNav = () => {
               aria-expanded={openMenu === "support"}
               className="inline-flex items-center gap-1 text-[10px] md:text-[11px] uppercase tracking-[0.22em] px-3 py-2 text-foreground/60 hover:text-foreground transition-colors border-b border-transparent"
             >
-              Services <ChevronDown className="w-3 h-3" />
+              {t("miniNav.services")} <ChevronDown className="w-3 h-3" />
             </button>
             {openMenu === "support" && (
               <div

@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import interlinkLogo from "@/assets/interlink-logo.png";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import LanguageToggle from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 
 const Header = () => {
+  const { t } = useTranslation();
   return (
     <header className="bg-background/90 border-b border-border sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-6 lg:px-10">
@@ -27,16 +29,14 @@ const Header = () => {
 
           <p
             className="hidden md:block flex-1 text-center font-display font-extralight text-base lg:text-lg text-foreground/80 tracking-normal px-4 truncate"
-            dir="rtl"
-            lang="ar"
           >
-            تمكين المدن الذكية والحياة الرقمية
+            {t("header.tagline")}
           </p>
 
           <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
             <span className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] md:tracking-[0.22em] text-foreground/80 text-right">
-              <span className="hidden sm:inline">Select Your Language →</span>
-              <span className="sm:hidden">Language →</span>
+              <span className="hidden sm:inline">{t("header.selectYourLanguage")}</span>
+              <span className="sm:hidden">{t("header.language")}</span>
             </span>
             <LanguageToggle />
           </div>

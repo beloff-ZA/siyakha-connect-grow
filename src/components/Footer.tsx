@@ -1,8 +1,10 @@
 import interlinkLogo from "@/assets/interlink-logo.png";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useTranslation();
 
   return (
     <footer className="bg-background border-t border-border">
@@ -16,8 +18,7 @@ const Footer = () => {
               loading="lazy"
             />
             <p className="text-muted-foreground max-w-md leading-relaxed">
-              Build, design and technology for development projects across EMEA.
-              Engineered with intention. Delivered with faith.
+              {t("footer.tagline")}
             </p>
           </div>
 
@@ -61,8 +62,8 @@ const Footer = () => {
         </div>
 
         <div className="mt-16 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-          <span>© {currentYear} Siyakha Interlink — All rights reserved.</span>
-          <span>UAE · EMEA · Southern Africa</span>
+          <span>© {currentYear} Siyakha Interlink — {t("footer.rights")}</span>
+          <span>{t("footer.regions")}</span>
         </div>
       </div>
     </footer>
