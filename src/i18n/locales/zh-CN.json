@@ -1,0 +1,142 @@
+{
+  "header": {
+    "selectYourLanguage": "Select Your Language →",
+    "language": "Language →",
+    "tagline": "Empowering smart cities and digital living"
+  },
+  "languageToggle": {
+    "ariaLabel": "Change language"
+  },
+  "miniNav": {
+    "vision": "Vision",
+    "solutions": "Solutions",
+    "capabilities": "Capabilities",
+    "process": "Process",
+    "command": "Command",
+    "contact": "Contact",
+    "cities": "Cities",
+    "services": "Services"
+  },
+  "hero": {
+    "topMetaLeft": "Siyakha Interlink · EMEA",
+    "topMetaRight": "No. 001 — A New Address for Intelligence",
+    "overline": "Build · Design · Technology · EMEA",
+    "headlineL1": "Interlinking the",
+    "headlineL2a": "build, design",
+    "headlineL2b": "&",
+    "headlineL3": "technology of tomorrow.",
+    "body": "Siyakha Interlink is the integrated build, design and technology partner for development projects across EMEA — from fibre backbones and AI surveillance to tenant experience platforms inside refined real estate.",
+    "ctaPartner": "Partner With Us",
+    "ctaExplore": "Explore Capabilities",
+    "stats": {
+      "regionLabel": "Build · Design · Tech",
+      "sitesLabel": "Sites Engineered",
+      "camerasLabel": "Cameras Installed",
+      "commandLabel": "Command Centre"
+    }
+  },
+  "bespoke": {
+    "overline": "Bespoke · Future-Proof · Engineered",
+    "headlineL1": "Bespoke designs deserve",
+    "headlineL2Italic": "bespoke technology",
+    "headlineL2End": ",",
+    "headlineL3": "solutions and concepts.",
+    "body": "We future-proof your home with the latest technology — engineered around your architecture, your lifestyle and the decade ahead."
+  },
+  "vision": {
+    "overline": "The Siyakha Vision",
+    "headlineL1": "We take an address",
+    "headlineL2": "and make it intelligent.",
+    "subhead": "We make it",
+    "see": "see",
+    "feel": "feel",
+    "and": "and",
+    "flow": "flow",
+    "different": "different.",
+    "tagline1": "Siyakha is a vision.",
+    "tagline2": "Siyakha is a feeling."
+  },
+  "turnkey": {
+    "overline": "Interlink × Siyakha",
+    "headlineL1": "We digitalise schools, businesses",
+    "headlineL2": "& every space in between.",
+    "sectors": ["Schools", "Businesses", "Mines", "Hospitals", "Hospitality", "Retail", "Estates"],
+    "body1Pre": "We deliver holistic ICT across schools, businesses, mines and entire estates — turnkey IT hardware, structured networks, security architecture and remote engineering crews mobilised on demand. Classrooms going digital, mines needing technical support, operators scaling across borders:",
+    "body1Highlight": "Siyakha has the team.",
+    "body2": "We connect buildings globally. We are the future of IT — and we are building the next great ICT company in the world.",
+    "callout": "Many think water is the foundation — but the future begins with power and technology. If your property isn't digitally equipped, it belongs to the past. We take you forward.",
+    "capabilities": [
+      { "k": "Turnkey ICT", "v": "End-to-end deployment for any space — design, supply, install, operate." },
+      { "k": "Holistic Solutions", "v": "Networks, hardware, security and software delivered as one programme." },
+      { "k": "IT Hardware", "v": "Procurement, staging and rollout of enterprise-grade equipment at scale." },
+      { "k": "Remote Engineers", "v": "On-demand specialist engineers embedded into your projects, anywhere." },
+      { "k": "Schools & Campuses", "v": "Digitalised classrooms, campus Wi-Fi, smartboards and learning platforms." },
+      { "k": "Business & Commercial", "v": "Offices, retail and corporate HQs — productive, secure and connected." },
+      { "k": "Mining & Industrial", "v": "Hardened technical support for mines and remote operational sites." },
+      { "k": "Global Connectivity", "v": "We connect buildings across continents — one architecture, every site." }
+    ]
+  },
+  "engineerSupport": {
+    "overline": "Engineering Capacity · Southern Africa",
+    "headlineP1": "We provide",
+    "headlineItalic": "L2 & L3 engineers",
+    "headlineP2": "for field and dedicated support",
+    "headlineP3": "across Southern Africa.",
+    "bodyPre": "From single-site smart-hands to full project teams — Siyakha is the execution partner global vendors, MSPs and integrators rely on for",
+    "bodyHighlight1": "certified L2 field engineers",
+    "bodyAnd": "and",
+    "bodyHighlight2": "L3 dedicated support engineers",
+    "bodyPost": "on the ground in South Africa and the broader SADC region.",
+    "cta": "Request Engineering Support",
+    "pillars": [
+      { "title": "L2 Field Engineers", "body": "Hands-on execution at site — installs, swaps, troubleshooting, commissioning and project rollout support across Southern Africa." },
+      { "title": "L3 Dedicated Support", "body": "Senior engineers running advanced diagnostics, escalations, design validation and architecture-level remediation for mission-critical environments." },
+      { "title": "Project & Programme Cover", "body": "Embedded engineering capacity for OEMs, MSPs and integrators — so your projects never stall waiting for skills on the ground." }
+    ]
+  },
+  "developerCta": {
+    "overline": "For Developers, Owners & Operators",
+    "headlineL1": "Building something",
+    "headlineItalic": "remarkable?",
+    "headlineL2": "Let's engineer the intelligence inside it.",
+    "body": "Bring us in at concept stage and we'll deliver a building that performs from the day the keys are handed over.",
+    "ctaConversation": "Start a Conversation",
+    "dialogTitle": "Start a Conversation",
+    "dialogSubtitle": "Bring us in at concept stage. Share your project and we'll respond within one business day.",
+    "ctaWhatsapp": "WhatsApp the Team",
+    "footerLine": "Siyakha Tech Solutions · Johannesburg · Cape Town · Durban · Pretoria · Dubai · Abu Dhabi · Fujairah · Riyadh · Doha · London · EMEA"
+  },
+  "footer": {
+    "tagline": "Build, design and technology for development projects across EMEA. Engineered with intention. Delivered with faith.",
+    "rights": "All rights reserved.",
+    "regions": "UAE · EMEA · Southern Africa"
+  },
+  "faith": {
+    "overline": "Our Faith & Guiding Principles",
+    "headlineL1": "With God, we will go far —",
+    "headlineL2Italic": "build, grow",
+    "headlineL2End": "and trust Him through everything.",
+    "body": "Every project we touch — from Johannesburg to Dubai — is built on the conviction that faithful work, done with excellence, becomes a quiet testimony. We trust God with the outcome and labour with our hands."
+  },
+  "whatsapp": {
+    "callButtonFull": "WhatsApp Call +27 81 501 2993",
+    "callButtonShort": "WhatsApp Call",
+    "chatButton": "WhatsApp",
+    "dialogTitle": "Quick WhatsApp Enquiry",
+    "dialogDescription": "Tell us how to reach you and what you need. We'll start a WhatsApp chat with your details.",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "service": "Service",
+    "selectService": "Select a service",
+    "messageOptional": "Message (optional)",
+    "messagePlaceholder": "Briefly describe your need",
+    "submit": "Start WhatsApp Chat",
+    "services": [
+      { "value": "infrastructure-and-networking", "label": "Infrastructure & Networking" },
+      { "value": "security-and-surveillance", "label": "Security & Surveillance" },
+      { "value": "cloud-and-edge-solutions", "label": "Cloud & Edge Solutions" },
+      { "value": "smart-collaboration-tools", "label": "Smart Collaboration Tools" }
+    ]
+  }
+}
