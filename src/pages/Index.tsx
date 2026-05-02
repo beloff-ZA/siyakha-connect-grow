@@ -26,7 +26,6 @@ import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import BrandsWeTrust from "@/components/smart-estate/BrandsWeTrust";
 import CablingInfrastructureBanner from "@/components/smart-estate/CablingInfrastructureBanner";
 import WebAppsSaasBanner from "@/components/smart-estate/WebAppsSaasBanner";
-import SmartWaterBanner from "@/components/smart-estate/SmartWaterBanner";
 import RetailSolutionsBanner from "@/components/smart-estate/RetailSolutionsBanner";
 import FarmSolutionsBanner from "@/components/smart-estate/FarmSolutionsBanner";
 import SolarSurveillanceBanner from "@/components/smart-estate/SolarSurveillanceBanner";
@@ -182,7 +181,6 @@ const Index = () => {
       <SmartSwitchBanner />
       <CctvBanner />
       <SmartHomeUaeBanner />
-      <SmartWaterBanner />
       <SmartFailoverBanner />
       <HotelBedsideBanner />
       <FranchiseAutomationBanner />
