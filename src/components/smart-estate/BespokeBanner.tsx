@@ -17,6 +17,14 @@ import {
   Tractor,
   Hotel,
   Droplets,
+  Cloud,
+  Brain,
+  Bot,
+  Lock,
+  Cpu,
+  Zap,
+  Bitcoin,
+  Satellite,
 } from "lucide-react";
 
 const SERVICES = [
@@ -36,6 +44,17 @@ const SERVICES = [
   { icon: Hotel, label: "Hotel & Hospitality" },
   { icon: Tractor, label: "Farm Solutions" },
   { icon: Droplets, label: "Smart Water" },
+];
+
+const GLOBAL_SERVICES = [
+  { icon: Cloud, label: "Cloud Infrastructure" },
+  { icon: Brain, label: "AI & Machine Learning" },
+  { icon: Lock, label: "Cybersecurity" },
+  { icon: Bot, label: "Automation & RPA" },
+  { icon: Cpu, label: "IoT & Edge Compute" },
+  { icon: Satellite, label: "Satellite & Starlink" },
+  { icon: Zap, label: "EV Charging" },
+  { icon: Bitcoin, label: "Blockchain & Web3" },
 ];
 
 const BespokeBanner = () => {
@@ -63,6 +82,25 @@ const BespokeBanner = () => {
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-px bg-foreground/10 border border-foreground/10">
             {SERVICES.map(({ icon: Icon, label }) => (
+              <Link
+                key={label}
+                to="/contact"
+                aria-label={label}
+                className="group bg-background hover:bg-foreground hover:text-background transition-colors p-5 md:p-6 flex flex-col items-center justify-center gap-3 min-h-[120px] text-center"
+              >
+                <Icon className="h-7 w-7 md:h-8 md:w-8 text-foreground group-hover:text-background transition-colors" strokeWidth={1.25} />
+                <span className="text-[10px] md:text-[11px] uppercase tracking-[0.14em] leading-snug text-foreground/80 group-hover:text-background transition-colors">
+                  {label}
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <p className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground text-center mt-12 mb-8">
+            Globally demanded services · Available on request
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-px bg-foreground/10 border border-foreground/10">
+            {GLOBAL_SERVICES.map(({ icon: Icon, label }) => (
               <Link
                 key={label}
                 to="/contact"
