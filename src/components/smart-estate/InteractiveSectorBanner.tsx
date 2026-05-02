@@ -54,12 +54,12 @@ const InteractiveSectorBanner = ({
       ref={sectionRef}
       className="relative bg-background border-t border-foreground/10 overflow-hidden group"
     >
-      <div className="relative w-full overflow-hidden">
+      <div className="relative w-full overflow-hidden min-h-[520px] md:min-h-[640px] lg:min-h-[720px]">
         {/* Background image — desaturated by default, returns to colour on hover */}
         <img
           src={image}
           alt={imageAlt}
-          className="w-full h-auto block grayscale contrast-[1.05] transition-all duration-[1200ms] ease-out group-hover:grayscale-0 group-hover:scale-[1.04] group-hover:contrast-100"
+          className="absolute inset-0 w-full h-full object-cover block grayscale contrast-[1.05] transition-all duration-[1200ms] ease-out group-hover:grayscale-0 group-hover:scale-[1.04] group-hover:contrast-100"
           loading="lazy"
         />
 
