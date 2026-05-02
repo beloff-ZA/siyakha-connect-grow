@@ -7,7 +7,6 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/Auth";
 import RegionalServices from "./pages/RegionalServices";
-import WhatsAppContact from "./components/WhatsAppContact";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -72,8 +71,6 @@ function App() {
               {/* Everything else redirects home */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-
-            <WhatsAppContact />
           </Router>
         </AuthProvider>
       </TooltipProvider>
