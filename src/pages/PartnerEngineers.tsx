@@ -21,6 +21,7 @@ const SKILLS = [
   "Networking (L2/L3)",
   "VoIP & PBX",
   "Solar & Off-Grid",
+  "EV Charging Installations",
   "Smart Home Automation",
   "Access Control & Biometrics",
   "Intercom & Intercom Apps",
