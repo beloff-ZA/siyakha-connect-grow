@@ -23,7 +23,6 @@ import {
   Lock,
   Cpu,
   Zap,
-  Bitcoin,
   Satellite,
 } from "lucide-react";
 
@@ -54,7 +53,6 @@ const GLOBAL_SERVICES = [
   { icon: Cpu, label: "IoT & Edge Compute" },
   { icon: Satellite, label: "Satellite & Starlink" },
   { icon: Zap, label: "EV Charging" },
-  { icon: Bitcoin, label: "Blockchain & Web3" },
 ];
 
 const BespokeBanner = () => {
