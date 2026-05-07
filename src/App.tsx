@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/Auth";
 import RegionalServices from "./pages/RegionalServices";
 import PartnerEngineers from "./pages/PartnerEngineers";
+import ManagedIT from "./pages/ManagedIT";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -53,6 +54,9 @@ function App() {
 
               {/* Partner engineer registration */}
               <Route path="/partner-engineers" element={<PartnerEngineers />} />
+
+              {/* Managed IT Services */}
+              <Route path="/managed-it" element={<ManagedIT />} />
 
               {/* Director PA / Helpdesk — protected backend */}
               <Route path="/helpdesk" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />
