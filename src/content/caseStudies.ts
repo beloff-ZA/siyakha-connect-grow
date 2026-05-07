@@ -58,7 +58,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     slug: "franchise-firewall-wifi-rollout",
-    client: "National Franchise Group",
+    client: "Franchise & Retail Stores",
     title: "Firewalls & Guest Wi-Fi Rollout — Multi-Site Franchise Stores",
     industry: "Retail & Franchise",
     location: "Stores nationwide · South Africa",
