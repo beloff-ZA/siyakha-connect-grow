@@ -6,4 +6,10 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url><loc>https://siyakhatechnology.co.za/managed-it</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://siyakhatechnology.co.za/security-surveillance</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://siyakhatechnology.co.za/schools</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://siyakhatechnology.co.za/cloud-networking</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://siyakhatechnology.co.za/about</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://siyakhatechnology.co.za/case-studies/marist-brothers-linmeyer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
