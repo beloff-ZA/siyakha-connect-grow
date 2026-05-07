@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
-import { Globe2, Code2, Layout, Server, ShieldCheck, Smartphone, Search, Zap } from "lucide-react";
+import { Globe2, Code2, Layout, Server, ShieldCheck, Smartphone, Search, Zap, ArrowLeft } from "lucide-react";
 
 const CANONICAL_DOMAIN = "https://siyakhatechnology.co.za";
 
@@ -251,6 +251,12 @@ const RegionalServices = () => {
       <section className="relative border-b border-border py-20 md:py-32 overflow-hidden">
         <div className="container mx-auto px-6 lg:px-10">
           <div className="max-w-4xl">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-muted-foreground hover:text-foreground mb-8"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Back home
+            </Link>
             <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-6 flex items-center gap-3">
               <Globe2 className="w-4 h-4" /> Regional Services · Africa
             </p>
