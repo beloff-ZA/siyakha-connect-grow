@@ -31,11 +31,11 @@ const MiniNav = () => {
   const links = linkIds.map((id) => ({ id, label: t(`miniNav.${id}`) as string }));
   const [active, setActive] = useState<string>("");
   const [scrolled, setScrolled] = useState(false);
-  const [openMenu, setOpenMenu] = useState<null | "cities" | "support">(null);
+  const [openMenu, setOpenMenu] = useState<null | "cities" | "support" | "solutions">(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
 
-  const openWith = (key: "cities" | "support") => {
+  const openWith = (key: "cities" | "support" | "solutions") => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setOpenMenu(key);
   };
@@ -96,6 +96,46 @@ const MiniNav = () => {
     >
       <div className="container mx-auto px-6 lg:px-10">
         <ul className="flex items-center gap-1 md:gap-2 md:overflow-visible overflow-x-auto no-scrollbar h-11 md:h-12">
+          {/* Solutions dropdown */}
+          <li
+            className="flex-shrink-0 relative"
+            onMouseEnter={() => openWith("solutions")}
+            onMouseLeave={scheduleClose}
+          >
+            <button
+              type="button"
+              onClick={() => setOpenMenu(openMenu === "solutions" ? null : "solutions")}
+              aria-haspopup="true"
+              aria-expanded={openMenu === "solutions"}
+              className="inline-flex items-center gap-1 text-[10px] md:text-[11px] uppercase tracking-[0.22em] px-3 py-2 text-foreground/60 hover:text-foreground transition-colors border-b border-transparent"
+            >
+              Solutions <ChevronDown className="w-3 h-3" />
+            </button>
+            {openMenu === "solutions" && (
+              <div className="absolute left-0 top-full pt-1 min-w-[260px] z-50">
+                <ul className="py-2 bg-background border border-border shadow-lg">
+                  {[
+                    { to: "/managed-it", label: "Managed IT Services" },
+                    { to: "/security-surveillance", label: "Security & Surveillance" },
+                    { to: "/schools", label: "School Technology" },
+                    { to: "/cloud-networking", label: "Cloud & Networking" },
+                    { to: "/about", label: "About Siyakha" },
+                  ].map((m) => (
+                    <li key={m.label}>
+                      <Link
+                        to={m.to}
+                        onClick={() => setOpenMenu(null)}
+                        className="block px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] text-foreground/70 hover:text-foreground hover:bg-foreground/[0.04] transition-colors"
+                      >
+                        {m.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </li>
+
           {links.map((l) => {
             const isActive = active === l.id;
             return (

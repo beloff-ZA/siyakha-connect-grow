@@ -30,6 +30,11 @@ import RetailSolutionsBanner from "@/components/smart-estate/RetailSolutionsBann
 import FarmSolutionsBanner from "@/components/smart-estate/FarmSolutionsBanner";
 import EvChargingBanner from "@/components/smart-estate/EvChargingBanner";
 import OutcomesBanner from "@/components/smart-estate/OutcomesBanner";
+import IndustrySolutionsBand from "@/components/site/IndustrySolutionsBand";
+import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
+import FeaturedProjectsBand from "@/components/site/FeaturedProjectsBand";
+import ManagedItPlansPreview from "@/components/site/ManagedItPlansPreview";
+import FinalCtaBand from "@/components/site/FinalCtaBand";
 import FaithSection from "@/components/FaithSection";
 import Footer from "@/components/Footer";
 import MiniNav from "@/components/MiniNav";
@@ -175,8 +180,12 @@ const Index = () => {
       <MiniNav />
       <SmartEstateHero />
       <BespokeBanner />
-      <TurnkeyManifesto />
+      <IndustrySolutionsBand />
+      <WhySiyakhaBand />
       <OutcomesBanner />
+      <FeaturedProjectsBand />
+      <ManagedItPlansPreview />
+      <TurnkeyManifesto />
       <EngineerSupportBanner />
       <BrandsWeTrust />
       <CablingInfrastructureBanner />
@@ -203,6 +212,7 @@ const Index = () => {
       <SmartHandsSection />
       <GlobalConnectivityBanner />
       <div id="contact"><DeveloperCTA /></div>
+      <FinalCtaBand />
       <FaithSection />
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationJson) }} />

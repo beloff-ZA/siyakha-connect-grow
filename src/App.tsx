@@ -8,6 +8,12 @@ import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/Auth";
 import RegionalServices from "./pages/RegionalServices";
 import PartnerEngineers from "./pages/PartnerEngineers";
+import ManagedIT from "./pages/ManagedIT";
+import CaseStudy from "./pages/CaseStudy";
+import SecuritySurveillance from "./pages/SecuritySurveillance";
+import Schools from "./pages/Schools";
+import CloudNetworking from "./pages/CloudNetworking";
+import About from "./pages/About";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -53,6 +59,16 @@ function App() {
 
               {/* Partner engineer registration */}
               <Route path="/partner-engineers" element={<PartnerEngineers />} />
+
+              {/* Managed IT Services */}
+              <Route path="/managed-it" element={<ManagedIT />} />
+              <Route path="/security-surveillance" element={<SecuritySurveillance />} />
+              <Route path="/schools" element={<Schools />} />
+              <Route path="/cloud-networking" element={<CloudNetworking />} />
+              <Route path="/about" element={<About />} />
+
+              {/* Case studies */}
+              <Route path="/case-studies/:slug" element={<CaseStudy />} />
 
               {/* Director PA / Helpdesk — protected backend */}
               <Route path="/helpdesk" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />
