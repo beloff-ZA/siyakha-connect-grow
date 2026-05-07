@@ -1,5 +1,5 @@
 import maristImg from "@/assets/case-marist-network.jpg";
-import exmileImg from "@/assets/case-exmile-cabling.jpg";
+import exmileImg from "@/assets/case-exmile-rack.jpg";
 import franchiseImg from "@/assets/case-franchise-wifi.jpg";
 
 export interface CaseStudy {
