@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-const linkIds = ["vision", "solutions", "capabilities", "process", "command", "contact"] as const;
+const linkIds = ["vision", "solutions", "capabilities", "process", "contact"] as const;
 
 const citiesMenu = [
   { to: "/regional-services#angola", label: "Luanda · Angola" },
