@@ -22,31 +22,31 @@ export interface CaseStudy {
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "exmile-student-accommodation",
-    client: "Exmile",
-    title: "Structured Cabling Partner — IT Service Provider",
-    industry: "IT Service Provider",
+    client: "Student Accommodation Rollouts",
+    title: "Structured Cabling for Student Accommodation Buildings",
+    industry: "Student Accommodation",
     location: "Multiple sites · South Africa",
     year: "2024–2025",
     hero: exmileImg,
     summary:
-      "Siyakha is Exmile's trusted cabling partner — delivering certified structured cabling, dressed comms-room buildouts and labelled patch-panel terminations across their client sites.",
+      "We've set up student accommodation buildings with certified structured cabling, dressed comms-room buildouts and labelled patch-panel terminations — ready for Wi-Fi, CCTV and access control.",
     problem:
-      "As an IT service provider, Exmile needed a reliable cabling specialist who could execute neat, certified, on-spec installations on their behalf — without compromising the standard their own clients expect.",
+      "Student accommodation buildings needed a reliable cabling specialist to deliver neat, certified, on-spec installations across multiple sites — without compromising the standard residents and operators expect.",
     solution:
-      "Siyakha came in as Exmile's hands-on cabling partner: surveying sites, running Cat6 / Cat6A backbones, building out comms rooms with labelled patch panels and managed switching, and handing over fully tested, documented infrastructure.",
+      "Siyakha surveyed each site, ran Cat6 / Cat6A backbones, built out comms rooms with labelled patch panels and managed switching, and handed over fully tested, documented infrastructure ready for resident services.",
     process: [
       "Joint site surveys and cabling-route designs",
       "Cat6 / Cat6A structured cabling on cable trays",
       "Comms-room buildouts: racks, patch panels, managed switching, UPS",
       "Labelled, dressed terminations on every panel",
       "VLAN-ready switch configuration and documentation",
-      "Fluke certification and handover to the Exmile team",
+      "Fluke certification and full handover documentation",
     ],
     results: [
-      "A repeatable cabling standard Exmile can resell with confidence",
+      "A repeatable cabling standard across every building",
       "Neat, labelled, fully certified comms rooms on every site",
       "Reliable backbone for Wi-Fi, CCTV and access-control roll-ons",
-      "Long-term partnership delivering on Exmile's client commitments",
+      "Long-term partnership delivering on operator commitments",
     ],
     services: [
       "Structured Cabling",
