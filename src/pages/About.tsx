@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import LeadMagnetDialog from "@/components/leads/LeadMagnetDialog";
-import { Compass, Target, HeartHandshake, Award } from "lucide-react";
+import { Compass, Target, HeartHandshake, Award, ArrowLeft } from "lucide-react";
 
 const VALUES = [
   { icon: Compass, title: "Integrity", body: "We do what we say. Quotes are honest, timelines are real and installations are documented." },
@@ -25,6 +26,12 @@ const About = () => (
     <section className="bg-background border-b border-foreground/10">
       <div className="container mx-auto px-6 lg:px-10 py-24 md:py-32">
         <div className="max-w-4xl">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-foreground/60 hover:text-foreground mb-8"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Back home
+          </Link>
           <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-5">About Siyakha Technology</p>
           <h1 className="font-display font-light text-4xl md:text-6xl lg:text-7xl tracking-[-0.02em] text-foreground leading-[1.02]">
             We build smarter
