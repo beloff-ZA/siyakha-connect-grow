@@ -73,7 +73,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     process: [
       "Standardised store network blueprint and bill of materials",
       "Firewall deployment with store / guest / POS VLAN segmentation",
-      "Ceiling-mounted Wi-Fi access points per store layout",
+      "Ceiling-mounted Grandstream Wi-Fi access points per store layout",
       "Branded captive-portal guest Wi-Fi configuration",
       "Per-store commissioning, testing and documentation",
       "Centralised cloud management for the entire estate",
@@ -86,7 +86,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
     services: [
       "Firewall Deployment",
-      "Wi-Fi Access Points",
+      "Grandstream Wi-Fi Access Points",
       "Guest Captive Portal",
       "VLAN Segmentation",
       "Cloud Network Management",
