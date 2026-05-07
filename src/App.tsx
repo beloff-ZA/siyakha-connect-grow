@@ -9,6 +9,7 @@ import AuthPage from "./pages/Auth";
 import RegionalServices from "./pages/RegionalServices";
 import PartnerEngineers from "./pages/PartnerEngineers";
 import ManagedIT from "./pages/ManagedIT";
+import CaseStudy from "./pages/CaseStudy";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -57,6 +58,9 @@ function App() {
 
               {/* Managed IT Services */}
               <Route path="/managed-it" element={<ManagedIT />} />
+
+              {/* Case studies */}
+              <Route path="/case-studies/:slug" element={<CaseStudy />} />
 
               {/* Director PA / Helpdesk — protected backend */}
               <Route path="/helpdesk" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />
