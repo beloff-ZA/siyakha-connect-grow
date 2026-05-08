@@ -1,34 +1,12 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import SmartEstateHero from "@/components/smart-estate/SmartEstateHero";
-import CapabilityPillars from "@/components/smart-estate/CapabilityPillars";
-import OffPlanProcess from "@/components/smart-estate/OffPlanProcess";
-import TechPillarsGrid from "@/components/smart-estate/TechPillarsGrid";
 import TurnkeyManifesto from "@/components/smart-estate/TurnkeyManifesto";
 import VisionStatement from "@/components/smart-estate/VisionStatement";
-import NextGenSolutions from "@/components/smart-estate/NextGenSolutions";
 import BespokeBanner from "@/components/smart-estate/BespokeBanner";
-import SmartCitiesSection from "@/components/smart-estate/SmartCitiesSection";
-import SmartHandsSection from "@/components/smart-estate/SmartHandsSection";
-import QsfpBanner from "@/components/smart-estate/QsfpBanner";
-import SmartSwitchBanner from "@/components/smart-estate/SmartSwitchBanner";
-import GlobalConnectivityBanner from "@/components/smart-estate/GlobalConnectivityBanner";
-import EnterpriseWifiBanner from "@/components/smart-estate/EnterpriseWifiBanner";
-import CctvBanner from "@/components/smart-estate/CctvBanner";
-import SmartHomeUaeBanner from "@/components/smart-estate/SmartHomeUaeBanner";
-import HotelBedsideBanner from "@/components/smart-estate/HotelBedsideBanner";
-import StudentAccommodationBanner from "@/components/smart-estate/StudentAccommodationBanner";
-import SmartFailoverBanner from "@/components/smart-estate/SmartFailoverBanner";
-import FranchiseAutomationBanner from "@/components/smart-estate/FranchiseAutomationBanner";
-import MineDroneBanner from "@/components/smart-estate/MineDroneBanner";
 import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
 import BrandsWeTrust from "@/components/smart-estate/BrandsWeTrust";
-import CablingInfrastructureBanner from "@/components/smart-estate/CablingInfrastructureBanner";
-import WebAppsSaasBanner from "@/components/smart-estate/WebAppsSaasBanner";
 import EngineerSupportBanner from "@/components/smart-estate/EngineerSupportBanner";
-import RetailSolutionsBanner from "@/components/smart-estate/RetailSolutionsBanner";
-import FarmSolutionsBanner from "@/components/smart-estate/FarmSolutionsBanner";
-import EvChargingBanner from "@/components/smart-estate/EvChargingBanner";
 import OutcomesBanner from "@/components/smart-estate/OutcomesBanner";
 import IndustrySolutionsBand from "@/components/site/IndustrySolutionsBand";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
@@ -188,29 +166,7 @@ const Index = () => {
       <TurnkeyManifesto />
       <EngineerSupportBanner />
       <BrandsWeTrust />
-      <CablingInfrastructureBanner />
-      <EnterpriseWifiBanner />
-      <SmartSwitchBanner />
-      <CctvBanner />
-      <SmartHomeUaeBanner />
-      <SmartFailoverBanner />
-      <HotelBedsideBanner />
-      <FranchiseAutomationBanner />
-      <StudentAccommodationBanner />
-      <MineDroneBanner />
-      <RetailSolutionsBanner />
-      <FarmSolutionsBanner />
-      <EvChargingBanner />
-      <WebAppsSaasBanner />
       <div id="vision"><VisionStatement /></div>
-      <div id="solutions"><NextGenSolutions /></div>
-      <div id="capabilities"><CapabilityPillars /></div>
-      <div id="process"><OffPlanProcess /></div>
-      <TechPillarsGrid />
-      <QsfpBanner />
-      <div id="cities"><SmartCitiesSection /></div>
-      <SmartHandsSection />
-      <GlobalConnectivityBanner />
       <div id="contact"><DeveloperCTA /></div>
       <FinalCtaBand />
       <FaithSection />
