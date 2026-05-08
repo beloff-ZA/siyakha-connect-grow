@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import interlinkLogo from "@/assets/interlink-logo.png";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import LanguageToggle from "@/components/LanguageToggle";
@@ -6,6 +6,23 @@ import { useTranslation } from "react-i18next";
 
 const Header = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const goToRecentProjects = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname === "/") {
+      document
+        .getElementById("recent-projects")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      navigate("/", { state: { scrollTo: "recent-projects" } });
+      setTimeout(() => {
+        document
+          .getElementById("recent-projects")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 250);
+    }
+  };
   return (
     <header className="bg-background/90 border-b border-border sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-6 lg:px-10">
@@ -33,7 +50,14 @@ const Header = () => {
             {t("header.tagline")}
           </p>
 
-          <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+          <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
+            <a
+              href="/#recent-projects"
+              onClick={goToRecentProjects}
+              className="hidden md:inline-block text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
+            >
+              Recent Projects
+            </a>
             <span className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] md:tracking-[0.22em] text-foreground/80 text-right">
               <span className="hidden sm:inline">{t("header.selectYourLanguage")}</span>
               <span className="sm:hidden">{t("header.language")}</span>
