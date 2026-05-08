@@ -68,6 +68,77 @@ const CaseStudy = () => {
         </div>
       </section>
 
+      {study.beforeAfter && (
+        <section className="bg-background border-t border-foreground/10">
+          <div className="container mx-auto px-6 lg:px-10 py-20">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-4">
+              Before & After
+            </p>
+            <h2 className="font-display font-light text-3xl md:text-5xl tracking-[-0.02em] text-foreground leading-[1.05] max-w-3xl">
+              {study.beforeAfter.title}
+            </h2>
+            <p className="mt-6 max-w-2xl text-base md:text-lg text-foreground/75 leading-relaxed">
+              {study.beforeAfter.caption}
+            </p>
+            <div className="mt-12 grid md:grid-cols-2 gap-px bg-foreground/15 border border-foreground/15">
+              <figure className="bg-background">
+                <div className="aspect-[4/5] overflow-hidden">
+                  <img
+                    src={study.beforeAfter.before.src}
+                    alt={study.beforeAfter.before.alt}
+                    className="w-full h-full object-cover grayscale"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption className="px-5 py-4 text-[11px] uppercase tracking-[0.24em] text-foreground/70">
+                  Before
+                </figcaption>
+              </figure>
+              <figure className="bg-background">
+                <div className="aspect-[4/5] overflow-hidden">
+                  <img
+                    src={study.beforeAfter.after.src}
+                    alt={study.beforeAfter.after.alt}
+                    className="w-full h-full object-cover grayscale"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption className="px-5 py-4 text-[11px] uppercase tracking-[0.24em] text-foreground/70">
+                  After
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {study.gallery && study.gallery.length > 0 && (
+        <section className="bg-background border-t border-foreground/10">
+          <div className="container mx-auto px-6 lg:px-10 py-16">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-8">
+              On-Site Gallery
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/15 border border-foreground/15">
+              {study.gallery.map((g) => (
+                <figure key={g.src} className="bg-background">
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img
+                      src={g.src}
+                      alt={g.caption}
+                      className="w-full h-full object-cover grayscale"
+                      loading="lazy"
+                    />
+                  </div>
+                  <figcaption className="px-4 py-3 text-[11px] uppercase tracking-[0.22em] text-foreground/70">
+                    {g.caption}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="bg-background border-t border-foreground/10">
         <div className="container mx-auto px-6 lg:px-10 py-20">
           <div className="grid lg:grid-cols-2 gap-12">
