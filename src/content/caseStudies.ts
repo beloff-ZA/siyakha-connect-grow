@@ -35,17 +35,17 @@ export interface CaseStudy {
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
-    slug: "taste-of-mozambique-restaurant-av-wifi",
-    client: "A Taste of Mozambique +258",
-    title: "Data Points, Hikvision CCTV & AV Solution — Fourways Restaurant",
+    slug: "northern-johannesburg-restaurant-av-wifi",
+    client: "Restaurant — Northern Johannesburg",
+    title: "Data Points, Hikvision CCTV & AV Solution — Restaurant Fit-Out",
     industry: "Hospitality & Restaurants",
-    location: "Fourways · Johannesburg",
+    location: "Northern Johannesburg",
     year: "2025",
     hero: tasteMozImg,
     summary:
-      "End-to-end venue technology rollout for A Taste of Mozambique +258 in Fourways — full data-point installation, a Hikvision CCTV system and an AV solution with audio speakers integrated into the restaurant's existing amplifier.",
+      "End-to-end venue technology rollout for a restaurant in northern Johannesburg — enhancing the establishment's technology so they could open and trade. Full data-point installation, a Hikvision CCTV system and an AV solution with audio speakers integrated into the restaurant's existing amplifier.",
     problem:
-      "The restaurant needed a trusted partner to install all the data points for the venue, deploy a proper Hikvision CCTV system for safety and oversight, and roll out an AV solution that worked with the existing amplifier already on site.",
+      "The restaurant needed to enhance its technology end-to-end so it could open and trade — proper data points throughout the venue, a Hikvision CCTV system for safety and oversight, and an AV solution that worked with the existing amplifier already on site.",
     solution:
       "Siyakha installed all data points across the restaurant, deployed a full Hikvision CCTV system with coverage across the floor, entrance and back-of-house, and built out an AV solution — mounting audio speakers and integrating them cleanly into the existing amplifier for zoned in-venue sound.",
     process: [
