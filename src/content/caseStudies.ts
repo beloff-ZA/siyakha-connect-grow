@@ -110,13 +110,13 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "franchise-firewall-wifi-rollout",
     client: "Franchise & Retail Stores",
-    title: "In-Store IT, Wi-Fi & Network Rebuilds — Franchise & Retail",
+    title: "Retail & Store Signage, Connectivity & CCTV — Turnkey Technology",
     industry: "Retail & Franchise",
     location: "Stores nationwide · South Africa",
     year: "2024–2025",
     hero: franchiseImg,
     summary:
-      "In-store IT support for franchise and retail spaces — guest Wi-Fi solutions, desktop and printer support, network rebuilds and full re-cabling. Including a comms cabinet rebuild for Coricraft, shown before and after.",
+      "Making sure your clients' hardware stays connected. Complete turnkey technology — from signage installs to network support, as well as CCTV installation — for franchise and retail stores. Including a comms cabinet rebuild for Coricraft, shown before and after.",
     problem:
       "Franchise and retail stores were running on ageing, tangled comms cabinets, inconsistent Wi-Fi and unreliable desktop and printer setups — slowing staff down on the floor, frustrating customers and exposing POS systems.",
     solution:
