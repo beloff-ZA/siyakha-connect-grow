@@ -4,6 +4,8 @@ import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import LeadMagnetDialog from "@/components/leads/LeadMagnetDialog";
 import { Compass, Target, HeartHandshake, Award, ArrowLeft } from "lucide-react";
+import engineerFibreImg from "@/assets/team-engineer-fibre.png";
+import nikitaSiteImg from "@/assets/team-nikita-site-check.png";
 
 const VALUES = [
   { icon: Compass, title: "Integrity", body: "We do what we say. Quotes are honest, timelines are real and installations are documented." },
@@ -92,6 +94,40 @@ const About = () => (
               {i}
             </span>
           ))}
+        </div>
+      </div>
+    </section>
+
+    <section className="bg-background border-b border-foreground/10">
+      <div className="container mx-auto px-6 lg:px-10 py-20">
+        <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-10">On The Ground</p>
+        <div className="grid md:grid-cols-2 gap-px bg-foreground/15 border border-foreground/15">
+          <figure className="bg-background">
+            <div className="aspect-[16/10] overflow-hidden">
+              <img
+                src={engineerFibreImg}
+                alt="Siyakha engineer terminating fibre on-site at a client comms cabinet"
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <figcaption className="px-5 py-4 text-[11px] uppercase tracking-[0.24em] text-foreground/70">
+              Our engineer on-site — terminating fibre at a client comms cabinet
+            </figcaption>
+          </figure>
+          <figure className="bg-background">
+            <div className="aspect-[16/10] overflow-hidden">
+              <img
+                src={nikitaSiteImg}
+                alt="Nikita Jacobs, Director at Siyakha Technology, inspecting a labelled patch panel on-site"
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <figcaption className="px-5 py-4 text-[11px] uppercase tracking-[0.24em] text-foreground/70">
+              Nikita Jacobs — checking the site, every install signed off
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>
