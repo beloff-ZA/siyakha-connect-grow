@@ -15,7 +15,6 @@ import ManagedItPlansPreview from "@/components/site/ManagedItPlansPreview";
 import FinalCtaBand from "@/components/site/FinalCtaBand";
 import FaithSection from "@/components/FaithSection";
 import Footer from "@/components/Footer";
-import MiniNav from "@/components/MiniNav";
 
 const CANONICAL_DOMAIN = "https://siyakhatechnology.co.za";
 
@@ -155,7 +154,6 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <MiniNav />
       <SmartEstateHero />
       <BespokeBanner />
       <IndustrySolutionsBand />
