@@ -28,6 +28,11 @@ export interface CaseStudy {
   services: string[];
   quote?: { text: string; author: string };
   gallery?: { src: string; caption: string }[];
+  sequence?: {
+    title: string;
+    caption?: string;
+    items: { src: string; caption: string }[];
+  };
   beforeAfter?: {
     title: string;
     caption: string;
@@ -159,14 +164,21 @@ export const CASE_STUDIES: CaseStudy[] = [
       },
     },
     gallery: [
-      { src: franchiseCabinetCleanup1, caption: "Cabinet stripped — old gear removed, ready for rebuild" },
-      { src: franchiseCabinetCleanup2, caption: "Active equipment re-racked, patch leads being dressed" },
-      { src: franchiseCabinetCleanup3, caption: "Final rebuild — labelled, dressed and serviceable" },
       { src: franchiseKfcImg, caption: "On-site at a national franchise store" },
       { src: franchiseWifiPortalImg, caption: "Branded guest Wi-Fi captive portal" },
       { src: franchiseSignageImg, caption: "In-store digital signage and CCTV" },
       { src: franchisePosImg, caption: "POS, desktop and printer support" },
     ],
+    sequence: {
+      title: "Coricraft cabinet cleanup — full sequence",
+      caption:
+        "Three stages of the rebuild: strip-out, re-rack and final dress. Every patch labelled, every cable accounted for.",
+      items: [
+        { src: franchiseCabinetCleanup1, caption: "Cabinet stripped — old gear removed, ready for rebuild" },
+        { src: franchiseCabinetCleanup2, caption: "Active equipment re-racked, patch leads being dressed" },
+        { src: franchiseCabinetCleanup3, caption: "Final rebuild — labelled, dressed and serviceable" },
+      ],
+    },
   },
   {
     slug: "marist-brothers-linmeyer",
