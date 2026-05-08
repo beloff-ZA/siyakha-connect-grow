@@ -164,7 +164,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     slug: "marist-brothers-linmeyer",
-    client: "Marist Brothers Linmeyer",
+    client: "School Solution — Primary & Highschool",
     title: "22-Classroom Network Infrastructure",
     industry: "Schools & Education",
     location: "Linmeyer, Johannesburg",
