@@ -8,6 +8,9 @@ import franchiseSignageImg from "@/assets/case-franchise-digital-signage.jpg";
 import franchisePosImg from "@/assets/case-franchise-pos.jpg";
 import franchiseCabinetBefore from "@/assets/case-franchise-cabinet-before.jpg";
 import franchiseCabinetAfter from "@/assets/case-franchise-cabinet-after.jpg";
+import franchiseCabinetCleanup1 from "@/assets/case-franchise-cabinet-cleanup-1.jpg";
+import franchiseCabinetCleanup2 from "@/assets/case-franchise-cabinet-cleanup-2.jpg";
+import franchiseCabinetCleanup3 from "@/assets/case-franchise-cabinet-cleanup-3.jpg";
 
 export interface CaseStudy {
   slug: string;
@@ -156,6 +159,9 @@ export const CASE_STUDIES: CaseStudy[] = [
       },
     },
     gallery: [
+      { src: franchiseCabinetCleanup1, caption: "Cabinet stripped — old gear removed, ready for rebuild" },
+      { src: franchiseCabinetCleanup2, caption: "Active equipment re-racked, patch leads being dressed" },
+      { src: franchiseCabinetCleanup3, caption: "Final rebuild — labelled, dressed and serviceable" },
       { src: franchiseKfcImg, caption: "On-site at a national franchise store" },
       { src: franchiseWifiPortalImg, caption: "Branded guest Wi-Fi captive portal" },
       { src: franchiseSignageImg, caption: "In-store digital signage and CCTV" },
