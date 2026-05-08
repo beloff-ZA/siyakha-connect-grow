@@ -36,8 +36,8 @@ export interface CaseStudy {
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "northern-johannesburg-restaurant-av-wifi",
-    client: "Restaurant — Northern Johannesburg",
-    title: "Data Points, Hikvision CCTV & AV Solution — Restaurant Fit-Out",
+    client: "Restaurant Solutions",
+    title: "Complete Technology Solutions for Restaurants",
     industry: "Hospitality & Restaurants",
     location: "Northern Johannesburg",
     year: "2025",
