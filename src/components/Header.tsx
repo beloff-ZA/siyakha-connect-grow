@@ -33,7 +33,13 @@ const Header = () => {
             {t("header.tagline")}
           </p>
 
-          <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+          <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
+            <Link
+              to="/#recent-projects"
+              className="hidden md:inline-block text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
+            >
+              Recent Projects
+            </Link>
             <span className="text-[10px] md:text-[11px] uppercase tracking-[0.18em] md:tracking-[0.22em] text-foreground/80 text-right">
               <span className="hidden sm:inline">{t("header.selectYourLanguage")}</span>
               <span className="sm:hidden">{t("header.language")}</span>
