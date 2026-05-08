@@ -2,6 +2,12 @@ import maristImg from "@/assets/case-marist-network.jpg";
 import exmileImg from "@/assets/case-exmile-rack.jpg";
 import franchiseImg from "@/assets/case-franchise-wifi.jpg";
 import tasteMozImg from "@/assets/case-taste-mozambique.jpg";
+import franchiseKfcImg from "@/assets/case-franchise-kfc.jpg";
+import franchiseWifiPortalImg from "@/assets/case-franchise-wifi-portal.jpg";
+import franchiseSignageImg from "@/assets/case-franchise-digital-signage.jpg";
+import franchisePosImg from "@/assets/case-franchise-pos.jpg";
+import franchiseCabinetBefore from "@/assets/case-franchise-cabinet-before.jpg";
+import franchiseCabinetAfter from "@/assets/case-franchise-cabinet-after.jpg";
 
 export interface CaseStudy {
   slug: string;
@@ -18,6 +24,13 @@ export interface CaseStudy {
   results: string[];
   services: string[];
   quote?: { text: string; author: string };
+  gallery?: { src: string; caption: string }[];
+  beforeAfter?: {
+    title: string;
+    caption: string;
+    before: { src: string; alt: string };
+    after: { src: string; alt: string };
+  };
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
@@ -97,37 +110,56 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "franchise-firewall-wifi-rollout",
     client: "Franchise & Retail Stores",
-    title: "Firewalls & Guest Wi-Fi Rollout — Multi-Site Franchise Stores",
+    title: "In-Store IT, Wi-Fi & Network Rebuilds — Franchise & Retail",
     industry: "Retail & Franchise",
     location: "Stores nationwide · South Africa",
     year: "2024–2025",
     hero: franchiseImg,
     summary:
-      "Standardised firewall and access-point rollout across franchise stores nationwide — secure store networks plus a captive-portal guest Wi-Fi experience for customers.",
+      "In-store IT support for franchise and retail spaces — guest Wi-Fi solutions, desktop and printer support, network rebuilds and full re-cabling. Including a comms cabinet rebuild for Coricraft, shown before and after.",
     problem:
-      "Franchise stores were operating on inconsistent, often unsecured store networks with no proper guest Wi-Fi separation — exposing POS systems, frustrating staff and missing a customer-experience opportunity.",
+      "Franchise and retail stores were running on ageing, tangled comms cabinets, inconsistent Wi-Fi and unreliable desktop and printer setups — slowing staff down on the floor, frustrating customers and exposing POS systems.",
     solution:
-      "Siyakha designed a single repeatable store blueprint: a managed firewall, segmented store and guest VLANs, and ceiling-mounted Wi-Fi access points delivering branded captive-portal guest access for customers.",
+      "Siyakha provides in-store resources for retail spaces — guest Wi-Fi solutions, desktop and printer support, network rebuilds and full re-cabling of comms cabinets. For Coricraft we stripped and rebuilt the comms cabinet end-to-end, taking it from a tangled legacy install to a clean, labelled, serviceable rack.",
     process: [
-      "Standardised store network blueprint and bill of materials",
-      "Firewall deployment with store / guest / POS VLAN segmentation",
-      "Ceiling-mounted Grandstream Wi-Fi access points per store layout",
-      "Branded captive-portal guest Wi-Fi configuration",
-      "Per-store commissioning, testing and documentation",
-      "Centralised cloud management for the entire estate",
+      "On-site assessment of cabinet, cabling, Wi-Fi and store IT",
+      "Guest Wi-Fi solution with captive-portal sign-in",
+      "Desktop, POS and printer support for store staff",
+      "Network rebuilds — switches, patch panels and routing tidied",
+      "Full re-cabling of comms cabinets and floor data points",
+      "Coricraft cabinet rebuild — strip-out, re-rack, re-cable, label and test",
     ],
     results: [
-      "Consistent, secure network in every store",
-      "Branded guest Wi-Fi experience for customers",
-      "POS and back-office traffic isolated from guest traffic",
-      "Single dashboard view of every site for franchise IT",
+      "Clean, serviceable comms cabinets in every store",
+      "Reliable guest Wi-Fi for customers on the floor",
+      "Faster, more dependable desktops, POS and printers",
+      "A single in-store IT partner for franchise and retail estates",
     ],
     services: [
-      "Firewall Deployment",
-      "Grandstream Wi-Fi Access Points",
-      "Guest Captive Portal",
-      "VLAN Segmentation",
-      "Cloud Network Management",
+      "In-Store IT Support",
+      "Guest Wi-Fi Solutions",
+      "Desktop & Printer Support",
+      "Network Rebuilds",
+      "Comms-Cabinet Re-Cabling",
+    ],
+    beforeAfter: {
+      title: "Coricraft comms cabinet — before & after",
+      caption:
+        "We stripped out the legacy cabinet, re-racked the active equipment and re-cabled every patch — taking it from a tangled mess to a clean, labelled, serviceable rack.",
+      before: {
+        src: franchiseCabinetBefore,
+        alt: "Coricraft comms cabinet before — tangled cabling, unmanaged patch leads and stacked equipment",
+      },
+      after: {
+        src: franchiseCabinetAfter,
+        alt: "Coricraft comms cabinet after — re-racked equipment, dressed patch leads and labelled patch panels",
+      },
+    },
+    gallery: [
+      { src: franchiseKfcImg, caption: "On-site at a national franchise store" },
+      { src: franchiseWifiPortalImg, caption: "Branded guest Wi-Fi captive portal" },
+      { src: franchiseSignageImg, caption: "In-store digital signage and CCTV" },
+      { src: franchisePosImg, caption: "POS, desktop and printer support" },
     ],
   },
   {
