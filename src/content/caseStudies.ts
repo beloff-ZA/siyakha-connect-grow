@@ -1,6 +1,7 @@
 import maristImg from "@/assets/case-marist-network.jpg";
 import exmileImg from "@/assets/case-exmile-rack.jpg";
 import franchiseImg from "@/assets/case-franchise-wifi.jpg";
+import tasteMozImg from "@/assets/case-taste-mozambique.jpg";
 
 export interface CaseStudy {
   slug: string;
@@ -23,37 +24,37 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "taste-of-mozambique-restaurant-av-wifi",
     client: "A Taste of Mozambique +258",
-    title: "AV, Wi-Fi, Telephony & CCTV for a Design Quarter Restaurant",
+    title: "Data Points, Hikvision CCTV & AV Solution — Fourways Restaurant",
     industry: "Hospitality & Restaurants",
-    location: "Design Quarter · Johannesburg",
+    location: "Fourways · Johannesburg",
     year: "2025",
-    hero: franchiseImg,
+    hero: tasteMozImg,
     summary:
-      "Full technology enhancement for A Taste of Mozambique +258 in the Design Quarter — AV system, business Wi-Fi, telephone solution and CCTV, all rolled out turnkey to elevate the guest experience and day-to-day operations.",
+      "End-to-end venue technology rollout for A Taste of Mozambique +258 in Fourways — full data-point installation, a Hikvision CCTV system and an AV solution with audio speakers integrated into the restaurant's existing amplifier.",
     problem:
-      "The restaurant owner needed a single trusted partner to enhance the venue's technology — reliable Wi-Fi for staff and guests, a proper telephone setup for reservations, AV for ambience, and CCTV coverage for safety and oversight.",
+      "The restaurant needed a trusted partner to install all the data points for the venue, deploy a proper Hikvision CCTV system for safety and oversight, and roll out an AV solution that worked with the existing amplifier already on site.",
     solution:
-      "Siyakha designed and installed a complete in-venue technology stack: business-grade Wi-Fi with guest captive portal, AV with zoned audio for the dining area, a telephone solution for reservations and supplier calls, and CCTV coverage across the floor and back-of-house.",
+      "Siyakha installed all data points across the restaurant, deployed a full Hikvision CCTV system with coverage across the floor, entrance and back-of-house, and built out an AV solution — mounting audio speakers and integrating them cleanly into the existing amplifier for zoned in-venue sound.",
     process: [
       "On-site walk-through and venue technology audit",
-      "Cabling and containment for AV, Wi-Fi, voice and CCTV",
-      "Wi-Fi access points with staff / guest VLAN separation",
-      "AV system with zoned audio for the dining area",
-      "Telephone solution for reservations and supplier calls",
-      "CCTV cameras across floor, entrance and back-of-house with remote viewing",
+      "Installation of all data points across the restaurant",
+      "Cabling and containment for CCTV and AV runs",
+      "Hikvision CCTV cameras across floor, entrance and back-of-house",
+      "NVR setup with remote viewing for the owner",
+      "AV speaker installation and integration with the existing amplifier",
       "Commissioning, staff walkthrough and handover documentation",
     ],
     results: [
-      "Reliable connectivity for staff operations and guest Wi-Fi",
-      "Crisp, zoned audio elevating the in-venue experience",
-      "Professional telephone line for bookings and suppliers",
-      "Full CCTV coverage with remote viewing for the owner",
+      "All data points installed and ready for venue operations",
+      "Full Hikvision CCTV coverage with remote viewing for the owner",
+      "Crisp in-venue audio through speakers tied into the existing amp",
+      "A single trusted partner for cabling, surveillance and AV",
     ],
     services: [
+      "Data Point Installation",
+      "Hikvision CCTV",
       "AV Installation",
-      "Business Wi-Fi",
-      "Telephone Solution",
-      "CCTV & Surveillance",
+      "Speaker & Amplifier Integration",
       "Structured Cabling",
     ],
   },
