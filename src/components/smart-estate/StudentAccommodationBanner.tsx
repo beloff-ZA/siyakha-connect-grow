@@ -1,4 +1,4 @@
-import studentImage from "@/assets/student-accommodation-tech.jpg";
+import studentImage from "@/assets/student-accommodation-cabling.png";
 
 const pillars = [
   { k: "High-Density WiFi", v: "WiFi 6/6E per room & lounge — built for 1,000+ concurrent devices" },
@@ -13,7 +13,7 @@ const StudentAccommodationBanner = () => {
       <div className="relative w-full min-h-[78vh] md:min-h-[88vh]">
         <img
           src={studentImage}
-          alt="Modern purpose-built student accommodation common area with WiFi access points, smart locks and structured cabling"
+          alt="Siyakha engineer on-site at a student accommodation comms cabinet — structured cabling, fibre and networking install"
           className="absolute inset-0 w-full h-full object-cover"
           loading="lazy"
           width={1920}
@@ -43,14 +43,14 @@ const StudentAccommodationBanner = () => {
                 Student Accommodation · Connectivity · Access
               </p>
               <h2 className="font-display font-light text-4xl md:text-5xl lg:text-6xl tracking-[-0.02em] text-foreground leading-[1.05]">
-                Residences engineered
+                Equip your dream space
                 <br />
-                for a <span className="italic font-extralight">connected generation</span>.
+                with <span className="italic font-extralight">technology</span>.
               </h2>
               <p className="mt-6 max-w-xl lg:ml-auto text-base md:text-lg text-foreground/80 leading-relaxed">
-                We deliver the digital backbone of modern student accommodation — fibre to every room,
-                ubiquitous WiFi 6E, smart locks, CCTV, energy sub-metering and a tenant app that turns
-                a building into a living, manageable platform from day one of intake.
+                Student accommodation cable installations done right — fibre teams, structured
+                networking, WiFi 6E, smart access and CCTV. Our engineers deliver the digital
+                backbone of modern residences, from first cable pull to final handover.
               </p>
 
               <div className="mt-10 flex flex-wrap gap-2 lg:justify-end">
