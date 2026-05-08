@@ -21,6 +21,43 @@ export interface CaseStudy {
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
+    slug: "taste-of-mozambique-restaurant-av-wifi",
+    client: "A Taste of Mozambique +258",
+    title: "AV, Wi-Fi, Telephony & CCTV for a Design Quarter Restaurant",
+    industry: "Hospitality & Restaurants",
+    location: "Design Quarter · Johannesburg",
+    year: "2025",
+    hero: franchiseImg,
+    summary:
+      "Full technology enhancement for A Taste of Mozambique +258 in the Design Quarter — AV system, business Wi-Fi, telephone solution and CCTV, all rolled out turnkey to elevate the guest experience and day-to-day operations.",
+    problem:
+      "The restaurant owner needed a single trusted partner to enhance the venue's technology — reliable Wi-Fi for staff and guests, a proper telephone setup for reservations, AV for ambience, and CCTV coverage for safety and oversight.",
+    solution:
+      "Siyakha designed and installed a complete in-venue technology stack: business-grade Wi-Fi with guest captive portal, AV with zoned audio for the dining area, a telephone solution for reservations and supplier calls, and CCTV coverage across the floor and back-of-house.",
+    process: [
+      "On-site walk-through and venue technology audit",
+      "Cabling and containment for AV, Wi-Fi, voice and CCTV",
+      "Wi-Fi access points with staff / guest VLAN separation",
+      "AV system with zoned audio for the dining area",
+      "Telephone solution for reservations and supplier calls",
+      "CCTV cameras across floor, entrance and back-of-house with remote viewing",
+      "Commissioning, staff walkthrough and handover documentation",
+    ],
+    results: [
+      "Reliable connectivity for staff operations and guest Wi-Fi",
+      "Crisp, zoned audio elevating the in-venue experience",
+      "Professional telephone line for bookings and suppliers",
+      "Full CCTV coverage with remote viewing for the owner",
+    ],
+    services: [
+      "AV Installation",
+      "Business Wi-Fi",
+      "Telephone Solution",
+      "CCTV & Surveillance",
+      "Structured Cabling",
+    ],
+  },
+  {
     slug: "exmile-student-accommodation",
     client: "Student Accommodation Rollouts",
     title: "Structured Cabling for Student Accommodation Buildings",
