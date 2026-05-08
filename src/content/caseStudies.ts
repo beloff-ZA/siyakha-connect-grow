@@ -28,6 +28,11 @@ export interface CaseStudy {
   services: string[];
   quote?: { text: string; author: string };
   gallery?: { src: string; caption: string }[];
+  sequence?: {
+    title: string;
+    caption?: string;
+    items: { src: string; caption: string }[];
+  };
   beforeAfter?: {
     title: string;
     caption: string;
