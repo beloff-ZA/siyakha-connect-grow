@@ -11,6 +11,8 @@ import franchiseCabinetAfter from "@/assets/case-franchise-cabinet-after.jpg";
 import franchiseCabinetCleanup1 from "@/assets/case-franchise-cabinet-cleanup-1.jpg";
 import franchiseCabinetCleanup2 from "@/assets/case-franchise-cabinet-cleanup-2.jpg";
 import franchiseCabinetCleanup3 from "@/assets/case-franchise-cabinet-cleanup-3.jpg";
+import kwamashuTrainingImg from "@/assets/case-kwamashu-training-room.jpg";
+import jhbComputerLabImg from "@/assets/case-jhb-computer-lab.jpg";
 
 export interface CaseStudy {
   slug: string;
@@ -42,6 +44,78 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "kwamashu-training-facility",
+    client: "Kwamashu Training Facility",
+    title: "Training Room Build-Out — Workstations, Cabling & Network",
+    industry: "Training & Skills Development",
+    location: "Kwamashu, KwaZulu-Natal",
+    year: "2016",
+    hero: kwamashuTrainingImg,
+    summary:
+      "End-to-end training-room setup for a skills facility in Kwamashu — desktop workstations, webcams, headsets, structured cabling and a clean U-shaped lab layout ready for learners on day one.",
+    problem:
+      "The facility needed a fully working training room — workstations, peripherals, networking and cabling — delivered as one turnkey build, not a stack of separate vendors.",
+    solution:
+      "Siyakha designed the U-shaped lab, ran structured cabling under the bench, deployed and configured every workstation with webcams and peripherals, and handed over a fully tested training room ready for class.",
+    process: [
+      "Lab layout and cable-route design",
+      "Structured cabling under the workstation bench",
+      "Workstation deployment — towers, monitors, keyboards, mice",
+      "Webcam and headset setup for online training",
+      "Network switch configuration and internet uplink",
+      "Final testing and handover to facility staff",
+    ],
+    results: [
+      "A fully working training room delivered turnkey",
+      "Consistent learner experience across every seat",
+      "Reliable connectivity for online and instructor-led sessions",
+      "One partner accountable for the full build",
+    ],
+    services: [
+      "Workstation Deployment",
+      "Structured Cabling",
+      "Network Switching",
+      "Peripheral Setup",
+      "Training-Room Fit-Out",
+    ],
+  },
+  {
+    slug: "johannesburg-school-computer-lab",
+    client: "Johannesburg School Computer Lab",
+    title: "School Computer Lab — Workstations, Cabling & Classroom Network",
+    industry: "Schools & Education",
+    location: "Johannesburg",
+    year: "2024",
+    hero: jhbComputerLabImg,
+    summary:
+      "Computer lab setup for a Johannesburg school — desktop workstations along the bench, structured cabling, network switching and a layout ready for full classes of learners.",
+    problem:
+      "The school needed a proper computer lab — workstations, cabling and a stable network — built as one project so teachers could run classes the following term.",
+    solution:
+      "Siyakha installed the workstations, ran structured cabling along the bench, terminated data points at every seat and configured the classroom switch — leaving a clean, learner-ready lab.",
+    process: [
+      "Lab layout planning around bench and seating",
+      "Structured cabling and data points at every workstation",
+      "Desktop workstation deployment and imaging",
+      "Classroom switch configuration and uplink to school network",
+      "Cable management and labelling",
+      "Final testing and teacher handover",
+    ],
+    results: [
+      "A full computer lab ready for classes",
+      "Reliable wired connectivity at every seat",
+      "Neat cabling that's easy to maintain",
+      "Foundation for future Wi-Fi and CCTV roll-ons",
+    ],
+    services: [
+      "Computer Lab Build-Out",
+      "Workstation Deployment",
+      "Structured Cabling",
+      "Classroom Networking",
+      "Switch Configuration",
+    ],
+  },
   {
     slug: "northern-johannesburg-restaurant-av-wifi",
     client: "Restaurant Solutions",
