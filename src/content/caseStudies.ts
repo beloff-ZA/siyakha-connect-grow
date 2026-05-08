@@ -2,6 +2,12 @@ import maristImg from "@/assets/case-marist-network.jpg";
 import exmileImg from "@/assets/case-exmile-rack.jpg";
 import franchiseImg from "@/assets/case-franchise-wifi.jpg";
 import tasteMozImg from "@/assets/case-taste-mozambique.jpg";
+import franchiseKfcImg from "@/assets/case-franchise-kfc.jpg";
+import franchiseWifiPortalImg from "@/assets/case-franchise-wifi-portal.jpg";
+import franchiseSignageImg from "@/assets/case-franchise-digital-signage.jpg";
+import franchisePosImg from "@/assets/case-franchise-pos.jpg";
+import franchiseCabinetBefore from "@/assets/case-franchise-cabinet-before.jpg";
+import franchiseCabinetAfter from "@/assets/case-franchise-cabinet-after.jpg";
 
 export interface CaseStudy {
   slug: string;
@@ -18,6 +24,13 @@ export interface CaseStudy {
   results: string[];
   services: string[];
   quote?: { text: string; author: string };
+  gallery?: { src: string; caption: string }[];
+  beforeAfter?: {
+    title: string;
+    caption: string;
+    before: { src: string; alt: string };
+    after: { src: string; alt: string };
+  };
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
