@@ -2,7 +2,7 @@ import { CASE_STUDIES } from "@/content/caseStudies";
 import CaseStudyCard from "./CaseStudyCard";
 
 const FeaturedProjectsBand = () => (
-  <section className="bg-background border-t border-foreground/10">
+  <section id="recent-projects" className="bg-background border-t border-foreground/10 scroll-mt-28">
     <div className="container mx-auto px-6 lg:px-10 py-20 md:py-28">
       <div className="max-w-3xl mb-14">
         <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-4">
