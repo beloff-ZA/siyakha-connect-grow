@@ -9,6 +9,7 @@ import {
   CART_LINES_REMOVE_MUTATION,
   formatCheckoutUrl,
   isCartNotFoundError,
+  SHOPIFY_STORE_PERMANENT_DOMAIN,
   type ShopifyProduct,
 } from "@/lib/shopify";
 
