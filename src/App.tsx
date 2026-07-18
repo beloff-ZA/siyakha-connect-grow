@@ -16,6 +16,9 @@ import CloudNetworking from "./pages/CloudNetworking";
 import About from "./pages/About";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
+import Shop from "./pages/shop/Shop";
+import ProductDetail from "./pages/shop/ProductDetail";
+import { useCartSync } from "./hooks/useCartSync";
 
 // Director PA / Helpdesk (protected backend — preserved)
 import AdminRoute from "./components/helpdesk/AdminRoute";
@@ -38,6 +41,11 @@ import PackagesPage from "./pages/helpdesk/Packages";
 
 const queryClient = new QueryClient();
 
+function CartSyncMount() {
+  useCartSync();
+  return null;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -47,12 +55,17 @@ function App() {
         <AuthProvider>
           <Router>
             <ScrollToTop />
+            <CartSyncMount />
             <Routes>
               {/* Single public page */}
               <Route path="/" element={<Index />} />
 
               {/* Auth (required for backend access) */}
               <Route path="/auth" element={<AuthPage />} />
+
+              {/* Shop */}
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/shop/:handle" element={<ProductDetail />} />
 
               {/* Regional services — Africa web design & development */}
               <Route path="/regional-services" element={<RegionalServices />} />

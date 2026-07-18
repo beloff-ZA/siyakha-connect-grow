@@ -4,6 +4,7 @@ import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
 import { ChevronDown } from "lucide-react";
+import CartDrawer from "@/components/shop/CartDrawer";
 
 const Header = () => {
   const { t } = useTranslation();
@@ -105,6 +106,13 @@ const Header = () => {
             >
               Recent Projects
             </a>
+
+            <Link
+              to="/shop"
+              className="text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
+            >
+              Shop
+            </Link>
           </nav>
 
           <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
@@ -113,6 +121,7 @@ const Header = () => {
               <span className="sm:hidden">{t("header.language")}</span>
             </span>
             <LanguageToggle />
+            <CartDrawer />
           </div>
         </div>
       </div>
