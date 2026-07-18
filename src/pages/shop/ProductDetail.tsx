@@ -58,7 +58,7 @@ const ProductDetail = () => {
         <SiteSEO
           title={`${product.title} — Siyakha Shop`}
           description={product.description?.slice(0, 155) || `Buy ${product.title} from Siyakha Technology.`}
-          canonical={`https://siyakhatechnology.co.za/shop/${product.handle}`}
+          path={`/shop/${product.handle}`}
         />
       )}
       <div className="min-h-screen bg-background flex flex-col">

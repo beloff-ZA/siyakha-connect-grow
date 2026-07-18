@@ -30,7 +30,7 @@ const Shop = () => {
       <SiteSEO
         title="Shop — Siyakha Technology"
         description="Buy IT hardware, networking equipment, cameras, cabling and accessories from Siyakha Technology. Secure checkout, fast delivery across South Africa."
-        canonical="https://siyakhatechnology.co.za/shop"
+        path="/shop"
       />
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
