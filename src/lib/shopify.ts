@@ -2,9 +2,9 @@
 import { toast } from "sonner";
 
 export const SHOPIFY_API_VERSION = "2025-07";
-export const SHOPIFY_STORE_PERMANENT_DOMAIN = "siyakha-connect-grow-vxg5t.myshopify.com";
+export const SHOPIFY_STORE_PERMANENT_DOMAIN = "kjuvg2-c1.myshopify.com";
 export const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
-export const SHOPIFY_STOREFRONT_TOKEN = "640d63a9d7bc956450f6e5d1a215630e";
+export const SHOPIFY_STOREFRONT_TOKEN = "20fe350cbc60df5637d858da422cca2c";
 
 export interface ShopifyImage { url: string; altText: string | null }
 export interface ShopifyVariant {
