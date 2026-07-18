@@ -188,7 +188,7 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: "shopify-cart",
+      name: `shopify-cart-${SHOPIFY_STORE_PERMANENT_DOMAIN}`,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ items: state.items, cartId: state.cartId, checkoutUrl: state.checkoutUrl }),
     },
