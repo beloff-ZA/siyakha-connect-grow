@@ -9,6 +9,7 @@ import {
   CART_LINES_REMOVE_MUTATION,
   formatCheckoutUrl,
   isCartNotFoundError,
+  SHOPIFY_STORE_PERMANENT_DOMAIN,
   type ShopifyProduct,
 } from "@/lib/shopify";
 
@@ -187,7 +188,7 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: "shopify-cart",
+      name: `shopify-cart-${SHOPIFY_STORE_PERMANENT_DOMAIN}`,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ items: state.items, cartId: state.cartId, checkoutUrl: state.checkoutUrl }),
     },
