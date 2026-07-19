@@ -294,4 +294,30 @@ function AreaField({ label, value, onChange, error, rows = 3, placeholder }: {
   );
 }
 
+function NumberField({ label, value, onChange, error, placeholder }: {
+  label: string; value?: number; onChange: (v?: number) => void;
+  error?: string; placeholder?: string;
+}) {
+  return (
+    <div>
+      <Label className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">{label}</Label>
+      <Input
+        type="number"
+        min={0}
+        max={9999}
+        value={value ?? ""}
+        onChange={(e) => {
+          const raw = e.target.value;
+          if (raw === "") { onChange(undefined); return; }
+          const n = parseInt(raw, 10);
+          onChange(Number.isNaN(n) ? undefined : n);
+        }}
+        placeholder={placeholder}
+        className="mt-2 rounded-none border-border focus-visible:border-foreground focus-visible:ring-0"
+      />
+      {error && <p className="text-xs text-destructive mt-1">{error}</p>}
+    </div>
+  );
+}
+
 export default QuoteRequest;
