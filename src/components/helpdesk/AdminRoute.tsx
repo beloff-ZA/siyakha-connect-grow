@@ -10,7 +10,12 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     if (!user) return;
-    supabase.rpc("has_role", { _user_id: user.id, _role: "siyakha_admin" })
+    supabase
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("role", "siyakha_admin")
+      .maybeSingle()
       .then(({ data }) => setIsAdmin(!!data));
   }, [user]);
 
