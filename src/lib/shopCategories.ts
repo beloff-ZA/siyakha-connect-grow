@@ -8,6 +8,7 @@ export const SHOP_CATEGORIES = [
   { id: "wifi", label: "Wi-Fi Devices" },
   { id: "switching", label: "Switching" },
   { id: "routers", label: "Routers" },
+  { id: "firewalls", label: "Firewalls" },
   { id: "surveillance", label: "Surveillance" },
   { id: "storage", label: "Storage" },
   { id: "voip", label: "VoIP & Intercom" },
@@ -32,7 +33,8 @@ export function categorise(p: ShopifyProduct): CategoryId {
   if (/(voip|sip|dect|intercom|fanvil|ip phone|video intercom)/.test(hay)) return "voip";
   if (/(switch|switching|poe switch|managed switch|hpe.*switch|aruba.*switch)/.test(hay)) return "switching";
   if (/(access point|wi[- ]?fi|wifi|mesh|deco|grandstream|gwn|ap\b|omada)/.test(hay)) return "wifi";
-  if (/(router|gateway|teltonika|mikrotik|edgerouter|firewall|reyee|ptp|wireless bridge)/.test(hay)) return "routers";
+  if (/(firewall|fortigate|fortinet|sophos|xgs|palo alto|checkpoint)/.test(hay)) return "firewalls";
+  if (/(router|gateway|teltonika|mikrotik|edgerouter|reyee|ptp|wireless bridge|dream machine|udm)/.test(hay)) return "routers";
   if (/(cable|cat6|cat6a|cat5|flylead|patch|fibre|fiber|drum|utp|ftp)/.test(hay)) return "networking-cables";
   return "other";
 }
