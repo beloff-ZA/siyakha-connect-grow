@@ -38,6 +38,8 @@ const initial: FormState = {
   vatNumber: "", poNumber: "",
   billingAddress: "", deliveryAddress: "", notes: "",
   needSupport: false,
+  hardwarePoints: undefined,
+  camerasNeeded: undefined,
 };
 
 
