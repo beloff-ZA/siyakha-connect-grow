@@ -169,6 +169,8 @@ serve(async (req) => {
       deliveryAddress: clean(c.deliveryAddress, 1000),
       poNumber: clean(c.poNumber, 100),
       notes: clean(c.notes, 2000),
+      hardwarePoints: Math.max(0, Math.min(9999, Number(c.hardwarePoints) || 0)) || undefined,
+      camerasNeeded: Math.max(0, Math.min(9999, Number(c.camerasNeeded) || 0)) || undefined,
     };
     const cleanItems: QuoteItem[] = payload.items.slice(0, 200).map((i) => ({
       title: clean(i.title, 300),
