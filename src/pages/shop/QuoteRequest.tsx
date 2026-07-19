@@ -87,6 +87,8 @@ const QuoteRequest = () => {
           options: i.selectedOptions,
         })),
         needSupport: parsed.data.needSupport,
+        hardwarePoints: parsed.data.hardwarePoints,
+        camerasNeeded: parsed.data.camerasNeeded,
       };
 
       const { data, error } = await supabase.functions.invoke("send-quote-request", { body: payload });
