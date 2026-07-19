@@ -12,6 +12,7 @@ import IndustrySolutionsBand from "@/components/site/IndustrySolutionsBand";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
 import FeaturedProjectsBand from "@/components/site/FeaturedProjectsBand";
 import FeaturedProductsBand from "@/components/site/FeaturedProductsBand";
+import AdvancedTechBento from "@/components/site/AdvancedTechBento";
 import InstagramGallery from "@/components/gallery/InstagramGallery";
 import ManagedItPlansPreview from "@/components/site/ManagedItPlansPreview";
 import FinalCtaBand from "@/components/site/FinalCtaBand";
@@ -159,6 +160,7 @@ const Index = () => {
       <SmartEstateHero />
       <BespokeBanner />
       <IndustrySolutionsBand />
+      <AdvancedTechBento />
       <WhySiyakhaBand />
       <OutcomesBanner />
       <FeaturedProjectsBand />
