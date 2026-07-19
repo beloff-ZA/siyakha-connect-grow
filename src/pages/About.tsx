@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import LeadMagnetDialog from "@/components/leads/LeadMagnetDialog";
+import InstagramGallery from "@/components/gallery/InstagramGallery";
 import { Compass, Target, HeartHandshake, Award, ArrowLeft } from "lucide-react";
 import engineerFibreImg from "@/assets/team-engineer-fibre.png";
 import nikitaSiteImg from "@/assets/team-nikita-site-check.png";
