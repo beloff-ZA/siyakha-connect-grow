@@ -18,6 +18,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
 import Shop from "./pages/shop/Shop";
 import ProductDetail from "./pages/shop/ProductDetail";
+import QuoteRequest from "./pages/shop/QuoteRequest";
 import { useCartSync } from "./hooks/useCartSync";
 
 // Director PA / Helpdesk (protected backend — preserved)
@@ -65,6 +66,7 @@ function App() {
 
               {/* Shop */}
               <Route path="/shop" element={<Shop />} />
+              <Route path="/shop/quote" element={<QuoteRequest />} />
               <Route path="/shop/:handle" element={<ProductDetail />} />
 
               {/* Regional services — Africa web design & development */}
