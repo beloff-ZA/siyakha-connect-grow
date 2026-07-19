@@ -8,6 +8,7 @@ import { PRODUCT_BY_HANDLE_QUERY, formatPrice, storefrontApiRequest, type Shopif
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import SiteSEO from "@/components/site/SiteSEO";
+import ShareButton from "@/components/shop/ShareButton";
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
