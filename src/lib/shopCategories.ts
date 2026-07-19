@@ -25,7 +25,7 @@ export function categorise(p: ShopifyProduct): CategoryId {
     .join(" ")
     .toLowerCase();
 
-  if (/(nas|synology|diskstation|rackstation|storage|hdd|ssd|nvme)/.test(hay)) return "storage";
+  if (/(nas|synology|diskstation|rackstation|storage|hdd|ssd|nvme|flash drive|microsd|memory card|sd card|external hard|usb (2|3)\.\d)/.test(hay)) return "storage";
   if (/(monitor|display|smart tv|screen|smartboard|led monitor)/.test(hay)) return "displays";
   if (/(notebook|laptop|desktop pc|mini pc|mini desktop|vivobook|tuf gaming|asus pro|workstation)/.test(hay)) return "computers";
   if (/(cctv|camera|surveillance|hikvision|nvr|dvr|bullet|dome)/.test(hay)) return "surveillance";
