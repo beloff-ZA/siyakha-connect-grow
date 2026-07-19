@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +25,9 @@ const schema = z.object({
   billingAddress: z.string().trim().min(5, "Billing address is required").max(1000),
   deliveryAddress: z.string().trim().max(1000).optional().or(z.literal("")),
   notes: z.string().trim().max(2000).optional().or(z.literal("")),
+  needSupport: z.boolean().default(false),
 });
+
 
 type FormState = z.infer<typeof schema>;
 
