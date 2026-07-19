@@ -143,7 +143,7 @@ export function isCartNotFoundError(userErrors: Array<{ field: string[] | null; 
 
 export function formatPrice(amount: string, currencyCode: string): string {
   const n = parseFloat(amount);
-  if (!isFinite(n) || n <= 0) return "Contact for pricing";
+  if (!isFinite(n) || n <= 0) return "Price on quotation";
   const symbol = currencyCode === "ZAR" ? "R" : currencyCode;
   const formatted = new Intl.NumberFormat("en-ZA", {
     minimumFractionDigits: 2,
