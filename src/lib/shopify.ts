@@ -10,6 +10,7 @@ export interface ShopifyImage { url: string; altText: string | null }
 export interface ShopifyVariant {
   id: string;
   title: string;
+  sku?: string;
   price: { amount: string; currencyCode: string };
   availableForSale: boolean;
   selectedOptions: Array<{ name: string; value: string }>;
@@ -20,6 +21,9 @@ export interface ShopifyProductNode {
   description: string;
   descriptionHtml?: string;
   handle: string;
+  productType?: string;
+  tags?: string[];
+  vendor?: string;
   priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
   images: { edges: Array<{ node: ShopifyImage }> };
   variants: { edges: Array<{ node: ShopifyVariant }> };
@@ -53,11 +57,11 @@ export const PRODUCTS_QUERY = `
   query GetProducts($first: Int!, $query: String) {
     products(first: $first, query: $query) {
       edges { node {
-        id title description handle
+        id title description handle productType tags vendor
         priceRange { minVariantPrice { amount currencyCode } }
         images(first: 5) { edges { node { url altText } } }
         variants(first: 20) { edges { node {
-          id title price { amount currencyCode } availableForSale
+          id title sku price { amount currencyCode } availableForSale
           selectedOptions { name value }
         } } }
         options { name values }
@@ -69,11 +73,11 @@ export const PRODUCTS_QUERY = `
 export const PRODUCT_BY_HANDLE_QUERY = `
   query GetProductByHandle($handle: String!) {
     product(handle: $handle) {
-      id title description descriptionHtml handle
+      id title description descriptionHtml handle productType tags vendor
       priceRange { minVariantPrice { amount currencyCode } }
       images(first: 10) { edges { node { url altText } } }
       variants(first: 50) { edges { node {
-        id title price { amount currencyCode } availableForSale
+        id title sku price { amount currencyCode } availableForSale
         selectedOptions { name value }
       } } }
       options { name values }

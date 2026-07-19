@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Trash2, ArrowRight, Loader2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
 
 const CartDrawer = () => {
   const [open, setOpen] = useState(false);
-  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } = useCartStore();
+  const navigate = useNavigate();
+  const { items, isLoading, isSyncing, updateQuantity, removeItem, syncCart } = useCartStore();
   const totalItems = items.reduce((s, i) => s + i.quantity, 0);
   const currency = items[0]?.price.currencyCode || "ZAR";
   const totalPrice = items.reduce((s, i) => s + parseFloat(i.price.amount) * i.quantity, 0);
 
   useEffect(() => { if (open) syncCart(); }, [open, syncCart]);
 
-  const handleCheckout = () => {
-    const url = getCheckoutUrl();
-    if (url) { window.open(url, "_blank"); setOpen(false); }
+  const handleRequestQuote = () => {
+    setOpen(false);
+    navigate("/shop/quote");
   };
 
   return (
@@ -87,13 +89,13 @@ const CartDrawer = () => {
                   <span className="font-display text-xl">{formatPrice(totalPrice.toFixed(2), currency)}</span>
                 </div>
                 <Button
-                  onClick={handleCheckout}
+                  onClick={handleRequestQuote}
                   disabled={items.length === 0 || isLoading || isSyncing}
                   className="w-full rounded-none bg-foreground text-background hover:bg-foreground/90 text-[11px] uppercase tracking-[0.24em] h-12"
                 >
-                  {isLoading || isSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : (<><ExternalLink className="w-3.5 h-3.5 mr-2" />Secure Checkout</>)}
+                  {isLoading || isSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : (<>Request Quote<ArrowRight className="w-3.5 h-3.5 ml-2" /></>)}
                 </Button>
-                <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground text-center">Checkout opens in a new tab</p>
+                <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground text-center">Eshlan will send an official quote</p>
               </div>
             </>
           )}
