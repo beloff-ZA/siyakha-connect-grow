@@ -38,16 +38,26 @@ const AuthPage: React.FC = () => {
       }
       if (session?.user) {
         // Check if admin
-        const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: session.user.id, _role: "siyakha_admin" });
-        window.location.replace(isAdmin ? "/helpdesk" : "/portal");
+        const { data: adminRow } = await supabase
+          .from("user_roles")
+          .select("id")
+          .eq("user_id", session.user.id)
+          .eq("role", "siyakha_admin")
+          .maybeSingle();
+        window.location.replace(adminRow ? "/helpdesk" : "/portal");
       }
     });
     supabase.auth.getSession().then(async ({ data }) => {
       const params = new URLSearchParams(window.location.search);
       const isRecovery = params.get('type') === 'recovery';
       if (data.session?.user && !isRecovery) {
-        const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: data.session.user.id, _role: "siyakha_admin" });
-        window.location.replace(isAdmin ? "/helpdesk" : "/portal");
+        const { data: adminRow } = await supabase
+          .from("user_roles")
+          .select("id")
+          .eq("user_id", data.session.user.id)
+          .eq("role", "siyakha_admin")
+          .maybeSingle();
+        window.location.replace(adminRow ? "/helpdesk" : "/portal");
       }
     });
     return () => subscription.unsubscribe();
