@@ -178,6 +178,26 @@ const QuoteRequest = () => {
                     <AreaField label="Anything we should know?" value={form.notes || ""} onChange={set("notes")} error={errors.notes} rows={4} placeholder="Timelines, installation requirements, project reference, etc." />
                   </div>
 
+                  <div className="border-t border-border pt-6">
+                    <h3 className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-4">Project scope</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <NumberField
+                        label="Hardware points needed"
+                        value={form.hardwarePoints}
+                        onChange={(v) => setForm((f) => ({ ...f, hardwarePoints: v }))}
+                        error={errors.hardwarePoints}
+                        placeholder="e.g. 48 network points"
+                      />
+                      <NumberField
+                        label="Cameras to install"
+                        value={form.camerasNeeded}
+                        onChange={(v) => setForm((f) => ({ ...f, camerasNeeded: v }))}
+                        error={errors.camerasNeeded}
+                        placeholder="e.g. 16 cameras"
+                      />
+                    </div>
+                  </div>
+
                   <div className="border border-border p-4 flex items-start gap-3">
                     <Checkbox
                       id="needSupport"
