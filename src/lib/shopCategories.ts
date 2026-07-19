@@ -27,10 +27,10 @@ export function categorise(p: ShopifyProduct): CategoryId {
     .toLowerCase();
 
   if (/(nas|synology|diskstation|rackstation|storage|hdd|ssd|nvme|flash drive|microsd|memory card|sd card|external hard|usb (2|3)\.\d)/.test(hay)) return "storage";
-  if (/(monitor|display|smart tv|screen|smartboard|led monitor)/.test(hay)) return "displays";
+  if (/(voip|sip|dect|intercom|fanvil|ip phone|video intercom)/.test(hay)) return "voip";
+  if (/(interactive display|smart whiteboard|smartboard|whiteboard|monitor|smart tv|led monitor|\bdisplay\b)/.test(hay)) return "displays";
   if (/(notebook|laptop|desktop pc|mini pc|mini desktop|vivobook|tuf gaming|asus pro|workstation)/.test(hay)) return "computers";
   if (/(cctv|camera|surveillance|hikvision|nvr|dvr|bullet|dome)/.test(hay)) return "surveillance";
-  if (/(voip|sip|dect|intercom|fanvil|ip phone|video intercom)/.test(hay)) return "voip";
   if (/(switch|switching|poe switch|managed switch|hpe.*switch|aruba.*switch)/.test(hay)) return "switching";
   if (/(access point|wi[- ]?fi|wifi|mesh|deco|grandstream|gwn|ap\b|omada)/.test(hay)) return "wifi";
   if (/(firewall|fortigate|fortinet|sophos|xgs|palo alto|checkpoint)/.test(hay)) return "firewalls";
