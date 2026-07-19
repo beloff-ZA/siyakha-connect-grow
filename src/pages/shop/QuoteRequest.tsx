@@ -82,7 +82,9 @@ const QuoteRequest = () => {
           currency: i.price.currencyCode,
           options: i.selectedOptions,
         })),
+        needSupport: parsed.data.needSupport,
       };
+
       const { data, error } = await supabase.functions.invoke("send-quote-request", { body: payload });
       if (error) throw error;
       if (data && (data as any).error) throw new Error((data as any).error);
