@@ -97,9 +97,13 @@ function buildHtml(p: Payload) {
           ${c.vatNumber ? `<tr><td style="padding:4px 0;color:#666;">VAT Number</td><td style="padding:4px 0;">${esc(c.vatNumber)}</td></tr>` : ""}
           ${c.poNumber ? `<tr><td style="padding:4px 0;color:#666;">PO Number</td><td style="padding:4px 0;">${esc(c.poNumber)}</td></tr>` : ""}
           <tr><td style="padding:4px 0;color:#666;vertical-align:top;">Billing address</td><td style="padding:4px 0;white-space:pre-line;">${esc(c.billingAddress)}</td></tr>
-          ${c.deliveryAddress ? `<tr><td style="padding:4px 0;color:#666;vertical-align:top;">Delivery address</td><td style="padding:4px 0;white-space:pre-line;">${esc(c.deliveryAddress)}</td></tr>` : ""}
           ${(c.hardwarePoints || c.camerasNeeded) ? `<tr><td style="padding:4px 0;color:#666;vertical-align:top;">Project scope</td><td style="padding:4px 0;">${c.hardwarePoints ? `<b>${c.hardwarePoints}</b> hardware point${c.hardwarePoints !== 1 ? "s" : ""}` : ""}${c.hardwarePoints && c.camerasNeeded ? " · " : ""}${c.camerasNeeded ? `<b>${c.camerasNeeded}</b> camera${c.camerasNeeded !== 1 ? "s" : ""} to install` : ""}</td></tr>` : ""}
         </table>
+
+        <div style="margin-top:20px;background:#fafafa;border:1px solid #e5e5e5;border-left:4px solid #111;padding:14px 18px;">
+          <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#666;margin-bottom:6px;">Deliver to</div>
+          <div style="font-size:14px;white-space:pre-line;color:#111;">${esc(c.deliveryAddress && c.deliveryAddress.trim() ? c.deliveryAddress : c.billingAddress)}${(!c.deliveryAddress || !c.deliveryAddress.trim()) ? ` <span style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.14em;">(same as billing)</span>` : ""}</div>
+        </div>
 
         ${c.notes ? `
           <h3 style="margin:24px 0 8px 0;font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:#666;">Notes</h3>
