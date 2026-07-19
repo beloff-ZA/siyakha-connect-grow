@@ -33,7 +33,9 @@ interface Payload {
     notes?: string;
   };
   items: QuoteItem[];
+  needSupport?: boolean;
 }
+
 
 const RECIPIENTS = ["nikita@siyakhatechnology.co.za", "accounts@siyakhatechnology.co.za"];
 const FROM = "Siyakha Quotes <notifications@mail.siyakhatechnology.co.za>";
@@ -77,7 +79,14 @@ function buildHtml(p: Payload) {
         <div style="font-size:22px;font-weight:300;margin-top:4px;">New Quote Request</div>
       </div>
       <div style="padding:24px;">
+        ${p.needSupport ? `
+        <div style="background:#111;color:#fff;padding:14px 18px;margin-bottom:22px;border-left:4px solid #fff;">
+          <div style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#ccc;">Support requested</div>
+          <div style="font-size:15px;margin-top:4px;">Customer needs installation / setup assistance — include labour and scheduling in the quote.</div>
+        </div>
+        ` : ""}
         <h3 style="margin:0 0 12px 0;font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:#666;">Billing / Customer</h3>
+
         <table width="100%" style="border-collapse:collapse;font-size:14px;">
           ${c.company ? `<tr><td style="padding:4px 0;color:#666;width:160px;">Company</td><td style="padding:4px 0;">${esc(c.company)}</td></tr>` : ""}
           <tr><td style="padding:4px 0;color:#666;">Contact</td><td style="padding:4px 0;">${esc(c.contactName)}</td></tr>
@@ -169,9 +178,11 @@ serve(async (req) => {
       options: Array.isArray(i.options) ? i.options.slice(0, 10).map((o) => ({ name: clean(o.name, 50), value: clean(o.value, 100) })) : [],
     }));
 
-    const cleanPayload: Payload = { customer: cleanCustomer, items: cleanItems };
+    const cleanNeedSupport = Boolean(payload.needSupport);
+    const cleanPayload: Payload = { customer: cleanCustomer, items: cleanItems, needSupport: cleanNeedSupport };
     const html = buildHtml(cleanPayload);
-    const subject = `Quote request — ${cleanCustomer.company || cleanCustomer.contactName} (${cleanItems.length} item${cleanItems.length !== 1 ? "s" : ""})`;
+    const subject = `Quote request${cleanNeedSupport ? " — INSTALL SUPPORT" : ""} — ${cleanCustomer.company || cleanCustomer.contactName} (${cleanItems.length} item${cleanItems.length !== 1 ? "s" : ""})`;
+
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

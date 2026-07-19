@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +25,9 @@ const schema = z.object({
   billingAddress: z.string().trim().min(5, "Billing address is required").max(1000),
   deliveryAddress: z.string().trim().max(1000).optional().or(z.literal("")),
   notes: z.string().trim().max(2000).optional().or(z.literal("")),
+  needSupport: z.boolean().default(false),
 });
+
 
 type FormState = z.infer<typeof schema>;
 
@@ -32,7 +35,9 @@ const initial: FormState = {
   company: "", contactName: "", email: "", phone: "",
   vatNumber: "", poNumber: "",
   billingAddress: "", deliveryAddress: "", notes: "",
+  needSupport: false,
 };
+
 
 const QuoteRequest = () => {
   const navigate = useNavigate();
@@ -77,7 +82,9 @@ const QuoteRequest = () => {
           currency: i.price.currencyCode,
           options: i.selectedOptions,
         })),
+        needSupport: parsed.data.needSupport,
       };
+
       const { data, error } = await supabase.functions.invoke("send-quote-request", { body: payload });
       if (error) throw error;
       if (data && (data as any).error) throw new Error((data as any).error);
@@ -165,7 +172,25 @@ const QuoteRequest = () => {
                     <AreaField label="Anything we should know?" value={form.notes || ""} onChange={set("notes")} error={errors.notes} rows={4} placeholder="Timelines, installation requirements, project reference, etc." />
                   </div>
 
+                  <div className="border border-border p-4 flex items-start gap-3">
+                    <Checkbox
+                      id="needSupport"
+                      checked={form.needSupport}
+                      onCheckedChange={(checked) => setForm((f) => ({ ...f, needSupport: checked === true }))}
+                      className="mt-0.5 rounded-none border-foreground data-[state=checked]:bg-foreground data-[state=checked]:text-background"
+                    />
+                    <div>
+                      <Label htmlFor="needSupport" className="text-[11px] uppercase tracking-[0.22em] text-foreground cursor-pointer">
+                        Need help installing or setting this up?
+                      </Label>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Tick this if you'd like Siyakha to quote for installation, configuration or on-site support. Eshlan will include labour and scheduling in the official quote.
+                      </p>
+                    </div>
+                  </div>
+
                   <Button type="submit" disabled={submitting || items.length === 0} className="w-full rounded-none bg-foreground text-background hover:bg-foreground/90 text-[11px] uppercase tracking-[0.24em] h-12">
+
                     {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send quote request"}
                   </Button>
                   {items.length === 0 && (
