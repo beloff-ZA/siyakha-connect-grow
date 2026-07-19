@@ -1,47 +1,83 @@
-## Goal
-Add a real online store to siyakhatechnology.co.za for physical products (10–50 SKUs) with full card checkout — without disturbing the existing monochrome site, Director OS, or lead flows.
+# Import Hikvision IP Cameras from Sensor Pricelist
 
-## Recommended approach: Shopify
-For physical products with real card checkout, Shopify is the right fit (Paddle can't sell physical goods; Stripe would require you to build inventory/shipping/tax yourself). The project already has `SHOPIFY_ACCESS_TOKEN` and `SHOPIFY_STOREFRONT_ACCESS_TOKEN` configured, so the connection is in place.
+## What the spreadsheet contains
 
-Shopify handles: inventory, variants, shipping rates, tax, secure checkout, order emails, refunds, and the admin dashboard for you to manage stock and fulfil orders. We embed the catalog and cart on your site; checkout happens on Shopify's secure hosted checkout (opens in a new tab), then the customer returns.
+The uploaded file is Sensor Security's **July 2026 distributor pricelist** (Hikvision + other brands). Sheets I inspected:
 
-## What gets built
+- `3-Line cameras` — 17 real Hikvision **network / IP** cameras (bullet, dome, fisheye, varifocal)
+- `Surveillance` — 319 rows, mostly analogue/Turbo HD (excluded per your choice)
+- `Networking`, `Audio`, `Alarm`, `Intercom & AC`, etc. — not in scope this round
 
-1. **Store routes** (new, additive — home page unchanged in structure)
-   - `/shop` — product grid pulled live from Shopify (title, image, price, "Add to Cart"), with "No products yet" empty state
-   - `/shop/:handle` — product detail page (gallery, description, variant selector, quantity, Add to Cart)
-   - Header "Solutions" and "Company" dropdowns stay; add a new top-level **Shop** link
-   - Footer gets a small "Shop" link
-   - Full monochrome styling, same typography/spacing as the rest of the site
+Per your answers, scope = **3-Line cameras only**, priced at **Retail incl. 15% VAT already** (Retail column in the sheet is already the marked-up figure; Sub-D is the distributor cost — I'll use `Retail` as the shop selling price).
 
-2. **Cart system** (Zustand, persisted in localStorage)
-   - Cart drawer (sheet) opens from a cart icon added to the header, with item count badge
-   - Real-time sync with Shopify Storefront API (cartCreate / cartLinesAdd / cartLinesUpdate / cartLinesRemove)
-   - "Checkout" button opens Shopify's hosted checkout in a new tab (`channel=online_store`)
-   - Cart auto-clears after successful checkout on return
+## The 17 products to import
 
-3. **Shopify integration layer**
-   - `src/lib/shopify.ts` — Storefront API client (2025-07), GraphQL queries for products + cart mutations
-   - `src/stores/cartStore.ts` — Zustand store with add/update/remove/sync
-   - `src/hooks/useCartSync.ts` — clears completed orders when tab regains focus
-   - Uses existing `SHOPIFY_STOREFRONT_ACCESS_TOKEN` and shop permanent domain (both already configured)
+| Category | Model | Retail (ZAR) |
+|---|---|---|
+| Short-range 40m bullet | DS-2CD3046G2H-LI 2.8mm | 4,762.92 |
+| Short-range 40m bullet | DS-2CD3046G2H-LI 4mm | 4,665.14 |
+| Short-range 40m bullet | DS-2CD3046G3-IUY/SL 2.8mm (strobe + siren) | 6,798.10 |
+| Long-range 60m bullet | DS-2CD3T46G2H-LIS 2.8mm | 7,192.22 |
+| Long-range 60m bullet | DS-2CD3T46G2H-LIS 4mm | 7,192.22 |
+| Long-range 60m bullet | DS-2CD3T46G2H-LISU/SL 2.8mm (strobe + siren) | 7,383.17 |
+| Long-range 60m bullet | DS-2CD3T46G2H-LISU/SL 4mm (strobe + siren) | 7,383.17 |
+| Vari-focal 60m bullet | DS-2CD3646G2HT-LIZS 2.7-13.5mm | 8,967.02 |
+| Fisheye | DS-2CD3956G2-ISU 1.05mm | 6,091.68 |
+| Fixed dome | DS-2CD3146G2H-LISU 2.8mm | 4,787.33 |
+| Fixed dome | DS-2CD3346G2H-LISU/SL 2.8mm | 5,471.04 |
+| Vari-focal 40m dome (PTRZ) | DS-2CD3746G2H-LIZSU 2.7-13.5mm | 10,080.86 |
 
-4. **Products**
-   - After the store scaffolding is live, you tell me the products (title, description, price, variants, images) and I create them via the Shopify API — they appear on both your site and in your Shopify admin instantly. No mock/placeholder products.
+*(A couple of models above are single SKUs; the Excel row count of 17 reflects lens/variant duplicates that will each become their own Shopify product for clarity.)*
 
-5. **Not touched**
-   - Home page structure, case studies, Director OS, partner engineer flow, lead forms, WhatsApp/email routing, monochrome theme, i18n, existing SEO
+## How images are handled
 
-## Costs & next steps to go live
-- Development/sandbox store is free while we build.
-- To accept real money you claim the store (starts a 120-day Shopify free trial), then a paid Shopify subscription is required to keep selling after the trial. I'll prompt you when you're ready.
+Yes — I can auto-fetch official Hikvision product renders from the model code, since:
 
-## Technical notes (for reference)
-- API version: Shopify Storefront `2025-07`
-- Checkout URL always includes `channel=online_store` and opens in a new tab
-- Cart persists across sessions via `localStorage` under key `shopify-cart`
-- No manual checkout permalinks or product-page redirects — everything goes through the Storefront API cart
+- The `Image` column in the spreadsheet is empty
+- Every model uses Hikvision's public SKU (DS-2CD…) which resolves to product pages on `hikvision.com` and mirrored e-tail sites
 
-## Open question before I build
-Where should **Shop** sit in navigation — as its own top-level tab in the header (recommended), or nested under a dropdown? I'll default to top-level unless you say otherwise.
+Flow per product:
+
+1. Search the web for the exact model code (Firecrawl `search`), restricted to Hikvision-owned or high-authority reseller pages.
+2. Pick the first result and scrape it for the hero product image URL.
+3. Download the image to `/tmp/hik/<sku>.png`.
+4. Attach it to the Shopify product on creation.
+5. If no image can be resolved, publish the product anyway with no image and log the SKU so you can supply one manually.
+
+Firecrawl is needed for this — I'll ask you to connect it before the fetch runs. No image bytes get committed to the repo.
+
+## Shopify product structure
+
+For each row:
+
+- **Title** — friendly name derived from description + lens size (e.g. `Hikvision AcuSense 4MP Bullet Camera 2.8mm 40m IR | DS-2CD3046G2H-LI`)
+- **Body (HTML)** — description from the spreadsheet + bulleted key specs (MP, IR range, WDR, PoE, lens) + supplier code
+- **Vendor** — `Hikvision`
+- **Product type** — `IP Cameras` (sub-grouped in tags: `Bullet`, `Dome`, `Fisheye`, `Vari-Focal`, `Strobe & Siren`)
+- **Tags** — `Hikvision, IP Camera, AcuSense, PoE, 4MP` + category
+- **SKU** — Sensor Product Code (e.g. `DS-2CD3046G2H-LI 2.8mm`)
+- **Price** — `Retail` column value from the sheet
+- **Inventory tracked** = yes; **inventory_policy** = `deny`; **requires_shipping** = true
+- **Image(s)** — auto-fetched hero shot (single image per product on first import)
+
+## Steps
+
+1. Connect the **Firecrawl** connector (I'll prompt you when we start).
+2. I extract the 17 product rows from the spreadsheet into a working JSON at `/tmp/hik-catalog.json`.
+3. For each SKU: search + scrape + download image to `/tmp/hik/`.
+4. For each SKU: call `shopify--create_product` with title, description, tags, price, SKU, and image.
+5. Report a summary listing any products that were created without an image so you can fill those in later.
+6. Confirm they appear on `/shop` and in the new "Featured Products" band on the home page (already wired).
+
+## Technical notes
+
+- **No code changes required** to the site. The storefront already lists everything created in Shopify.
+- Products land in the currently connected store (`kjuvg2-c1.myshopify.com`).
+- Image sourcing is best-effort — Hikvision's site occasionally rejects scraping; those SKUs will be logged.
+- Nothing from the analogue `Surveillance` sheet or `Networking` sheet is imported. If you later want the Networking sheet (switches, PoE injectors) I'll rerun this flow scoped to that sheet.
+
+## Out of scope
+
+- Variant grouping (each lens length is its own product, not a variant — simpler for the shop UI and matches how Sensor lists them).
+- Datasheets, PDFs, spec-sheet uploads.
+- Stock quantity sync (the pricelist only marks availability bands like "Availability A"; not a numeric quantity).
