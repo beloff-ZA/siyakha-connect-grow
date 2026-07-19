@@ -98,6 +98,7 @@ function buildHtml(p: Payload) {
           ${c.poNumber ? `<tr><td style="padding:4px 0;color:#666;">PO Number</td><td style="padding:4px 0;">${esc(c.poNumber)}</td></tr>` : ""}
           <tr><td style="padding:4px 0;color:#666;vertical-align:top;">Billing address</td><td style="padding:4px 0;white-space:pre-line;">${esc(c.billingAddress)}</td></tr>
           ${c.deliveryAddress ? `<tr><td style="padding:4px 0;color:#666;vertical-align:top;">Delivery address</td><td style="padding:4px 0;white-space:pre-line;">${esc(c.deliveryAddress)}</td></tr>` : ""}
+          ${(c.hardwarePoints || c.camerasNeeded) ? `<tr><td style="padding:4px 0;color:#666;vertical-align:top;">Project scope</td><td style="padding:4px 0;">${c.hardwarePoints ? `<b>${c.hardwarePoints}</b> hardware point${c.hardwarePoints !== 1 ? "s" : ""}` : ""}${c.hardwarePoints && c.camerasNeeded ? " · " : ""}${c.camerasNeeded ? `<b>${c.camerasNeeded}</b> camera${c.camerasNeeded !== 1 ? "s" : ""} to install` : ""}</td></tr>` : ""}
         </table>
 
         ${c.notes ? `
