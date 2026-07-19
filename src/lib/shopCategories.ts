@@ -2,6 +2,8 @@ import type { ShopifyProduct } from "@/lib/shopify";
 
 export const SHOP_CATEGORIES = [
   { id: "all", label: "All" },
+  { id: "computers", label: "Computers" },
+  { id: "displays", label: "Displays" },
   { id: "networking-cables", label: "Networking Cables" },
   { id: "wifi", label: "Wi-Fi Devices" },
   { id: "switching", label: "Switching" },
@@ -23,6 +25,8 @@ export function categorise(p: ShopifyProduct): CategoryId {
     .toLowerCase();
 
   if (/(nas|synology|diskstation|rackstation|storage|hdd|ssd|nvme)/.test(hay)) return "storage";
+  if (/(monitor|display|smart tv|screen|smartboard|led monitor)/.test(hay)) return "displays";
+  if (/(notebook|laptop|desktop pc|mini pc|mini desktop|vivobook|tuf gaming|asus pro|workstation)/.test(hay)) return "computers";
   if (/(cctv|camera|surveillance|hikvision|nvr|dvr|bullet|dome)/.test(hay)) return "surveillance";
   if (/(switch|switching|poe switch|managed switch|hpe.*switch|aruba.*switch)/.test(hay)) return "switching";
   if (/(access point|wi[- ]?fi|wifi|mesh|deco|grandstream|gwn|ap\b|omada)/.test(hay)) return "wifi";
