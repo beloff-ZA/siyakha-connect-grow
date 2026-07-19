@@ -26,6 +26,8 @@ const schema = z.object({
   deliveryAddress: z.string().trim().max(1000).optional().or(z.literal("")),
   notes: z.string().trim().max(2000).optional().or(z.literal("")),
   needSupport: z.boolean().default(false),
+  hardwarePoints: z.coerce.number().int().min(0).max(9999).optional(),
+  camerasNeeded: z.coerce.number().int().min(0).max(9999).optional(),
 });
 
 
@@ -36,6 +38,8 @@ const initial: FormState = {
   vatNumber: "", poNumber: "",
   billingAddress: "", deliveryAddress: "", notes: "",
   needSupport: false,
+  hardwarePoints: undefined,
+  camerasNeeded: undefined,
 };
 
 
@@ -83,6 +87,8 @@ const QuoteRequest = () => {
           options: i.selectedOptions,
         })),
         needSupport: parsed.data.needSupport,
+        hardwarePoints: parsed.data.hardwarePoints,
+        camerasNeeded: parsed.data.camerasNeeded,
       };
 
       const { data, error } = await supabase.functions.invoke("send-quote-request", { body: payload });
@@ -170,6 +176,26 @@ const QuoteRequest = () => {
                   <div className="border-t border-border pt-6">
                     <h3 className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-4">Notes for Eshlan</h3>
                     <AreaField label="Anything we should know?" value={form.notes || ""} onChange={set("notes")} error={errors.notes} rows={4} placeholder="Timelines, installation requirements, project reference, etc." />
+                  </div>
+
+                  <div className="border-t border-border pt-6">
+                    <h3 className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-4">Project scope</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <NumberField
+                        label="Hardware points needed"
+                        value={form.hardwarePoints}
+                        onChange={(v) => setForm((f) => ({ ...f, hardwarePoints: v }))}
+                        error={errors.hardwarePoints}
+                        placeholder="e.g. 48 network points"
+                      />
+                      <NumberField
+                        label="Cameras to install"
+                        value={form.camerasNeeded}
+                        onChange={(v) => setForm((f) => ({ ...f, camerasNeeded: v }))}
+                        error={errors.camerasNeeded}
+                        placeholder="e.g. 16 cameras"
+                      />
+                    </div>
                   </div>
 
                   <div className="border border-border p-4 flex items-start gap-3">
@@ -263,6 +289,32 @@ function AreaField({ label, value, onChange, error, rows = 3, placeholder }: {
     <div>
       <Label className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">{label}</Label>
       <Textarea value={value} onChange={onChange} rows={rows} placeholder={placeholder} className="mt-2 rounded-none border-border focus-visible:border-foreground focus-visible:ring-0" />
+      {error && <p className="text-xs text-destructive mt-1">{error}</p>}
+    </div>
+  );
+}
+
+function NumberField({ label, value, onChange, error, placeholder }: {
+  label: string; value?: number; onChange: (v?: number) => void;
+  error?: string; placeholder?: string;
+}) {
+  return (
+    <div>
+      <Label className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">{label}</Label>
+      <Input
+        type="number"
+        min={0}
+        max={9999}
+        value={value ?? ""}
+        onChange={(e) => {
+          const raw = e.target.value;
+          if (raw === "") { onChange(undefined); return; }
+          const n = parseInt(raw, 10);
+          onChange(Number.isNaN(n) ? undefined : n);
+        }}
+        placeholder={placeholder}
+        className="mt-2 rounded-none border-border focus-visible:border-foreground focus-visible:ring-0"
+      />
       {error && <p className="text-xs text-destructive mt-1">{error}</p>}
     </div>
   );
