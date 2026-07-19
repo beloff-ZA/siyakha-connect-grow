@@ -10,6 +10,7 @@ export interface ShopifyImage { url: string; altText: string | null }
 export interface ShopifyVariant {
   id: string;
   title: string;
+  sku?: string;
   price: { amount: string; currencyCode: string };
   availableForSale: boolean;
   selectedOptions: Array<{ name: string; value: string }>;
