@@ -8,6 +8,7 @@ import { PRODUCT_BY_HANDLE_QUERY, formatPrice, storefrontApiRequest, type Shopif
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import SiteSEO from "@/components/site/SiteSEO";
+import ShareButton from "@/components/shop/ShareButton";
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -138,13 +139,23 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                <Button
-                  onClick={handleAdd}
-                  disabled={isLoading || !selectedVariant}
-                  className="w-full md:w-auto rounded-none bg-foreground text-background hover:bg-foreground/90 text-[11px] uppercase tracking-[0.24em] h-12 px-8"
-                >
-                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (<><ShoppingBag className="w-3.5 h-3.5 mr-2" />Add to Quote</>)}
-                </Button>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    onClick={handleAdd}
+                    disabled={isLoading || !selectedVariant}
+                    className="w-full md:w-auto rounded-none bg-foreground text-background hover:bg-foreground/90 text-[11px] uppercase tracking-[0.24em] h-12 px-8"
+                  >
+                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (<><ShoppingBag className="w-3.5 h-3.5 mr-2" />Add to Quote</>)}
+                  </Button>
+                  {product && (
+                    <ShareButton
+                      title={product.title}
+                      url={`/shop/${product.handle}`}
+                      text={product.description?.slice(0, 120) || undefined}
+                      variant="default"
+                    />
+                  )}
+                </div>
               </div>
             </div>
           )}
