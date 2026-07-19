@@ -143,9 +143,11 @@ export function isCartNotFoundError(userErrors: Array<{ field: string[] | null; 
 
 export function formatPrice(amount: string, currencyCode: string): string {
   const n = parseFloat(amount);
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency: currencyCode }).format(n);
-  } catch {
-    return `${currencyCode} ${n.toFixed(2)}`;
-  }
+  if (!isFinite(n) || n <= 0) return "Contact for pricing";
+  const symbol = currencyCode === "ZAR" ? "R" : currencyCode;
+  const formatted = new Intl.NumberFormat("en-ZA", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(n);
+  return `${symbol} ${formatted}`;
 }
