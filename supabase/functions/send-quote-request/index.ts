@@ -178,9 +178,11 @@ serve(async (req) => {
       options: Array.isArray(i.options) ? i.options.slice(0, 10).map((o) => ({ name: clean(o.name, 50), value: clean(o.value, 100) })) : [],
     }));
 
-    const cleanPayload: Payload = { customer: cleanCustomer, items: cleanItems };
+    const cleanNeedSupport = Boolean(payload.needSupport);
+    const cleanPayload: Payload = { customer: cleanCustomer, items: cleanItems, needSupport: cleanNeedSupport };
     const html = buildHtml(cleanPayload);
-    const subject = `Quote request — ${cleanCustomer.company || cleanCustomer.contactName} (${cleanItems.length} item${cleanItems.length !== 1 ? "s" : ""})`;
+    const subject = `Quote request${cleanNeedSupport ? " — INSTALL SUPPORT" : ""} — ${cleanCustomer.company || cleanCustomer.contactName} (${cleanItems.length} item${cleanItems.length !== 1 ? "s" : ""})`;
+
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
