@@ -12,6 +12,7 @@ import IndustrySolutionsBand from "@/components/site/IndustrySolutionsBand";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
 import FeaturedProjectsBand from "@/components/site/FeaturedProjectsBand";
 import FeaturedProductsBand from "@/components/site/FeaturedProductsBand";
+import InstagramGallery from "@/components/gallery/InstagramGallery";
 import ManagedItPlansPreview from "@/components/site/ManagedItPlansPreview";
 import FinalCtaBand from "@/components/site/FinalCtaBand";
 import FaithSection from "@/components/FaithSection";
@@ -161,6 +162,7 @@ const Index = () => {
       <WhySiyakhaBand />
       <OutcomesBanner />
       <FeaturedProjectsBand />
+      <InstagramGallery limit={8} />
       <FeaturedProductsBand />
       <ManagedItPlansPreview />
       <TurnkeyManifesto />

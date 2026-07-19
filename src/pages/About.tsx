@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import LeadMagnetDialog from "@/components/leads/LeadMagnetDialog";
+import InstagramGallery from "@/components/gallery/InstagramGallery";
 import { Compass, Target, HeartHandshake, Award, ArrowLeft } from "lucide-react";
 import engineerFibreImg from "@/assets/team-engineer-fibre.png";
 import nikitaSiteImg from "@/assets/team-nikita-site-check.png";
@@ -131,6 +132,8 @@ const About = () => (
         </div>
       </div>
     </section>
+
+    <InstagramGallery eyebrow="From Our Instagram" title="On site, on the ground" intro="A rolling look at recent installs — racks, cabling, cameras, Wi-Fi. Follow @siyakhatech for more." />
 
     <section className="bg-foreground text-background">
       <div className="container mx-auto px-6 lg:px-10 py-20">
