@@ -119,8 +119,7 @@ const ProductDetail = () => {
                           <button
                             key={v.node.id}
                             onClick={() => setVariantId(v.node.id)}
-                            disabled={!v.node.availableForSale}
-                            className={`px-4 py-2 text-xs uppercase tracking-[0.18em] border transition-colors ${on ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"} ${!v.node.availableForSale ? "opacity-40 line-through" : ""}`}
+                            className={`px-4 py-2 text-xs uppercase tracking-[0.18em] border transition-colors ${on ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}
                           >
                             {v.node.title}
                           </button>
@@ -141,10 +140,10 @@ const ProductDetail = () => {
 
                 <Button
                   onClick={handleAdd}
-                  disabled={!selectedVariant?.availableForSale || isLoading}
+                  disabled={isLoading || !selectedVariant}
                   className="w-full md:w-auto rounded-none bg-foreground text-background hover:bg-foreground/90 text-[11px] uppercase tracking-[0.24em] h-12 px-8"
                 >
-                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (<><ShoppingBag className="w-3.5 h-3.5 mr-2" />{selectedVariant?.availableForSale ? "Add to Cart" : "Sold Out"}</>)}
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (<><ShoppingBag className="w-3.5 h-3.5 mr-2" />Add to Quote</>)}
                 </Button>
               </div>
             </div>
