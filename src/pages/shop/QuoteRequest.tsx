@@ -26,6 +26,8 @@ const schema = z.object({
   deliveryAddress: z.string().trim().max(1000).optional().or(z.literal("")),
   notes: z.string().trim().max(2000).optional().or(z.literal("")),
   needSupport: z.boolean().default(false),
+  hardwarePoints: z.coerce.number().int().min(0).max(9999).optional(),
+  camerasNeeded: z.coerce.number().int().min(0).max(9999).optional(),
 });
 
 
