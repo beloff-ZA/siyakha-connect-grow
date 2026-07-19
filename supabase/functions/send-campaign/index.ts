@@ -36,11 +36,13 @@ serve(async (req) => {
         status: 401, headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
-    const { data: isAdmin } = await admin.rpc("has_role", {
-      _user_id: userData.user.id,
-      _role: "siyakha_admin",
-    });
-    if (!isAdmin) {
+    const { data: adminRow } = await admin
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", userData.user.id)
+      .eq("role", "siyakha_admin")
+      .maybeSingle();
+    if (!adminRow) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403, headers: { "Content-Type": "application/json", ...corsHeaders },
       });
