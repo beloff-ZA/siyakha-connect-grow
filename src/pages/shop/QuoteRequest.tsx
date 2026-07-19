@@ -35,7 +35,9 @@ const initial: FormState = {
   company: "", contactName: "", email: "", phone: "",
   vatNumber: "", poNumber: "",
   billingAddress: "", deliveryAddress: "", notes: "",
+  needSupport: false,
 };
+
 
 const QuoteRequest = () => {
   const navigate = useNavigate();
