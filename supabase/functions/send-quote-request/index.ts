@@ -31,6 +31,8 @@ interface Payload {
     deliveryAddress?: string;
     poNumber?: string;
     notes?: string;
+    hardwarePoints?: number;
+    camerasNeeded?: number;
   };
   items: QuoteItem[];
   needSupport?: boolean;
