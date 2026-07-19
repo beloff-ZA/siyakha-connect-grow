@@ -47,10 +47,12 @@ serve(async (req) => {
     }
 
     // Check caller has siyakha_admin role
-    const { data: hasRole, error: roleErr } = await admin.rpc("has_role", {
-      _user_id: userData.user.id,
-      _role: "siyakha_admin",
-    });
+    const { data: adminRow, error: roleErr } = await admin
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", userData.user.id)
+      .eq("role", "siyakha_admin")
+      .maybeSingle();
 
     if (roleErr) {
       console.error("Role check error", roleErr);
@@ -60,7 +62,7 @@ serve(async (req) => {
       });
     }
 
-    if (!hasRole) {
+    if (!adminRow) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
         headers: { "Content-Type": "application/json", ...corsHeaders },
