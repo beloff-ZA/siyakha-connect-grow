@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -6,11 +6,14 @@ import ProductCard from "@/components/shop/ProductCard";
 import { PRODUCTS_QUERY, storefrontApiRequest, type ShopifyProduct } from "@/lib/shopify";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import SiteSEO from "@/components/site/SiteSEO";
+import { SHOP_CATEGORIES, categorise, type CategoryId } from "@/lib/shopCategories";
 
 const Shop = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeCat, setActiveCat] = useState<CategoryId>("all");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -24,6 +27,29 @@ const Shop = () => {
       }
     })();
   }, []);
+
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { all: products.length };
+    for (const p of products) {
+      const id = categorise(p);
+      c[id] = (c[id] ?? 0) + 1;
+    }
+    return c;
+  }, [products]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return products.filter((p) => {
+      const inCat = activeCat === "all" || categorise(p) === activeCat;
+      if (!inCat) return false;
+      if (!q) return true;
+      return (
+        p.node.title.toLowerCase().includes(q) ||
+        (p.node.description ?? "").toLowerCase().includes(q) ||
+        (p.node.vendor ?? "").toLowerCase().includes(q)
+      );
+    });
+  }, [products, activeCat, search]);
 
   return (
     <>
@@ -46,9 +72,38 @@ const Shop = () => {
               Hardware & <span className="italic">accessories</span>.
             </h1>
             <p className="mt-4 text-base text-muted-foreground max-w-2xl">
-              Curated equipment we deploy on live projects — networking, surveillance, cabling and everyday IT gear. Secure checkout with delivery across South Africa.
+              Curated equipment we deploy on live projects — networking, surveillance, cabling and storage. Add what you need, submit your billing details, and Eshlan will send you an official quote.
             </p>
           </section>
+
+          {!loading && !error && products.length > 0 && (
+            <section className="container mx-auto px-6 lg:px-10 pb-4">
+              <div className="flex flex-col lg:flex-row lg:items-center gap-4 border-t border-b border-border py-4">
+                <div className="flex flex-wrap gap-2 flex-1">
+                  {SHOP_CATEGORIES.filter((c) => c.id === "all" || (counts[c.id] ?? 0) > 0).map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => setActiveCat(c.id)}
+                      className={`text-[11px] uppercase tracking-[0.22em] px-3 py-2 border transition-colors ${
+                        activeCat === c.id
+                          ? "bg-foreground text-background border-foreground"
+                          : "border-border text-muted-foreground hover:text-foreground hover:border-foreground"
+                      }`}
+                    >
+                      {c.label} {c.id !== "all" && counts[c.id] ? <span className="opacity-60 ml-1">({counts[c.id]})</span> : null}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="search"
+                  placeholder="Search products…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full lg:w-64 border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground"
+                />
+              </div>
+            </section>
+          )}
 
           <section className="container mx-auto px-6 lg:px-10 py-12">
             {loading ? (
@@ -65,9 +120,11 @@ const Shop = () => {
                   We're loading our first products now. In the meantime, <Link to="/" className="underline">explore our services</Link> or <a href="mailto:nikita@siyakhatechnology.co.za" className="underline">email us</a> for a direct quote.
                 </p>
               </div>
+            ) : filtered.length === 0 ? (
+              <div className="text-center py-24 text-sm text-muted-foreground">No products match your filter.</div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
-                {products.map((p) => <ProductCard key={p.node.id} product={p} />)}
+                {filtered.map((p) => <ProductCard key={p.node.id} product={p} />)}
               </div>
             )}
           </section>
