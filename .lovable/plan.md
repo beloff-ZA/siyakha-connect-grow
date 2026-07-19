@@ -1,48 +1,30 @@
-## Curated Instagram gallery
+## Goal
 
-A hand-picked, on-brand gallery of your best Instagram shots rendered in monochrome — no live API, no tokens to maintain, and full control over which images represent Siyakha Technology.
+Add only **Computers, Storage, Screens, and Smartboards** from the three Esquire 27th Anniversary Sale emails (Deals #06, #07, #08) to the Shopify store, marked up **30%** on the listed dealer price incl. VAT. Skip everything else — laundry, fridges, small appliances, Casey cookware, solar kits.
 
-### What you get
+Skip storage-pricing markup for now (as confirmed).
 
-- A new `From The Field` gallery section on the Home page (below case studies) with 8–12 curated shots.
-- A larger gallery block on the About page.
-- Each image gets a short caption (e.g. "Structured cabling — Sandton", "Rack rebuild — Fourways").
-- Small "Follow on Instagram" link/button under the gallery pointing to `https://www.instagram.com/siyakhatech/` (opens in new tab).
-- All images forced to grayscale via CSS so they match the strict monochrome aesthetic — even if you swap in a colour photo later, the site stays consistent.
-- Lightbox on click so visitors can view full-size.
+## Approach
 
-### How the images get in
+1. **Extract deal page images** — the emails are just image galleries hosted at `esquiredirect.co.za/Specials/01-Anniversary/Deals{06,07,08}/Esquire/PageNN.jpg`. Download all pages from each deal.
+2. **OCR each page** with `pytesseract` to pull product title, spec bullets, SKU, and dealer price.
+3. **Filter** to only the 4 target categories:
+   - **Computers** — desktops, laptops, mini PCs, all-in-ones
+   - **Storage** — external drives, SSDs, NAS, USB storage
+   - **Screens** — monitors, displays (NOT televisions unless marketed as commercial display)
+   - **Smartboards** — interactive flat panels / IFPDs
+4. **Present the filtered list back** with each item's dealer price + 30% retail price for a quick sanity check before creating anything (avoids adding wrong products from noisy OCR).
+5. **Create products in Shopify** via `shopify--create_product` — each with title, description (spec bullets), SKU, marked-up price, and the source page image saved to `src/assets/shopify/esquire/`.
+6. **Categories on `/shop`** — reuse existing `Storage` filter; add new filters `Computers` and `Displays` (covers Screens + Smartboards) to `src/pages/Shop.tsx` category chips.
 
-Because Instagram doesn't allow direct scraping, you send me the shots you want featured (or I can pull from the images already uploaded in this chat over the last few sessions — rack rebuilds, KFC, Kwamashu training room, the on-site engineer photos, etc.). I add them to `src/assets/gallery/` and wire them into a small `galleryImages.ts` content file so you can add/remove entries later just by editing that list.
+## Technical Details
 
-### Where it goes
+- Image source pattern: `https://www.esquiredirect.co.za/Specials/01-Anniversary/Deals{06|07|08}/Esquire/Page{01..15}.jpg`
+- Only the `/Esquire/` folder is in scope. Skip `/Casey/` (cookware) and `/Solar/` folders entirely.
+- Markup: `retail = round(dealer_incl_vat * 1.30, 2)` — matches convention used for EcoFlow and Cattex fibre.
+- Product category tags will follow the existing pattern (`storage`, `computers`, `displays`) so `Shop.tsx` filters pick them up.
+- Images: save each product's source page as a cropped PNG to `src/assets/shopify/esquire/{slug}.png` and upload to Shopify.
 
-```text
-Home page
- ├── Hero
- ├── Solutions
- ├── Case studies (existing)
- ├── From The Field (NEW gallery, 8 tiles, masonry) 
- └── Footer
+## Confirmation Step
 
-About page
- └── "On The Ground" (existing) + expanded gallery grid
-```
-
-### Technical notes
-
-- New component: `src/components/gallery/InstagramGallery.tsx` — responsive CSS grid (2 cols mobile, 4 cols desktop), `filter: grayscale(100%)` with a subtle hover un-grayscale for interactivity (optional, can be pure mono).
-- Content source: `src/content/galleryImages.ts` exporting `{ src, alt, caption, location }[]`.
-- Lightbox: reuse existing shadcn `Dialog` — no new dependency.
-- Images optimized and imported as ES6 imports so Vite handles hashing/caching.
-- No Instagram API, no edge function, no secrets, no third-party script — zero ongoing maintenance risk.
-
-### Refresh workflow
-
-When you post something great on Instagram, drop the image(s) in chat and I add them to the gallery in one turn.
-
-### What this plan does NOT do
-
-- No live/auto-syncing feed (that path was rejected in favour of the curated approach).
-- No Instagram profile stats, follower count, or like counts.
-- No new pages — purely additive sections on Home and About.
+After OCR + filtering, I'll post the extracted candidate list (title / dealer / retail) in chat before creating any products, so you can strike anything that shouldn't be listed.
