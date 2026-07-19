@@ -11,6 +11,7 @@ import OutcomesBanner from "@/components/smart-estate/OutcomesBanner";
 import IndustrySolutionsBand from "@/components/site/IndustrySolutionsBand";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
 import FeaturedProjectsBand from "@/components/site/FeaturedProjectsBand";
+import FeaturedProductsBand from "@/components/site/FeaturedProductsBand";
 import ManagedItPlansPreview from "@/components/site/ManagedItPlansPreview";
 import FinalCtaBand from "@/components/site/FinalCtaBand";
 import FaithSection from "@/components/FaithSection";
@@ -160,6 +161,7 @@ const Index = () => {
       <WhySiyakhaBand />
       <OutcomesBanner />
       <FeaturedProjectsBand />
+      <FeaturedProductsBand />
       <ManagedItPlansPreview />
       <TurnkeyManifesto />
       <EngineerSupportBanner />
