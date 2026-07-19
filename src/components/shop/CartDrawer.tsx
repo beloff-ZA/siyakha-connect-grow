@@ -60,7 +60,7 @@ const CartDrawer = () => {
                   return (
                     <div key={item.variantId} className="flex gap-4 pb-4 border-b border-border">
                       <div className="w-16 h-16 bg-muted overflow-hidden flex-shrink-0 grayscale">
-                        {img && <img src={img.url} alt={img.altText || item.product.node.title} className="w-full h-full object-cover" />}
+                        {img && <img src={img.url} alt={img.altText || item.product.node.title} className="w-full h-full object-contain bg-white p-1" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-medium truncate">{item.product.node.title}</h4>

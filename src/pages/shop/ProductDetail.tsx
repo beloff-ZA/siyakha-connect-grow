@@ -80,7 +80,7 @@ const ProductDetail = () => {
               <div>
                 <div className="aspect-square bg-muted overflow-hidden mb-4">
                   {mainImg ? (
-                    <img src={mainImg.url} alt={mainImg.altText || product.title} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" />
+                    <img src={mainImg.url} alt={mainImg.altText || product.title} className="w-full h-full object-contain p-6 bg-white grayscale hover:grayscale-0 transition-all duration-500" />
                   ) : <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">No image</div>}
                 </div>
                 {images.length > 1 && (
@@ -91,7 +91,7 @@ const ProductDetail = () => {
                         onClick={() => setImgIdx(i)}
                         className={`aspect-square bg-muted overflow-hidden border ${i === imgIdx ? "border-foreground" : "border-transparent"}`}
                       >
-                        <img src={im.node.url} alt="" className="w-full h-full object-cover grayscale" />
+                        <img src={im.node.url} alt="" className="w-full h-full object-contain p-2 bg-white grayscale" />
                       </button>
                     ))}
                   </div>

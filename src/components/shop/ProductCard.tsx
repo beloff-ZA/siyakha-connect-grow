@@ -11,12 +11,12 @@ const ProductCard = ({ product }: Props) => {
 
   return (
     <Link to={`/shop/${p.handle}`} className="group block">
-      <div className="aspect-square bg-muted overflow-hidden mb-4">
+      <div className="aspect-square bg-white overflow-hidden mb-4 flex items-center justify-center p-4">
         {img ? (
           <img
             src={img.url}
             alt={img.altText || p.title}
-            className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+            className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
