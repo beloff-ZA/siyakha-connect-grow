@@ -33,7 +33,9 @@ interface Payload {
     notes?: string;
   };
   items: QuoteItem[];
+  needSupport?: boolean;
 }
+
 
 const RECIPIENTS = ["nikita@siyakhatechnology.co.za", "accounts@siyakhatechnology.co.za"];
 const FROM = "Siyakha Quotes <notifications@mail.siyakhatechnology.co.za>";
