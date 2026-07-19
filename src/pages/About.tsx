@@ -133,6 +133,8 @@ const About = () => (
       </div>
     </section>
 
+    <InstagramGallery eyebrow="From Our Instagram" title="On site, on the ground" intro="A rolling look at recent installs — racks, cabling, cameras, Wi-Fi. Follow @siyakhatech for more." />
+
     <section className="bg-foreground text-background">
       <div className="container mx-auto px-6 lg:px-10 py-20">
         <div className="max-w-3xl">
