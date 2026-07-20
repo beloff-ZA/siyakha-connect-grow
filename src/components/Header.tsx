@@ -125,6 +125,69 @@ const Header = () => {
             </span>
             <LanguageToggle />
             <CartDrawer />
+
+            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+              <SheetTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Open menu"
+                  className="lg:hidden border border-border p-2 hover:bg-muted transition-colors"
+                >
+                  <Menu className="h-4 w-4" strokeWidth={1.5} />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-full sm:max-w-xs flex flex-col">
+                <SheetHeader className="flex-shrink-0">
+                  <SheetTitle className="font-display font-light text-2xl tracking-tight">Menu</SheetTitle>
+                  <SheetDescription className="sr-only">Site navigation</SheetDescription>
+                </SheetHeader>
+                <div className="flex flex-col gap-6 pt-8 overflow-y-auto">
+                  <div className="space-y-2">
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Solutions</p>
+                    {solutionsLinks.map((l) => (
+                      <Link
+                        key={l.to}
+                        to={l.to}
+                        onClick={() => setMenuOpen(false)}
+                        className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
+                      >
+                        {l.label}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Company</p>
+                    {companyLinks.map((l) => (
+                      <Link
+                        key={l.to}
+                        to={l.to}
+                        onClick={() => setMenuOpen(false)}
+                        className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
+                      >
+                        {l.label}
+                      </Link>
+                    ))}
+                  </div>
+                  <Link
+                    to="/shop"
+                    onClick={() => setMenuOpen(false)}
+                    className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
+                  >
+                    Shop
+                  </Link>
+                  <a
+                    href="/#recent-projects"
+                    onClick={(e) => {
+                      setMenuOpen(false);
+                      goToRecentProjects(e);
+                    }}
+                    className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
+                  >
+                    Recent Projects
+                  </a>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
