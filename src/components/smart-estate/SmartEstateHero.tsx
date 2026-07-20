@@ -23,10 +23,10 @@ const SmartEstateHero = () => {
           loop
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover grayscale brightness-[0.55]"
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/10 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/20 to-background" />
         <div className="absolute inset-0" style={{ background: 'var(--gradient-emerald-glow)' }} />
       </div>
 
