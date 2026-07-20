@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
-import towers from "@/assets/smart-estate-towers.jpg";
-import heroVideo from "@/assets/hero-smart-city-realistic.mp4.asset.json";
+import heroVideo from "@/assets/hero-cable-management.mp4.asset.json";
+import heroPoster from "@/assets/hero-cable-management-poster.jpg.asset.json";
 import PartnerFormDialog from "./PartnerFormDialog";
 import { useTranslation } from "react-i18next";
 
 const HERO_VIDEO = heroVideo.url;
+const HERO_POSTER = heroPoster.url;
 
 const SmartEstateHero = () => {
   const { t } = useTranslation();
