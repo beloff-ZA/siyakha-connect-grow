@@ -37,8 +37,8 @@ const ProductCard = ({ product }: Props) => {
   };
 
   return (
-    <div className="group relative">
-      <Link to={`/shop/${p.handle}`} className="block">
+    <div className="group relative flex flex-col h-full">
+      <Link to={`/shop/${p.handle}`} className="flex flex-col flex-1">
         <div className="aspect-square bg-white overflow-hidden mb-4 flex items-center justify-center p-4">
           {img ? (
             <img
@@ -51,7 +51,7 @@ const ProductCard = ({ product }: Props) => {
             <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">No image</div>
           )}
         </div>
-        <div className="space-y-1">
+        <div className="space-y-1 flex-1">
           <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Siyakha</p>
           <h3 className="font-display text-lg text-foreground group-hover:text-accent transition-colors">{p.title}</h3>
           <p className="text-sm text-foreground">{formatPrice(price.amount, price.currencyCode)}</p>
