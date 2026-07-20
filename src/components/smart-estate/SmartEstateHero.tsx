@@ -1,31 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
-import towers from "@/assets/smart-estate-towers.jpg";
-import heroVideo from "@/assets/hero-smart-city-realistic.mp4.asset.json";
+import heroVideo from "@/assets/hero-cable-management.mp4.asset.json";
+import heroPoster from "@/assets/hero-cable-management-poster.jpg.asset.json";
 import PartnerFormDialog from "./PartnerFormDialog";
 import { useTranslation } from "react-i18next";
 
 const HERO_VIDEO = heroVideo.url;
+const HERO_POSTER = heroPoster.url;
 
 const SmartEstateHero = () => {
   const { t } = useTranslation();
 
   return (
     <section className="relative min-h-[92vh] flex flex-col bg-background overflow-hidden">
-      {/* Architectural moving still */}
+      {/* Cable management hero video */}
       <div className="absolute inset-0">
         <video
           src={HERO_VIDEO}
-          poster={towers}
+          poster={HERO_POSTER}
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover grayscale brightness-[0.55]"
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/10 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/20 to-background" />
         <div className="absolute inset-0" style={{ background: 'var(--gradient-emerald-glow)' }} />
       </div>
 
