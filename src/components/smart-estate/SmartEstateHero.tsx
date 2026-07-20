@@ -13,11 +13,11 @@ const SmartEstateHero = () => {
 
   return (
     <section className="relative min-h-[92vh] flex flex-col bg-background overflow-hidden">
-      {/* Architectural moving still */}
+      {/* Cable management hero video */}
       <div className="absolute inset-0">
         <video
           src={HERO_VIDEO}
-          poster={towers}
+          poster={HERO_POSTER}
           autoPlay
           muted
           loop
