@@ -12,6 +12,7 @@ const Header = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
   const goToRecentProjects = (e: React.MouseEvent) => {
     e.preventDefault();
     if (location.pathname === "/") {
