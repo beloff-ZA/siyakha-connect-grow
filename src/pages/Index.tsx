@@ -155,7 +155,6 @@ const Index = () => {
       <AudienceGrid />
       <CapabilityGrid />
       <CaseStudiesTriad />
-      <RegionsMap />
       <WhySiyakhaBand />
       <QualifyForm />
       <Footer />
