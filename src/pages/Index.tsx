@@ -6,7 +6,6 @@ import ProblemFrame from "@/components/site/ProblemFrame";
 import AudienceGrid from "@/components/site/AudienceGrid";
 import CapabilityGrid from "@/components/site/CapabilityGrid";
 import CaseStudiesTriad from "@/components/site/CaseStudiesTriad";
-import RegionsMap from "@/components/site/RegionsMap";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
 import QualifyForm from "@/components/site/QualifyForm";
 import Footer from "@/components/Footer";
