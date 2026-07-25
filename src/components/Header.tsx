@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import interlinkLogo from "@/assets/interlink-logo.png";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import LanguageToggle from "@/components/LanguageToggle";
@@ -10,24 +10,7 @@ import { useState } from "react";
 
 const Header = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const goToRecentProjects = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (location.pathname === "/") {
-      document
-        .getElementById("recent-projects")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      navigate("/", { state: { scrollTo: "recent-projects" } });
-      setTimeout(() => {
-        document
-          .getElementById("recent-projects")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 250);
-    }
-  };
 
   const audienceLinks = [
     { to: "/who-we-serve/estates", label: "Estates" },
