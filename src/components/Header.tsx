@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import interlinkLogo from "@/assets/interlink-logo.png";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
