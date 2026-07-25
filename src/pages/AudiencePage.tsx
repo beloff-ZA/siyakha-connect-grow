@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
+import SchoolProductsBand from "@/components/site/SchoolProductsBand";
 import { ArrowLeft, ArrowUpRight, Building2, Briefcase, GraduationCap, Shield } from "lucide-react";
 import { CAPABILITIES } from "@/content/capabilities";
 import { getCaseStudy } from "@/content/caseStudies";
