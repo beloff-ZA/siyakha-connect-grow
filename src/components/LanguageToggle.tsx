@@ -4,7 +4,6 @@ import { applyLanguage, LangCode } from "@/i18n";
 
 const LANGUAGES: { code: LangCode; label: string; native: string }[] = [
   { code: "en", label: "EN", native: "English" },
-  { code: "ar", label: "AR", native: "العربية" },
   { code: "fr", label: "FR", native: "Français" },
   { code: "it", label: "IT", native: "Italiano" },
   { code: "es", label: "ES", native: "Español" },
