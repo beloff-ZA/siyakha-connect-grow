@@ -187,6 +187,8 @@ const AudiencePage = () => {
         </div>
       </section>
 
+      {data.slug === "schools" && <SchoolProductsBand />}
+
       {caseStudy && (
         <section className="bg-background border-b border-foreground/10">
           <div className="container mx-auto px-6 lg:px-10 py-20 md:py-28">
