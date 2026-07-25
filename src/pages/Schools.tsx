@@ -1,5 +1,6 @@
 import ServicePageTemplate from "@/components/site/ServicePageTemplate";
 import CaseStudyCard from "@/components/site/CaseStudyCard";
+import SchoolProductsBand from "@/components/site/SchoolProductsBand";
 import { CASE_STUDIES } from "@/content/caseStudies";
 import {
   Network,
@@ -47,6 +48,8 @@ const Schools = () => (
     finalCtaKind="Free Network Assessment"
     finalCtaLabel="Request School Assessment"
     extraSection={
+      <>
+      <SchoolProductsBand />
       <section className="bg-background border-b border-foreground/10">
         <div className="container mx-auto px-6 lg:px-10 py-20 md:py-28">
           <div className="max-w-3xl mb-14">
@@ -66,6 +69,7 @@ const Schools = () => (
           </div>
         </div>
       </section>
+      </>
     }
   />
 );
