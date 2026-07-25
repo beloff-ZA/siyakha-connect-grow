@@ -1,30 +1,22 @@
 import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import SmartEstateHero from "@/components/smart-estate/SmartEstateHero";
-import TurnkeyManifesto from "@/components/smart-estate/TurnkeyManifesto";
-import VisionStatement from "@/components/smart-estate/VisionStatement";
-import BespokeBanner from "@/components/smart-estate/BespokeBanner";
-import DeveloperCTA from "@/components/smart-estate/DeveloperCTA";
-import BrandsWeTrust from "@/components/smart-estate/BrandsWeTrust";
-import EngineerSupportBanner from "@/components/smart-estate/EngineerSupportBanner";
-import OutcomesBanner from "@/components/smart-estate/OutcomesBanner";
-import IndustrySolutionsBand from "@/components/site/IndustrySolutionsBand";
+import ProofStrip from "@/components/site/ProofStrip";
+import ProblemFrame from "@/components/site/ProblemFrame";
+import AudienceGrid from "@/components/site/AudienceGrid";
+import CapabilityGrid from "@/components/site/CapabilityGrid";
+import CaseStudiesTriad from "@/components/site/CaseStudiesTriad";
+import RegionsMap from "@/components/site/RegionsMap";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
-import FeaturedProjectsBand from "@/components/site/FeaturedProjectsBand";
-import FeaturedProductsBand from "@/components/site/FeaturedProductsBand";
-import AdvancedTechBento from "@/components/site/AdvancedTechBento";
-import InstagramGallery from "@/components/gallery/InstagramGallery";
-import ManagedItPlansPreview from "@/components/site/ManagedItPlansPreview";
-import FinalCtaBand from "@/components/site/FinalCtaBand";
-import FaithSection from "@/components/FaithSection";
+import QualifyForm from "@/components/site/QualifyForm";
 import Footer from "@/components/Footer";
 
 const CANONICAL_DOMAIN = "https://siyakhatechnology.co.za";
 
 const Index = () => {
   useEffect(() => {
-    const title = "Siyakha Interlink — Smart Estate, AI Surveillance & Border Radar | EMEA";
-    const description = "Siyakha Interlink builds smart estates, AI surveillance, fibre networks, public WiFi and 5km border radar intruder detection across EMEA — Dubai, Riyadh, Doha, Johannesburg, London.";
+    const title = "Siyakha Interlink — Security, Connectivity & Operations for Estates, Commercial Sites & Schools";
+    const description = "One accountable technology partner for estates, commercial sites, schools and government — security, connectivity and 24/7 command-centre operations across EMEA.";
     document.title = title;
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
       let tag = document.head.querySelector(`meta[${key}='${value}']`) as HTMLMetaElement | null;
@@ -158,22 +150,14 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <SmartEstateHero />
-      <BespokeBanner />
-      <IndustrySolutionsBand />
-      <AdvancedTechBento />
+      <ProofStrip />
+      <ProblemFrame />
+      <AudienceGrid />
+      <CapabilityGrid />
+      <CaseStudiesTriad />
+      <RegionsMap />
       <WhySiyakhaBand />
-      <OutcomesBanner />
-      <FeaturedProjectsBand />
-      <InstagramGallery limit={8} />
-      <FeaturedProductsBand />
-      <ManagedItPlansPreview />
-      <TurnkeyManifesto />
-      <EngineerSupportBanner />
-      <BrandsWeTrust />
-      <div id="vision"><VisionStatement /></div>
-      <div id="contact"><DeveloperCTA /></div>
-      <FinalCtaBand />
-      <FaithSection />
+      <QualifyForm />
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationJson) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJson) }} />

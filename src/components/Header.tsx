@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import interlinkLogo from "@/assets/interlink-logo.png";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import LanguageToggle from "@/components/LanguageToggle";
@@ -10,35 +10,26 @@ import { useState } from "react";
 
 const Header = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const goToRecentProjects = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (location.pathname === "/") {
-      document
-        .getElementById("recent-projects")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      navigate("/", { state: { scrollTo: "recent-projects" } });
-      setTimeout(() => {
-        document
-          .getElementById("recent-projects")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 250);
-    }
-  };
+
+  const audienceLinks = [
+    { to: "/who-we-serve/estates", label: "Estates" },
+    { to: "/who-we-serve/commercial", label: "Commercial" },
+    { to: "/who-we-serve/schools", label: "Schools" },
+    { to: "/who-we-serve/government", label: "Government & Border" },
+  ];
 
   const solutionsLinks = [
-    { to: "/managed-it", label: "Managed IT" },
-    { to: "/security-surveillance", label: "Security & Surveillance" },
-    { to: "/cloud-networking", label: "Cloud & Networking" },
-    { to: "/schools", label: "School Solutions" },
+    { to: "/capabilities/smart-estates", label: "Smart Estate Systems" },
+    { to: "/capabilities/ai-surveillance", label: "AI Surveillance" },
+    { to: "/capabilities/border-radar", label: "Border Radar" },
+    { to: "/capabilities/fibre-connectivity", label: "Fibre & Connectivity" },
+    { to: "/capabilities/command-centre", label: "Command Centre" },
   ];
 
   const companyLinks = [
     { to: "/about", label: "About" },
-    { to: "/regional-services", label: "Regional Services" },
+    { to: "/projects", label: "Projects" },
     { to: "/partner-engineers", label: "Partner Engineers" },
   ];
 
@@ -66,11 +57,11 @@ const Header = () => {
           <nav className="hidden lg:flex items-center gap-7 flex-1 justify-center">
             <div className="relative group">
               <button className="flex items-center gap-1 text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors py-2">
-                Solutions <ChevronDown className="h-3 w-3" />
+                Who We Serve <ChevronDown className="h-3 w-3" />
               </button>
               <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                <div className="bg-background border border-border shadow-lg min-w-[220px] py-2">
-                  {solutionsLinks.map((l) => (
+                <div className="bg-background border border-border shadow-lg min-w-[240px] py-2">
+                  {audienceLinks.map((l) => (
                     <Link
                       key={l.to}
                       to={l.to}
@@ -85,11 +76,11 @@ const Header = () => {
 
             <div className="relative group">
               <button className="flex items-center gap-1 text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors py-2">
-                Company <ChevronDown className="h-3 w-3" />
+                Solutions <ChevronDown className="h-3 w-3" />
               </button>
               <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                <div className="bg-background border border-border shadow-lg min-w-[220px] py-2">
-                  {companyLinks.map((l) => (
+                <div className="bg-background border border-border shadow-lg min-w-[260px] py-2">
+                  {solutionsLinks.map((l) => (
                     <Link
                       key={l.to}
                       to={l.to}
@@ -102,13 +93,19 @@ const Header = () => {
               </div>
             </div>
 
-            <a
-              href="/#recent-projects"
-              onClick={goToRecentProjects}
+            <Link
+              to="/projects"
               className="text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
             >
-              Recent Projects
-            </a>
+              Projects
+            </Link>
+
+            <Link
+              to="/about"
+              className="text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
+            >
+              About
+            </Link>
 
             <Link
               to="/shop"
@@ -143,6 +140,19 @@ const Header = () => {
                 </SheetHeader>
                 <div className="flex flex-col gap-6 pt-8 overflow-y-auto">
                   <div className="space-y-2">
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Who We Serve</p>
+                    {audienceLinks.map((l) => (
+                      <Link
+                        key={l.to}
+                        to={l.to}
+                        onClick={() => setMenuOpen(false)}
+                        className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
+                      >
+                        {l.label}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="space-y-2">
                     <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Solutions</p>
                     {solutionsLinks.map((l) => (
                       <Link
@@ -175,16 +185,6 @@ const Header = () => {
                   >
                     Shop
                   </Link>
-                  <a
-                    href="/#recent-projects"
-                    onClick={(e) => {
-                      setMenuOpen(false);
-                      goToRecentProjects(e);
-                    }}
-                    className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
-                  >
-                    Recent Projects
-                  </a>
                 </div>
               </SheetContent>
             </Sheet>

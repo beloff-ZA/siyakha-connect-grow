@@ -1,12 +1,10 @@
-import { Zap, Layers, Building2, CheckCircle2, Wrench, Sparkles } from "lucide-react";
+import { Layers, ShieldCheck, Wrench, Radio } from "lucide-react";
 
 const PILLARS = [
-  { icon: Zap, title: "Fast Response Times", body: "Rapid support and proactive monitoring keep your downtime to a minimum." },
-  { icon: Layers, title: "End-to-End Solutions", body: "One partner for networking, cloud, CCTV, access control and ongoing support." },
-  { icon: Building2, title: "Scalable Infrastructure", body: "Built to grow as your business and sites multiply — never re-architected from scratch." },
-  { icon: CheckCircle2, title: "Industry Experience", body: "Schools, security, commercial and industrial environments — we've delivered across all of them." },
-  { icon: Wrench, title: "Professional Installations", body: "Clean, structured, enterprise-grade deployments you'll be proud to show off." },
-  { icon: Sparkles, title: "Future-Ready Technology", body: "AI-powered systems and modern cloud infrastructure that won't be obsolete in two years." },
+  { icon: Layers, title: "One accountable partner", body: "Security, connectivity and operations under a single scope of work — no vendor triangulation when something breaks." },
+  { icon: Wrench, title: "Engineered, not stitched", body: "Cameras, radar, fibre, WiFi and command centre designed as one system from day one — not integrated after handover." },
+  { icon: Radio, title: "Verified, then dispatched", body: "Our command centre verifies alarms before response — the difference between an incident recorded and an incident intercepted." },
+  { icon: ShieldCheck, title: "Built for the buyer", body: "Estates, commercial, schools and government each get infrastructure tuned to their procurement, budget and risk profile." },
 ];
 
 const WhySiyakhaBand = () => (
@@ -20,7 +18,7 @@ const WhySiyakhaBand = () => (
           Why businesses choose <span className="italic font-extralight">Siyakha</span>.
         </h2>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-foreground/15 border border-foreground/15">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/15 border border-foreground/15">
         {PILLARS.map(({ icon: Icon, title, body }) => (
           <div key={title} className="bg-background p-6 md:p-8">
             <Icon className="w-7 h-7 text-foreground mb-5" strokeWidth={1.25} />
