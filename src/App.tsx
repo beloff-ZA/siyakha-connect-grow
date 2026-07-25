@@ -14,6 +14,9 @@ import SecuritySurveillance from "./pages/SecuritySurveillance";
 import Schools from "./pages/Schools";
 import CloudNetworking from "./pages/CloudNetworking";
 import About from "./pages/About";
+import AudiencePage from "./pages/AudiencePage";
+import CapabilityPage from "./pages/CapabilityPage";
+import Projects from "./pages/Projects";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
 import Shop from "./pages/shop/Shop";
@@ -81,6 +84,15 @@ function App() {
               <Route path="/schools" element={<Schools />} />
               <Route path="/cloud-networking" element={<CloudNetworking />} />
               <Route path="/about" element={<About />} />
+
+              {/* Who we serve */}
+              <Route path="/who-we-serve/:slug" element={<AudiencePage />} />
+
+              {/* Capability pages */}
+              <Route path="/capabilities/:slug" element={<CapabilityPage />} />
+
+              {/* All projects */}
+              <Route path="/projects" element={<Projects />} />
 
               {/* Case studies */}
               <Route path="/case-studies/:slug" element={<CaseStudy />} />
