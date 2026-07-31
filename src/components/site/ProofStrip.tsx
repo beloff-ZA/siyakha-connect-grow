@@ -1,6 +1,5 @@
-// TODO: replace placeholder figures with real, verified numbers
 const STATS = [
-  { value: "40+", label: "Sites secured" },
+  { value: "20", label: "Deployed high-density sites" },
   { value: "120 km", label: "Perimeter covered" },
   { value: "12 yrs", label: "Operating" },
   { value: "7", label: "Countries active" },
