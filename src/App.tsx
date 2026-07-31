@@ -17,6 +17,7 @@ import About from "./pages/About";
 import AudiencePage from "./pages/AudiencePage";
 import CapabilityPage from "./pages/CapabilityPage";
 import Projects from "./pages/Projects";
+import BrandWifi from "./pages/BrandWifi";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
 import Shop from "./pages/shop/Shop";
@@ -84,6 +85,7 @@ function App() {
               <Route path="/schools" element={<Schools />} />
               <Route path="/cloud-networking" element={<CloudNetworking />} />
               <Route path="/about" element={<About />} />
+              <Route path="/brand-wifi" element={<BrandWifi />} />
 
               {/* Who we serve */}
               <Route path="/who-we-serve/:slug" element={<AudiencePage />} />

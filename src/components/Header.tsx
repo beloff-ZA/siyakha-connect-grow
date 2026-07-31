@@ -24,6 +24,7 @@ const Header = () => {
     { to: "/capabilities/border-radar", label: "Border Radar" },
     { to: "/capabilities/fibre-connectivity", label: "Fibre & Connectivity" },
     { to: "/capabilities/command-centre", label: "Command Centre" },
+    { to: "/brand-wifi", label: "Your Brand Wi-Fi" },
   ];
 
   const companyLinks = [
@@ -90,6 +91,13 @@ const Header = () => {
               className="text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
             >
               Projects
+            </Link>
+
+            <Link
+              to="/brand-wifi"
+              className="text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
+            >
+              Your Brand Wi-Fi
             </Link>
 
             <Link
