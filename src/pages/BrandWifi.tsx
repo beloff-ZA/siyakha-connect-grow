@@ -30,7 +30,7 @@ const STEPS = [
 const STATS = [
   { icon: Eye, value: "20 000+", label: "Weekly eyes in venue environments", note: "Average unique weekly impressions across active large-format venues." },
   { icon: Smartphone, value: "1M+", label: "Annual branded sessions", note: "Splash-page loads and accepted sessions per year across the network." },
-  { icon: MapPin, value: "4+", label: "High-density deployment types", note: "Pubs, clubs, transport hubs, public spaces and events." },
+  { icon: MapPin, value: "5+", label: "High-density deployment types", note: "Pubs, clubs, transport hubs, public spaces and events." },
   { icon: TrendingUp, value: "68%", label: "Average return-visit rate", note: "Users who reconnect to the same sponsored network within 30 days." },
 ];
 
