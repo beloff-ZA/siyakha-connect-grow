@@ -11,7 +11,7 @@ const corsHeaders = {
 
 const RECIPIENTS = ["nikita@siyakhatechnology.co.za"];
 const FROM = "Siyakha Website <notifications@mail.siyakhatechnology.co.za>";
-const FALLBACK_FROM = "Siyakha Website <notifications@orex.info>";
+const FALLBACK_FROM = "Siyakha Website <onboarding@resend.dev>";
 
 function esc(s: unknown) {
   return (s ?? "").toString()
