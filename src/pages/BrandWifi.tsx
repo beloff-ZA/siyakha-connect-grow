@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
-import { ArrowLeft, ArrowUpRight, Wifi, Bus, Music4, Building2, Eye, Users, BarChart3, Handshake } from "lucide-react";
+import BrandWifiHero from "@/components/site/BrandWifiHero";
+import { Bus, Music4, Building2, Eye, Users, BarChart3, Handshake, Wifi } from "lucide-react";
 
 const WHERE = [
   { icon: Bus, title: "Public transport", body: "Taxi ranks, bus routes, stations and commuter hubs — free connectivity where communities wait, travel and spend the most time." },
@@ -35,37 +35,7 @@ const BrandWifi = () => (
     />
     <Header />
 
-    <section className="bg-background border-b border-foreground/10">
-      <div className="container mx-auto px-6 lg:px-10 py-24 md:py-32">
-        <Link to="/" className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-foreground/60 hover:text-foreground mb-8">
-          <ArrowLeft className="h-3.5 w-3.5" /> Back home
-        </Link>
-        <div className="max-w-4xl">
-          <div className="flex items-center gap-3 mb-6">
-            <Wifi className="w-6 h-6 text-foreground" strokeWidth={1.25} />
-            <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60">Your Brand Wi-Fi · Public Connectivity</p>
-          </div>
-          <h1 className="font-display font-light text-4xl md:text-6xl lg:text-7xl tracking-[-0.02em] text-foreground leading-[1.02]">
-            Your brand Wi-Fi.
-            <br />
-            <span className="italic font-extralight">Free for the community</span>.
-          </h1>
-          <p className="mt-8 text-lg md:text-xl text-foreground/75 leading-relaxed max-w-2xl">
-            Sponsored public Wi-Fi for transport hubs, public spaces, venues and events. Communities
-            get connectivity at no cost — brands get a connection consumers physically touch, every
-            single session.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link to="/?type=commercial#qualify" className="inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-foreground/90">
-              Sponsor a network <ArrowUpRight className="h-4 w-4" />
-            </Link>
-            <Link to="/projects" className="inline-flex items-center gap-2 border border-foreground/25 px-6 py-3 text-[12px] uppercase tracking-[0.24em] text-foreground hover:bg-foreground/[0.04]">
-              See our deployments
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+    <BrandWifiHero />
 
     <section className="bg-background border-b border-foreground/10">
       <div className="container mx-auto px-6 lg:px-10 py-20 md:py-28">
