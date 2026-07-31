@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, Wifi } from "lucide-react";
 import heroAsset from "@/assets/brand-wifi-hero.png.asset.json";
 
+const LOCAL_HERO = "/brand-wifi-hero-local.png";
+
 const BrandWifiHero = () => (
   <section className="relative bg-background border-b border-foreground/10 overflow-hidden group">
     <div className="relative w-full overflow-hidden min-h-[520px] md:min-h-[640px] lg:min-h-[720px]">
       <img
-        src={heroAsset.url}
+        src={LOCAL_HERO}
         alt="Branded public Wi-Fi at a venue and in a taxi, with a branded captive portal on a phone"
         className="absolute inset-0 w-full h-full object-cover block grayscale contrast-[1.05] transition-all duration-[1200ms] ease-out group-hover:grayscale-0 group-hover:scale-[1.04] group-hover:contrast-100"
         loading="eager"
