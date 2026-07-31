@@ -7,7 +7,7 @@ const BrandWifiHero = () => (
     <div className="relative w-full overflow-hidden min-h-[520px] md:min-h-[640px] lg:min-h-[720px]">
       <img
         src={heroAsset.url}
-        alt="Branded public Wi-Fi at a venue and in a taxi, with a branded captive portal on a phone"
+        alt="Branded public Wi-Fi at Konka venue and in a taxi, with a branded Konka captive portal on a phone"
         className="absolute inset-0 w-full h-full object-cover block grayscale contrast-[1.05] transition-all duration-[1200ms] ease-out group-hover:grayscale-0 group-hover:scale-[1.04] group-hover:contrast-100"
         loading="eager"
       />
