@@ -48,7 +48,7 @@ const BrandWifiHero = () => (
               to="/?type=commercial#qualify"
               className="inline-flex items-center gap-2 bg-white text-black px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-white/90 transition-colors"
             >
-              Sponsor a network <ArrowUpRight className="h-4 w-4" />
+              Sign up your brand <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
