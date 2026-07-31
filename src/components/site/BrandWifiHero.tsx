@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, Wifi } from "lucide-react";
-import heroAsset from "@/assets/brand-wifi-hero.png.asset.json";
+import heroAsset from "@/assets/brand-wifi-konka.png.asset.json";
 
 const BrandWifiHero = () => (
   <section className="relative bg-background border-b border-foreground/10 overflow-hidden group">
