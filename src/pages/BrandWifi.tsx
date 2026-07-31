@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
-import { ArrowLeft, ArrowUpRight, Wifi, Bus, Music4, Building2, Eye, Users, BarChart3, Handshake } from "lucide-react";
+import BrandWifiHero from "@/components/site/BrandWifiHero";
+import { Bus, Music4, Building2, Eye, Users, BarChart3, Handshake } from "lucide-react";
 
 const WHERE = [
   { icon: Bus, title: "Public transport", body: "Taxi ranks, bus routes, stations and commuter hubs — free connectivity where communities wait, travel and spend the most time." },
