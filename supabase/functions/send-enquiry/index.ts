@@ -12,6 +12,8 @@ const corsHeaders = {
 const RECIPIENTS = ["nikita@siyakhatechnology.co.za"];
 const FROM = "Siyakha Website <notifications@mail.siyakhatechnology.co.za>";
 const FALLBACK_FROM = "Siyakha Website <onboarding@resend.dev>";
+// Last-resort delivery while the branded sending domain is pending verification
+const FALLBACK_RECIPIENTS = ["nikitajacobs01@gmail.com"];
 
 function esc(s: unknown) {
   return (s ?? "").toString()
@@ -57,19 +59,19 @@ serve(async (req: Request) => {
         <p>${esc(message).replace(/\n/g, "<br/>")}</p>
       </div>`;
 
-    const send = (from: string) =>
+    const send = (from: string, to: string[]) =>
       fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ from, to: RECIPIENTS, reply_to: email, subject, html }),
+        body: JSON.stringify({ from, to, reply_to: email, subject, html }),
       });
 
-    let res = await send(FROM);
+    let res = await send(FROM, RECIPIENTS);
     let data = await res.json();
     if (!res.ok) {
       console.error("Resend error (primary from)", data);
       // Fallback to a verified sending domain if the branded domain is not verified
-      res = await send(FALLBACK_FROM);
+      res = await send(FALLBACK_FROM, FALLBACK_RECIPIENTS);
       data = await res.json();
       if (!res.ok) {
         console.error("Resend error (fallback from)", data);
