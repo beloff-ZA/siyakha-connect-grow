@@ -50,12 +50,6 @@ const BrandWifiHero = () => (
             >
               Sponsor a network <ArrowUpRight className="h-4 w-4" />
             </Link>
-            <Link
-              to="/projects"
-              className="inline-flex items-center gap-2 border border-white/40 px-6 py-3 text-[12px] uppercase tracking-[0.24em] text-white hover:bg-white/10 transition-colors"
-            >
-              See our deployments
-            </Link>
           </div>
         </div>
       </div>
