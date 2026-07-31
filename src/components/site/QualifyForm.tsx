@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { sendEmail } from "@/lib/email";
+import { supabase } from "@/integrations/supabase/client";
 
 type ClientType = "Estates" | "Commercial" | "Schools" | "Government" | "Other";
 type Region = "South Africa" | "GCC" | "UK" | "Other";
@@ -37,26 +37,11 @@ const QualifyForm = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const subject = `Project enquiry — ${clientType} · ${region} · ${company || name}`;
-      const html = `
-        <h2>New project enquiry</h2>
-        <p><strong>Client type:</strong> ${clientType}</p>
-        <p><strong>Region:</strong> ${region}</p>
-        <p><strong>Timeline:</strong> ${timeline}</p>
-        <hr />
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Company:</strong> ${company}</p>
-        <p><strong>Email:</strong> ${emailAddr}</p>
-        <p><strong>Phone:</strong> ${phone || "—"}</p>
-        <hr />
-        <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, "<br/>")}</p>
-      `;
-      await sendEmail({
-        to: ["nikita@siyakhatechnology.co.za"],
-        subject,
-        html,
+      const { data, error } = await supabase.functions.invoke("send-enquiry", {
+        body: { name, company, email: emailAddr, phone, region, clientType, timeline, message },
       });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
       toast.success("Thanks — we'll be in touch shortly.");
       setName("");
       setCompany("");
