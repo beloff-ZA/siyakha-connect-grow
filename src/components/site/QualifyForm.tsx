@@ -57,7 +57,9 @@ const QualifyForm = () => {
   };
 
   const inputCls =
-    "w-full bg-transparent border border-foreground/20 px-4 py-3 text-sm text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-foreground transition-colors";
+    "w-full border px-4 py-3 text-sm focus:outline-none transition-colors";
+  const darkFieldCls =
+    `${inputCls} bg-transparent text-background placeholder:text-background/50 border-background/35 focus:border-background`;
 
   return (
     <section id="qualify" className="bg-foreground text-background scroll-mt-24">
@@ -83,43 +85,43 @@ const QualifyForm = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-background">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Name"
-                className={inputCls + " text-background placeholder:text-background/40 border-background/25 focus:border-background"}
+                className={darkFieldCls}
               />
               <input
                 required
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="Company"
-                className={inputCls + " text-background placeholder:text-background/40 border-background/25 focus:border-background"}
+                className={darkFieldCls}
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input
                 required
                 type="email"
                 value={emailAddr}
                 onChange={(e) => setEmailAddr(e.target.value)}
                 placeholder="Email"
-                className={inputCls + " text-background placeholder:text-background/40 border-background/25 focus:border-background"}
+                className={darkFieldCls}
               />
               <input
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Phone (optional)"
-                className={inputCls + " text-background placeholder:text-background/40 border-background/25 focus:border-background"}
+                className={darkFieldCls}
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <select
                 value={region}
                 onChange={(e) => setRegion(e.target.value as Region)}
-                className={inputCls + " text-background border-background/25 focus:border-background bg-foreground"}
+                className={`${darkFieldCls} bg-foreground`}
               >
                 <option>South Africa</option>
                 <option>GCC</option>
@@ -129,7 +131,7 @@ const QualifyForm = () => {
               <select
                 value={clientType}
                 onChange={(e) => setClientType(e.target.value as ClientType)}
-                className={inputCls + " text-background border-background/25 focus:border-background bg-foreground"}
+                className={`${darkFieldCls} bg-foreground`}
               >
                 <option>Estates</option>
                 <option>Commercial</option>
@@ -141,7 +143,7 @@ const QualifyForm = () => {
             <select
               value={timeline}
               onChange={(e) => setTimeline(e.target.value)}
-              className={inputCls + " text-background border-background/25 focus:border-background bg-foreground"}
+              className={`${darkFieldCls} bg-foreground`}
             >
               <option>0–3 months</option>
               <option>3–6 months</option>
@@ -154,7 +156,7 @@ const QualifyForm = () => {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tell us about the site, scope, and what you're trying to solve."
               rows={5}
-              className={inputCls + " text-background placeholder:text-background/40 border-background/25 focus:border-background resize-none"}
+              className={`${darkFieldCls} resize-none`}
             />
             <button
               type="submit"
