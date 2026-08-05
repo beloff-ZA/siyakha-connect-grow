@@ -5,8 +5,6 @@ import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
 import BrandWifiHero from "@/components/site/BrandWifiHero";
 import QualifyForm from "@/components/site/QualifyForm";
 import { Bus, Music4, Building2, Eye, Users, BarChart3, Handshake, Wifi, TrendingUp, Calendar, MapPin, Smartphone, Radio, ArrowUpRight } from "lucide-react";
-import { Link } from "react-router-dom";
-
 const WHERE = [
   { icon: Bus, title: "Public transport", body: "Taxi ranks, bus routes, stations and commuter hubs — free connectivity where communities wait, travel and spend the most time." },
   { icon: Building2, title: "Public spaces", body: "Malls, clinics, libraries, parks and municipal precincts — sponsored access points that give the community connectivity at no cost." },
