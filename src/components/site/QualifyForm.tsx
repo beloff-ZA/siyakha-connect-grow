@@ -18,7 +18,11 @@ const QualifyForm = () => {
   const [timeline, setTimeline] = useState("0–3 months");
   const [role, setRole] = useState<Role>("Brand representative");
   const [message, setMessage] = useState("");
-  const [humanConfirmed, setHumanConfirmed] = useState(false);
+  const [verificationAnswer, setVerificationAnswer] = useState("");
+  const [verification, setVerification] = useState(() => ({
+    first: Math.floor(Math.random() * 7) + 2,
+    second: Math.floor(Math.random() * 7) + 2,
+  }));
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -38,10 +42,27 @@ const QualifyForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (Number(verificationAnswer) !== verification.first + verification.second) {
+      toast.error("Please complete the verification check correctly.");
+      return;
+    }
     setSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-enquiry", {
-        body: { name, company, email: emailAddr, phone, region, clientType, timeline, role, message, humanConfirmed },
+        body: {
+          name,
+          company,
+          email: emailAddr,
+          phone,
+          region,
+          clientType,
+          timeline,
+          role,
+          message,
+          verificationFirst: verification.first,
+          verificationSecond: verification.second,
+          verificationAnswer: Number(verificationAnswer),
+        },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
@@ -51,7 +72,11 @@ const QualifyForm = () => {
       setEmailAddr("");
       setPhone("");
       setMessage("");
-      setHumanConfirmed(false);
+      setVerificationAnswer("");
+      setVerification({
+        first: Math.floor(Math.random() * 7) + 2,
+        second: Math.floor(Math.random() * 7) + 2,
+      });
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong. Please try WhatsApp on 081 501 2993.");
@@ -183,16 +208,27 @@ const QualifyForm = () => {
               maxLength={4000}
               className={`${darkFieldCls} resize-none`}
             />
-            <label className="flex items-start gap-3 py-2 text-sm text-background/80 cursor-pointer">
+            <div className="border border-background/35 p-4">
+              <label htmlFor="verification" className="block text-sm text-background/80 mb-3">
+                Verification check: What is {verification.first} + {verification.second}?
+              </label>
               <input
                 required
-                type="checkbox"
-                checked={humanConfirmed}
-                onChange={(e) => setHumanConfirmed(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-background"
+                id="verification"
+                type="number"
+                inputMode="numeric"
+                min="0"
+                max="20"
+                value={verificationAnswer}
+                onChange={(e) => setVerificationAnswer(e.target.value)}
+                placeholder="Enter answer"
+                aria-describedby="verification-help"
+                className={darkFieldCls}
               />
-              <span>I confirm that I am human and this is a genuine enquiry.</span>
-            </label>
+              <p id="verification-help" className="mt-2 text-xs text-background/60">
+                Required to confirm this is a genuine enquiry.
+              </p>
+            </div>
             <button
               type="submit"
               disabled={submitting}
