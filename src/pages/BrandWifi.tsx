@@ -118,6 +118,40 @@ const BrandWifi = () => (
 
     <section className="bg-background border-b border-foreground/10">
       <div className="container mx-auto px-6 lg:px-10 py-20 md:py-28">
+        <div className="max-w-4xl">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-4">For venues</p>
+          <h2 className="font-display font-light text-3xl md:text-5xl tracking-[-0.02em] text-foreground leading-[1.05] mb-6">
+            Venues get connection.
+          </h2>
+          <p className="text-xl md:text-2xl text-foreground/80 leading-relaxed font-light">
+            Free Wi-Fi that brings <span className="italic">value</span> to your facility — not cost.
+          </p>
+        </div>
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-px bg-foreground/15 border border-foreground/15">
+          <div className="bg-background p-6 md:p-8">
+            <div className="font-display text-lg text-foreground mb-3 tracking-tight">No infrastructure spend</div>
+            <p className="text-[13px] text-foreground/70 leading-relaxed">
+              The sponsor funds the hardware, installation and connectivity. Your venue gets enterprise-grade Wi-Fi without a line-item on your budget.
+            </p>
+          </div>
+          <div className="bg-background p-6 md:p-8">
+            <div className="font-display text-lg text-foreground mb-3 tracking-tight">Longer dwell, happier guests</div>
+            <p className="text-[13px] text-foreground/70 leading-relaxed">
+              Reliable free Wi-Fi keeps customers connected longer, improving their experience and increasing spend per visit.
+            </p>
+          </div>
+          <div className="bg-background p-6 md:p-8">
+            <div className="font-display text-lg text-foreground mb-3 tracking-tight">Managed by Siyakha</div>
+            <p className="text-[13px] text-foreground/70 leading-relaxed">
+              We monitor, maintain and support the network remotely. Your staff focus on your business while we keep the connectivity running.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section className="bg-background border-b border-foreground/10">
+      <div className="container mx-auto px-6 lg:px-10 py-20 md:py-28">
         <div className="max-w-3xl mb-14">
           <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-4">Proven in the field</p>
           <h2 className="font-display font-light text-3xl md:text-5xl tracking-[-0.02em] text-foreground leading-[1.05]">
