@@ -28,7 +28,9 @@ const EnquirySchema = z.object({
   timeline: z.enum(["0–3 months", "3–6 months", "6–12 months", "12+ months / planning"]),
   role: z.enum(["Brand representative", "Agency", "Venue owner or manager", "Event organiser", "Public sector", "Other"]),
   message: z.string().trim().min(1).max(4000),
-  humanConfirmed: z.literal(true),
+  verificationFirst: z.number().int().min(2).max(8),
+  verificationSecond: z.number().int().min(2).max(8),
+  verificationAnswer: z.number().int().min(0).max(20),
 });
 
 serve(async (req: Request) => {
@@ -40,8 +42,15 @@ serve(async (req: Request) => {
 
   try {
     const parsed = EnquirySchema.safeParse(await req.json());
-    if (!parsed.success) return json({ error: "Please complete all required fields and confirm you are human." }, 400);
-    const { name, email, company, phone, region, clientType, timeline, role, message } = parsed.data;
+    if (!parsed.success) return json({ error: "Please complete all required fields and the verification check." }, 400);
+    const {
+      name, email, company, phone, region, clientType, timeline, role, message,
+      verificationFirst, verificationSecond, verificationAnswer,
+    } = parsed.data;
+
+    if (verificationAnswer !== verificationFirst + verificationSecond) {
+      return json({ error: "Verification check failed. Please try again." }, 400);
+    }
 
     if (!isEmail(email)) return json({ error: "A valid email is required." }, 400);
 
