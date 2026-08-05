@@ -59,7 +59,8 @@ const QualifyForm = () => {
   const inputCls =
     "w-full border px-4 py-3 text-sm focus:outline-none transition-colors";
   const darkFieldCls =
-    `${inputCls} bg-transparent text-background placeholder:text-background/50 border-background/35 focus:border-background`;
+    `${inputCls} bg-foreground text-background placeholder:text-background/50 border-background/35 focus:border-background`;
+  const darkSelectCls = `${darkFieldCls} [color-scheme:dark]`;
 
   return (
     <section id="qualify" className="bg-foreground text-background scroll-mt-24">
@@ -121,7 +122,7 @@ const QualifyForm = () => {
               <select
                 value={region}
                 onChange={(e) => setRegion(e.target.value as Region)}
-                className={`${darkFieldCls} bg-foreground`}
+                className={darkSelectCls}
               >
                 <option>South Africa</option>
                 <option>GCC</option>
@@ -131,7 +132,7 @@ const QualifyForm = () => {
               <select
                 value={clientType}
                 onChange={(e) => setClientType(e.target.value as ClientType)}
-                className={`${darkFieldCls} bg-foreground`}
+                className={darkSelectCls}
               >
                 <option>Estates</option>
                 <option>Commercial</option>
@@ -143,7 +144,7 @@ const QualifyForm = () => {
             <select
               value={timeline}
               onChange={(e) => setTimeline(e.target.value)}
-              className={`${darkFieldCls} bg-foreground`}
+              className={darkSelectCls}
             >
               <option>0–3 months</option>
               <option>3–6 months</option>
