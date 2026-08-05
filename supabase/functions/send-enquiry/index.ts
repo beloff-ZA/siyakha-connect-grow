@@ -1,13 +1,9 @@
 // Public edge function — website enquiry form (no auth required)
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { z } from "npm:zod@3.23.8";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
 
 const RECIPIENTS = ["nikita@siyakhatechnology.co.za"];
 const FROM = "Siyakha Website <notifications@mail.siyakhatechnology.co.za>";
@@ -22,6 +18,19 @@ function esc(s: unknown) {
 }
 const isEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
+const EnquirySchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  company: z.string().trim().min(1).max(160),
+  email: z.string().trim().email().max(200),
+  phone: z.string().trim().max(60).default(""),
+  region: z.enum(["South Africa", "GCC", "UK", "Other"]),
+  clientType: z.enum(["Estates", "Commercial", "Schools", "Government", "Event Wi-Fi", "Other"]),
+  timeline: z.enum(["0–3 months", "3–6 months", "6–12 months", "12+ months / planning"]),
+  role: z.enum(["Brand representative", "Agency", "Venue owner or manager", "Event organiser", "Public sector", "Other"]),
+  message: z.string().trim().min(1).max(4000),
+  humanConfirmed: z.literal(true),
+});
+
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   const json = (b: unknown, status = 200) =>
@@ -30,17 +39,11 @@ serve(async (req: Request) => {
   if (!RESEND_API_KEY) return json({ error: "Email service not configured" }, 500);
 
   try {
-    const p = await req.json();
-    const name = (p.name ?? "").toString().trim().slice(0, 120);
-    const email = (p.email ?? "").toString().trim().slice(0, 200);
-    const company = (p.company ?? "").toString().trim().slice(0, 160);
-    const phone = (p.phone ?? "").toString().trim().slice(0, 60);
-    const region = (p.region ?? "").toString().trim().slice(0, 60);
-    const clientType = (p.clientType ?? "").toString().trim().slice(0, 60);
-    const timeline = (p.timeline ?? "").toString().trim().slice(0, 60);
-    const message = (p.message ?? "").toString().trim().slice(0, 4000);
+    const parsed = EnquirySchema.safeParse(await req.json());
+    if (!parsed.success) return json({ error: "Please complete all required fields and confirm you are human." }, 400);
+    const { name, email, company, phone, region, clientType, timeline, role, message } = parsed.data;
 
-    if (!name || !isEmail(email) || !message) return json({ error: "Name, valid email and message are required." }, 400);
+    if (!isEmail(email)) return json({ error: "A valid email is required." }, 400);
 
     const subject = `Project enquiry — ${clientType || "General"} · ${region || "—"} · ${company || name}`;
     const html = `
@@ -48,7 +51,8 @@ serve(async (req: Request) => {
         <h2 style="margin:0 0 12px">New project enquiry</h2>
         <p><strong>Client type:</strong> ${esc(clientType)}<br/>
         <strong>Region:</strong> ${esc(region)}<br/>
-        <strong>Timeline:</strong> ${esc(timeline)}</p>
+        <strong>Timeline:</strong> ${esc(timeline)}<br/>
+        <strong>Role:</strong> ${esc(role)}</p>
         <hr/>
         <p><strong>Name:</strong> ${esc(name)}<br/>
         <strong>Company:</strong> ${esc(company)}<br/>

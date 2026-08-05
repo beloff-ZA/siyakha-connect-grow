@@ -3,8 +3,9 @@ import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-type ClientType = "Estates" | "Commercial" | "Schools" | "Government" | "Other";
+type ClientType = "Estates" | "Commercial" | "Schools" | "Government" | "Event Wi-Fi" | "Other";
 type Region = "South Africa" | "GCC" | "UK" | "Other";
+type Role = "Brand representative" | "Agency" | "Venue owner or manager" | "Event organiser" | "Public sector" | "Other";
 
 const QualifyForm = () => {
   const location = useLocation();
@@ -15,7 +16,9 @@ const QualifyForm = () => {
   const [region, setRegion] = useState<Region>("South Africa");
   const [clientType, setClientType] = useState<ClientType>("Estates");
   const [timeline, setTimeline] = useState("0–3 months");
+  const [role, setRole] = useState<Role>("Brand representative");
   const [message, setMessage] = useState("");
+  const [humanConfirmed, setHumanConfirmed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -38,7 +41,7 @@ const QualifyForm = () => {
     setSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-enquiry", {
-        body: { name, company, email: emailAddr, phone, region, clientType, timeline, message },
+        body: { name, company, email: emailAddr, phone, region, clientType, timeline, role, message, humanConfirmed },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
@@ -48,6 +51,7 @@ const QualifyForm = () => {
       setEmailAddr("");
       setPhone("");
       setMessage("");
+      setHumanConfirmed(false);
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong. Please try WhatsApp on 081 501 2993.");
@@ -92,6 +96,7 @@ const QualifyForm = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Name"
+                maxLength={120}
                 className={darkFieldCls}
               />
               <input
@@ -99,6 +104,7 @@ const QualifyForm = () => {
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="Company"
+                maxLength={160}
                 className={darkFieldCls}
               />
             </div>
@@ -109,12 +115,14 @@ const QualifyForm = () => {
                 value={emailAddr}
                 onChange={(e) => setEmailAddr(e.target.value)}
                 placeholder="Email"
+                maxLength={200}
                 className={darkFieldCls}
               />
               <input
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Phone (optional)"
+                maxLength={60}
                 className={darkFieldCls}
               />
             </div>
@@ -138,9 +146,24 @@ const QualifyForm = () => {
                 <option>Commercial</option>
                 <option>Schools</option>
                 <option>Government</option>
+                <option>Event Wi-Fi</option>
                 <option>Other</option>
               </select>
             </div>
+            <select
+              required
+              aria-label="Your role"
+              value={role}
+              onChange={(e) => setRole(e.target.value as Role)}
+              className={darkSelectCls}
+            >
+              <option>Brand representative</option>
+              <option>Agency</option>
+              <option>Venue owner or manager</option>
+              <option>Event organiser</option>
+              <option>Public sector</option>
+              <option>Other</option>
+            </select>
             <select
               value={timeline}
               onChange={(e) => setTimeline(e.target.value)}
@@ -157,8 +180,19 @@ const QualifyForm = () => {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tell us about the site, scope, and what you're trying to solve."
               rows={5}
+              maxLength={4000}
               className={`${darkFieldCls} resize-none`}
             />
+            <label className="flex items-start gap-3 py-2 text-sm text-background/80 cursor-pointer">
+              <input
+                required
+                type="checkbox"
+                checked={humanConfirmed}
+                onChange={(e) => setHumanConfirmed(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-background"
+              />
+              <span>I confirm that I am human and this is a genuine enquiry.</span>
+            </label>
             <button
               type="submit"
               disabled={submitting}
