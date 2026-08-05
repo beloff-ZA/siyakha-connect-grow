@@ -44,12 +44,12 @@ const BrandWifiHero = () => (
           </p>
 
           <div className="mt-8 md:mt-10 flex flex-wrap gap-4">
-            <Link
-              to="/?type=commercial#qualify"
+            <a
+              href="#qualify"
               className="inline-flex items-center gap-2 bg-white text-black px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-white/90 transition-colors"
             >
               Sign up your brand <ArrowUpRight className="h-4 w-4" />
-            </Link>
+            </a>
           </div>
         </div>
       </div>
