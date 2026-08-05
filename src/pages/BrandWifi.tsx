@@ -3,9 +3,8 @@ import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
 import BrandWifiHero from "@/components/site/BrandWifiHero";
+import QualifyForm from "@/components/site/QualifyForm";
 import { Bus, Music4, Building2, Eye, Users, BarChart3, Handshake, Wifi, TrendingUp, Calendar, MapPin, Smartphone, Radio, ArrowUpRight } from "lucide-react";
-import { Link } from "react-router-dom";
-
 const WHERE = [
   { icon: Bus, title: "Public transport", body: "Taxi ranks, bus routes, stations and commuter hubs — free connectivity where communities wait, travel and spend the most time." },
   { icon: Building2, title: "Public spaces", body: "Malls, clinics, libraries, parks and municipal precincts — sponsored access points that give the community connectivity at no cost." },
@@ -155,16 +154,17 @@ const BrandWifi = () => (
             Register your brand as a sponsor and we will match you with the right venue, transport route or public space.
             You fund the connectivity; the community gets it free — and you get the data to prove the impact.
           </p>
-          <Link
-            to="/?type=commercial#qualify"
+          <a
+            href="#qualify"
             className="inline-flex items-center gap-2 bg-background text-foreground px-8 py-4 text-[12px] uppercase tracking-[0.24em] hover:bg-background/90 transition-colors"
           >
             Sign up your brand <ArrowUpRight className="h-4 w-4" />
-          </Link>
+          </a>
         </div>
       </div>
     </section>
 
+    <QualifyForm />
     <WhySiyakhaBand />
     <Footer />
   </div>
