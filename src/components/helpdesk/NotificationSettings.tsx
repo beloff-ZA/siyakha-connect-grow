@@ -107,12 +107,38 @@ const NotificationSettings: React.FC = () => {
     void load();
   };
 
+  const emailsEnabled = settings?.client_emails_enabled === true;
+
   return (
     <div className="space-y-6">
+      <section className="border-2 border-foreground p-5 md:p-6">
+        <h3 className="text-[10px] uppercase tracking-[0.26em] mb-4">
+          Testing mode — client email safety switch
+        </h3>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <Label htmlFor="client-emails-toggle" className="text-sm">
+              Allow emails to clients
+            </Label>
+            <p className="mt-1 text-xs text-muted-foreground">
+              While this is off, the server refuses every client invitation, setup-link and
+              notification email, and those actions are hidden in the admin UI.
+            </p>
+          </div>
+          <Switch
+            id="client-emails-toggle"
+            checked={emailsEnabled}
+            disabled={!settings || busy}
+            onCheckedChange={(checked) => patch({ client_emails_enabled: checked })}
+          />
+        </div>
+      </section>
+
       <section className="border border-border p-5 md:p-6">
         <h3 className="text-[10px] uppercase tracking-[0.26em] text-muted-foreground mb-5">
           Client sign-in notifications
         </h3>
+
 
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5">
           <div>
@@ -155,7 +181,12 @@ const NotificationSettings: React.FC = () => {
             >
               Save recipient
             </Button>
-            <Button type="button" disabled={testing} onClick={sendTest}>
+            <Button
+              type="button"
+              disabled={testing || !emailsEnabled}
+              title={emailsEnabled ? undefined : "Disabled while client emails are off (testing mode)"}
+              onClick={sendTest}
+            >
               {testing ? "Sending…" : "Send test email"}
             </Button>
           </div>
