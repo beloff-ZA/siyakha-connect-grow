@@ -193,6 +193,21 @@ const PortalFloorPlans: React.FC = () => {
     };
   }, [activeProject]);
 
+  // ---- Plan-side device management ------------------------------------------
+  const [managerOpen, setManagerOpen] = useState(false);
+  /** One-shot placement: the next click on the plan positions this device. */
+  const [placeTarget, setPlaceTarget] = useState<{ id: string; label: string } | null>(null);
+  type AutoSaveState =
+    | { state: "idle" }
+    | { state: "saving"; label: string }
+    | { state: "saved"; label: string; at: string }
+    | { state: "error"; id: string; label: string; message: string };
+  const [autoSave, setAutoSave] = useState<AutoSaveState>({ state: "idle" });
+  /** Latest dragged position per marker, readable synchronously on pointer release. */
+  const dragPositions = useRef<Record<string, { x: number; y: number }>>({});
+
+
+
 
 
   // Selecting a device defaults the coverage view to that device only.
