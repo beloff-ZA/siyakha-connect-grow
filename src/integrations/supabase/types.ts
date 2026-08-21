@@ -1460,6 +1460,7 @@ export type Database = {
       portal_floor_marker_history: {
         Row: {
           action: string
+          actor_role: string | null
           actor_type: string
           actor_user_id: string | null
           created_at: string
@@ -1467,9 +1468,14 @@ export type Database = {
           floor_id: string | null
           id: string
           marker_id: string | null
+          new_x_norm: number | null
+          new_y_norm: number | null
+          prev_x_norm: number | null
+          prev_y_norm: number | null
         }
         Insert: {
           action: string
+          actor_role?: string | null
           actor_type?: string
           actor_user_id?: string | null
           created_at?: string
@@ -1477,9 +1483,14 @@ export type Database = {
           floor_id?: string | null
           id?: string
           marker_id?: string | null
+          new_x_norm?: number | null
+          new_y_norm?: number | null
+          prev_x_norm?: number | null
+          prev_y_norm?: number | null
         }
         Update: {
           action?: string
+          actor_role?: string | null
           actor_type?: string
           actor_user_id?: string | null
           created_at?: string
@@ -1487,6 +1498,10 @@ export type Database = {
           floor_id?: string | null
           id?: string
           marker_id?: string | null
+          new_x_norm?: number | null
+          new_y_norm?: number | null
+          prev_x_norm?: number | null
+          prev_y_norm?: number | null
         }
         Relationships: [
           {
@@ -2427,7 +2442,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      portal_move_floor_markers: { Args: { _moves: Json }; Returns: number }
     }
     Enums: {
       app_role:

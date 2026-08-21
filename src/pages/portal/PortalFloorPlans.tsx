@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Info, Layers, MessageSquare, Search, Wifi } from "lucide-react";
+import { Info, Layers, Lock, MessageSquare, Move, Search, Wifi } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,6 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   PageHeader,
   Panel,
@@ -28,6 +38,7 @@ import {
   type MarkerKind,
   type PortalFloor,
 } from "@/lib/floorPlans";
+
 
 const LAYERS: { kind: MarkerKind; label: string }[] = [
   { kind: "wifi_ap", label: "Wi-Fi Access Points" },
@@ -65,6 +76,11 @@ const PortalFloorPlans: React.FC = () => {
   const [query, setQuery] = useState("");
   const [comment, setComment] = useState("");
   const [sending, setSending] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState<Record<string, { x: number; y: number }>>({});
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+
 
   useEffect(() => {
     document.title = "Building floor plans | Siyakha Client Portal";
@@ -103,7 +119,58 @@ const PortalFloorPlans: React.FC = () => {
 
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
   const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
-  const shown = useMemo(() => floorMarkers.filter((m) => visible[m.marker_type]), [floorMarkers, visible]);
+  const shown = useMemo(() => {
+    const base = floorMarkers.filter((m) => visible[m.marker_type]);
+    if (!Object.keys(draft).length) return base;
+    return base.map((m) => (draft[m.id] ? { ...m, x_norm: draft[m.id].x, y_norm: draft[m.id].y } : m));
+  }, [floorMarkers, visible, draft]);
+
+  const canDrag = useCallback((m: FloorMarker) => m.status === "planned", []);
+
+  const pendingIds = useMemo(() => Object.keys(draft), [draft]);
+  const pendingSummary = useMemo(() => {
+    const list = markers.filter((m) => draft[m.id]);
+    return {
+      total: list.length,
+      aps: list.filter((m) => m.marker_type === "wifi_ap").length,
+      cameras: list.filter((m) => m.marker_type === "camera").length,
+      other: list.filter((m) => m.marker_type !== "wifi_ap" && m.marker_type !== "camera").length,
+    };
+  }, [markers, draft]);
+
+  const handleDrag = useCallback(
+    (id: string, x: number, y: number) => {
+      setDraft((d) => ({ ...d, [id]: { x, y } }));
+    },
+    [],
+  );
+
+  const cancelChanges = useCallback(() => {
+    setDraft({});
+    setEditing(false);
+  }, []);
+
+  const savePositions = useCallback(async () => {
+    setSaving(true);
+    const moves = Object.entries(draft).map(([id, p]) => ({ id, x: p.x, y: p.y }));
+    const { data, error: rpcErr } = await supabase.rpc("portal_move_floor_markers", {
+      _moves: moves as unknown as never,
+    });
+    setSaving(false);
+    setConfirmOpen(false);
+    if (rpcErr) {
+      toast({ title: "Positions not saved", description: rpcErr.message, variant: "destructive" });
+      return;
+    }
+    setDraft({});
+    setEditing(false);
+    await load();
+    toast({
+      title: "Positions saved",
+      description: `${data ?? 0} device position${data === 1 ? "" : "s"} updated and recorded in the audit trail.`,
+    });
+  }, [draft, load, toast]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return shown;
@@ -255,13 +322,64 @@ const PortalFloorPlans: React.FC = () => {
                 })}
               </div>
 
+              {/* Reposition controls */}
+              <div className="mb-5 border border-border p-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                  <Move className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {editing ? (
+                      <>
+                        <span className="text-foreground">
+                          Drag planned devices to their proposed positions. Save when the layout is
+                          ready.
+                        </span>{" "}
+                        Devices that are installed, tested or active are locked and cannot be moved.
+                      </>
+                    ) : (
+                      <>
+                        Positions are preliminary. Turn on edit mode to drag planned devices to the
+                        exact positions you want.
+                      </>
+                    )}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {editing ? (
+                    <>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {pendingIds.length} unsaved
+                      </span>
+                      <Button type="button" variant="outline" onClick={cancelChanges}>
+                        Cancel changes
+                      </Button>
+                      <Button
+                        type="button"
+                        disabled={pendingIds.length === 0 || saving}
+                        onClick={() => setConfirmOpen(true)}
+                      >
+                        Save positions
+                      </Button>
+                    </>
+                  ) : (
+                    <Button type="button" variant="outline" onClick={() => setEditing(true)}>
+                      <Move className="h-3.5 w-3.5 mr-2" strokeWidth={1.5} />
+                      Edit positions
+                    </Button>
+                  )}
+                </div>
+              </div>
+
               <FloorPlanCanvas
                 imageUrl={planUrl}
                 markers={shown}
                 selectedId={selected?.id ?? null}
                 onSelect={setSelected}
+                editing={editing}
+                canDrag={canDrag}
+                onMove={editing ? handleDrag : undefined}
                 emptyLabel="Plan image for this level is being prepared."
               />
+
 
               {/* Legend */}
               <div className="mt-5 flex flex-wrap gap-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -286,7 +404,14 @@ const PortalFloorPlans: React.FC = () => {
                   <span className="inline-block h-5 w-5 rounded-full border border-foreground" />
                   Installed / tested
                 </span>
+                <span className="flex items-center gap-2">
+                  <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-foreground/70">
+                    <Lock className="h-3 w-3" strokeWidth={2} />
+                  </span>
+                  Locked — cannot be moved
+                </span>
               </div>
+
 
               <div className="mt-6 grid gap-4 sm:grid-cols-4">
                 <Metric label="Devices on level" value={floorStats.total} />
@@ -421,8 +546,35 @@ const PortalFloorPlans: React.FC = () => {
           </div>
         </div>
       )}
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Save device positions?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingSummary.aps} Wi-Fi access point{pendingSummary.aps === 1 ? "" : "s"} and{" "}
+              {pendingSummary.cameras} camera{pendingSummary.cameras === 1 ? "" : "s"}
+              {pendingSummary.other > 0 ? ` and ${pendingSummary.other} other device(s)` : ""} will
+              move to their new positions. Every move is recorded in the project audit trail.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={saving}>Keep editing</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                savePositions();
+              }}
+              disabled={saving}
+            >
+              {saving ? "Saving…" : "Save positions"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
+
 };
 
 export default PortalFloorPlans;
