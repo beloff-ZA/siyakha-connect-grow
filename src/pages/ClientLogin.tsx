@@ -130,7 +130,10 @@ const ClientLogin: React.FC = () => {
     if (newPassword.length < 8) return setFormError("Use at least 8 characters.");
     if (newPassword !== confirmPassword) return setFormError("Passwords do not match.");
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+      data: { must_change_password: false },
+    });
     setLoading(false);
     if (error) return setFormError(error.message);
     // First-time setup completes as a successful portal sign-in — notify once here.
