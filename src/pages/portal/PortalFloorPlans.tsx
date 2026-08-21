@@ -119,7 +119,58 @@ const PortalFloorPlans: React.FC = () => {
 
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
   const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
-  const shown = useMemo(() => floorMarkers.filter((m) => visible[m.marker_type]), [floorMarkers, visible]);
+  const shown = useMemo(() => {
+    const base = floorMarkers.filter((m) => visible[m.marker_type]);
+    if (!Object.keys(draft).length) return base;
+    return base.map((m) => (draft[m.id] ? { ...m, x_norm: draft[m.id].x, y_norm: draft[m.id].y } : m));
+  }, [floorMarkers, visible, draft]);
+
+  const canDrag = useCallback((m: FloorMarker) => m.status === "planned", []);
+
+  const pendingIds = useMemo(() => Object.keys(draft), [draft]);
+  const pendingSummary = useMemo(() => {
+    const list = markers.filter((m) => draft[m.id]);
+    return {
+      total: list.length,
+      aps: list.filter((m) => m.marker_type === "wifi_ap").length,
+      cameras: list.filter((m) => m.marker_type === "camera").length,
+      other: list.filter((m) => m.marker_type !== "wifi_ap" && m.marker_type !== "camera").length,
+    };
+  }, [markers, draft]);
+
+  const handleDrag = useCallback(
+    (id: string, x: number, y: number) => {
+      setDraft((d) => ({ ...d, [id]: { x, y } }));
+    },
+    [],
+  );
+
+  const cancelChanges = useCallback(() => {
+    setDraft({});
+    setEditing(false);
+  }, []);
+
+  const savePositions = useCallback(async () => {
+    setSaving(true);
+    const moves = Object.entries(draft).map(([id, p]) => ({ id, x: p.x, y: p.y }));
+    const { data, error: rpcErr } = await supabase.rpc("portal_move_floor_markers", {
+      _moves: moves as unknown as never,
+    });
+    setSaving(false);
+    setConfirmOpen(false);
+    if (rpcErr) {
+      toast({ title: "Positions not saved", description: rpcErr.message, variant: "destructive" });
+      return;
+    }
+    setDraft({});
+    setEditing(false);
+    await load();
+    toast({
+      title: "Positions saved",
+      description: `${data ?? 0} device position${data === 1 ? "" : "s"} updated and recorded in the audit trail.`,
+    });
+  }, [draft, load, toast]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return shown;
