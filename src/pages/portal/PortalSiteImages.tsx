@@ -113,7 +113,19 @@ const PortalSiteImages: React.FC = () => {
         </div>
       </div>
 
-      {loadError && <ErrorNote message={loadError} />}
+      {loadError && (
+        <div className="mb-6">
+          <ErrorNote message={loadError} />
+          <button
+            type="button"
+            onClick={() => setReloadKey((k) => k + 1)}
+            className="mt-3 border border-border px-4 py-2 text-[10px] uppercase tracking-[0.2em] hover:bg-muted transition-colors"
+          >
+            Retry images
+          </button>
+        </div>
+      )}
+
 
       {busy ? (
         <Loading />
