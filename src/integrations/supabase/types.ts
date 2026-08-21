@@ -1242,62 +1242,6 @@ export type Database = {
           },
         ]
       }
-      portal_building_levels: {
-        Row: {
-          created_at: string
-          drawing_date: string | null
-          id: string
-          level_code: string | null
-          name: string
-          notes: string | null
-          plan_image_path: string | null
-          plan_reference: string | null
-          project_id: string
-          sort_order: number
-          status: string
-          storey_type: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          drawing_date?: string | null
-          id?: string
-          level_code?: string | null
-          name: string
-          notes?: string | null
-          plan_image_path?: string | null
-          plan_reference?: string | null
-          project_id: string
-          sort_order?: number
-          status?: string
-          storey_type?: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          drawing_date?: string | null
-          id?: string
-          level_code?: string | null
-          name?: string
-          notes?: string | null
-          plan_image_path?: string | null
-          plan_reference?: string | null
-          project_id?: string
-          sort_order?: number
-          status?: string
-          storey_type?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "portal_building_levels_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "portal_projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       portal_client_users: {
         Row: {
           activated_at: string | null
@@ -1384,75 +1328,6 @@ export type Database = {
         }
         Relationships: []
       }
-      portal_device_markers: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          device_type: string
-          id: string
-          label: string
-          level_id: string
-          model: string | null
-          mounting: string | null
-          notes: string | null
-          project_id: string
-          sort_order: number
-          status: string
-          updated_at: string
-          x_pct: number
-          y_pct: number
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          device_type?: string
-          id?: string
-          label: string
-          level_id: string
-          model?: string | null
-          mounting?: string | null
-          notes?: string | null
-          project_id: string
-          sort_order?: number
-          status?: string
-          updated_at?: string
-          x_pct: number
-          y_pct: number
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          device_type?: string
-          id?: string
-          label?: string
-          level_id?: string
-          model?: string | null
-          mounting?: string | null
-          notes?: string | null
-          project_id?: string
-          sort_order?: number
-          status?: string
-          updated_at?: string
-          x_pct?: number
-          y_pct?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "portal_device_markers_level_id_fkey"
-            columns: ["level_id"]
-            isOneToOne: false
-            referencedRelation: "portal_building_levels"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "portal_device_markers_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "portal_projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       portal_documents: {
         Row: {
           category: string
@@ -1515,6 +1390,260 @@ export type Database = {
           },
           {
             foreignKeyName: "portal_documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_floor_marker_comments: {
+        Row: {
+          admin_response: string | null
+          author_name: string | null
+          author_type: string
+          author_user_id: string | null
+          body: string
+          created_at: string
+          floor_id: string
+          id: string
+          marker_id: string | null
+          responded_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_response?: string | null
+          author_name?: string | null
+          author_type?: string
+          author_user_id?: string | null
+          body: string
+          created_at?: string
+          floor_id: string
+          id?: string
+          marker_id?: string | null
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_response?: string | null
+          author_name?: string | null
+          author_type?: string
+          author_user_id?: string | null
+          body?: string
+          created_at?: string
+          floor_id?: string
+          id?: string
+          marker_id?: string | null
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_floor_marker_comments_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_floor_marker_comments_marker_id_fkey"
+            columns: ["marker_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floor_markers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_floor_marker_history: {
+        Row: {
+          action: string
+          actor_type: string
+          actor_user_id: string | null
+          created_at: string
+          detail: string | null
+          floor_id: string | null
+          id: string
+          marker_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_type?: string
+          actor_user_id?: string | null
+          created_at?: string
+          detail?: string | null
+          floor_id?: string | null
+          id?: string
+          marker_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_type?: string
+          actor_user_id?: string | null
+          created_at?: string
+          detail?: string | null
+          floor_id?: string | null
+          id?: string
+          marker_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_floor_marker_history_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_floor_marker_history_marker_id_fkey"
+            columns: ["marker_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floor_markers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_floor_markers: {
+        Row: {
+          client_visible: boolean
+          created_at: string
+          created_by: string | null
+          description: string | null
+          equipment: string | null
+          evidence_note: string | null
+          evidence_path: string | null
+          floor_id: string
+          id: string
+          installed_on: string | null
+          label: string
+          mac_address: string | null
+          marker_type: Database["public"]["Enums"]["portal_marker_kind"]
+          model: string | null
+          notes: string | null
+          project_id: string
+          serial_number: string | null
+          sort_order: number
+          status: Database["public"]["Enums"]["portal_marker_state"]
+          tested_on: string | null
+          updated_at: string
+          x_norm: number
+          y_norm: number
+        }
+        Insert: {
+          client_visible?: boolean
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          equipment?: string | null
+          evidence_note?: string | null
+          evidence_path?: string | null
+          floor_id: string
+          id?: string
+          installed_on?: string | null
+          label: string
+          mac_address?: string | null
+          marker_type?: Database["public"]["Enums"]["portal_marker_kind"]
+          model?: string | null
+          notes?: string | null
+          project_id: string
+          serial_number?: string | null
+          sort_order?: number
+          status?: Database["public"]["Enums"]["portal_marker_state"]
+          tested_on?: string | null
+          updated_at?: string
+          x_norm?: number
+          y_norm?: number
+        }
+        Update: {
+          client_visible?: boolean
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          equipment?: string | null
+          evidence_note?: string | null
+          evidence_path?: string | null
+          floor_id?: string
+          id?: string
+          installed_on?: string | null
+          label?: string
+          mac_address?: string | null
+          marker_type?: Database["public"]["Enums"]["portal_marker_kind"]
+          model?: string | null
+          notes?: string | null
+          project_id?: string
+          serial_number?: string | null
+          sort_order?: number
+          status?: Database["public"]["Enums"]["portal_marker_state"]
+          tested_on?: string | null
+          updated_at?: string
+          x_norm?: number
+          y_norm?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_floor_markers_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_floor_markers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_floors: {
+        Row: {
+          client_visible: boolean
+          created_at: string
+          display_name: string
+          floor_use: string
+          id: string
+          level_number: number
+          notes: string | null
+          plan_image_path: string | null
+          plan_type: string
+          project_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          client_visible?: boolean
+          created_at?: string
+          display_name: string
+          floor_use?: string
+          id?: string
+          level_number: number
+          notes?: string | null
+          plan_image_path?: string | null
+          plan_type?: string
+          project_id: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          client_visible?: boolean
+          created_at?: string
+          display_name?: string
+          floor_use?: string
+          id?: string
+          level_number?: number
+          notes?: string | null
+          plan_image_path?: string | null
+          plan_type?: string
+          project_id?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_floors_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "portal_projects"
@@ -2307,6 +2436,13 @@ export type Database = {
         | "user"
         | "siyakha_admin"
         | "partner_engineer"
+      portal_marker_kind:
+        | "wifi_ap"
+        | "camera"
+        | "rack"
+        | "cable_route"
+        | "other"
+      portal_marker_state: "planned" | "installed" | "tested" | "active"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2441,6 +2577,8 @@ export const Constants = {
         "siyakha_admin",
         "partner_engineer",
       ],
+      portal_marker_kind: ["wifi_ap", "camera", "rack", "cable_route", "other"],
+      portal_marker_state: ["planned", "installed", "tested", "active"],
     },
   },
 } as const
