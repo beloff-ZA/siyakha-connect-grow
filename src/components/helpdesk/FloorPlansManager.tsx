@@ -337,7 +337,8 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
           </select>
         </div>
         <p className="text-xs text-muted-foreground">
-          Building: {buildingStats.aps} APs · {buildingStats.cameras} cameras · {buildingStats.planned} planned ·{" "}
+          Building: {buildingStats.aps} Wi-Fi APs · {buildingStats.cameras} CCTV cameras ·{" "}
+          {buildingStats.total} devices total · {buildingStats.planned} planned (all devices) ·{" "}
           {buildingStats.installed} installed · {buildingStats.testedActive} tested/active
         </p>
         {busy && <span className="text-xs text-muted-foreground">Working…</span>}
@@ -420,7 +421,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                 {placing ? "Placement mode: on" : "Placement mode: off"}
               </Button>
               <span className="text-xs text-muted-foreground">
-                This level: {stats.total} devices · {stats.aps} APs · {stats.cameras} cameras
+                This level: {stats.aps} Wi-Fi APs · {stats.cameras} CCTV cameras · {stats.total} devices
               </span>
             </div>
 

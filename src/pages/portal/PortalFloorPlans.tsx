@@ -481,10 +481,19 @@ const PortalFloorPlans: React.FC = () => {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Metric label="Planned APs (building)" value={buildingStats.planned} />
-        <Metric label="Installed" value={buildingStats.installed} />
-        <Metric label="Tested / active" value={buildingStats.testedActive} />
-        <Metric label="Planned cameras" value={buildingStats.cameras} />
+        <Metric label="Wi-Fi access points (building)" value={buildingStats.aps} />
+        <Metric label="CCTV cameras (building)" value={buildingStats.cameras} />
+        <Metric label="Devices (all types)" value={buildingStats.total} />
+        <Metric label="Planned (all devices)" value={buildingStats.planned} />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <Metric label="APs planned" value={buildingStats.plannedAps} />
+        <Metric label="APs installed / tested" value={buildingStats.installedAps + buildingStats.testedActiveAps} />
+        <Metric label="Cameras planned" value={buildingStats.plannedCameras} />
+        <Metric
+          label="Cameras installed / tested"
+          value={buildingStats.installedCameras + buildingStats.testedActiveCameras}
+        />
       </div>
 
       {floors.length === 0 ? (
@@ -501,7 +510,9 @@ const PortalFloorPlans: React.FC = () => {
             </p>
             <div className="max-h-[320px] lg:max-h-none overflow-y-auto">
               {floors.map((f) => {
-                const count = markers.filter((m) => m.floor_id === f.id).length;
+                const onFloor = markers.filter((m) => m.floor_id === f.id);
+                const apCount = onFloor.filter((m) => m.marker_type === "wifi_ap").length;
+                const camCount = onFloor.filter((m) => m.marker_type === "camera").length;
                 const active = f.id === floorId;
                 return (
                   <button
@@ -516,7 +527,12 @@ const PortalFloorPlans: React.FC = () => {
                     <span className="block text-[11px] uppercase tracking-[0.18em]">
                       Level {f.level_number}
                     </span>
-                    <span className="block text-xs mt-1">{count} devices</span>
+                    <span className="block text-xs mt-1">
+                      {apCount} AP · {camCount} CCTV
+                    </span>
+                    <span className="block text-[10px] mt-0.5 text-muted-foreground">
+                      {onFloor.length} devices
+                    </span>
                   </button>
                 );
               })}
@@ -762,11 +778,15 @@ const PortalFloorPlans: React.FC = () => {
               </div>
 
 
-              <div className="mt-6 grid gap-4 sm:grid-cols-4">
-                <Metric label="Devices on level" value={floorStats.total} />
-                <Metric label="Planned" value={floorStats.planned} />
-                <Metric label="Installed" value={floorStats.installed} />
-                <Metric label="Tested / active" value={floorStats.testedActive} />
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                <Metric label="Wi-Fi access points on level" value={floorStats.aps} />
+                <Metric label="CCTV cameras on level" value={floorStats.cameras} />
+                <Metric label="Devices on level (all types)" value={floorStats.total} />
+              </div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <Metric label="Planned (all devices)" value={floorStats.planned} />
+                <Metric label="Installed (all devices)" value={floorStats.installed} />
+                <Metric label="Tested / active (all devices)" value={floorStats.testedActive} />
               </div>
             </Panel>
 
