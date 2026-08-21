@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Maximize2, Minus, Plus } from "lucide-react";
+import { Lock, Maximize2, Minus, Plus } from "lucide-react";
 import { clamp01, kindShort, type FloorMarker } from "@/lib/floorPlans";
 
 const MIN_ZOOM = 0.4;
@@ -16,10 +16,15 @@ type Props = {
   onMove?: (markerId: string, x: number, y: number) => void;
   /** Admin-only: called once when a marker drag finishes, to persist the position. */
   onMoveEnd?: (markerId: string) => void;
+  /** When false for a marker, dragging is blocked and a lock badge is shown in edit mode. */
+  canDrag?: (marker: FloorMarker) => boolean;
+  /** Visual affordances for reposition mode. */
+  editing?: boolean;
   placing?: boolean;
   height?: string;
   emptyLabel?: string;
 };
+
 
 const statusRing: Record<string, string> = {
   planned: "border-dashed",
