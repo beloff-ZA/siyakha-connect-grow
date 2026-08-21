@@ -124,17 +124,20 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         if (!cancelled) setClient((clientRow as PortalClient | null) ?? null);
       }
 
-      const { data: projectRows, error: pErr } = await supabase
-        .from("portal_projects")
-        .select("*")
-        .order("created_at", { ascending: true });
+      const [{ data: siteRows }, { data: projectRows, error: pErr }] = await Promise.all([
+        supabase.from("portal_sites").select("*").order("sort_order").order("name"),
+        supabase.from("portal_projects").select("*").order("created_at", { ascending: true }),
+      ]);
 
       if (cancelled) return;
       if (pErr) setError(pErr.message);
 
+      const siteList = (siteRows ?? []) as unknown as PortalSite[];
       const list = (projectRows ?? []) as unknown as PortalProject[];
+      setSites(siteList);
       setProjects(list);
       setActiveProjectId((prev) => prev ?? list[0]?.id ?? null);
+      setActiveSiteId((prev) => prev ?? list[0]?.site_id ?? siteList[0]?.id ?? null);
       setLoading(false);
     })();
 
@@ -143,20 +146,30 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     };
   }, [user, tick]);
 
-  const value = useMemo<PortalContextValue>(
-    () => ({
+  const value = useMemo<PortalContextValue>(() => {
+    const activeProject = projects.find((p) => p.id === activeProjectId) ?? null;
+    const siteId = activeProject?.site_id ?? activeSiteId;
+    return {
       loading,
       error,
       clientUser,
       client,
+      sites,
+      activeSiteId: siteId,
+      activeSite: sites.find((s) => s.id === siteId) ?? null,
+      setActiveSiteId: (id: string) => {
+        setActiveSiteId(id);
+        const first = projects.find((p) => p.site_id === id);
+        if (first) setActiveProjectId(first.id);
+      },
       projects,
       activeProjectId,
-      activeProject: projects.find((p) => p.id === activeProjectId) ?? null,
+      activeProject,
       setActiveProjectId,
       refresh,
-    }),
-    [loading, error, clientUser, client, projects, activeProjectId, refresh],
-  );
+    };
+  }, [loading, error, clientUser, client, sites, projects, activeSiteId, activeProjectId, refresh]);
+
 
   return <PortalContext.Provider value={value}>{children}</PortalContext.Provider>;
 };
