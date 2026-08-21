@@ -913,6 +913,39 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_admin_audit: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          outcome: string
+          target_client_user_id: string | null
+          target_email: string | null
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          outcome: string
+          target_client_user_id?: string | null
+          target_email?: string | null
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          outcome?: string
+          target_client_user_id?: string | null
+          target_email?: string | null
+        }
+        Relationships: []
+      }
       portal_boq_activity: {
         Row: {
           action: string
@@ -2083,6 +2116,7 @@ export type Database = {
       }
       portal_notification_settings: {
         Row: {
+          client_emails_enabled: boolean
           created_at: string
           id: string
           login_notify_enabled: boolean
@@ -2092,6 +2126,7 @@ export type Database = {
           updated_by: string | null
         }
         Insert: {
+          client_emails_enabled?: boolean
           created_at?: string
           id?: string
           login_notify_enabled?: boolean
@@ -2101,6 +2136,7 @@ export type Database = {
           updated_by?: string | null
         }
         Update: {
+          client_emails_enabled?: boolean
           created_at?: string
           id?: string
           login_notify_enabled?: boolean
