@@ -218,7 +218,13 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const deleteMarker = async () => {
     if (!selected) return;
-    if (!window.confirm(`Delete marker ${selected.label}? This cannot be undone.`)) return;
+    const attached = routes.filter(
+      (r) => r.rack_marker_id === selected.id || r.device_marker_id === selected.id,
+    ).length;
+    const routeWarning = attached
+      ? `\n\n${attached} preliminary cable route${attached === 1 ? "" : "s"} reference this device and will be removed with it. Remaining devices and their routes are unaffected.`
+      : "";
+    if (!window.confirm(`Delete marker ${selected.label}? This cannot be undone.${routeWarning}`)) return;
     const { error } = await supabase.from("portal_floor_markers").delete().eq("id", selected.id);
     if (error) return fail(error.message);
     await logHistory("marker_delete", `${selected.label} deleted`);
