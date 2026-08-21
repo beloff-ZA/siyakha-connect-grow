@@ -1,10 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Lock, Maximize2, Minus, Plus, RotateCw } from "lucide-react";
+import { Lock, Maximize2, Minus, Plus, Video } from "lucide-react";
 import { kindShort, type FloorMarker } from "@/lib/floorPlans";
 import {
+  AIM_DEADZONE_PX,
   CAMERA_RANGE_RADIUS,
   COVERAGE_BANDS,
+  aimOffsetPx,
+  bearingBetween,
+  bearingText,
+  bearingToRotation,
   containRect,
+  normDistancePx,
+  normalizeBearing,
   pointerInContent,
   pointerToNorm,
   wheelZoomFactor,
@@ -23,14 +30,19 @@ type Props = {
   markers: FloorMarker[];
   selectedId?: string | null;
   onSelect?: (marker: FloorMarker | null) => void;
-  /** Click on empty plan to place a marker at normalised coords. */
-  onPlace?: (x: number, y: number) => void;
+  /**
+   * Click (or click-drag-to-aim) on empty plan to place a marker at normalised
+   * coords. `direction` is the plan bearing the pointer was dragged toward, or
+   * undefined when the gesture was a plain tap.
+   */
+  onPlace?: (x: number, y: number, direction?: number) => void;
   /** Drag a marker to new normalised coords. */
   onMove?: (markerId: string, x: number, y: number) => void;
   /** Called once when a marker drag finishes, to persist the position. */
   onMoveEnd?: (markerId: string) => void;
-  /** Drag the rotate handle of a selected camera to aim it (0–359). */
+  /** Drag the aim handle of a selected camera to change its bearing (0–359). */
   onAim?: (markerId: string, deg: number) => void;
+
   /** When false for a marker, dragging is blocked and a lock badge is shown in edit mode. */
   canDrag?: (marker: FloorMarker) => boolean;
   /** Visual affordances for reposition mode. */
