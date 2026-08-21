@@ -387,6 +387,8 @@ const ClientPortalAdmin: React.FC = () => {
           <TabsTrigger value="files">Documents & photos</TabsTrigger>
           <TabsTrigger value="boq">BOQ</TabsTrigger>
           <TabsTrigger value="plans">Floor plans</TabsTrigger>
+          <TabsTrigger value="site-images">Site images</TabsTrigger>
+
 
           <TabsTrigger value="updates">Updates</TabsTrigger>
           <TabsTrigger value="queries">Queries</TabsTrigger>
