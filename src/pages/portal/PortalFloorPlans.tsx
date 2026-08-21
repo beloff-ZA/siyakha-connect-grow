@@ -150,6 +150,21 @@ const PortalFloorPlans: React.FC = () => {
   const [savingCams, setSavingCams] = useState(false);
   const [lastDir, setLastDir] = useState(0);
 
+  // ---- Cable routing -------------------------------------------------------
+  const [routes, setRoutes] = useState<CableRoute[]>([]);
+  const [routeMode, setRouteMode] = useState<RouteDisplayMode>("all");
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+  const [editingRoutes, setEditingRoutes] = useState(false);
+  const [routeDraft, setRouteDraft] = useState<Record<string, Waypoint[]>>({});
+  const [snap, setSnap] = useState(true);
+  const [savingRoutes, setSavingRoutes] = useState(false);
+  const [genOpen, setGenOpen] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [routeFloorFilter, setRouteFloorFilter] = useState<string>("all");
+  const [routeServiceFilter, setRouteServiceFilter] = useState<string>("all");
+  const [routeStatusFilter, setRouteStatusFilter] = useState<string>("all");
+
+
 
   // Selecting a device defaults the coverage view to that device only.
   useEffect(() => {
