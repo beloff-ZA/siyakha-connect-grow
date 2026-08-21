@@ -99,14 +99,16 @@ export function markerStats(markers: FloorMarker[]) {
   const byStatus = countBy(markers.map((m) => m.status));
   const apMarkers = markers.filter((m) => m.marker_type === "wifi_ap");
   const cameraMarkers = markers.filter((m) => m.marker_type === "camera");
+  const rackMarkers = markers.filter((m) => m.marker_type === "rack");
   const apStatus = countBy(apMarkers.map((m) => m.status));
   const camStatus = countBy(cameraMarkers.map((m) => m.status));
+  const rackStatus = countBy(rackMarkers.map((m) => m.status));
   return {
     /** All markers, regardless of type. Never label this as "APs". */
     total: markers.length,
     aps: apMarkers.length,
     cameras: cameraMarkers.length,
-    racks: byType.rack ?? 0,
+    racks: rackMarkers.length,
     cableRoutes: byType.cable_route ?? 0,
     other: byType.other ?? 0,
     /** Status counts across all device types. */
@@ -119,8 +121,19 @@ export function markerStats(markers: FloorMarker[]) {
     plannedCameras: camStatus.planned ?? 0,
     installedCameras: camStatus.installed ?? 0,
     testedActiveCameras: (camStatus.tested ?? 0) + (camStatus.active ?? 0),
+    plannedRacks: rackStatus.planned ?? 0,
+    installedRacks: rackStatus.installed ?? 0,
+    testedActiveRacks: (rackStatus.tested ?? 0) + (rackStatus.active ?? 0),
   };
 }
+
+/** Shown on provisional rack markers so the client knows to reposition them. */
+export const RACK_MOVE_HINT =
+  "Move this provisional marker to the approved communications/rack position, then save.";
+
+/** Violet identity for rack markers — never reuse AP cyan or CCTV amber. */
+export const RACK_HUE = "268 85% 58%";
+
 
 export const clamp01 = (v: number) => Math.min(1, Math.max(0, Math.round(v * 10000) / 10000));
 

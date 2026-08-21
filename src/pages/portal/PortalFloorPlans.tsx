@@ -48,6 +48,7 @@ import {
   CAMERA_RANGES,
   FOV_PRESETS,
   MARKER_KINDS,
+  RACK_MOVE_HINT,
   SURVEY_DISCLAIMER,
   kindLabel,
   kindShort,
@@ -225,7 +226,10 @@ const PortalFloorPlans: React.FC = () => {
       total: list.length,
       aps: list.filter((m) => m.marker_type === "wifi_ap").length,
       cameras: list.filter((m) => m.marker_type === "camera").length,
-      other: list.filter((m) => m.marker_type !== "wifi_ap" && m.marker_type !== "camera").length,
+      racks: list.filter((m) => m.marker_type === "rack").length,
+      other: list.filter(
+        (m) => !["wifi_ap", "camera", "rack"].includes(m.marker_type),
+      ).length,
     };
   }, [markers, draft, optics]);
 
@@ -483,8 +487,11 @@ const PortalFloorPlans: React.FC = () => {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         <Metric label="Wi-Fi access points (building)" value={buildingStats.aps} />
         <Metric label="CCTV cameras (building)" value={buildingStats.cameras} />
-        <Metric label="Devices (all types)" value={buildingStats.total} />
-        <Metric label="Planned (all devices)" value={buildingStats.planned} />
+        <Metric label="Network racks (building)" value={buildingStats.racks} />
+        <Metric
+          label="Devices (APs + CCTV + racks)"
+          value={buildingStats.total}
+        />
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         <Metric label="APs planned" value={buildingStats.plannedAps} />
@@ -495,6 +502,16 @@ const PortalFloorPlans: React.FC = () => {
           value={buildingStats.installedCameras + buildingStats.testedActiveCameras}
         />
       </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <Metric label="Racks planned" value={buildingStats.plannedRacks} />
+        <Metric
+          label="Racks installed / tested"
+          value={buildingStats.installedRacks + buildingStats.testedActiveRacks}
+        />
+        <Metric label="Planned (all devices)" value={buildingStats.planned} />
+        <Metric label="Installed (all devices)" value={buildingStats.installed} />
+      </div>
+
 
       {floors.length === 0 ? (
         <EmptyState
@@ -513,6 +530,7 @@ const PortalFloorPlans: React.FC = () => {
                 const onFloor = markers.filter((m) => m.floor_id === f.id);
                 const apCount = onFloor.filter((m) => m.marker_type === "wifi_ap").length;
                 const camCount = onFloor.filter((m) => m.marker_type === "camera").length;
+                const rackCount = onFloor.filter((m) => m.marker_type === "rack").length;
                 const active = f.id === floorId;
                 return (
                   <button
@@ -528,11 +546,13 @@ const PortalFloorPlans: React.FC = () => {
                       Level {f.level_number}
                     </span>
                     <span className="block text-xs mt-1">
-                      {apCount} AP · {camCount} CCTV
+                      {apCount} AP · {camCount} CCTV · {rackCount} rack
+                      {rackCount === 1 ? "" : "s"}
                     </span>
                     <span className="block text-[10px] mt-0.5 text-muted-foreground">
                       {onFloor.length} devices
                     </span>
+
                   </button>
                 );
               })}
@@ -751,15 +771,20 @@ const PortalFloorPlans: React.FC = () => {
                 {MARKER_KINDS.filter((k) => k.value !== "other").map((k) => (
                   <span key={k.value} className="flex items-center gap-2">
                     <span
-                      className={`inline-flex h-5 w-5 items-center justify-center border border-foreground/70 text-[7px] ${
-                        k.value === "camera" ? "" : "rounded-full"
+                      className={`inline-flex h-5 w-5 items-center justify-center border text-[7px] ${
+                        k.value === "camera" || k.value === "rack" ? "" : "rounded-full"
+                      } ${
+                        k.value === "rack"
+                          ? "border-[hsl(268_85%_58%)] bg-[hsl(268_85%_58%/0.16)] text-[hsl(268_85%_45%)]"
+                          : "border-foreground/70"
                       }`}
                     >
-                      {k.short}
+                      {k.value === "rack" ? "6U" : k.short}
                     </span>
-                    {k.label}
+                    {k.value === "rack" ? "6U network racks" : k.label}
                   </span>
                 ))}
+
                 <span className="flex items-center gap-2">
                   <span className="inline-block h-5 w-5 rounded-full border border-dashed border-foreground/70" />
                   Planned / not installed
@@ -778,11 +803,13 @@ const PortalFloorPlans: React.FC = () => {
               </div>
 
 
-              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <Metric label="Wi-Fi access points on level" value={floorStats.aps} />
                 <Metric label="CCTV cameras on level" value={floorStats.cameras} />
-                <Metric label="Devices on level (all types)" value={floorStats.total} />
+                <Metric label="Network racks on level" value={floorStats.racks} />
+                <Metric label="Devices on level (APs + CCTV + racks)" value={floorStats.total} />
               </div>
+
               <div className="mt-4 grid gap-4 sm:grid-cols-3">
                 <Metric label="Planned (all devices)" value={floorStats.planned} />
                 <Metric label="Installed (all devices)" value={floorStats.installed} />
@@ -819,6 +846,41 @@ const PortalFloorPlans: React.FC = () => {
                     </div>
                   ))}
                 </dl>
+
+                {selected.marker_type === "rack" && (
+                  <div className="mt-6 border border-[hsl(268_85%_58%)] bg-[hsl(268_85%_58%/0.08)] p-4 space-y-2">
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-[hsl(268_85%_45%)]">
+                      {selected.model ?? "6U"} network rack · {floor?.display_name ?? "Level"}
+                    </p>
+                    <dl className="grid gap-x-8 gap-y-2 sm:grid-cols-2 text-sm">
+                      {[
+                        ["Rack", selected.label],
+                        ["Equipment", selected.equipment ?? "6U Wall-Mount Network Rack"],
+                        ["Size", selected.model ?? "6U"],
+                        ["Status", stateLabel(selected.status)],
+                        ["Floor", floor?.display_name ?? "—"],
+                      ].map(([k, v]) => (
+                        <div key={String(k)} className="flex justify-between gap-4">
+                          <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                            {k}
+                          </dt>
+                          <dd className="text-right">{v}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {selected.notes ??
+                        "Provisional placement — move to the approved rack location before final sign-off."}
+                    </p>
+                    <p className="text-xs text-foreground leading-relaxed">
+                      {selected.status === "planned"
+                        ? RACK_MOVE_HINT
+                        : `This rack is ${stateLabel(selected.status).toLowerCase()}, so its position is locked.`}
+                    </p>
+                  </div>
+                )}
+
+
 
                 {/* Camera optics — editable while the camera is planned or an unsaved draft */}
                 {selected.marker_type === "camera" && (() => {
@@ -1042,6 +1104,9 @@ const PortalFloorPlans: React.FC = () => {
             <AlertDialogDescription>
               {pendingSummary.aps} Wi-Fi access point{pendingSummary.aps === 1 ? "" : "s"} and{" "}
               {pendingSummary.cameras} camera{pendingSummary.cameras === 1 ? "" : "s"}
+              {pendingSummary.racks > 0
+                ? `, ${pendingSummary.racks} network rack${pendingSummary.racks === 1 ? "" : "s"}`
+                : ""}
               {pendingSummary.other > 0 ? ` and ${pendingSummary.other} other device(s)` : ""} will
               move to their new positions. Every move is recorded in the project audit trail.
             </AlertDialogDescription>
