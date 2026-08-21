@@ -169,8 +169,11 @@ const FloorPlanCanvas: React.FC<Props> = ({
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-3">
         <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-          Scroll or pinch to zoom · drag to pan
+          {editing
+            ? "Drag planned devices · scroll or pinch to zoom · drag the plan to pan"
+            : "Scroll or pinch to zoom · drag to pan"}
         </p>
+
         <div className="flex items-center gap-2">
           <button
             type="button"
