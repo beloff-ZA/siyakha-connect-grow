@@ -405,6 +405,8 @@ const ClientPortalAdmin: React.FC = () => {
 
           <TabsTrigger value="updates">Updates</TabsTrigger>
           <TabsTrigger value="queries">Queries</TabsTrigger>
+          <TabsTrigger value="notifications">Email notifications</TabsTrigger>
+
         </TabsList>
 
         <TabsContent value="clients" className="pt-6">
