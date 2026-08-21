@@ -433,30 +433,49 @@ const FloorPlanCanvas: React.FC<Props> = ({
                   const cx = `${Number(m.x_norm) * 100}%`;
                   const cy = `${Number(m.y_norm) * 100}%`;
                   if (m.marker_type === "camera") {
-                    const dir = Number(m.direction_deg ?? 0);
+                    const dir = bearingToRotation(Number(m.direction_deg ?? 0));
                     const fov = Number(m.fov_deg ?? 90);
                     const r = coverageBase * (CAMERA_RANGE_RADIUS[m.coverage_range ?? "medium"] ?? 0.16);
 
                     return (
-                      <div
-                        key={`cov-${m.id}`}
-                        aria-hidden
-                        className="absolute pointer-events-none"
-                        style={{
-                          left: cx,
-                          top: cy,
-                          width: r * 2,
-                          height: r * 2,
-                          marginLeft: -r,
-                          marginTop: -r,
-                          transform: `rotate(${dir}deg)`,
-                          background:
-                            "radial-gradient(circle, hsl(32 100% 50% / 0.38) 0%, hsl(32 100% 50% / 0.16) 60%, hsl(32 100% 50% / 0) 100%)",
-                          clipPath: `polygon(50% 50%, ${50 - Math.tan((Math.min(fov, 170) / 2) * (Math.PI / 180)) * 50}% 0%, ${50 + Math.tan((Math.min(fov, 170) / 2) * (Math.PI / 180)) * 50}% 0%)`,
-                        }}
-                      />
+                      <React.Fragment key={`cov-${m.id}`}>
+                        {/* Sector: apex exactly at the camera centre, centreline on the bearing. */}
+                        <div
+                          aria-hidden
+                          className="absolute pointer-events-none"
+                          style={{
+                            left: cx,
+                            top: cy,
+                            width: r * 2,
+                            height: r * 2,
+                            marginLeft: -r,
+                            marginTop: -r,
+                            transform: `rotate(${dir}deg)`,
+                            transformOrigin: "50% 50%",
+                            background:
+                              "radial-gradient(circle, hsl(32 100% 50% / 0.38) 0%, hsl(32 100% 50% / 0.16) 60%, hsl(32 100% 50% / 0) 100%)",
+                            clipPath: sectorClipPath(fov),
+                          }}
+                        />
+                        {/* Lens centreline, so the aim is unambiguous at any zoom. */}
+                        <div
+                          aria-hidden
+                          className="absolute pointer-events-none"
+                          style={{
+                            left: cx,
+                            top: cy,
+                            width: 0,
+                            height: r,
+                            borderLeft: "1px dashed hsl(32 100% 45% / 0.85)",
+                            transform: `rotate(${dir}deg)`,
+                            transformOrigin: "0 0",
+                            marginTop: 0,
+                          }}
+                        />
+                      </React.Fragment>
                     );
                   }
+
                   return (
                     <React.Fragment key={`cov-${m.id}`}>
                       {[...COVERAGE_BANDS]
