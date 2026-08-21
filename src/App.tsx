@@ -43,6 +43,19 @@ import SuppliersPage from "./pages/helpdesk/Suppliers";
 import InternetProvidersPage from "./pages/helpdesk/InternetProviders";
 import VoipProvidersPage from "./pages/helpdesk/VoipProviders";
 import PackagesPage from "./pages/helpdesk/Packages";
+import ClientPortalAdmin from "./pages/helpdesk/ClientPortalAdmin";
+
+// Client Portal
+import ClientLogin from "./pages/ClientLogin";
+import ClientRoute from "./components/portal/ClientRoute";
+import PortalDashboard from "./pages/portal/PortalDashboard";
+import PortalProject from "./pages/portal/PortalProject";
+import PortalTracker from "./pages/portal/PortalTracker";
+import PortalDocuments from "./pages/portal/PortalDocuments";
+import PortalGallery from "./pages/portal/PortalGallery";
+import PortalUpdates from "./pages/portal/PortalUpdates";
+import PortalSupport from "./pages/portal/PortalSupport";
+import PortalProfile from "./pages/portal/PortalProfile";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +80,18 @@ function App() {
 
               {/* Auth (required for backend access) */}
               <Route path="/auth" element={<AuthPage />} />
+
+              {/* Client portal */}
+              <Route path="/client-login" element={<ClientLogin />} />
+              <Route path="/portal" element={<ClientRoute><PortalDashboard /></ClientRoute>} />
+              <Route path="/portal/project" element={<ClientRoute><PortalProject /></ClientRoute>} />
+              <Route path="/portal/tracker" element={<ClientRoute><PortalTracker /></ClientRoute>} />
+              <Route path="/portal/documents" element={<ClientRoute><PortalDocuments /></ClientRoute>} />
+              <Route path="/portal/gallery" element={<ClientRoute><PortalGallery /></ClientRoute>} />
+              <Route path="/portal/updates" element={<ClientRoute><PortalUpdates /></ClientRoute>} />
+              <Route path="/portal/support" element={<ClientRoute><PortalSupport /></ClientRoute>} />
+              <Route path="/portal/profile" element={<ClientRoute><PortalProfile /></ClientRoute>} />
+
 
               {/* Shop */}
               <Route path="/shop" element={<Shop />} />
@@ -116,6 +141,7 @@ function App() {
               <Route path="/helpdesk/internet-providers" element={<AdminRoute><InternetProvidersPage /></AdminRoute>} />
               <Route path="/helpdesk/voip-providers" element={<AdminRoute><VoipProvidersPage /></AdminRoute>} />
               <Route path="/helpdesk/packages" element={<AdminRoute><PackagesPage /></AdminRoute>} />
+              <Route path="/helpdesk/client-portal" element={<AdminRoute><ClientPortalAdmin /></AdminRoute>} />
 
               {/* Everything else redirects home */}
               <Route path="*" element={<Navigate to="/" replace />} />

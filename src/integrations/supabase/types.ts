@@ -871,6 +871,571 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_client_users: {
+        Row: {
+          activated_at: string | null
+          client_id: string
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          invited_at: string | null
+          portal_role: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          activated_at?: string | null
+          client_id: string
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          invited_at?: string | null
+          portal_role?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          activated_at?: string | null
+          client_id?: string
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          invited_at?: string | null
+          portal_role?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_client_users_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "portal_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_clients: {
+        Row: {
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string
+          display_name: string
+          id: string
+          notes: string | null
+          phone: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          display_name: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      portal_documents: {
+        Row: {
+          category: string
+          created_at: string
+          document_date: string | null
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          notes: string | null
+          project_id: string
+          storage_path: string | null
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+          version: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          document_date?: string | null
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          project_id: string
+          storage_path?: string | null
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+          version?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          document_date?: string | null
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          project_id?: string
+          storage_path?: string | null
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          version?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_milestones: {
+        Row: {
+          created_at: string
+          detail: string | null
+          due_date: string | null
+          id: string
+          phase_id: string | null
+          project_id: string
+          sort_order: number
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          due_date?: string | null
+          id?: string
+          phase_id?: string | null
+          project_id: string
+          sort_order?: number
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          due_date?: string | null
+          id?: string
+          phase_id?: string | null
+          project_id?: string
+          sort_order?: number
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_milestones_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "portal_phases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_milestones_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_phases: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          name: string
+          project_id: string
+          sort_order: number
+          start_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          name: string
+          project_id: string
+          sort_order?: number
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          sort_order?: number
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_phases_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          phase_id: string | null
+          project_id: string
+          storage_path: string
+          taken_at: string | null
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          phase_id?: string | null
+          project_id: string
+          storage_path: string
+          taken_at?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          phase_id?: string | null
+          project_id?: string
+          storage_path?: string
+          taken_at?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_photos_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "portal_phases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_photos_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_project_assignments: {
+        Row: {
+          client_user_id: string
+          created_at: string
+          id: string
+          project_id: string
+        }
+        Insert: {
+          client_user_id: string
+          created_at?: string
+          id?: string
+          project_id: string
+        }
+        Update: {
+          client_user_id?: string
+          created_at?: string
+          id?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_project_assignments_client_user_id_fkey"
+            columns: ["client_user_id"]
+            isOneToOne: false
+            referencedRelation: "portal_client_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_project_assignments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_projects: {
+        Row: {
+          address: string | null
+          client_id: string
+          consultant: string | null
+          created_at: string
+          description: string | null
+          id: string
+          objectives: string | null
+          planning_narrative: string | null
+          reference: string | null
+          risks_notes: string | null
+          site_context: string | null
+          stakeholders: string | null
+          start_date: string | null
+          status: string
+          target_date: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          client_id: string
+          consultant?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          objectives?: string | null
+          planning_narrative?: string | null
+          reference?: string | null
+          risks_notes?: string | null
+          site_context?: string | null
+          stakeholders?: string | null
+          start_date?: string | null
+          status?: string
+          target_date?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          client_id?: string
+          consultant?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          objectives?: string | null
+          planning_narrative?: string | null
+          reference?: string | null
+          risks_notes?: string | null
+          site_context?: string | null
+          stakeholders?: string | null
+          start_date?: string | null
+          status?: string
+          target_date?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_projects_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "portal_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_queries: {
+        Row: {
+          admin_response: string | null
+          client_user_id: string | null
+          created_at: string
+          id: string
+          message: string
+          project_id: string
+          responded_at: string | null
+          status: string
+          subject: string
+          submitted_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_response?: string | null
+          client_user_id?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          project_id: string
+          responded_at?: string | null
+          status?: string
+          subject: string
+          submitted_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_response?: string | null
+          client_user_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          project_id?: string
+          responded_at?: string | null
+          status?: string
+          subject?: string
+          submitted_by?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_queries_client_user_id_fkey"
+            columns: ["client_user_id"]
+            isOneToOne: false
+            referencedRelation: "portal_client_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_queries_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_tasks: {
+        Row: {
+          created_at: string
+          due_date: string | null
+          evidence_notes: string | null
+          id: string
+          owner: string | null
+          phase_id: string | null
+          priority: string
+          project_id: string
+          sort_order: number
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          due_date?: string | null
+          evidence_notes?: string | null
+          id?: string
+          owner?: string | null
+          phase_id?: string | null
+          priority?: string
+          project_id: string
+          sort_order?: number
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          due_date?: string | null
+          evidence_notes?: string | null
+          id?: string
+          owner?: string | null
+          phase_id?: string | null
+          priority?: string
+          project_id?: string
+          sort_order?: number
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_tasks_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "portal_phases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_updates: {
+        Row: {
+          author_name: string | null
+          body: string | null
+          created_at: string
+          id: string
+          posted_at: string
+          project_id: string
+          status: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string | null
+          body?: string | null
+          created_at?: string
+          id?: string
+          posted_at?: string
+          project_id: string
+          status?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string | null
+          body?: string | null
+          created_at?: string
+          id?: string
+          posted_at?: string
+          project_id?: string
+          status?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_updates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_performance: {
         Row: {
           client_name: string

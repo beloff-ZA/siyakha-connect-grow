@@ -36,6 +36,7 @@ const navSections = [
     label: "CRM",
     items: [
       { label: "Customers", icon: Building2, path: "/helpdesk/customers" },
+      { label: "Client Portal", icon: Users, path: "/helpdesk/client-portal" },
       { label: "Suppliers", icon: Truck, path: "/helpdesk/suppliers" },
       { label: "Internet Providers", icon: Wifi, path: "/helpdesk/internet-providers" },
       { label: "VoIP Providers", icon: Phone, path: "/helpdesk/voip-providers" },
