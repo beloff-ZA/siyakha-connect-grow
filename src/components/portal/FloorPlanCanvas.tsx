@@ -150,13 +150,14 @@ const FloorPlanCanvas: React.FC<Props> = ({
     dragRef.current = null;
     if (!d) return;
     if (d.mode === "marker") {
-      if (d.moved) onMoveEnd?.(d.id);
-      else {
+      if (d.moved && d.draggable) onMoveEnd?.(d.id);
+      else if (!d.moved) {
         const m = markers.find((x) => x.id === d.id);
         if (m) onSelect?.(m);
       }
       return;
     }
+
     if (!d.moved && placing && onPlace) {
       const { x, y } = stageCoords(e.clientX, e.clientY);
       onPlace(x, y);
