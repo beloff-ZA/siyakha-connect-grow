@@ -471,6 +471,194 @@ const PortalFloorPlans: React.FC = () => {
   const floorStats = useMemo(() => markerStats(floorMarkers), [floorMarkers]);
   const buildingStats = useMemo(() => markerStats(markers), [markers]);
 
+  // ---- Cable route derivation ---------------------------------------------
+  /** Live marker positions, including unsaved position drafts. */
+  const positionOf = useCallback(
+    (id: string): Waypoint | null => {
+      const m = markers.find((x) => x.id === id);
+      if (!m) return null;
+      const d = draft[id];
+      return d ? { x: d.x, y: d.y } : { x: Number(m.x_norm), y: Number(m.y_norm) };
+    },
+    [markers, draft],
+  );
+
+  const routeById = useMemo(
+    () => new Map(routes.map((r) => [r.id, r] as const)),
+    [routes],
+  );
+  const markerById = useMemo(() => new Map(markers.map((m) => [m.id, m] as const)), [markers]);
+  const floorById = useMemo(() => new Map(floors.map((f) => [f.id, f] as const)), [floors]);
+
+  const floorRoutes = useMemo(() => routes.filter((r) => r.floor_id === floorId), [routes, floorId]);
+  const buildingRouteStats = useMemo(() => routeStats(routes), [routes]);
+  const floorRouteStats = useMemo(() => routeStats(floorRoutes), [floorRoutes]);
+
+  /** Waypoints currently displayed for a route — local draft wins. */
+  const waypointsOf = useCallback(
+    (r: CableRoute) => routeDraft[r.id] ?? r.waypoints,
+    [routeDraft],
+  );
+
+  const canvasRoutes = useMemo<CanvasRoute[]>(() => {
+    if (!visible.cable_route || routeMode === "off") return [];
+    const list =
+      routeMode === "selected"
+        ? floorRoutes.filter((r) => r.id === selectedRouteId)
+        : floorRoutes;
+    return list.flatMap((r) => {
+      const from = positionOf(r.rack_marker_id);
+      const to = positionOf(r.device_marker_id);
+      if (!from || !to) return [];
+      return [
+        {
+          id: r.id,
+          service_type: r.service_type,
+          from,
+          to,
+          waypoints: waypointsOf(r),
+          editable: r.status === "planned",
+        },
+      ];
+    });
+  }, [visible.cable_route, routeMode, floorRoutes, selectedRouteId, positionOf, waypointsOf]);
+
+  const selectedRoute = selectedRouteId ? routeById.get(selectedRouteId) ?? null : null;
+  const pendingRouteIds = useMemo(() => Object.keys(routeDraft), [routeDraft]);
+
+  const moveWaypoint = useCallback(
+    (routeId: string, index: number, x: number, y: number) => {
+      const r = routeById.get(routeId);
+      if (!r || r.status !== "planned") return;
+      const current = routeDraft[routeId] ?? r.waypoints;
+      const from = positionOf(r.rack_marker_id);
+      const to = positionOf(r.device_marker_id);
+      const path = [from ?? { x, y }, ...current, to ?? { x, y }];
+      const next = [...current];
+      next[index] = snap
+        ? snapOrthogonal({ x, y }, path[index], path[index + 2], {
+            width: 1000,
+            height: 1000,
+          })
+        : { x, y };
+      setRouteDraft((d) => ({ ...d, [routeId]: next }));
+    },
+    [routeById, routeDraft, positionOf, snap],
+  );
+
+  const addWaypoint = useCallback(
+    (routeId: string, segment: number, x: number, y: number) => {
+      const r = routeById.get(routeId);
+      if (!r || r.status !== "planned") return;
+      const current = routeDraft[routeId] ?? r.waypoints;
+      setRouteDraft((d) => ({ ...d, [routeId]: insertWaypoint(current, segment, { x, y }) }));
+    },
+    [routeById, routeDraft],
+  );
+
+  const dropWaypoint = useCallback(
+    (routeId: string, index: number) => {
+      const r = routeById.get(routeId);
+      if (!r || r.status !== "planned") return;
+      const current = routeDraft[routeId] ?? r.waypoints;
+      setRouteDraft((d) => ({ ...d, [routeId]: removeWaypoint(current, index) }));
+    },
+    [routeById, routeDraft],
+  );
+
+  const cancelRouteEdits = useCallback(() => {
+    setRouteDraft({});
+    setEditingRoutes(false);
+  }, []);
+
+  const saveRouteEdits = useCallback(async () => {
+    const entries = Object.entries(routeDraft);
+    if (entries.length === 0) return;
+    setSavingRoutes(true);
+    let failed: string | null = null;
+    for (const [routeId, wps] of entries) {
+      const { error: wErr } = await supabase.rpc("portal_update_cable_route_waypoints", {
+        _route_id: routeId,
+        _waypoints: wps as unknown as never,
+      });
+      if (wErr) {
+        failed = wErr.message;
+        break;
+      }
+    }
+    setSavingRoutes(false);
+    if (failed) {
+      toast({ title: "Cable routes not saved", description: failed, variant: "destructive" });
+      return;
+    }
+    setRouteDraft({});
+    setEditingRoutes(false);
+    await load();
+    toast({
+      title: "Cable routes saved",
+      description: `${entries.length} route${entries.length === 1 ? "" : "s"} updated and recorded in the audit trail.`,
+    });
+  }, [routeDraft, load, toast]);
+
+  const generateRoutes = useCallback(async () => {
+    if (!activeProject) return;
+    setGenerating(true);
+    const { data, error: gErr } = await supabase.rpc("portal_generate_missing_cable_routes", {
+      _project_id: activeProject.id,
+    });
+    setGenerating(false);
+    setGenOpen(false);
+    if (gErr) {
+      toast({ title: "Routes not generated", description: gErr.message, variant: "destructive" });
+      return;
+    }
+    await load();
+    toast({
+      title: data ? "Cable routes generated" : "No missing routes",
+      description: data
+        ? `${data} preliminary Cat6 UTP route${data === 1 ? "" : "s"} added from each level's 6U rack to its unrouted devices.`
+        : "Every Wi-Fi access point and camera on a rack-bearing level already has a cable route.",
+    });
+  }, [activeProject, load, toast]);
+
+  const scheduleRows = useMemo(() => {
+    return routes
+      .filter((r) => (routeFloorFilter === "all" ? true : r.floor_id === routeFloorFilter))
+      .filter((r) => (routeServiceFilter === "all" ? true : r.service_type === routeServiceFilter))
+      .filter((r) => (routeStatusFilter === "all" ? true : r.status === routeStatusFilter))
+      .map((r) => {
+        const f = floorById.get(r.floor_id);
+        return {
+          id: r.id,
+          label: r.route_label,
+          floor: f?.display_name ?? "—",
+          level: f?.level_number ?? 0,
+          rack: markerById.get(r.rack_marker_id)?.label ?? "—",
+          destination: markerById.get(r.device_marker_id)?.label ?? "—",
+          service: serviceLabel(r.service_type),
+          cable: r.cable_type,
+          status: stateLabel(r.status),
+          waypoints: waypointsOf(r).length,
+        };
+      })
+      .sort((a, b) => a.level - b.level || a.label.localeCompare(b.label));
+  }, [
+    routes,
+    routeFloorFilter,
+    routeServiceFilter,
+    routeStatusFilter,
+    floorById,
+    markerById,
+    waypointsOf,
+  ]);
+
+  const exportSchedule = useCallback(() => {
+    downloadCsv(
+      `cable-route-schedule-${activeProject?.reference ?? "project"}.csv`,
+      routesToCsv(scheduleRows),
+    );
+  }, [scheduleRows, activeProject?.reference]);
+
   useEffect(() => {
     let cancelled = false;
     setPlanUrl(null);
