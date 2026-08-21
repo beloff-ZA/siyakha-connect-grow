@@ -567,29 +567,35 @@ const FloorPlanCanvas: React.FC<Props> = ({
                           ? `${m.label} · ${m.status} — position locked. Only devices with a Planned status can be repositioned.`
                           : isCamera
                             ? `${m.label} · ${isDraft ? "unsaved draft" : m.status} · aim ${bearingText(dir)}${draggable ? " — drag to reposition, drag the handle to aim" : ""}`
-                            : isDraft
-                              ? `${m.label} · unsaved draft — drag to reposition, then save`
-                              : editing
-                                ? `${m.label} · ${m.status} — drag to reposition`
-                                : `${m.label} · ${m.status}`
+                            : isRack
+                              ? `${m.label} · ${m.model ?? "6U"} network rack · ${m.status}${draggable ? " — drag to the approved rack position, then save" : ""}`
+                              : isDraft
+                                ? `${m.label} · unsaved draft — drag to reposition, then save`
+                                : editing
+                                  ? `${m.label} · ${m.status} — drag to reposition`
+                                  : `${m.label} · ${m.status}`
                       }
                       aria-label={
                         locked
                           ? `${m.label}, position locked (${m.status})`
                           : isCamera
                             ? `${m.label}, ${isDraft ? "unsaved draft" : m.status}, facing ${bearingText(dir)}`
-                            : `${m.label}, ${isDraft ? "unsaved draft" : m.status}`
+                            : isRack
+                              ? `${m.label}, ${m.model ?? "6U"} network rack, ${m.status}`
+                              : `${m.label}, ${isDraft ? "unsaved draft" : m.status}`
                       }
                       aria-pressed={isSelected}
                       className={[
-                        "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
+                        "absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight leading-none",
                         statusRing[m.status] ?? "border-solid",
                         isDraft
                           ? "border-dashed border-[hsl(32_100%_50%)] ring-1 ring-[hsl(32_100%_50%)]"
                           : isSelected
                             ? selectedRing(m.marker_type)
-                            : "border-foreground/70 hover:border-foreground",
-                        isCamera ? "rounded-none" : "rounded-full",
+                            : isRack
+                              ? "border-[hsl(268_85%_58%)] hover:border-[hsl(268_85%_45%)]"
+                              : "border-foreground/70 hover:border-foreground",
+                        isCamera || isRack ? "rounded-none" : "rounded-full",
                         isDraft ? "cursor-move" : editing ? (draggable ? "cursor-move" : "cursor-not-allowed opacity-70") : "",
                       ].join(" ")}
                       style={{
@@ -598,7 +604,12 @@ const FloorPlanCanvas: React.FC<Props> = ({
                         width: `${markerPx}px`,
                         height: `${markerPx}px`,
                         fontSize: `${Math.max(5, 8 / zoom)}px`,
-                        color: isCamera ? "hsl(32 100% 42%)" : undefined,
+                        color: isCamera
+                          ? "hsl(32 100% 42%)"
+                          : isRack
+                            ? "hsl(268 85% 45%)"
+                            : undefined,
+                        background: isRack ? "hsl(268 85% 58% / 0.16)" : undefined,
                         zIndex: isSelected ? 30 : isDraft ? 20 : 10,
                       }}
                     >
@@ -616,10 +627,18 @@ const FloorPlanCanvas: React.FC<Props> = ({
                           }}
                           strokeWidth={2}
                         />
+                      ) : isRack ? (
+                        <>
+                          <Server aria-hidden style={{ width: "52%", height: "52%" }} strokeWidth={2} />
+                          <span style={{ fontSize: `${Math.max(4, 6 / zoom)}px` }}>
+                            {m.model ?? "6U"}
+                          </span>
+                        </>
                       ) : (
                         kindShort(m.marker_type)
                       )}
                     </button>
+
 
                     {showAim && (
                       <span
