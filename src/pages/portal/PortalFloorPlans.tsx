@@ -134,6 +134,7 @@ const PortalFloorPlans: React.FC = () => {
   const [floors, setFloors] = useState<PortalFloor[]>([]);
   const [markers, setMarkers] = useState<FloorMarker[]>([]);
   const [floorId, setFloorId] = useState("");
+  const [params, setParams] = useSearchParams();
   const [planUrl, setPlanUrl] = useState<string | null>(null);
   const [visible, setVisible] = useState<Record<MarkerKind, boolean>>({
     wifi_ap: true,
