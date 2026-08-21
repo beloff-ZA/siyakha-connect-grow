@@ -279,7 +279,8 @@ const PortalFloorPlans: React.FC = () => {
                 ))}
                 <span className="flex items-center gap-2">
                   <span className="inline-block h-5 w-5 rounded-full border border-dashed border-foreground/70" />
-                  Planned
+                  Planned / not installed
+
                 </span>
                 <span className="flex items-center gap-2">
                   <span className="inline-block h-5 w-5 rounded-full border border-foreground" />
