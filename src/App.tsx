@@ -93,6 +93,8 @@ function App() {
               <Route path="/portal/floor-plans" element={<ClientRoute><PortalFloorPlans /></ClientRoute>} />
 
               <Route path="/portal/documents" element={<ClientRoute><PortalDocuments /></ClientRoute>} />
+              <Route path="/portal/site-images" element={<ClientRoute><PortalSiteImages /></ClientRoute>} />
+
               <Route path="/portal/gallery" element={<ClientRoute><PortalGallery /></ClientRoute>} />
               <Route path="/portal/updates" element={<ClientRoute><PortalUpdates /></ClientRoute>} />
               <Route path="/portal/support" element={<ClientRoute><PortalSupport /></ClientRoute>} />
