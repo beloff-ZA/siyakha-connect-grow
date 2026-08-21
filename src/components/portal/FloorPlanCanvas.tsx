@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Lock, Maximize2, Minus, Plus } from "lucide-react";
+import { Lock, Maximize2, Minus, Plus, RotateCw } from "lucide-react";
 import { kindShort, type FloorMarker } from "@/lib/floorPlans";
 import {
+  CAMERA_RANGE_RADIUS,
   COVERAGE_BANDS,
   containRect,
+  pointerInContent,
   pointerToNorm,
   wheelZoomFactor,
   zoomAbout,
@@ -21,17 +23,21 @@ type Props = {
   markers: FloorMarker[];
   selectedId?: string | null;
   onSelect?: (marker: FloorMarker | null) => void;
-  /** Admin-only: click on empty plan to place a marker at normalised coords. */
+  /** Click on empty plan to place a marker at normalised coords. */
   onPlace?: (x: number, y: number) => void;
-  /** Admin-only: drag a marker to new normalised coords. */
+  /** Drag a marker to new normalised coords. */
   onMove?: (markerId: string, x: number, y: number) => void;
-  /** Admin-only: called once when a marker drag finishes, to persist the position. */
+  /** Called once when a marker drag finishes, to persist the position. */
   onMoveEnd?: (markerId: string) => void;
+  /** Drag the rotate handle of a selected camera to aim it (0–359). */
+  onAim?: (markerId: string, deg: number) => void;
   /** When false for a marker, dragging is blocked and a lock badge is shown in edit mode. */
   canDrag?: (marker: FloorMarker) => boolean;
   /** Visual affordances for reposition mode. */
   editing?: boolean;
   placing?: boolean;
+  /** Marker ids that exist only as local unsaved drafts. */
+  unsavedIds?: string[];
   /** Coverage overlay: off, selected device only, or all APs on this floor. */
   coverage?: CoverageMode;
   height?: string;
@@ -50,6 +56,7 @@ const selectedRing = (kind: string) =>
   kind === "camera"
     ? "border-[hsl(32_100%_50%)] ring-2 ring-[hsl(32_100%_50%)] shadow-[0_0_0_4px_hsl(32_100%_50%/0.28),0_0_16px_hsl(32_100%_50%/0.55)]"
     : "border-[hsl(190_100%_45%)] ring-2 ring-[hsl(190_100%_45%)] shadow-[0_0_0_4px_hsl(190_100%_45%/0.28),0_0_16px_hsl(190_100%_45%/0.55)]";
+
 
 const FloorPlanCanvas: React.FC<Props> = ({
   imageUrl,
