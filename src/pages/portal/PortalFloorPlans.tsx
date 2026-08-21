@@ -12,8 +12,18 @@ import {
   Move,
   Radio,
   Search,
+  Settings2,
   Trash2,
 } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
 import { supabase } from "@/integrations/supabase/client";
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
