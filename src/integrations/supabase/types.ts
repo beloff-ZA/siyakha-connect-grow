@@ -871,6 +871,377 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_boq_activity: {
+        Row: {
+          action: string
+          actor_type: string
+          actor_user_id: string | null
+          boq_id: string
+          created_at: string
+          detail: string | null
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_type?: string
+          actor_user_id?: string | null
+          boq_id: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_type?: string
+          actor_user_id?: string | null
+          boq_id?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_boq_activity_boq_id_fkey"
+            columns: ["boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_boq_comments: {
+        Row: {
+          admin_response: string | null
+          author_name: string | null
+          author_type: string
+          author_user_id: string | null
+          body: string
+          boq_id: string
+          created_at: string
+          id: string
+          item_id: string | null
+          responded_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_response?: string | null
+          author_name?: string | null
+          author_type?: string
+          author_user_id?: string | null
+          body: string
+          boq_id: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_response?: string | null
+          author_name?: string | null
+          author_type?: string
+          author_user_id?: string | null
+          body?: string
+          boq_id?: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_boq_comments_boq_id_fkey"
+            columns: ["boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_boq_comments_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boq_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_boq_decisions: {
+        Row: {
+          boq_id: string
+          created_at: string
+          decided_by_name: string | null
+          decided_by_user_id: string | null
+          decision: string
+          id: string
+          message: string | null
+        }
+        Insert: {
+          boq_id: string
+          created_at?: string
+          decided_by_name?: string | null
+          decided_by_user_id?: string | null
+          decision: string
+          id?: string
+          message?: string | null
+        }
+        Update: {
+          boq_id?: string
+          created_at?: string
+          decided_by_name?: string | null
+          decided_by_user_id?: string | null
+          decision?: string
+          id?: string
+          message?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_boq_decisions_boq_id_fkey"
+            columns: ["boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_boq_item_costs: {
+        Row: {
+          created_at: string
+          id: string
+          internal_notes: string | null
+          item_id: string
+          markup_percent: number
+          supplier: string | null
+          supplier_unit_cost: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          internal_notes?: string | null
+          item_id: string
+          markup_percent?: number
+          supplier?: string | null
+          supplier_unit_cost?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          internal_notes?: string | null
+          item_id?: string
+          markup_percent?: number
+          supplier?: string | null
+          supplier_unit_cost?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_boq_item_costs_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: true
+            referencedRelation: "portal_boq_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_boq_items: {
+        Row: {
+          boq_id: string
+          created_at: string
+          customer_unit_rate: number
+          description: string
+          id: string
+          is_included: boolean
+          item_code: string | null
+          line_total: number | null
+          notes: string | null
+          quantity: number
+          reference: string | null
+          section_id: string
+          sort_order: number
+          specification: string | null
+          unit: string
+          updated_at: string
+          vat_applicable: boolean
+        }
+        Insert: {
+          boq_id: string
+          created_at?: string
+          customer_unit_rate?: number
+          description: string
+          id?: string
+          is_included?: boolean
+          item_code?: string | null
+          line_total?: number | null
+          notes?: string | null
+          quantity?: number
+          reference?: string | null
+          section_id: string
+          sort_order?: number
+          specification?: string | null
+          unit?: string
+          updated_at?: string
+          vat_applicable?: boolean
+        }
+        Update: {
+          boq_id?: string
+          created_at?: string
+          customer_unit_rate?: number
+          description?: string
+          id?: string
+          is_included?: boolean
+          item_code?: string | null
+          line_total?: number | null
+          notes?: string | null
+          quantity?: number
+          reference?: string | null
+          section_id?: string
+          sort_order?: number
+          specification?: string | null
+          unit?: string
+          updated_at?: string
+          vat_applicable?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_boq_items_boq_id_fkey"
+            columns: ["boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_boq_items_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boq_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_boq_sections: {
+        Row: {
+          boq_id: string
+          created_at: string
+          description: string | null
+          id: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          boq_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          boq_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_boq_sections_boq_id_fkey"
+            columns: ["boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_boqs: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          id: string
+          notes: string | null
+          project_id: string
+          published_at: string | null
+          published_by: string | null
+          revision_label: string
+          status: string
+          superseded_by: string | null
+          title: string
+          updated_at: string
+          valid_until: string | null
+          vat_enabled: boolean
+          vat_rate: number
+          version_no: number
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          notes?: string | null
+          project_id: string
+          published_at?: string | null
+          published_by?: string | null
+          revision_label?: string
+          status?: string
+          superseded_by?: string | null
+          title: string
+          updated_at?: string
+          valid_until?: string | null
+          vat_enabled?: boolean
+          vat_rate?: number
+          version_no?: number
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          notes?: string | null
+          project_id?: string
+          published_at?: string | null
+          published_by?: string | null
+          revision_label?: string
+          status?: string
+          superseded_by?: string | null
+          title?: string
+          updated_at?: string
+          valid_until?: string | null
+          vat_enabled?: boolean
+          vat_rate?: number
+          version_no?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_boqs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_boqs_superseded_by_fkey"
+            columns: ["superseded_by"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_client_users: {
         Row: {
           activated_at: string | null
