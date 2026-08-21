@@ -386,6 +386,29 @@ const ClientPortalAdmin: React.FC = () => {
         <h1 className="font-display text-3xl font-light tracking-tight">Client portal management</h1>
       </header>
 
+      {!clientEmailsEnabled && (
+        <div
+          role="status"
+          className="mb-8 border-2 border-foreground bg-muted px-5 py-4"
+        >
+          <p className="text-[10px] uppercase tracking-[0.26em] mb-1">
+            Testing mode — client emails disabled
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            No invitation, setup or notification email can be sent to clients. Invite actions are
+            hidden and the server refuses every client email request. Activate test logins with
+            “Activate test account without email” instead.
+          </p>
+        </div>
+      )}
+
+      <TestAccountDialog
+        target={testTarget}
+        onClose={() => setTestTarget(null)}
+        onDone={() => loadBase()}
+      />
+
+
       <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-end gap-3">
         <div className="w-full sm:w-96">
           <Label htmlFor="admin-project">Active project</Label>
