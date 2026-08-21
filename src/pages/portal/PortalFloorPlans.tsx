@@ -752,6 +752,14 @@ const PortalFloorPlans: React.FC = () => {
         <Metric label="Planned (all devices)" value={buildingStats.planned} />
         <Metric label="Installed (all devices)" value={buildingStats.installed} />
       </div>
+      {/* Cable routes are cabling, not devices — always counted separately. */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <Metric label="Cable routes (building)" value={buildingRouteStats.total} />
+        <Metric label="Cable routes to Wi-Fi APs" value={buildingRouteStats.wifi} />
+        <Metric label="Cable routes to CCTV" value={buildingRouteStats.camera} />
+        <Metric label="Cable routes planned" value={buildingRouteStats.planned} />
+      </div>
+
 
 
       {floors.length === 0 ? (
