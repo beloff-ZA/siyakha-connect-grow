@@ -45,8 +45,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
   stateRef.current = { zoom, offset };
 
   const dragRef = useRef<
-    | { mode: "pan"; startX: number; startY: number; ox: number; oy: number }
-    | { mode: "marker"; id: string }
+    | { mode: "pan"; startX: number; startY: number; ox: number; oy: number; moved: boolean }
+    | { mode: "marker"; id: string; startX: number; startY: number; moved: boolean }
     | null
   >(null);
 
@@ -67,13 +67,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
     setOffset({ x: px - (px - o.x) * k, y: py - (py - o.y) * k });
   }, []);
 
-  const wheelRef = useRef((e: WheelEvent) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 100 : 1);
-    zoomAt(Math.exp(-dy * 0.0018), e.clientX - rect.left, e.clientY - rect.top);
-  });
+  const wheelRef = useRef<(e: WheelEvent) => void>(() => {});
   wheelRef.current = (e: WheelEvent) => {
     const el = containerRef.current;
     if (!el) return;
@@ -103,15 +97,16 @@ const FloorPlanCanvas: React.FC<Props> = ({
   const onPointerDown = (e: React.PointerEvent) => {
     const target = e.target as HTMLElement;
     const markerId = target.closest("[data-marker-id]")?.getAttribute("data-marker-id");
-    if (markerId && onMove) {
-      dragRef.current = { mode: "marker", id: markerId };
-    } else if (!markerId) {
+    if (markerId) {
+      dragRef.current = { mode: "marker", id: markerId, startX: e.clientX, startY: e.clientY, moved: false };
+    } else {
       dragRef.current = {
         mode: "pan",
         startX: e.clientX,
         startY: e.clientY,
         ox: offset.x,
         oy: offset.y,
+        moved: false,
       };
     }
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -120,26 +115,33 @@ const FloorPlanCanvas: React.FC<Props> = ({
   const onPointerMove = (e: React.PointerEvent) => {
     const d = dragRef.current;
     if (!d) return;
+    const far = Math.abs(e.clientX - d.startX) > 3 || Math.abs(e.clientY - d.startY) > 3;
+    if (far) d.moved = true;
     if (d.mode === "pan") {
       setOffset({ x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) });
-    } else if (onMove) {
+    } else if (onMove && d.moved) {
       const { x, y } = stageCoords(e.clientX, e.clientY);
       onMove(d.id, x, y);
     }
   };
 
-  const onPointerUp = () => {
+  const onPointerUp = (e: React.PointerEvent) => {
+    const d = dragRef.current;
     dragRef.current = null;
-  };
-
-  const handleClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.closest("[data-marker-id]")) return;
-    if (placing && onPlace) {
+    if (!d) return;
+    if (d.mode === "marker") {
+      if (!d.moved) {
+        const m = markers.find((x) => x.id === d.id);
+        if (m) onSelect?.(m);
+      }
+      return;
+    }
+    if (!d.moved && placing && onPlace) {
       const { x, y } = stageCoords(e.clientX, e.clientY);
       onPlace(x, y);
     }
   };
+
 
   return (
     <div className="space-y-3">
