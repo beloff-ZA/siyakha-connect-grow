@@ -56,6 +56,20 @@ type Props = {
   emptyLabel?: string;
 };
 
+/**
+ * Clip path for a true circular sector of `fov` degrees, centred on the box centre
+ * and pointing UP at rest — so a CSS `rotate(bearing)` aims it on the plan bearing.
+ */
+function sectorClipPath(fov: number, steps = 24) {
+  const half = Math.min(Math.max(fov, 10), 170) / 2;
+  const pts = ["50% 50%"];
+  for (let i = 0; i <= steps; i++) {
+    const a = ((-half + (2 * half * i) / steps) * Math.PI) / 180;
+    pts.push(`${(50 + Math.sin(a) * 50).toFixed(3)}% ${(50 - Math.cos(a) * 50).toFixed(3)}%`);
+  }
+  return `polygon(${pts.join(", ")})`;
+}
+
 const statusRing: Record<string, string> = {
   planned: "border-dashed",
   installed: "border-solid",
@@ -467,9 +481,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
                             width: 0,
                             height: r,
                             borderLeft: "1px dashed hsl(32 100% 45% / 0.85)",
-                            transform: `rotate(${dir}deg)`,
+                            transform: `rotate(${dir}deg) translateY(${-r}px)`,
                             transformOrigin: "0 0",
-                            marginTop: 0,
                           }}
                         />
                       </React.Fragment>
