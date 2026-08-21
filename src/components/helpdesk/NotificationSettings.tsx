@@ -10,6 +10,7 @@ type Settings = {
   id: string;
   login_notify_enabled: boolean;
   recipient_email: string;
+  client_emails_enabled: boolean;
 };
 
 type LogRow = {
@@ -45,7 +46,7 @@ const NotificationSettings: React.FC = () => {
     const [s, l] = await Promise.all([
       supabase
         .from("portal_notification_settings")
-        .select("id, login_notify_enabled, recipient_email")
+        .select("id, login_notify_enabled, recipient_email, client_emails_enabled")
         .limit(1)
         .maybeSingle(),
       supabase
