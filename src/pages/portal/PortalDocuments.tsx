@@ -26,6 +26,7 @@ const PortalDocuments: React.FC = () => {
   const { activeProject, loading, error } = usePortal();
   const { toast } = useToast();
   const [docs, setDocs] = useState<Doc[]>([]);
+  const [phaseNames, setPhaseNames] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(true);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
@@ -41,20 +42,27 @@ const PortalDocuments: React.FC = () => {
     }
     let cancelled = false;
     setBusy(true);
-    supabase
-      .from("portal_documents")
-      .select("*")
-      .eq("project_id", activeProject.id)
-      .order("document_date", { ascending: false, nullsFirst: false })
-      .then(({ data }) => {
-        if (cancelled) return;
-        setDocs((data ?? []) as unknown as Doc[]);
-        setBusy(false);
-      });
+    Promise.all([
+      supabase
+        .from("portal_documents")
+        .select("*")
+        .eq("project_id", activeProject.id)
+        .order("document_date", { ascending: false, nullsFirst: false }),
+      supabase.from("portal_phases").select("id,name").eq("project_id", activeProject.id),
+    ]).then(([docRes, phaseRes]) => {
+      if (cancelled) return;
+      setDocs((docRes.data ?? []) as unknown as Doc[]);
+      setPhaseNames(
+        Object.fromEntries(((phaseRes.data ?? []) as { id: string; name: string }[]).map((p) => [p.id, p.name])),
+      );
+      setBusy(false);
+    });
     return () => {
       cancelled = true;
     };
   }, [activeProject]);
+
+
 
   const categories = useMemo(
     () => ["all", ...Array.from(new Set(docs.map((d) => d.category)))],
