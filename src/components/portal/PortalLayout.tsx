@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
+  Camera,
+
   FileText,
   Images,
   ListChecks,
@@ -28,7 +30,9 @@ const nav = [
   { to: "/portal/floor-plans", label: "Floor plans", icon: Layers },
 
   { to: "/portal/documents", label: "Documents", icon: FileText },
+  { to: "/portal/site-images", label: "Site images", icon: Camera },
   { to: "/portal/gallery", label: "Site gallery", icon: Images },
+
   { to: "/portal/updates", label: "Updates", icon: Bell },
   { to: "/portal/support", label: "Support", icon: MessageSquare },
   { to: "/portal/profile", label: "Profile & security", icon: UserRound },

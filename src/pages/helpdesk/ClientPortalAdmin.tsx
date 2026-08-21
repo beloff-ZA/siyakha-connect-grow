@@ -10,6 +10,8 @@ import { DOCUMENTS_BUCKET, PHOTOS_BUCKET, formatDate } from "@/lib/portalFiles";
 import { statusLabel } from "@/hooks/usePortal";
 import BoqManager from "@/components/helpdesk/BoqManager";
 import FloorPlansManager from "@/components/helpdesk/FloorPlansManager";
+import SiteImagesManager from "@/components/helpdesk/SiteImagesManager";
+
 
 
 type Row = Record<string, any>;
@@ -387,6 +389,8 @@ const ClientPortalAdmin: React.FC = () => {
           <TabsTrigger value="files">Documents & photos</TabsTrigger>
           <TabsTrigger value="boq">BOQ</TabsTrigger>
           <TabsTrigger value="plans">Floor plans</TabsTrigger>
+          <TabsTrigger value="site-images">Site images</TabsTrigger>
+
 
           <TabsTrigger value="updates">Updates</TabsTrigger>
           <TabsTrigger value="queries">Queries</TabsTrigger>
@@ -695,6 +699,11 @@ const ClientPortalAdmin: React.FC = () => {
         <TabsContent value="plans" className="pt-6">
           <FloorPlansManager projectId={projectId} />
         </TabsContent>
+
+        <TabsContent value="site-images" className="pt-6">
+          <SiteImagesManager projectId={projectId} />
+        </TabsContent>
+
 
 
         <TabsContent value="updates" className="pt-6">

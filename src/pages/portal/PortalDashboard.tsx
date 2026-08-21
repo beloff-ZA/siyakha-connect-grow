@@ -198,6 +198,8 @@ const PortalDashboard: React.FC = () => {
                 { to: "/portal/project", label: "Project overview" },
                 { to: "/portal/tracker", label: "Planning tracker" },
                 { to: "/portal/documents", label: "Documents" },
+                { to: "/portal/site-images", label: "Site images" },
+
                 { to: "/portal/support", label: "Raise a query" },
               ].map((l) => (
                 <Link
