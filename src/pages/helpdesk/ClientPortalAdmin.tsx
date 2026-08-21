@@ -247,7 +247,15 @@ const ClientPortalAdmin: React.FC = () => {
   };
 
   /* ---------- Files ---------- */
-  const [docMeta, setDocMeta] = useState({ title: "", category: "General", version: "", document_date: "" });
+  const [docMeta, setDocMeta] = useState({
+    title: "",
+    category: "General",
+    version: "",
+    reference: "",
+    phase_id: "",
+    document_date: "",
+    notes: "",
+  });
   const uploadDocument = async (file: File) => {
     if (!projectId) return;
     setBusy(true);
@@ -266,17 +274,45 @@ const ClientPortalAdmin: React.FC = () => {
       title: docMeta.title.trim() || file.name,
       category: docMeta.category.trim() || "General",
       version: docMeta.version.trim() || null,
+      reference: docMeta.reference.trim() || null,
+      phase_id: docMeta.phase_id || null,
       document_date: docMeta.document_date || null,
+      notes: docMeta.notes.trim() || null,
       storage_path: path,
       file_size: file.size,
       mime_type: file.type || null,
     });
     setBusy(false);
     if (error) return fail(error);
-    setDocMeta({ title: "", category: "General", version: "", document_date: "" });
+    setDocMeta({ title: "", category: "General", version: "", reference: "", phase_id: "", document_date: "", notes: "" });
     toast({ title: "Document uploaded" });
     loadProject();
   };
+
+  /** Attaches a file to an existing document record that is still awaiting its upload. */
+  const attachDocumentFile = async (docId: string, title: string, file: File) => {
+    if (!projectId) return;
+    setBusy(true);
+    const safe = (title || file.name).toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-|-$/g, "");
+    const path = `${projectId}/${Date.now()}-${safe}${file.name.match(/\.[a-z0-9]+$/i)?.[0] ?? ""}`;
+    const { error: upErr } = await supabase.storage.from(DOCUMENTS_BUCKET).upload(path, file, {
+      contentType: file.type || undefined,
+      upsert: false,
+    });
+    if (upErr) {
+      setBusy(false);
+      return fail(upErr);
+    }
+    const { error } = await supabase
+      .from("portal_documents")
+      .update({ storage_path: path, file_size: file.size, mime_type: file.type || null })
+      .eq("id", docId);
+    setBusy(false);
+    if (error) return fail(error);
+    toast({ title: "File attached to document record" });
+    loadProject();
+  };
+
 
   const [photoMeta, setPhotoMeta] = useState({ caption: "", taken_at: "", phase_id: "" });
   const uploadPhoto = async (file: File) => {
@@ -555,8 +591,16 @@ const ClientPortalAdmin: React.FC = () => {
                 <div className="grid sm:grid-cols-4 gap-3">
                   <Input placeholder="Title" value={docMeta.title} onChange={(e) => setDocMeta({ ...docMeta, title: e.target.value })} />
                   <Input placeholder="Category" value={docMeta.category} onChange={(e) => setDocMeta({ ...docMeta, category: e.target.value })} />
-                  <Input placeholder="Version" value={docMeta.version} onChange={(e) => setDocMeta({ ...docMeta, version: e.target.value })} />
+                  <Input placeholder="Version / revision" value={docMeta.version} onChange={(e) => setDocMeta({ ...docMeta, version: e.target.value })} />
+                  <Input placeholder="Job reference" value={docMeta.reference} onChange={(e) => setDocMeta({ ...docMeta, reference: e.target.value })} />
                   <Input type="date" value={docMeta.document_date} onChange={(e) => setDocMeta({ ...docMeta, document_date: e.target.value })} aria-label="Document date" />
+                  <select className={selectCls} value={docMeta.phase_id} onChange={(e) => setDocMeta({ ...docMeta, phase_id: e.target.value })} aria-label="Document phase">
+                    <option value="">No phase</option>
+                    {phases.map((ph) => (<option key={ph.id} value={ph.id}>{ph.name}</option>))}
+                  </select>
+                  <div className="sm:col-span-2">
+                    <Input placeholder="Summary / notes shown to the client" value={docMeta.notes} onChange={(e) => setDocMeta({ ...docMeta, notes: e.target.value })} />
+                  </div>
                 </div>
                 <div className="mt-3">
                   <Label htmlFor="doc-file" className="text-xs">File</Label>
@@ -573,12 +617,39 @@ const ClientPortalAdmin: React.FC = () => {
                 </div>
                 <ul className="divide-y divide-border mt-4">
                   {documents.map((d) => (
-                    <li key={d.id} className="py-3 flex items-center justify-between gap-3">
-                      <span className="text-sm">{d.title} <span className="text-xs text-muted-foreground">· {d.category} · {formatDate(d.document_date)}</span></span>
-                      <Button size="sm" variant="ghost" onClick={() => deleteRow("portal_documents", d.id)}>Delete record</Button>
+                    <li key={d.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <span className="text-sm">
+                        {d.title}{" "}
+                        <span className="text-xs text-muted-foreground">
+                          · {d.category} · {formatDate(d.document_date)}
+                          {d.version ? ` · ${d.version}` : ""}
+                          {d.reference ? ` · ${d.reference}` : ""}
+                        </span>
+                        {!d.storage_path && (
+                          <span className="ml-2 text-[10px] uppercase tracking-[0.2em] border border-border px-2 py-0.5">Awaiting upload</span>
+                        )}
+                      </span>
+                      <span className="flex items-center gap-3">
+                        {!d.storage_path && (
+                          <label className="text-xs cursor-pointer border border-border px-3 py-1.5 hover:bg-muted">
+                            Attach file
+                            <input
+                              type="file"
+                              className="hidden"
+                              onChange={(e) => {
+                                const f = e.target.files?.[0];
+                                if (f) attachDocumentFile(d.id as string, d.title as string, f);
+                                e.target.value = "";
+                              }}
+                            />
+                          </label>
+                        )}
+                        <Button size="sm" variant="ghost" onClick={() => deleteRow("portal_documents", d.id)}>Delete record</Button>
+                      </span>
                     </li>
                   ))}
                 </ul>
+
               </Section>
 
               <Section title="Upload site photo">

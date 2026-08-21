@@ -12,6 +12,8 @@ type Doc = {
   title: string;
   category: string;
   version: string | null;
+  reference: string | null;
+  phase_id: string | null;
   document_date: string | null;
   storage_path: string | null;
   file_size: number | null;
@@ -19,10 +21,12 @@ type Doc = {
   notes: string | null;
 };
 
+
 const PortalDocuments: React.FC = () => {
   const { activeProject, loading, error } = usePortal();
   const { toast } = useToast();
   const [docs, setDocs] = useState<Doc[]>([]);
+  const [phaseNames, setPhaseNames] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(true);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
@@ -38,20 +42,27 @@ const PortalDocuments: React.FC = () => {
     }
     let cancelled = false;
     setBusy(true);
-    supabase
-      .from("portal_documents")
-      .select("*")
-      .eq("project_id", activeProject.id)
-      .order("document_date", { ascending: false, nullsFirst: false })
-      .then(({ data }) => {
-        if (cancelled) return;
-        setDocs((data ?? []) as unknown as Doc[]);
-        setBusy(false);
-      });
+    Promise.all([
+      supabase
+        .from("portal_documents")
+        .select("*")
+        .eq("project_id", activeProject.id)
+        .order("document_date", { ascending: false, nullsFirst: false }),
+      supabase.from("portal_phases").select("id,name").eq("project_id", activeProject.id),
+    ]).then(([docRes, phaseRes]) => {
+      if (cancelled) return;
+      setDocs((docRes.data ?? []) as unknown as Doc[]);
+      setPhaseNames(
+        Object.fromEntries(((phaseRes.data ?? []) as { id: string; name: string }[]).map((p) => [p.id, p.name])),
+      );
+      setBusy(false);
+    });
     return () => {
       cancelled = true;
     };
   }, [activeProject]);
+
+
 
   const categories = useMemo(
     () => ["all", ...Array.from(new Set(docs.map((d) => d.category)))],
@@ -145,35 +156,59 @@ const PortalDocuments: React.FC = () => {
       ) : (
         <ul className="border border-border divide-y divide-border">
           {filtered.map((d) => (
-            <li key={d.id} className="p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
+            <li key={d.id} className="p-5 md:p-6 flex flex-col md:flex-row md:items-start gap-4">
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground mb-1">
                   {d.category}
                 </p>
                 <p className="font-display text-lg font-light tracking-tight">{d.title}</p>
-                {d.notes && <p className="text-xs text-muted-foreground mt-1">{d.notes}</p>}
-                <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-2">
-                  {formatDate(d.document_date)} · {formatFileSize(d.file_size)}
-                  {d.version ? ` · v${d.version}` : ""}
+                {d.notes && <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{d.notes}</p>}
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {d.version && (
+                    <span className="text-[10px] uppercase tracking-[0.2em] border border-border px-2 py-1">
+                      {d.version}
+                    </span>
+                  )}
+                  {d.reference && (
+                    <span className="text-[10px] uppercase tracking-[0.2em] border border-border px-2 py-1">
+                      Ref {d.reference}
+                    </span>
+                  )}
+                  {d.phase_id && phaseNames[d.phase_id] && (
+                    <span className="text-[10px] uppercase tracking-[0.2em] border border-border px-2 py-1">
+                      {phaseNames[d.phase_id]}
+                    </span>
+                  )}
+                  {!d.storage_path && (
+                    <span className="text-[10px] uppercase tracking-[0.2em] border border-border px-2 py-1">
+                      File pending
+                    </span>
+                  )}
+                </div>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-3">
+                  Issued {formatDate(d.document_date)} · {formatFileSize(d.file_size)}
                 </p>
               </div>
               <div className="flex gap-2 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => open(d, false)}
-                  className="inline-flex items-center gap-2 border border-border px-4 py-2 text-[10px] uppercase tracking-[0.2em] hover:bg-muted transition-colors"
+                  disabled={!d.storage_path}
+                  className="inline-flex items-center gap-2 border border-border px-4 py-2 text-[10px] uppercase tracking-[0.2em] hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <Eye className="h-3.5 w-3.5" strokeWidth={1.5} /> View
                 </button>
                 <button
                   type="button"
                   onClick={() => open(d, true)}
-                  className="inline-flex items-center gap-2 border border-border px-4 py-2 text-[10px] uppercase tracking-[0.2em] hover:bg-muted transition-colors"
+                  disabled={!d.storage_path}
+                  className="inline-flex items-center gap-2 border border-border px-4 py-2 text-[10px] uppercase tracking-[0.2em] hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <Download className="h-3.5 w-3.5" strokeWidth={1.5} /> Download
                 </button>
               </div>
             </li>
+
           ))}
         </ul>
       )}

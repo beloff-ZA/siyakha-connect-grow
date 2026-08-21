@@ -1462,7 +1462,9 @@ export type Database = {
           id: string
           mime_type: string | null
           notes: string | null
+          phase_id: string | null
           project_id: string
+          reference: string | null
           storage_path: string | null
           title: string
           updated_at: string
@@ -1477,7 +1479,9 @@ export type Database = {
           id?: string
           mime_type?: string | null
           notes?: string | null
+          phase_id?: string | null
           project_id: string
+          reference?: string | null
           storage_path?: string | null
           title: string
           updated_at?: string
@@ -1492,7 +1496,9 @@ export type Database = {
           id?: string
           mime_type?: string | null
           notes?: string | null
+          phase_id?: string | null
           project_id?: string
+          reference?: string | null
           storage_path?: string | null
           title?: string
           updated_at?: string
@@ -1500,6 +1506,13 @@ export type Database = {
           version?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "portal_documents_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "portal_phases"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "portal_documents_project_id_fkey"
             columns: ["project_id"]
