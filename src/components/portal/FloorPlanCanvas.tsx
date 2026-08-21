@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Lock, Maximize2, Minus, Plus, Video } from "lucide-react";
+import { Lock, Maximize2, Minus, Plus, Server, Video } from "lucide-react";
 import { kindShort, type FloorMarker } from "@/lib/floorPlans";
 import {
   AIM_DEADZONE_PX,
