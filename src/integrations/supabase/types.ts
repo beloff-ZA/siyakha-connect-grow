@@ -1242,6 +1242,142 @@ export type Database = {
           },
         ]
       }
+      portal_cable_route_history: {
+        Row: {
+          action: string
+          actor_role: string | null
+          actor_type: string
+          actor_user_id: string | null
+          created_at: string
+          detail: string | null
+          floor_id: string | null
+          id: string
+          new_waypoints: Json | null
+          prev_waypoints: Json | null
+          project_id: string | null
+          route_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_role?: string | null
+          actor_type: string
+          actor_user_id?: string | null
+          created_at?: string
+          detail?: string | null
+          floor_id?: string | null
+          id?: string
+          new_waypoints?: Json | null
+          prev_waypoints?: Json | null
+          project_id?: string | null
+          route_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_role?: string | null
+          actor_type?: string
+          actor_user_id?: string | null
+          created_at?: string
+          detail?: string | null
+          floor_id?: string | null
+          id?: string
+          new_waypoints?: Json | null
+          prev_waypoints?: Json | null
+          project_id?: string | null
+          route_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_cable_route_history_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "portal_cable_routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_cable_routes: {
+        Row: {
+          cable_type: string
+          client_visible: boolean
+          created_at: string
+          created_by: string | null
+          device_marker_id: string
+          floor_id: string
+          id: string
+          notes: string | null
+          project_id: string
+          rack_marker_id: string
+          route_label: string
+          service_type: string
+          status: Database["public"]["Enums"]["portal_marker_state"]
+          updated_at: string
+          waypoints: Json
+        }
+        Insert: {
+          cable_type?: string
+          client_visible?: boolean
+          created_at?: string
+          created_by?: string | null
+          device_marker_id: string
+          floor_id: string
+          id?: string
+          notes?: string | null
+          project_id: string
+          rack_marker_id: string
+          route_label: string
+          service_type: string
+          status?: Database["public"]["Enums"]["portal_marker_state"]
+          updated_at?: string
+          waypoints?: Json
+        }
+        Update: {
+          cable_type?: string
+          client_visible?: boolean
+          created_at?: string
+          created_by?: string | null
+          device_marker_id?: string
+          floor_id?: string
+          id?: string
+          notes?: string | null
+          project_id?: string
+          rack_marker_id?: string
+          route_label?: string
+          service_type?: string
+          status?: Database["public"]["Enums"]["portal_marker_state"]
+          updated_at?: string
+          waypoints?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_cable_routes_device_marker_id_fkey"
+            columns: ["device_marker_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floor_markers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_cable_routes_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_cable_routes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_cable_routes_rack_marker_id_fkey"
+            columns: ["rack_marker_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floor_markers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_client_users: {
         Row: {
           activated_at: string | null
@@ -2514,7 +2650,15 @@ export type Database = {
         Args: { _cameras: Json; _floor_id: string }
         Returns: number
       }
+      portal_generate_missing_cable_routes: {
+        Args: { _floor_id?: string; _project_id: string }
+        Returns: number
+      }
       portal_move_floor_markers: { Args: { _moves: Json }; Returns: number }
+      portal_update_cable_route_waypoints: {
+        Args: { _route_id: string; _waypoints: Json }
+        Returns: number
+      }
       portal_update_camera_optics: { Args: { _updates: Json }; Returns: number }
     }
     Enums: {

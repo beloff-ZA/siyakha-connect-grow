@@ -25,6 +25,20 @@ const DRAG_THRESHOLD = 4;
 
 export type CoverageMode = "off" | "selected" | "all";
 
+/**
+ * A cable route ready to draw. Endpoints are resolved by the caller from the
+ * CURRENT rack / device marker positions, so moving a marker moves the route.
+ */
+export type CanvasRoute = {
+  id: string;
+  service_type: "wifi_ap" | "camera";
+  from: { x: number; y: number };
+  to: { x: number; y: number };
+  waypoints: { x: number; y: number }[];
+  /** False when the route status is progressed and its geometry is locked. */
+  editable?: boolean;
+};
+
 type Props = {
   imageUrl: string | null;
   markers: FloorMarker[];
@@ -52,6 +66,17 @@ type Props = {
   unsavedIds?: string[];
   /** Coverage overlay: off, selected device only, or all APs on this floor. */
   coverage?: CoverageMode;
+
+  /** Cable routes to draw on this level (already filtered by the caller). */
+  routes?: CanvasRoute[];
+  selectedRouteId?: string | null;
+  onSelectRoute?: (routeId: string | null) => void;
+  /** Waypoint editing mode — only then are route handles interactive. */
+  editingRoutes?: boolean;
+  onMoveWaypoint?: (routeId: string, index: number, x: number, y: number) => void;
+  onAddWaypoint?: (routeId: string, segment: number, x: number, y: number) => void;
+  onRemoveWaypoint?: (routeId: string, index: number) => void;
+
   height?: string;
   emptyLabel?: string;
 };
@@ -101,6 +126,13 @@ const FloorPlanCanvas: React.FC<Props> = ({
   placing = false,
   unsavedIds,
   coverage = "off",
+  routes,
+  selectedRouteId = null,
+  onSelectRoute,
+  editingRoutes = false,
+  onMoveWaypoint,
+  onAddWaypoint,
+  onRemoveWaypoint,
   height = "h-[60vh] md:h-[70vh]",
   emptyLabel = "Plan image not available yet.",
 }) => {
@@ -134,6 +166,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
         anchor: { x: number; y: number };
         moved: boolean;
       }
+    | { mode: "wp"; id: string; index: number; startX: number; startY: number; moved: boolean }
+    | { mode: "seg"; id: string; index: number; startX: number; startY: number; moved: boolean }
     | null
   >(null);
 
@@ -251,10 +285,35 @@ const FloorPlanCanvas: React.FC<Props> = ({
   );
 
   const onPointerDown = (e: React.PointerEvent) => {
-    const target = e.target as HTMLElement;
+    const target = e.target as Element;
     const aimId = target.closest("[data-aim-for]")?.getAttribute("data-aim-for");
     const markerId = target.closest("[data-marker-id]")?.getAttribute("data-marker-id");
-    if (aimId) {
+    const wpEl = target.closest("[data-wp-route]");
+    const segEl = target.closest("[data-seg-route]");
+    const routeEl = target.closest("[data-route-id]");
+    if (wpEl) {
+      dragRef.current = {
+        mode: "wp",
+        id: wpEl.getAttribute("data-wp-route") ?? "",
+        index: Number(wpEl.getAttribute("data-wp-index") ?? 0),
+        startX: e.clientX,
+        startY: e.clientY,
+        moved: false,
+      };
+    } else if (segEl) {
+      dragRef.current = {
+        mode: "seg",
+        id: segEl.getAttribute("data-seg-route") ?? "",
+        index: Number(segEl.getAttribute("data-seg-index") ?? 0),
+        startX: e.clientX,
+        startY: e.clientY,
+        moved: false,
+      };
+    } else if (routeEl) {
+      onSelectRoute?.(routeEl.getAttribute("data-route-id"));
+      dragRef.current = null;
+      return;
+    } else if (aimId) {
       dragRef.current = { mode: "aim", id: aimId, startX: e.clientX, startY: e.clientY, moved: false };
     } else if (markerId) {
       const m = markers.find((x) => x.id === markerId);
@@ -305,6 +364,12 @@ const FloorPlanCanvas: React.FC<Props> = ({
     } else if (d.mode === "place") {
       const deg = aimFrom(d.anchor, e.clientX, e.clientY);
       setPlacePreview({ x: d.anchor.x, y: d.anchor.y, deg });
+    } else if (d.mode === "wp") {
+      if (!onMoveWaypoint) return;
+      const { x, y } = toNorm(e.clientX, e.clientY);
+      onMoveWaypoint(d.id, d.index, x, y);
+    } else if (d.mode === "seg") {
+      // nothing to preview; the waypoint is inserted on release
     } else if (onMove && d.moved && d.draggable) {
       const { x, y } = toNorm(e.clientX, e.clientY);
       onMove(d.id, x, y);
