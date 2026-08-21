@@ -32,22 +32,36 @@ export async function loadSiteImages(projectId: string, expiresIn = 600) {
   if (error) throw error;
 
   const rows = (data ?? []) as SiteImage[];
-  return Promise.all(
+  const failures: string[] = [];
+
+  const withUrls = await Promise.all(
     rows.map(async (row) => {
       try {
+        // storage_path is the in-bucket key only — never a bucket-prefixed or public URL.
         return { ...row, url: await signedUrl(SITE_IMAGES_BUCKET, row.storage_path, expiresIn) };
-      } catch {
+      } catch (e) {
+        failures.push(`${row.original_filename}: ${e instanceof Error ? e.message : String(e)}`);
         return { ...row } as SiteImageWithUrl;
       }
     }),
   );
+
+  if (rows.length > 0 && failures.length === rows.length) {
+    throw new Error(
+      `Site images could not be loaded securely (${failures.length} of ${rows.length} failed). ${failures[0]}`,
+    );
+  }
+
+  return withUrls;
 }
 
 export function siteImageStoragePath(projectId: string, capturedOn: string, filename: string) {
   const safe = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
   const day = /^\d{4}-\d{2}-\d{2}$/.test(capturedOn) ? capturedOn : "undated";
-  return `projects/${projectId}/site-images/${day}/${safe}`;
+  // Canonical portal path: project UUID first so storage RLS resolves the project directly.
+  return `${projectId}/site-images/${day}/${safe}`;
 }
+
 
 export const uniqueValues = (values: (string | null)[]) =>
   Array.from(new Set(values.filter((v): v is string => !!v && v.trim().length > 0))).sort();
