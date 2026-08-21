@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.portal_move_floor_markers(jsonb) FROM anon;
