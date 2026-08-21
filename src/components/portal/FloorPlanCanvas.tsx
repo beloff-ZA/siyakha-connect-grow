@@ -66,9 +66,11 @@ const FloorPlanCanvas: React.FC<Props> = ({
   onPlace,
   onMove,
   onMoveEnd,
+  onAim,
   canDrag,
   editing = false,
   placing = false,
+  unsavedIds,
   coverage = "off",
   height = "h-[60vh] md:h-[70vh]",
   emptyLabel = "Plan image not available yet.",
@@ -78,6 +80,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [natural, setNatural] = useState({ width: 0, height: 0 });
+
+  const unsaved = useMemo(() => new Set(unsavedIds ?? []), [unsavedIds]);
 
   const stateRef = useRef({ zoom: 1, offset: { x: 0, y: 0 } });
   stateRef.current = { zoom, offset };
@@ -93,8 +97,10 @@ const FloorPlanCanvas: React.FC<Props> = ({
   const dragRef = useRef<
     | { mode: "pan"; startX: number; startY: number; ox: number; oy: number; moved: boolean }
     | { mode: "marker"; id: string; startX: number; startY: number; moved: boolean; draggable: boolean }
+    | { mode: "aim"; id: string; startX: number; startY: number; moved: boolean }
     | null
   >(null);
+
 
   const reset = useCallback(() => {
     setZoom(1);
