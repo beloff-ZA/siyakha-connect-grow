@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Info, Layers, MessageSquare, Search, Wifi } from "lucide-react";
+import { Info, Layers, Lock, MessageSquare, Move, Search, Wifi } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,6 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   PageHeader,
   Panel,
@@ -28,6 +38,7 @@ import {
   type MarkerKind,
   type PortalFloor,
 } from "@/lib/floorPlans";
+
 
 const LAYERS: { kind: MarkerKind; label: string }[] = [
   { kind: "wifi_ap", label: "Wi-Fi Access Points" },
