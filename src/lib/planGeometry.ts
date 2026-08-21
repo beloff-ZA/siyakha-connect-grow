@@ -119,3 +119,75 @@ export function pointerInContent(args: {
 export const COVERAGE_DISCLAIMER =
   "Indicative coverage only — final camera angles, focal lengths and signal levels require an on-site survey.";
 
+
+/**
+ * Plan bearing convention — used by every camera direction value in this module,
+ * in the database (`portal_floor_markers.direction_deg`) and in the UI:
+ *   0° = up / north on the plan image
+ *  90° = right / east
+ * 180° = down / south
+ * 270° = left / west
+ * Angles increase clockwise.
+ */
+export const normalizeBearing = (deg: number) => {
+  const r = Math.round(deg) % 360;
+  return r < 0 ? r + 360 : r;
+};
+
+/** Bearing from a pixel delta measured in image-content pixels (y grows downward). */
+export function bearingFromDelta(dx: number, dy: number): number {
+  if (dx === 0 && dy === 0) return 0;
+  return normalizeBearing((Math.atan2(dx, -dy) * 180) / Math.PI);
+}
+
+/**
+ * Bearing from one normalised point to another. Normalised units are converted to
+ * image-content pixels first, so the angle is correct on non-square plans.
+ */
+export function bearingBetween(
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+  content: Size,
+): number {
+  return bearingFromDelta(
+    (to.x - from.x) * (content.width || 1),
+    (to.y - from.y) * (content.height || 1),
+  );
+}
+
+/** Distance in image-content pixels between two normalised points. */
+export function normDistancePx(
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+  content: Size,
+): number {
+  const dx = (to.x - from.x) * (content.width || 1);
+  const dy = (to.y - from.y) * (content.height || 1);
+  return Math.hypot(dx, dy);
+}
+
+/**
+ * CSS rotation (deg, clockwise) for a glyph or cone drawn pointing UP at rest.
+ * Identity by design — kept explicit so renderers never re-derive the mapping.
+ */
+export const bearingToRotation = (deg: number) => normalizeBearing(deg);
+
+/** Offset in px from a marker centre to a point `dist` px away along the bearing. */
+export function aimOffsetPx(deg: number, dist: number): { dx: number; dy: number } {
+  const rad = (normalizeBearing(deg) * Math.PI) / 180;
+  return { dx: Math.sin(rad) * dist, dy: -Math.cos(rad) * dist };
+}
+
+export const CARDINAL_LABELS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] as const;
+
+/** Nearest 8-point compass label for a bearing. */
+export function cardinalLabel(deg: number): string {
+  const d = normalizeBearing(deg);
+  return CARDINAL_LABELS[Math.round(d / 45) % 8];
+}
+
+/** Human-readable bearing, e.g. "135° SE". */
+export const bearingText = (deg: number) => `${normalizeBearing(deg)}° ${cardinalLabel(deg)}`;
+
+/** Minimum drag distance (image px) before a placement drag is treated as aiming. */
+export const AIM_DEADZONE_PX = 8;

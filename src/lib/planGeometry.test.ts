@@ -1,5 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { containRect, pointerToNorm, zoomAbout, wheelZoomFactor, clampUnit } from "./planGeometry";
+import {
+  containRect,
+  pointerToNorm,
+  zoomAbout,
+  wheelZoomFactor,
+  clampUnit,
+  bearingBetween,
+  bearingFromDelta,
+  bearingToRotation,
+  normalizeBearing,
+  cardinalLabel,
+  bearingText,
+  aimOffsetPx,
+  normDistancePx,
+  CARDINAL_LABELS,
+  AIM_DEADZONE_PX,
+  type Size,
+} from "./planGeometry";
 
 describe("containRect", () => {
   it("letterboxes a wide image in a square container", () => {
@@ -120,5 +137,69 @@ describe("clampUnit", () => {
     expect(clampUnit(-1)).toBe(0);
     expect(clampUnit(2)).toBe(1);
     expect(clampUnit(0.42)).toBe(0.42);
+  });
+});
+
+describe("camera bearings", () => {
+  const square = { width: 1000, height: 1000 };
+  const c = { x: 0.5, y: 0.5 };
+
+  it("maps cardinal and intercardinal directions to the plan convention", () => {
+    expect(bearingBetween(c, { x: 0.5, y: 0.1 }, square)).toBe(0); // up = N
+    expect(bearingBetween(c, { x: 0.9, y: 0.1 }, square)).toBe(45); // NE
+    expect(bearingBetween(c, { x: 0.9, y: 0.5 }, square)).toBe(90); // E
+    expect(bearingBetween(c, { x: 0.9, y: 0.9 }, square)).toBe(135); // SE
+    expect(bearingBetween(c, { x: 0.5, y: 0.9 }, square)).toBe(180); // S
+    expect(bearingBetween(c, { x: 0.1, y: 0.9 }, square)).toBe(225); // SW
+    expect(bearingBetween(c, { x: 0.1, y: 0.5 }, square)).toBe(270); // W
+    expect(bearingBetween(c, { x: 0.1, y: 0.1 }, square)).toBe(315); // NW
+  });
+
+  it("corrects for non-square plans when converting to bearings", () => {
+    const wide = { width: 2000, height: 1000 };
+    // equal normalised deltas are NOT 45 degrees on a wide plan
+    expect(bearingBetween(c, { x: 0.6, y: 0.4 }, wide)).toBe(63);
+    // matching pixel deltas are
+    expect(bearingBetween(c, { x: 0.55, y: 0.4 }, wide)).toBe(45);
+  });
+
+  it("normalises bearings into 0..359", () => {
+    expect(normalizeBearing(-90)).toBe(270);
+    expect(normalizeBearing(360)).toBe(0);
+    expect(normalizeBearing(719.6)).toBe(0);
+    expect(normalizeBearing(44.4)).toBe(44);
+  });
+
+  it("labels the 8 compass points and rounds to the nearest", () => {
+    expect(CARDINAL_LABELS.map((_, i) => cardinalLabel(i * 45))).toEqual([...CARDINAL_LABELS]);
+    expect(cardinalLabel(22)).toBe("N");
+    expect(cardinalLabel(23)).toBe("NE");
+    expect(cardinalLabel(350)).toBe("N");
+    expect(bearingText(135)).toBe("135° SE");
+  });
+
+  it("renders the aim handle on the bearing it reports back", () => {
+    for (const deg of [0, 45, 90, 135, 180, 225, 270, 315, 17, 203]) {
+      const { dx, dy } = aimOffsetPx(deg, 40);
+      expect(bearingFromDelta(dx, dy)).toBe(normalizeBearing(deg));
+      expect(bearingToRotation(deg)).toBe(normalizeBearing(deg));
+      expect(Math.hypot(dx, dy)).toBeCloseTo(40, 6);
+    }
+  });
+
+  it("keeps the rendered handle direction stable across zoom and resize", () => {
+    const handleAt = (content: Size, dist: number, deg: number) => {
+      const { dx, dy } = aimOffsetPx(deg, dist);
+      return bearingBetween(c, { x: c.x + dx / content.width, y: c.y + dy / content.height }, content);
+    };
+    expect(handleAt({ width: 800, height: 600 }, 30, 118)).toBe(118);
+    expect(handleAt({ width: 1600, height: 1200 }, 60, 118)).toBe(118);
+    expect(handleAt({ width: 360, height: 900 }, 12, 118)).toBe(118);
+  });
+
+  it("measures drag distance in image pixels for the aim deadzone", () => {
+    expect(normDistancePx(c, { x: 0.5, y: 0.5 }, square)).toBe(0);
+    expect(normDistancePx(c, { x: 0.53, y: 0.54 }, square)).toBeCloseTo(50, 6);
+    expect(AIM_DEADZONE_PX).toBeGreaterThan(0);
   });
 });
