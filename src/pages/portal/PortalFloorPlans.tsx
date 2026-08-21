@@ -87,6 +87,12 @@ const PortalFloorPlans: React.FC = () => {
   const [draft, setDraft] = useState<Record<string, { x: number; y: number }>>({});
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [coverage, setCoverage] = useState<CoverageMode>("off");
+
+  // Selecting a device defaults the coverage view to that device only.
+  useEffect(() => {
+    if (selected) setCoverage((c) => (c === "off" ? "selected" : c));
+  }, [selected]);
 
 
   useEffect(() => {
