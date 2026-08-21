@@ -94,6 +94,16 @@ const ClientLogin: React.FC = () => {
       return;
     }
     if (data.session) void notifyAdminOfLogin();
+    // Admin-provisioned test accounts may require a password change before access.
+    if (data.user?.user_metadata?.must_change_password === true) {
+      setMode("setup");
+      setPassword("");
+      toast({
+        title: "Set a new password",
+        description: "Choose your own password to continue to the portal.",
+      });
+      return;
+    }
     navigate("/portal", { replace: true });
   };
 
