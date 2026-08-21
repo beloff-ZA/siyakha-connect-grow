@@ -1296,40 +1296,147 @@ const PortalFloorPlans: React.FC = () => {
                 </p>
               </div>
 
-              {canManage && (
-                <DeviceManager
-                  floor={floor}
-                  floorMarkers={floorMarkers}
-                  selected={selected}
-                  onSelect={setSelected}
-                  onChanged={load}
-                />
-              )}
+              {/* Management sidebar beside the plan on desktop, drawer on smaller screens */}
+              <div
+                className={
+                  canManage
+                    ? "xl:grid xl:grid-cols-[minmax(320px,360px)_minmax(0,1fr)] xl:items-start xl:gap-6"
+                    : undefined
+                }
+              >
+                {canManage && (
+                  <>
+                    <div className="hidden xl:block xl:sticky xl:top-24 xl:max-h-[calc(100vh-8rem)] xl:overflow-y-auto">
+                      <DeviceManager
+                        floor={floor}
+                        floorMarkers={floorMarkers}
+                        selected={selected}
+                        onSelect={setSelected}
+                        onChanged={load}
+                        onRequestPlace={requestPlace}
+                        layout="sidebar"
+                      />
+                    </div>
 
-              <FloorPlanCanvas
+                    <div className="mb-5 xl:hidden">
+                      <Sheet open={managerOpen} onOpenChange={setManagerOpen}>
+                        <SheetTrigger asChild>
+                          <Button type="button" variant="outline" className="w-full">
+                            <Settings2 className="mr-2 h-3.5 w-3.5" strokeWidth={1.5} />
+                            Device management
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-full overflow-y-auto p-0 sm:max-w-lg">
+                          <SheetHeader className="px-4 pt-6">
+                            <SheetTitle className="text-left font-display text-xl font-light">
+                              Devices on {floor?.display_name ?? "this level"}
+                            </SheetTitle>
+                            <SheetDescription className="text-left text-xs">
+                              Add, edit, place or remove devices. Placement and drag positions save
+                              straight to the project audit trail.
+                            </SheetDescription>
+                          </SheetHeader>
+                          <DeviceManager
+                            floor={floor}
+                            floorMarkers={floorMarkers}
+                            selected={selected}
+                            onSelect={setSelected}
+                            onChanged={load}
+                            onRequestPlace={requestPlace}
+                            layout="sheet"
+                          />
+                        </SheetContent>
+                      </Sheet>
+                    </div>
+                  </>
+                )}
 
-                imageUrl={planUrl}
-                markers={shown}
-                selectedId={selected?.id ?? null}
-                onSelect={setSelected}
-                editing={editing}
-                placing={placingCams}
-                unsavedIds={camDrafts.map((c) => c.id)}
-                canDrag={canDrag}
-                coverage={coverage}
-                onMove={handleDrag}
-                onMoveEnd={undefined}
-                onAim={handleAim}
-                onPlace={placingCams ? placeCamera : undefined}
-                routes={canvasRoutes}
-                selectedRouteId={selectedRouteId}
-                onSelectRoute={setSelectedRouteId}
-                editingRoutes={editingRoutes}
-                onMoveWaypoint={moveWaypoint}
-                onAddWaypoint={addWaypoint}
-                onRemoveWaypoint={dropWaypoint}
-                emptyLabel="Plan image for this level is being prepared."
-              />
+                <div className="min-w-0">
+                  {placeTarget && (
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-3 border border-foreground bg-muted/60 px-4 py-3">
+                      <p className="text-xs">
+                        <span className="text-foreground">Placing {placeTarget.label}.</span>{" "}
+                        <span className="text-muted-foreground">
+                          Click the plan to set its position.
+                        </span>
+                      </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPlaceTarget(null)}
+                      >
+                        Cancel placement
+                      </Button>
+                    </div>
+                  )}
+
+                  <FloorPlanCanvas
+                    imageUrl={planUrl}
+                    markers={shown}
+                    selectedId={selected?.id ?? null}
+                    onSelect={setSelected}
+                    editing={editing}
+                    placing={placingCams || !!placeTarget}
+                    unsavedIds={camDrafts.map((c) => c.id)}
+                    canDrag={canDrag}
+                    coverage={coverage}
+                    onMove={handleDrag}
+                    onMoveEnd={handleMoveEnd}
+                    onAim={handleAim}
+                    onPlace={
+                      placeTarget ? placeExistingMarker : placingCams ? placeCamera : undefined
+                    }
+                    routes={canvasRoutes}
+                    selectedRouteId={selectedRouteId}
+                    onSelectRoute={setSelectedRouteId}
+                    editingRoutes={editingRoutes}
+                    onMoveWaypoint={moveWaypoint}
+                    onAddWaypoint={addWaypoint}
+                    onRemoveWaypoint={dropWaypoint}
+                    emptyLabel="Plan image for this level is being prepared."
+                  />
+
+                  {/* Position autosave feedback */}
+                  {autoSave.state !== "idle" && (
+                    <div
+                      role="status"
+                      aria-live="polite"
+                      className={[
+                        "mt-3 flex flex-wrap items-center justify-between gap-3 border px-4 py-3 text-xs",
+                        autoSave.state === "error"
+                          ? "border-destructive/50 bg-destructive/5 text-destructive"
+                          : "border-border text-muted-foreground",
+                      ].join(" ")}
+                    >
+                      {autoSave.state === "saving" && <span>Saving {autoSave.label} position…</span>}
+                      {autoSave.state === "saved" && (
+                        <span>
+                          <span className="text-foreground">Saved</span> — {autoSave.label} position
+                          stored at {autoSave.at}.
+                        </span>
+                      )}
+                      {autoSave.state === "error" && (
+                        <>
+                          <span>
+                            {autoSave.label} position not saved ({autoSave.message}). Your position is
+                            kept as an unsaved draft.
+                          </span>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => persistPosition(autoSave.id)}
+                          >
+                            Retry save
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
 
 
 
