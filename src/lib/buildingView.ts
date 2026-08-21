@@ -50,10 +50,9 @@ export type ImplementationStatus =
 export const statusText: Record<ImplementationStatus, string> = {
   no_devices: "No devices recorded",
   planned: "Planned",
-  installed: "Installed",
   in_progress: "Installation in progress",
   commissioned: "Tested / active",
-} as unknown as Record<ImplementationStatus, string>;
+};
 
 export type FloorSummary = {
   floor: PortalFloor;
