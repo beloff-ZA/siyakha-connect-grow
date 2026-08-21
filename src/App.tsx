@@ -52,7 +52,7 @@ import PortalDashboard from "./pages/portal/PortalDashboard";
 import PortalProject from "./pages/portal/PortalProject";
 import PortalTracker from "./pages/portal/PortalTracker";
 import PortalBOQ from "./pages/portal/PortalBOQ";
-import PortalPlans from "./pages/portal/PortalPlans";
+import PortalFloorPlans from "./pages/portal/PortalFloorPlans";
 
 import PortalDocuments from "./pages/portal/PortalDocuments";
 import PortalGallery from "./pages/portal/PortalGallery";
@@ -90,7 +90,7 @@ function App() {
               <Route path="/portal/project" element={<ClientRoute><PortalProject /></ClientRoute>} />
               <Route path="/portal/tracker" element={<ClientRoute><PortalTracker /></ClientRoute>} />
               <Route path="/portal/boq" element={<ClientRoute><PortalBOQ /></ClientRoute>} />
-              <Route path="/portal/plans" element={<ClientRoute><PortalPlans /></ClientRoute>} />
+              <Route path="/portal/floor-plans" element={<ClientRoute><PortalFloorPlans /></ClientRoute>} />
 
               <Route path="/portal/documents" element={<ClientRoute><PortalDocuments /></ClientRoute>} />
               <Route path="/portal/gallery" element={<ClientRoute><PortalGallery /></ClientRoute>} />
