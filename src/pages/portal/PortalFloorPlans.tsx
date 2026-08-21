@@ -369,6 +369,60 @@ const PortalFloorPlans: React.FC = () => {
                 </div>
               </div>
 
+              {/* Coverage layer */}
+              <div className="mb-5 border border-border p-4 space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground mr-1">
+                    <Radio className="h-3.5 w-3.5" strokeWidth={1.5} /> Coverage
+                  </span>
+                  {COVERAGE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      aria-pressed={coverage === opt.value}
+                      onClick={() => setCoverage(opt.value)}
+                      className={[
+                        "border px-3 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors",
+                        coverage === opt.value
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border text-muted-foreground hover:border-foreground",
+                      ].join(" ")}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {coverage !== "off" && (
+                  <div className="flex flex-wrap items-center gap-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    {COVERAGE_BANDS.map((b, i) => (
+                      <span key={b.key} className="flex items-center gap-2">
+                        <span
+                          className="inline-block h-3 w-3 rounded-full border"
+                          style={{
+                            background: `hsl(190 100% 45% / ${[0.34, 0.2, 0.1][i]})`,
+                            borderColor: "hsl(190 100% 45% / 0.5)",
+                          }}
+                        />
+                        {b.label}
+                      </span>
+                    ))}
+                    <span className="flex items-center gap-2">
+                      <span
+                        className="inline-block h-3 w-3"
+                        style={{
+                          background: "hsl(32 100% 50% / 0.3)",
+                          border: "1px solid hsl(32 100% 50% / 0.6)",
+                        }}
+                      />
+                      CCTV field of view
+                    </span>
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {COVERAGE_DISCLAIMER}
+                </p>
+              </div>
+
               <FloorPlanCanvas
                 imageUrl={planUrl}
                 markers={shown}
@@ -376,9 +430,11 @@ const PortalFloorPlans: React.FC = () => {
                 onSelect={setSelected}
                 editing={editing}
                 canDrag={canDrag}
+                coverage={coverage}
                 onMove={editing ? handleDrag : undefined}
                 emptyLabel="Plan image for this level is being prepared."
               />
+
 
 
               {/* Legend */}
