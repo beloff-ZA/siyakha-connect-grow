@@ -36,7 +36,13 @@ import {
   NoProject,
 } from "@/components/portal/ui";
 import FloorPlanCanvas, { type CoverageMode } from "@/components/portal/FloorPlanCanvas";
-import { COVERAGE_BANDS, COVERAGE_DISCLAIMER } from "@/lib/planGeometry";
+import {
+  COVERAGE_BANDS,
+  COVERAGE_DISCLAIMER,
+  bearingText,
+  cardinalLabel,
+  normalizeBearing,
+} from "@/lib/planGeometry";
 import { DOCUMENTS_BUCKET, signedUrl, formatDate } from "@/lib/portalFiles";
 import {
   CAMERA_RANGES,
@@ -118,6 +124,7 @@ const PortalFloorPlans: React.FC = () => {
   const [optics, setOptics] = useState<Record<string, Optics>>({});
   const [camConfirmOpen, setCamConfirmOpen] = useState(false);
   const [savingCams, setSavingCams] = useState(false);
+  const [lastDir, setLastDir] = useState(0);
 
 
   // Selecting a device defaults the coverage view to that device only.
@@ -244,7 +251,10 @@ const PortalFloorPlans: React.FC = () => {
   const handleAim = useCallback(
     (id: string, deg: number) => {
       if (id.startsWith("draft-")) {
-        setCamDrafts((list) => list.map((c) => (c.id === id ? { ...c, direction_deg: deg } : c)));
+        setLastDir(normalizeBearing(deg));
+        setCamDrafts((list) =>
+          list.map((c) => (c.id === id ? { ...c, direction_deg: normalizeBearing(deg) } : c)),
+        );
         return;
       }
       const m = markers.find((x) => x.id === id);
@@ -267,19 +277,50 @@ const PortalFloorPlans: React.FC = () => {
     [selected, opticsOf],
   );
 
-  const placeCamera = useCallback((x: number, y: number) => {
-    setCamDrafts((list) => [
-      ...list,
-      {
-        id: `draft-${Date.now()}-${list.length}`,
+  const placeCamera = useCallback(
+    (x: number, y: number, direction?: number) => {
+      // A drag supplies the aimed bearing; a plain tap reuses the last-used direction.
+      const dir = normalizeBearing(direction ?? lastDir);
+      const draft: CameraDraft = {
+        id: `draft-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         x,
         y,
-        direction_deg: 0,
+        direction_deg: dir,
         fov_deg: 90,
         coverage_range: "medium",
-      },
-    ]);
-  }, []);
+      };
+      setLastDir(dir);
+      setCamDrafts((list) => [...list, draft]);
+      // Select immediately so the aim handle and cone are visible before saving.
+      setSelected({
+        id: draft.id,
+        floor_id: floorId,
+        project_id: activeProject?.id ?? "",
+        marker_type: "camera",
+        x_norm: x,
+        y_norm: y,
+        label: "New camera",
+        equipment: null,
+        model: null,
+        status: "planned",
+        client_visible: true,
+        description: null,
+        notes: null,
+        installed_on: null,
+        tested_on: null,
+        serial_number: null,
+        mac_address: null,
+        evidence_path: null,
+        evidence_note: null,
+        sort_order: 9999,
+        direction_deg: dir,
+        fov_deg: 90,
+        coverage_range: "medium",
+      });
+      setCoverage((c) => (c === "off" ? "all" : c));
+    },
+    [lastDir, floorId, activeProject?.id],
+  );
 
   const removeDraftCamera = useCallback((id: string) => {
     setCamDrafts((list) => list.filter((c) => c.id !== id));
@@ -565,8 +606,9 @@ const PortalFloorPlans: React.FC = () => {
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     {placingCams ? (
                       <span className="text-foreground">
-                        Click the plan where each camera should be installed. Select a camera to
-                        adjust its direction and coverage.
+                        Click to place, then drag toward the area the camera must face.
+                        Release to create the camera — you can re-aim it any time with the amber
+                        handle or the direction slider.
                       </span>
                     ) : (
                       <>
@@ -789,7 +831,7 @@ const PortalFloorPlans: React.FC = () => {
                               htmlFor="cam-dir"
                               className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
                             >
-                              Direction · {o.direction_deg}°
+                              Direction · {bearingText(o.direction_deg)}
                             </label>
                             <input
                               id="cam-dir"
@@ -844,7 +886,8 @@ const PortalFloorPlans: React.FC = () => {
                         </>
                       ) : (
                         <p className="text-xs text-muted-foreground leading-relaxed">
-                          Aim {o.direction_deg}° · {o.fov_deg}° field of view · {o.coverage_range}{" "}
+                          Aim {bearingText(o.direction_deg)} · {o.fov_deg}° field of view ·{" "}
+                          {o.coverage_range}{" "}
                           range. This camera is {stateLabel(selected.status).toLowerCase()}, so its
                           position and optics are locked.
                         </p>
