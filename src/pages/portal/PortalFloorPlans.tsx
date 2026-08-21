@@ -757,6 +757,105 @@ const PortalFloorPlans: React.FC = () => {
                     </div>
                   ))}
                 </dl>
+
+                {/* Camera optics — editable while the camera is planned or an unsaved draft */}
+                {selected.marker_type === "camera" && (() => {
+                  const live = shown.find((m) => m.id === selected.id) ?? selected;
+                  const o = opticsOf(live);
+                  const isDraft = selected.id.startsWith("draft-");
+                  const editableOptics = isDraft || selected.status === "planned";
+                  return (
+                    <div className="mt-6 border border-border p-4 space-y-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                          Camera direction & coverage
+                        </p>
+                        {isDraft && (
+                          <button
+                            type="button"
+                            onClick={() => removeDraftCamera(selected.id)}
+                            className="flex items-center gap-2 border border-border px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] hover:bg-muted transition-colors"
+                          >
+                            <Trash2 className="h-3 w-3" strokeWidth={1.5} />
+                            Remove
+                          </button>
+                        )}
+                      </div>
+
+                      {editableOptics ? (
+                        <>
+                          <div>
+                            <label
+                              htmlFor="cam-dir"
+                              className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+                            >
+                              Direction · {o.direction_deg}°
+                            </label>
+                            <input
+                              id="cam-dir"
+                              type="range"
+                              min={0}
+                              max={359}
+                              value={o.direction_deg}
+                              onChange={(e) =>
+                                setSelectedOptics({ direction_deg: Number(e.target.value) })
+                              }
+                              className="mt-2 w-full accent-foreground"
+                            />
+                            <p className="text-[11px] text-muted-foreground mt-1">
+                              0° points to the top of the plan. You can also drag the aim handle on
+                              the selected camera.
+                            </p>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2">
+                            {FOV_PRESETS.map((f) => (
+                              <button
+                                key={f.value}
+                                type="button"
+                                onClick={() => setSelectedOptics({ fov_deg: f.value })}
+                                className={`border px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                                  o.fov_deg === f.value
+                                    ? "border-foreground bg-foreground text-background"
+                                    : "border-border hover:bg-muted"
+                                }`}
+                              >
+                                {f.label}
+                              </button>
+                            ))}
+                          </div>
+
+                          <div className="flex flex-wrap gap-2">
+                            {CAMERA_RANGES.map((r) => (
+                              <button
+                                key={r.value}
+                                type="button"
+                                onClick={() => setSelectedOptics({ coverage_range: r.value })}
+                                className={`border px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                                  o.coverage_range === r.value
+                                    ? "border-foreground bg-foreground text-background"
+                                    : "border-border hover:bg-muted"
+                                }`}
+                              >
+                                {r.label} range
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          Aim {o.direction_deg}° · {o.fov_deg}° field of view · {o.coverage_range}{" "}
+                          range. This camera is {stateLabel(selected.status).toLowerCase()}, so its
+                          position and optics are locked.
+                        </p>
+                      )}
+                      <p className="text-[11px] text-muted-foreground leading-relaxed">
+                        {COVERAGE_DISCLAIMER}
+                      </p>
+                    </div>
+                  );
+                })()}
+
                 {selected.description && (
                   <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
                     {selected.description}
