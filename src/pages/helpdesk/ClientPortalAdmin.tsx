@@ -12,14 +12,19 @@ import BoqManager from "@/components/helpdesk/BoqManager";
 import FloorPlansManager from "@/components/helpdesk/FloorPlansManager";
 import SiteImagesManager from "@/components/helpdesk/SiteImagesManager";
 import SitesManager from "@/components/helpdesk/SitesManager";
+import NotificationSettings from "@/components/helpdesk/NotificationSettings";
 
 
 
 type Row = Record<string, any>;
 
+/** Production client-login callback used for first-time account setup links. */
+const PRODUCTION_LOGIN_URL = "https://siyakhatechnology.co.za/client-login";
+
 const PROJECT_STATUSES = ["planning", "in_progress", "on_hold", "complete"];
 const ITEM_STATUSES = ["not_started", "in_progress", "blocked", "complete"];
 const PRIORITIES = ["low", "medium", "high"];
+
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
   <section className="border border-border p-5 md:p-6 mb-6">
@@ -129,10 +134,13 @@ const ClientPortalAdmin: React.FC = () => {
     loadBase();
   };
 
-  const sendInvite = async (clientUserId: string) => {
+  const sendInvite = async (clientUserId: string, redirectTo?: string) => {
     setBusy(true);
     const { data, error } = await supabase.functions.invoke("invite-client-user", {
-      body: { client_user_id: clientUserId, redirect_to: `${window.location.origin}/client-login` },
+      body: {
+        client_user_id: clientUserId,
+        redirect_to: redirectTo ?? `${window.location.origin}/client-login`,
+      },
     });
     setBusy(false);
     if (error) return fail(error);
@@ -145,6 +153,7 @@ const ClientPortalAdmin: React.FC = () => {
     });
     loadBase();
   };
+
 
   const assignUser = async (clientUserId: string) => {
     if (!projectId) return;
@@ -458,14 +467,23 @@ const ClientPortalAdmin: React.FC = () => {
                         {clients.find((c) => c.id === cu.client_id)?.display_name ?? "—"}
                       </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Button size="sm" variant="outline" onClick={() => sendInvite(cu.id)} disabled={busy}>
                         Send / resend invite
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => sendInvite(cu.id, PRODUCTION_LOGIN_URL)}
+                        disabled={busy}
+                        title={`First-time account setup link pointing at ${PRODUCTION_LOGIN_URL}`}
+                      >
+                        Send setup link (production)
                       </Button>
                       <Button size="sm" variant="outline" onClick={() => assignUser(cu.id)} disabled={!projectId}>
                         Assign to project
                       </Button>
                     </div>
+
                   </li>
                 ))}
               </ul>
