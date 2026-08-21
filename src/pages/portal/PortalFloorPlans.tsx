@@ -376,8 +376,112 @@ const PortalFloorPlans: React.FC = () => {
       setCamDrafts((list) => list.map((c) => (c.id === id ? { ...c, x, y } : c)));
       return;
     }
+    dragPositions.current[id] = { x, y };
     setDraft((d) => ({ ...d, [id]: { x, y } }));
   }, []);
+
+  /**
+   * Persist a marker's natural-image normalised position through the secured RPC.
+   * On failure the local draft position is kept so the user's intent survives and
+   * can be retried — the marker never snaps back silently.
+   */
+  const persistPosition = useCallback(
+    async (id: string, pos?: { x: number; y: number }) => {
+      const marker = markers.find((m) => m.id === id);
+      const p = pos ?? dragPositions.current[id] ?? draft[id];
+      if (!marker || !p) return;
+      setAutoSave({ state: "saving", label: marker.label });
+      const { error: rpcErr } = await supabase.rpc("portal_save_floor_marker", {
+        _payload: {
+          id,
+          floor_id: marker.floor_id,
+          is_placed: true,
+          x_norm: p.x,
+          y_norm: p.y,
+        } as unknown as never,
+      });
+      if (rpcErr) {
+        setAutoSave({ state: "error", id, label: marker.label, message: rpcErr.message });
+        return;
+      }
+      setMarkers((list) =>
+        list.map((m) => (m.id === id ? { ...m, x_norm: p.x, y_norm: p.y, is_placed: true } : m)),
+      );
+      setSelected((s) => (s?.id === id ? { ...s, x_norm: p.x, y_norm: p.y, is_placed: true } : s));
+      setDraft((d) => {
+        const next = { ...d };
+        delete next[id];
+        return next;
+      });
+      delete dragPositions.current[id];
+      setAutoSave({
+        state: "saved",
+        label: marker.label,
+        at: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      });
+    },
+    [markers, draft],
+  );
+
+  /** Pointer release on the plan saves the new position immediately. */
+  const handleMoveEnd = useCallback(
+    (id: string) => {
+      if (id.startsWith("draft-")) return; // unsaved camera drafts are committed in bulk
+      void persistPosition(id);
+    },
+    [persistPosition],
+  );
+
+  /** Enter one-shot placement mode for a register-only device. */
+  const requestPlace = useCallback(
+    (id: string, label: string) => {
+      setManagerOpen(false);
+      setPlacingCams(false);
+      setEditing(false);
+      setPlaceTarget({ id, label });
+      toast({
+        title: `Placing ${label}`,
+        description: "Click or tap the position on the plan. The position saves immediately.",
+      });
+    },
+    [toast],
+  );
+
+  /** The single click that positions the device chosen for placement. */
+  const placeExistingMarker = useCallback(
+    async (x: number, y: number) => {
+      if (!placeTarget || !floor) return;
+      const target = placeTarget;
+      setPlaceTarget(null);
+      setAutoSave({ state: "saving", label: target.label });
+      const { error: rpcErr } = await supabase.rpc("portal_save_floor_marker", {
+        _payload: {
+          id: target.id,
+          floor_id: floor.id,
+          is_placed: true,
+          x_norm: x,
+          y_norm: y,
+        } as unknown as never,
+      });
+      if (rpcErr) {
+        setAutoSave({ state: "error", id: target.id, label: target.label, message: rpcErr.message });
+        toast({ title: "Device not placed", description: rpcErr.message, variant: "destructive" });
+        return;
+      }
+      await load();
+      setAutoSave({
+        state: "saved",
+        label: target.label,
+        at: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      });
+      toast({
+        title: "Device placed",
+        description: `${target.label} is now on ${floor.display_name} and recorded in the audit trail.`,
+      });
+    },
+    [placeTarget, floor, load, toast],
+  );
+
 
   /** Aim a camera: drafts update in place, saved planned cameras become optics drafts. */
   const handleAim = useCallback(
