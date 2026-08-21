@@ -249,3 +249,65 @@
     display: none;
   }
 }
+
+/* ---------- BOQ print / PDF output ---------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Hide app chrome and interactive controls inside the BOQ document */
+  .boq-print-root button:not(.print-keep),
+  .boq-print-root textarea,
+  .boq-print-root input,
+  .boq-print-root select,
+  .boq-print-root [role="tablist"] {
+    display: none !important;
+  }
+
+  .boq-print-root {
+    font-size: 10pt;
+  }
+
+  .boq-print-root h1,
+  .boq-print-root h2,
+  .boq-print-root h3,
+  .boq-print-root h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .boq-print-root table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .boq-print-root thead {
+    display: table-header-group;
+  }
+
+  .boq-print-root tr,
+  .boq-print-root li,
+  .boq-print-root figure,
+  .boq-print-root img {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .boq-print-root section,
+  .boq-print-root .print-block {
+    break-inside: avoid-page;
+  }
+
+  .boq-print-root a {
+    text-decoration: none;
+    color: inherit;
+  }
+}
