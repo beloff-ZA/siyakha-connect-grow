@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Info, Layers, Lock, MessageSquare, Move, Search, Wifi } from "lucide-react";
+import { Info, Layers, Lock, MessageSquare, Move, Radio, Search, Wifi } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,7 +25,8 @@ import {
   ErrorNote,
   NoProject,
 } from "@/components/portal/ui";
-import FloorPlanCanvas from "@/components/portal/FloorPlanCanvas";
+import FloorPlanCanvas, { type CoverageMode } from "@/components/portal/FloorPlanCanvas";
+import { COVERAGE_BANDS, COVERAGE_DISCLAIMER } from "@/lib/planGeometry";
 import { DOCUMENTS_BUCKET, signedUrl, formatDate } from "@/lib/portalFiles";
 import {
   MARKER_KINDS,
@@ -45,6 +46,12 @@ const LAYERS: { kind: MarkerKind; label: string }[] = [
   { kind: "camera", label: "CCTV Cameras" },
   { kind: "rack", label: "Racks" },
   { kind: "cable_route", label: "Cable Routes" },
+];
+
+const COVERAGE_OPTIONS: { value: CoverageMode; label: string }[] = [
+  { value: "off", label: "Off" },
+  { value: "selected", label: "Selected device" },
+  { value: "all", label: "All on this level" },
 ];
 
 const Metric: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
@@ -80,6 +87,12 @@ const PortalFloorPlans: React.FC = () => {
   const [draft, setDraft] = useState<Record<string, { x: number; y: number }>>({});
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [coverage, setCoverage] = useState<CoverageMode>("off");
+
+  // Selecting a device defaults the coverage view to that device only.
+  useEffect(() => {
+    if (selected) setCoverage((c) => (c === "off" ? "selected" : c));
+  }, [selected]);
 
 
   useEffect(() => {
@@ -369,6 +382,60 @@ const PortalFloorPlans: React.FC = () => {
                 </div>
               </div>
 
+              {/* Coverage layer */}
+              <div className="mb-5 border border-border p-4 space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground mr-1">
+                    <Radio className="h-3.5 w-3.5" strokeWidth={1.5} /> Coverage
+                  </span>
+                  {COVERAGE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      aria-pressed={coverage === opt.value}
+                      onClick={() => setCoverage(opt.value)}
+                      className={[
+                        "border px-3 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors",
+                        coverage === opt.value
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border text-muted-foreground hover:border-foreground",
+                      ].join(" ")}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {coverage !== "off" && (
+                  <div className="flex flex-wrap items-center gap-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    {COVERAGE_BANDS.map((b, i) => (
+                      <span key={b.key} className="flex items-center gap-2">
+                        <span
+                          className="inline-block h-3 w-3 rounded-full border"
+                          style={{
+                            background: `hsl(190 100% 45% / ${[0.34, 0.2, 0.1][i]})`,
+                            borderColor: "hsl(190 100% 45% / 0.5)",
+                          }}
+                        />
+                        {b.label}
+                      </span>
+                    ))}
+                    <span className="flex items-center gap-2">
+                      <span
+                        className="inline-block h-3 w-3"
+                        style={{
+                          background: "hsl(32 100% 50% / 0.3)",
+                          border: "1px solid hsl(32 100% 50% / 0.6)",
+                        }}
+                      />
+                      CCTV field of view
+                    </span>
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {COVERAGE_DISCLAIMER}
+                </p>
+              </div>
+
               <FloorPlanCanvas
                 imageUrl={planUrl}
                 markers={shown}
@@ -376,9 +443,11 @@ const PortalFloorPlans: React.FC = () => {
                 onSelect={setSelected}
                 editing={editing}
                 canDrag={canDrag}
+                coverage={coverage}
                 onMove={editing ? handleDrag : undefined}
                 emptyLabel="Plan image for this level is being prepared."
               />
+
 
 
               {/* Legend */}

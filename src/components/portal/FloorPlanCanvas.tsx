@@ -1,15 +1,26 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Lock, Maximize2, Minus, Plus } from "lucide-react";
-import { clamp01, kindShort, type FloorMarker } from "@/lib/floorPlans";
+import { kindShort, type FloorMarker } from "@/lib/floorPlans";
+import {
+  COVERAGE_BANDS,
+  containRect,
+  pointerToNorm,
+  wheelZoomFactor,
+  zoomAbout,
+  type Rect,
+} from "@/lib/planGeometry";
 
 const MIN_ZOOM = 0.4;
 const MAX_ZOOM = 8;
+const DRAG_THRESHOLD = 4;
+
+export type CoverageMode = "off" | "selected" | "all";
 
 type Props = {
   imageUrl: string | null;
   markers: FloorMarker[];
   selectedId?: string | null;
-  onSelect?: (marker: FloorMarker) => void;
+  onSelect?: (marker: FloorMarker | null) => void;
   /** Admin-only: click on empty plan to place a marker at normalised coords. */
   onPlace?: (x: number, y: number) => void;
   /** Admin-only: drag a marker to new normalised coords. */
@@ -21,10 +32,11 @@ type Props = {
   /** Visual affordances for reposition mode. */
   editing?: boolean;
   placing?: boolean;
+  /** Coverage overlay: off, selected device only, or all APs on this floor. */
+  coverage?: CoverageMode;
   height?: string;
   emptyLabel?: string;
 };
-
 
 const statusRing: Record<string, string> = {
   planned: "border-dashed",
@@ -32,6 +44,12 @@ const statusRing: Record<string, string> = {
   tested: "border-solid",
   active: "border-solid",
 };
+
+/** Selected-marker highlight, distinct from status styling and legible in both themes. */
+const selectedRing = (kind: string) =>
+  kind === "camera"
+    ? "border-[hsl(32_100%_50%)] ring-2 ring-[hsl(32_100%_50%)] shadow-[0_0_0_4px_hsl(32_100%_50%/0.28),0_0_16px_hsl(32_100%_50%/0.55)]"
+    : "border-[hsl(190_100%_45%)] ring-2 ring-[hsl(190_100%_45%)] shadow-[0_0_0_4px_hsl(190_100%_45%/0.28),0_0_16px_hsl(190_100%_45%/0.55)]";
 
 const FloorPlanCanvas: React.FC<Props> = ({
   imageUrl,
@@ -44,20 +62,30 @@ const FloorPlanCanvas: React.FC<Props> = ({
   canDrag,
   editing = false,
   placing = false,
+  coverage = "off",
   height = "h-[60vh] md:h-[70vh]",
   emptyLabel = "Plan image not available yet.",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [natural, setNatural] = useState({ width: 0, height: 0 });
+
   const stateRef = useRef({ zoom: 1, offset: { x: 0, y: 0 } });
   stateRef.current = { zoom, offset };
+
+  /** Image content rectangle in local (pre-transform) px — the marker coordinate space. */
+  const content: Rect = useMemo(
+    () => containRect(containerSize, natural),
+    [containerSize, natural],
+  );
+  const contentRef = useRef(content);
+  contentRef.current = content;
 
   const dragRef = useRef<
     | { mode: "pan"; startX: number; startY: number; ox: number; oy: number; moved: boolean }
     | { mode: "marker"; id: string; startX: number; startY: number; moved: boolean; draggable: boolean }
-
     | null
   >(null);
 
@@ -67,15 +95,29 @@ const FloorPlanCanvas: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
+    setNatural({ width: 0, height: 0 });
     reset();
   }, [imageUrl, reset]);
+
+  // Track container size so the content rect stays correct on resize / breakpoint change.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const measure = () =>
+      setContainerSize({ width: el.clientWidth, height: el.clientHeight });
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [imageUrl]);
 
   const zoomAt = useCallback((factor: number, px: number, py: number) => {
     const { zoom: z, offset: o } = stateRef.current;
     const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, z * factor));
-    const k = next / z;
-    setZoom(next);
-    setOffset({ x: px - (px - o.x) * k, y: py - (py - o.y) * k });
+    if (next === z) return;
+    const r = zoomAbout({ zoom: z, next, offset: o, px, py });
+    setZoom(r.zoom);
+    setOffset(r.offset);
   }, []);
 
   const wheelRef = useRef<(e: WheelEvent) => void>(() => {});
@@ -83,8 +125,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
     const el = containerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 100 : 1);
-    zoomAt(Math.exp(-dy * 0.0018), e.clientX - rect.left, e.clientY - rect.top);
+    zoomAt(wheelZoomFactor(e.deltaY, e.deltaMode), e.clientX - rect.left, e.clientY - rect.top);
   };
 
   useEffect(() => {
@@ -98,12 +139,20 @@ const FloorPlanCanvas: React.FC<Props> = ({
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
-  const stageCoords = (clientX: number, clientY: number) => {
-    const stage = stageRef.current;
-    if (!stage) return { x: 0.5, y: 0.5 };
-    const r = stage.getBoundingClientRect();
-    return { x: clamp01((clientX - r.left) / r.width), y: clamp01((clientY - r.top) / r.height) };
-  };
+  const toNorm = useCallback((clientX: number, clientY: number) => {
+    const el = containerRef.current;
+    if (!el) return { x: 0.5, y: 0.5 };
+    const rect = el.getBoundingClientRect();
+    const { zoom: z, offset: o } = stateRef.current;
+    return pointerToNorm({
+      clientX,
+      clientY,
+      containerRect: { left: rect.left, top: rect.top },
+      offset: o,
+      zoom: z,
+      content: contentRef.current,
+    });
+  }, []);
 
   const onPointerDown = (e: React.PointerEvent) => {
     const target = e.target as HTMLElement;
@@ -134,16 +183,18 @@ const FloorPlanCanvas: React.FC<Props> = ({
   const onPointerMove = (e: React.PointerEvent) => {
     const d = dragRef.current;
     if (!d) return;
-    const far = Math.abs(e.clientX - d.startX) > 3 || Math.abs(e.clientY - d.startY) > 3;
+    const far =
+      Math.abs(e.clientX - d.startX) > DRAG_THRESHOLD ||
+      Math.abs(e.clientY - d.startY) > DRAG_THRESHOLD;
     if (far) d.moved = true;
     if (d.mode === "pan") {
+      if (!d.moved) return;
       setOffset({ x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) });
     } else if (onMove && d.moved && d.draggable) {
-      const { x, y } = stageCoords(e.clientX, e.clientY);
+      const { x, y } = toNorm(e.clientX, e.clientY);
       onMove(d.id, x, y);
     }
   };
-
 
   const onPointerUp = (e: React.PointerEvent) => {
     const d = dragRef.current;
@@ -158,12 +209,27 @@ const FloorPlanCanvas: React.FC<Props> = ({
       return;
     }
 
-    if (!d.moved && placing && onPlace) {
-      const { x, y } = stageCoords(e.clientX, e.clientY);
-      onPlace(x, y);
+    if (!d.moved) {
+      if (placing && onPlace) {
+        const { x, y } = toNorm(e.clientX, e.clientY);
+        onPlace(x, y);
+      } else {
+        onSelect?.(null);
+      }
     }
   };
 
+  const coverageMarkers = useMemo(() => {
+    if (coverage === "off") return [];
+    if (coverage === "selected") {
+      const m = markers.find((x) => x.id === selectedId);
+      return m ? [m] : [];
+    }
+    return markers.filter((m) => m.marker_type === "wifi_ap" || m.marker_type === "camera");
+  }, [coverage, markers, selectedId]);
+
+  const coverageBase = Math.min(content.width, content.height) || 0;
+  const markerPx = Math.max(14, 22 / zoom);
 
   return (
     <div className="space-y-3">
@@ -219,7 +285,6 @@ const FloorPlanCanvas: React.FC<Props> = ({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        
         className={`relative overflow-hidden border border-border bg-muted/30 ${height} ${
           placing ? "cursor-crosshair" : "cursor-grab"
         }`}
@@ -227,22 +292,102 @@ const FloorPlanCanvas: React.FC<Props> = ({
       >
         {imageUrl ? (
           <div
-            className="absolute left-0 top-0 w-full h-full"
+            className="absolute left-0 top-0"
             style={{
+              width: containerSize.width || "100%",
+              height: containerSize.height || "100%",
               transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
               transformOrigin: "0 0",
             }}
           >
-            <div ref={stageRef} className="relative w-full h-full">
+            {/* Image content rectangle: the single coordinate space shared by the
+                plan image, coverage overlays and markers. */}
+            <div
+              className="absolute overflow-hidden"
+              style={{
+                left: content.left,
+                top: content.top,
+                width: content.width || undefined,
+                height: content.height || undefined,
+              }}
+            >
               <img
                 src={imageUrl}
                 alt="Building floor plan"
                 draggable={false}
-                className="w-full h-full object-contain select-none pointer-events-none"
+                onLoad={(e) =>
+                  setNatural({
+                    width: e.currentTarget.naturalWidth,
+                    height: e.currentTarget.naturalHeight,
+                  })
+                }
+                className="block w-full h-full select-none pointer-events-none"
               />
+
+              {/* Coverage overlays — clipped to the plan image, never interactive. */}
+              {coverageBase > 0 &&
+                coverageMarkers.map((m) => {
+                  const cx = `${Number(m.x_norm) * 100}%`;
+                  const cy = `${Number(m.y_norm) * 100}%`;
+                  if (m.marker_type === "camera") {
+                    const dir = Number((m as unknown as { direction_deg?: number }).direction_deg ?? 0);
+                    const fov = Number((m as unknown as { fov_deg?: number }).fov_deg ?? 80);
+                    const r = coverageBase * 0.16;
+                    return (
+                      <div
+                        key={`cov-${m.id}`}
+                        aria-hidden
+                        className="absolute pointer-events-none"
+                        style={{
+                          left: cx,
+                          top: cy,
+                          width: r * 2,
+                          height: r * 2,
+                          marginLeft: -r,
+                          marginTop: -r,
+                          transform: `rotate(${dir}deg)`,
+                          background:
+                            "radial-gradient(circle, hsl(32 100% 50% / 0.38) 0%, hsl(32 100% 50% / 0.16) 60%, hsl(32 100% 50% / 0) 100%)",
+                          clipPath: `polygon(50% 50%, ${50 - Math.tan((Math.min(fov, 170) / 2) * (Math.PI / 180)) * 50}% 0%, ${50 + Math.tan((Math.min(fov, 170) / 2) * (Math.PI / 180)) * 50}% 0%)`,
+                        }}
+                      />
+                    );
+                  }
+                  return (
+                    <React.Fragment key={`cov-${m.id}`}>
+                      {[...COVERAGE_BANDS]
+                        .slice()
+                        .reverse()
+                        .map((band) => {
+                          const r = coverageBase * band.radius;
+                          const alpha =
+                            band.key === "strong" ? 0.3 : band.key === "good" ? 0.18 : 0.1;
+                          return (
+                            <div
+                              key={`${m.id}-${band.key}`}
+                              aria-hidden
+                              className="absolute rounded-full pointer-events-none"
+                              style={{
+                                left: cx,
+                                top: cy,
+                                width: r * 2,
+                                height: r * 2,
+                                marginLeft: -r,
+                                marginTop: -r,
+                                background: `radial-gradient(circle, hsl(190 100% 45% / ${alpha}) 0%, hsl(190 100% 45% / ${alpha * 0.5}) 70%, hsl(190 100% 45% / 0) 100%)`,
+                                border: `1px solid hsl(190 100% 45% / ${alpha + 0.15})`,
+                              }}
+                            />
+                          );
+                        })}
+                    </React.Fragment>
+                  );
+                })}
+
               {markers.map((m) => {
                 const draggable = canDrag ? canDrag(m) : true;
                 const locked = editing && !draggable;
+                const isSelected = selectedId === m.id;
                 return (
                   <button
                     key={m.id}
@@ -250,7 +395,6 @@ const FloorPlanCanvas: React.FC<Props> = ({
                     data-marker-id={m.id}
                     onClick={(e) => {
                       e.stopPropagation();
-                      onSelect?.(m);
                     }}
                     title={
                       locked
@@ -262,11 +406,12 @@ const FloorPlanCanvas: React.FC<Props> = ({
                     aria-label={
                       locked ? `${m.label}, position locked (${m.status})` : `${m.label}, ${m.status}`
                     }
+                    aria-pressed={isSelected}
                     className={[
                       "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
                       statusRing[m.status] ?? "border-solid",
-                      selectedId === m.id
-                        ? "border-foreground ring-2 ring-foreground/40"
+                      isSelected
+                        ? selectedRing(m.marker_type)
                         : "border-foreground/70 hover:border-foreground",
                       m.marker_type === "camera" ? "rounded-none" : "rounded-full",
                       editing ? (draggable ? "cursor-move" : "cursor-not-allowed opacity-70") : "",
@@ -274,9 +419,10 @@ const FloorPlanCanvas: React.FC<Props> = ({
                     style={{
                       left: `${Number(m.x_norm) * 100}%`,
                       top: `${Number(m.y_norm) * 100}%`,
-                      width: `${Math.max(14, 22 / zoom)}px`,
-                      height: `${Math.max(14, 22 / zoom)}px`,
+                      width: `${markerPx}px`,
+                      height: `${markerPx}px`,
                       fontSize: `${Math.max(5, 8 / zoom)}px`,
+                      zIndex: isSelected ? 30 : 10,
                     }}
                   >
                     {locked ? (
@@ -287,7 +433,6 @@ const FloorPlanCanvas: React.FC<Props> = ({
                   </button>
                 );
               })}
-
             </div>
           </div>
         ) : (
