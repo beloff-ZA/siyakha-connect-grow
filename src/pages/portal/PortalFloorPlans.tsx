@@ -229,6 +229,7 @@ const PortalFloorPlans: React.FC = () => {
         waypoints: parseWaypoints((r as { waypoints?: unknown }).waypoints),
       })),
     );
+    setEquipment((equipRows ?? []) as unknown as RackEquipment[]);
     setLoading(false);
   }, [activeProject]);
 
