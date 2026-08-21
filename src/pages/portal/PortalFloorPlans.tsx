@@ -1052,6 +1052,17 @@ const PortalFloorPlans: React.FC = () => {
               trail. {SURVEY_DISCLAIMER}
             </AlertDialogDescription>
           </AlertDialogHeader>
+          <ul className="max-h-40 overflow-auto border border-border/60 divide-y divide-border/60 text-[11px]">
+            {camDrafts.map((c, i) => (
+              <li key={c.id} className="flex items-center justify-between px-3 py-1.5">
+                <span className="font-mono">Camera {i + 1}</span>
+                <span className="text-muted-foreground">
+                  {bearingText(c.direction_deg)} · {c.fov_deg}° FOV · {c.coverage_range}
+                </span>
+              </li>
+            ))}
+          </ul>
+
           <AlertDialogFooter>
             <AlertDialogCancel disabled={savingCams}>Keep placing</AlertDialogCancel>
             <AlertDialogAction
