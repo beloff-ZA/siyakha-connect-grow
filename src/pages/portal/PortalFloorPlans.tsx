@@ -526,6 +526,7 @@ const PortalFloorPlans: React.FC = () => {
                 const onFloor = markers.filter((m) => m.floor_id === f.id);
                 const apCount = onFloor.filter((m) => m.marker_type === "wifi_ap").length;
                 const camCount = onFloor.filter((m) => m.marker_type === "camera").length;
+                const rackCount = onFloor.filter((m) => m.marker_type === "rack").length;
                 const active = f.id === floorId;
                 return (
                   <button
