@@ -18,6 +18,10 @@ import {
   zoomAbout,
   type Rect,
 } from "@/lib/planGeometry";
+import { routeColor } from "@/lib/cableRoutes";
+
+const ROUTE_WIFI = routeColor("wifi_ap");
+const ROUTE_CAM = routeColor("camera");
 
 const MIN_ZOOM = 0.4;
 const MAX_ZOOM = 8;
