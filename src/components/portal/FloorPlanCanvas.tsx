@@ -81,7 +81,10 @@ const statusRing: Record<string, string> = {
 const selectedRing = (kind: string) =>
   kind === "camera"
     ? "border-[hsl(32_100%_50%)] ring-2 ring-[hsl(32_100%_50%)] shadow-[0_0_0_4px_hsl(32_100%_50%/0.28),0_0_16px_hsl(32_100%_50%/0.55)]"
-    : "border-[hsl(190_100%_45%)] ring-2 ring-[hsl(190_100%_45%)] shadow-[0_0_0_4px_hsl(190_100%_45%/0.28),0_0_16px_hsl(190_100%_45%/0.55)]";
+    : kind === "rack"
+      ? `border-[hsl(${RACK_HUE})] ring-2 ring-[hsl(${RACK_HUE})] shadow-[0_0_0_4px_hsl(${RACK_HUE}/0.3),0_0_18px_hsl(${RACK_HUE}/0.6)]`
+      : "border-[hsl(190_100%_45%)] ring-2 ring-[hsl(190_100%_45%)] shadow-[0_0_0_4px_hsl(190_100%_45%/0.28),0_0_16px_hsl(190_100%_45%/0.55)]";
+
 
 
 const FloorPlanCanvas: React.FC<Props> = ({
