@@ -546,8 +546,35 @@ const PortalFloorPlans: React.FC = () => {
           </div>
         </div>
       )}
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Save device positions?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingSummary.aps} Wi-Fi access point{pendingSummary.aps === 1 ? "" : "s"} and{" "}
+              {pendingSummary.cameras} camera{pendingSummary.cameras === 1 ? "" : "s"}
+              {pendingSummary.other > 0 ? ` and ${pendingSummary.other} other device(s)` : ""} will
+              move to their new positions. Every move is recorded in the project audit trail.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={saving}>Keep editing</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                savePositions();
+              }}
+              disabled={saving}
+            >
+              {saving ? "Saving…" : "Save positions"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
+
 };
 
 export default PortalFloorPlans;
