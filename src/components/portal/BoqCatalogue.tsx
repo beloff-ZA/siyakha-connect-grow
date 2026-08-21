@@ -1,5 +1,5 @@
 import React from "react";
-import { Server, Network, HardDrive, Wifi, Radio, type LucideIcon } from "lucide-react";
+import { Server, Network, HardDrive, Radio, type LucideIcon } from "lucide-react";
 import { formatQty, type BoqItem } from "@/lib/boq";
 import apGwn7660e from "@/assets/shopify/miro/grandstream-enterprise-wifi-6-indoor-access-point-gwn7660e-6.jpg";
 import cat6Drum from "@/assets/shopify/cattex/cattex-cat6-500m-drum.png";
@@ -275,7 +275,7 @@ const BoqCatalogue: React.FC<{
             <ul className="mt-4 space-y-1.5">
               {card.specs.map((spec) => (
                 <li key={spec} className="flex gap-2 text-xs text-muted-foreground">
-                  <Wifi className="mt-0.5 h-3 w-3 shrink-0 opacity-40" strokeWidth={1.5} aria-hidden="true" />
+                  <span className="mt-1.5 h-1 w-1 shrink-0 bg-muted-foreground" aria-hidden="true" />
                   <span>{spec}</span>
                 </li>
               ))}
