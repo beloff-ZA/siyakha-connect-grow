@@ -21,6 +21,7 @@ const PortalSiteImages: React.FC = () => {
   const [category, setCategory] = useState("all");
   const [area, setArea] = useState("all");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     document.title = "Site Images | Siyakha Client Portal";
@@ -47,7 +48,8 @@ const PortalSiteImages: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [activeProject]);
+  }, [activeProject, reloadKey]);
+
 
   const categories = useMemo(() => uniqueValues(images.map((i) => i.category)), [images]);
   const areas = useMemo(() => uniqueValues(images.map((i) => i.area)), [images]);
