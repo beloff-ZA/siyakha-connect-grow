@@ -843,6 +843,41 @@ const PortalFloorPlans: React.FC = () => {
                   ))}
                 </dl>
 
+                {selected.marker_type === "rack" && (
+                  <div className="mt-6 border border-[hsl(268_85%_58%)] bg-[hsl(268_85%_58%/0.08)] p-4 space-y-2">
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-[hsl(268_85%_45%)]">
+                      {selected.model ?? "6U"} network rack · {floor?.display_name ?? "Level"}
+                    </p>
+                    <dl className="grid gap-x-8 gap-y-2 sm:grid-cols-2 text-sm">
+                      {[
+                        ["Rack", selected.label],
+                        ["Equipment", selected.equipment ?? "6U Wall-Mount Network Rack"],
+                        ["Size", selected.model ?? "6U"],
+                        ["Status", stateLabel(selected.status)],
+                        ["Floor", floor?.display_name ?? "—"],
+                      ].map(([k, v]) => (
+                        <div key={String(k)} className="flex justify-between gap-4">
+                          <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                            {k}
+                          </dt>
+                          <dd className="text-right">{v}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {selected.notes ??
+                        "Provisional placement — move to the approved rack location before final sign-off."}
+                    </p>
+                    <p className="text-xs text-foreground leading-relaxed">
+                      {selected.status === "planned"
+                        ? RACK_MOVE_HINT
+                        : `This rack is ${stateLabel(selected.status).toLowerCase()}, so its position is locked.`}
+                    </p>
+                  </div>
+                )}
+
+
+
                 {/* Camera optics — editable while the camera is planned or an unsaved draft */}
                 {selected.marker_type === "camera" && (() => {
                   const live = shown.find((m) => m.id === selected.id) ?? selected;
