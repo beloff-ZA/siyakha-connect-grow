@@ -42,6 +42,9 @@ const ClientLogin: React.FC = () => {
       new URLSearchParams(window.location.search).get("type") === "recovery";
     if (isRecovery) setMode("setup");
 
+    const mustChange = (u: { user_metadata?: Record<string, unknown> } | undefined | null) =>
+      u?.user_metadata?.must_change_password === true;
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -49,10 +52,18 @@ const ClientLogin: React.FC = () => {
         setMode("setup");
         return;
       }
+      if (mustChange(session?.user)) {
+        setMode("setup");
+        return;
+      }
       if (session?.user && !isRecovery) navigate("/portal", { replace: true });
     });
 
     supabase.auth.getSession().then(({ data }) => {
+      if (mustChange(data.session?.user)) {
+        setMode("setup");
+        return;
+      }
       if (data.session?.user && !isRecovery) navigate("/portal", { replace: true });
     });
 
