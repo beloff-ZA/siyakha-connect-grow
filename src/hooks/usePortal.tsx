@@ -20,9 +20,27 @@ export type PortalClientUser = {
   status: string;
 };
 
+export type PortalSite = {
+  id: string;
+  client_id: string;
+  name: string;
+  address: string | null;
+  city: string | null;
+  province: string | null;
+  postal_code: string | null;
+  venue_type: string | null;
+  status: string;
+  budget_reference: number | null;
+  budget_currency: string | null;
+  budget_includes_vat: boolean | null;
+  budget_client_visible: boolean | null;
+  notes: string | null;
+};
+
 export type PortalProject = {
   id: string;
   client_id: string;
+  site_id: string | null;
   title: string;
   status: string;
   address: string | null;
@@ -44,6 +62,10 @@ type PortalContextValue = {
   error: string | null;
   clientUser: PortalClientUser | null;
   client: PortalClient | null;
+  sites: PortalSite[];
+  activeSite: PortalSite | null;
+  activeSiteId: string | null;
+  setActiveSiteId: (id: string) => void;
   projects: PortalProject[];
   activeProject: PortalProject | null;
   activeProjectId: string | null;
@@ -59,8 +81,11 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [error, setError] = useState<string | null>(null);
   const [clientUser, setClientUser] = useState<PortalClientUser | null>(null);
   const [client, setClient] = useState<PortalClient | null>(null);
+  const [sites, setSites] = useState<PortalSite[]>([]);
   const [projects, setProjects] = useState<PortalProject[]>([]);
+  const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+
   const [tick, setTick] = useState(0);
 
   const refresh = useCallback(() => setTick((t) => t + 1), []);
