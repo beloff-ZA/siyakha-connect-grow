@@ -110,8 +110,21 @@ const FloorPlanCanvas: React.FC<Props> = ({
     | { mode: "pan"; startX: number; startY: number; ox: number; oy: number; moved: boolean }
     | { mode: "marker"; id: string; startX: number; startY: number; moved: boolean; draggable: boolean }
     | { mode: "aim"; id: string; startX: number; startY: number; moved: boolean }
+    | {
+        mode: "place";
+        startX: number;
+        startY: number;
+        anchor: { x: number; y: number };
+        moved: boolean;
+      }
     | null
   >(null);
+
+  /** Live preview of a placement gesture: where it started and where it aims. */
+  const [placePreview, setPlacePreview] = useState<
+    { x: number; y: number; deg: number | null } | null
+  >(null);
+
 
 
   const reset = useCallback(() => {
