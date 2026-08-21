@@ -36,6 +36,22 @@ serve(async (req) => {
     const { data: userData, error: userErr } = await caller.auth.getUser();
     if (userErr || !userData.user) return json({ error: "Unauthorized" }, 401);
 
+    // Global testing safety switch: refuse BEFORE touching any email-sending API.
+    const { data: settings } = await admin
+      .from("portal_notification_settings")
+      .select("client_emails_enabled")
+      .limit(1)
+      .maybeSingle();
+    if (!settings?.client_emails_enabled) {
+      return json(
+        {
+          error: "Client emails are disabled in testing mode",
+          client_emails_enabled: false,
+        },
+        403,
+      );
+    }
+
     const { data: adminRow } = await admin
       .from("user_roles")
       .select("id")
