@@ -2130,6 +2130,87 @@ export type Database = {
           },
         ]
       }
+      portal_rack_equipment: {
+        Row: {
+          client_visible: boolean
+          created_at: string
+          description: string | null
+          equipment_type: string
+          id: string
+          layer3_capable: boolean
+          manufacturer: string
+          model: string
+          notes: string | null
+          poe_capable: boolean
+          port_count: number | null
+          port_type: string | null
+          project_id: string
+          quantity: number
+          rack_marker_id: string
+          rack_units: number
+          sort_order: number
+          status: Database["public"]["Enums"]["portal_marker_state"]
+          updated_at: string
+        }
+        Insert: {
+          client_visible?: boolean
+          created_at?: string
+          description?: string | null
+          equipment_type?: string
+          id?: string
+          layer3_capable?: boolean
+          manufacturer: string
+          model: string
+          notes?: string | null
+          poe_capable?: boolean
+          port_count?: number | null
+          port_type?: string | null
+          project_id: string
+          quantity?: number
+          rack_marker_id: string
+          rack_units?: number
+          sort_order?: number
+          status?: Database["public"]["Enums"]["portal_marker_state"]
+          updated_at?: string
+        }
+        Update: {
+          client_visible?: boolean
+          created_at?: string
+          description?: string | null
+          equipment_type?: string
+          id?: string
+          layer3_capable?: boolean
+          manufacturer?: string
+          model?: string
+          notes?: string | null
+          poe_capable?: boolean
+          port_count?: number | null
+          port_type?: string | null
+          project_id?: string
+          quantity?: number
+          rack_marker_id?: string
+          rack_units?: number
+          sort_order?: number
+          status?: Database["public"]["Enums"]["portal_marker_state"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_rack_equipment_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_rack_equipment_rack_marker_id_fkey"
+            columns: ["rack_marker_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floor_markers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_site_images: {
         Row: {
           area: string | null

@@ -82,6 +82,12 @@ import {
   type MarkerKind,
   type PortalFloor,
 } from "@/lib/floorPlans";
+import {
+  BuildingBackbone,
+  EquipmentSchedule,
+  RackContents,
+} from "@/components/portal/RackEquipment";
+import { type RackEquipment } from "@/lib/rackEquipment";
 
 type CameraDraft = {
   id: string;
@@ -152,6 +158,7 @@ const PortalFloorPlans: React.FC = () => {
 
   // ---- Cable routing -------------------------------------------------------
   const [routes, setRoutes] = useState<CableRoute[]>([]);
+  const [equipment, setEquipment] = useState<RackEquipment[]>([]);
   const [routeMode, setRouteMode] = useState<RouteDisplayMode>("all");
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
   const [editingRoutes, setEditingRoutes] = useState(false);
@@ -187,6 +194,7 @@ const PortalFloorPlans: React.FC = () => {
       { data: floorRows, error: fErr },
       { data: markerRows, error: mErr },
       { data: routeRows, error: rErr },
+      { data: equipRows, error: eErr },
     ] = await Promise.all([
       supabase
         .from("portal_floors")
@@ -203,8 +211,14 @@ const PortalFloorPlans: React.FC = () => {
         .select("*")
         .eq("project_id", activeProject.id)
         .order("route_label", { ascending: true }),
+      supabase
+        .from("portal_rack_equipment")
+        .select("*")
+        .eq("project_id", activeProject.id)
+        .order("sort_order", { ascending: true }),
     ]);
-    if (fErr || mErr || rErr) setError((fErr ?? mErr ?? rErr)?.message ?? "Unable to load plans");
+    if (fErr || mErr || rErr || eErr)
+      setError((fErr ?? mErr ?? rErr ?? eErr)?.message ?? "Unable to load plans");
     const list = (floorRows ?? []) as unknown as PortalFloor[];
     setFloors(list);
     setFloorId((prev) => (prev && list.some((f) => f.id === prev) ? prev : list[0]?.id ?? ""));
@@ -215,6 +229,7 @@ const PortalFloorPlans: React.FC = () => {
         waypoints: parseWaypoints((r as { waypoints?: unknown }).waypoints),
       })),
     );
+    setEquipment((equipRows ?? []) as unknown as RackEquipment[]);
     setLoading(false);
   }, [activeProject]);
 
@@ -223,6 +238,7 @@ const PortalFloorPlans: React.FC = () => {
   }, [load]);
 
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
+  const rackMarkers = useMemo(() => markers.filter((m) => m.marker_type === "rack"), [markers]);
   const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
   const draftCameras = useMemo<FloorMarker[]>(
     () =>
@@ -1325,6 +1341,16 @@ const PortalFloorPlans: React.FC = () => {
                   </div>
                 )}
 
+                {selected.marker_type === "rack" && (
+                  <RackContents
+                    rack={selected}
+                    floor={floor}
+                    items={equipment.filter((e) => e.rack_marker_id === selected.id)}
+                    routes={routes}
+                  />
+                )}
+
+
 
 
                 {/* Camera optics — editable while the camera is planned or an unsaved draft */}
@@ -1638,6 +1664,36 @@ const PortalFloorPlans: React.FC = () => {
                 {CABLE_ROUTE_DISCLAIMER}
               </p>
             </Panel>
+
+            {/* Rack equipment */}
+            {equipment.length > 0 && (
+              <>
+                <Panel title="Building backbone (preliminary)">
+                  <BuildingBackbone
+                    floors={floors}
+                    racks={rackMarkers}
+                    equipment={equipment}
+                    onSelectFloor={(id) => {
+                      setFloorId(id);
+                      setSelected(null);
+                    }}
+                  />
+                </Panel>
+
+                <Panel title="Rack equipment schedule">
+                  <EquipmentSchedule
+                    floors={floors}
+                    racks={rackMarkers}
+                    equipment={equipment}
+                    routes={routes}
+                    onSelectFloor={(id) => {
+                      setFloorId(id);
+                      setSelected(null);
+                    }}
+                  />
+                </Panel>
+              </>
+            )}
 
             {floorStats.cameras === 0 && camDrafts.length === 0 && (
               <div className="border border-dashed border-border p-6 flex items-start gap-3">
