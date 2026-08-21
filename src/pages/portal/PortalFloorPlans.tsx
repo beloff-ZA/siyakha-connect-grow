@@ -510,7 +510,9 @@ const PortalFloorPlans: React.FC = () => {
             </p>
             <div className="max-h-[320px] lg:max-h-none overflow-y-auto">
               {floors.map((f) => {
-                const count = markers.filter((m) => m.floor_id === f.id).length;
+                const onFloor = markers.filter((m) => m.floor_id === f.id);
+                const apCount = onFloor.filter((m) => m.marker_type === "wifi_ap").length;
+                const camCount = onFloor.filter((m) => m.marker_type === "camera").length;
                 const active = f.id === floorId;
                 return (
                   <button
@@ -525,7 +527,12 @@ const PortalFloorPlans: React.FC = () => {
                     <span className="block text-[11px] uppercase tracking-[0.18em]">
                       Level {f.level_number}
                     </span>
-                    <span className="block text-xs mt-1">{count} devices</span>
+                    <span className="block text-xs mt-1">
+                      {apCount} AP · {camCount} CCTV
+                    </span>
+                    <span className="block text-[10px] mt-0.5 text-muted-foreground">
+                      {onFloor.length} devices
+                    </span>
                   </button>
                 );
               })}
