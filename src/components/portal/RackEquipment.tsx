@@ -115,15 +115,13 @@ export const RackContents: React.FC<{
                       </span>
                       <span>
                         {ports.spare} spare
-                        {!isAgg &&
-                          "wifi" in ports &&
-                          ` · ${ports.wifi} Wi-Fi · ${ports.camera} CCTV`}
+                        {!isAgg && ` · ${access.wifi} Wi-Fi · ${access.camera} CCTV`}
                       </span>
                     </div>
                     <Bar used={ports.used} total={ports.portCount} tone={tone} />
-                    {!isAgg && "over" in ports && ports.over > 0 && (
+                    {!isAgg && access.over > 0 && (
                       <p className="text-[11px] text-foreground">
-                        {ports.over} device route(s) beyond a single {e.model} — additional switch
+                        {access.over} device route(s) beyond a single {e.model} — additional switch
                         capacity to be confirmed during the site survey.
                       </p>
                     )}
