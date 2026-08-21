@@ -226,7 +226,10 @@ const PortalFloorPlans: React.FC = () => {
       total: list.length,
       aps: list.filter((m) => m.marker_type === "wifi_ap").length,
       cameras: list.filter((m) => m.marker_type === "camera").length,
-      other: list.filter((m) => m.marker_type !== "wifi_ap" && m.marker_type !== "camera").length,
+      racks: list.filter((m) => m.marker_type === "rack").length,
+      other: list.filter(
+        (m) => !["wifi_ap", "camera", "rack"].includes(m.marker_type),
+      ).length,
     };
   }, [markers, draft, optics]);
 
