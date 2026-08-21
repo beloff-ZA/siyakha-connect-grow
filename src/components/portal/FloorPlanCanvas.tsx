@@ -442,51 +442,93 @@ const FloorPlanCanvas: React.FC<Props> = ({
                 const draggable = canDrag ? canDrag(m) : true;
                 const locked = editing && !draggable;
                 const isSelected = selectedId === m.id;
+                const isDraft = unsaved.has(m.id);
+                const isCamera = m.marker_type === "camera";
+                const showAim = isCamera && isSelected && !!onAim && draggable;
+                const handleDist = markerPx * 1.9;
                 return (
-                  <button
-                    key={m.id}
-                    type="button"
-                    data-marker-id={m.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    title={
-                      locked
-                        ? `${m.label} · ${m.status} — position locked. Only devices with a Planned status can be repositioned.`
-                        : editing
-                          ? `${m.label} · ${m.status} — drag to reposition`
-                          : `${m.label} · ${m.status}`
-                    }
-                    aria-label={
-                      locked ? `${m.label}, position locked (${m.status})` : `${m.label}, ${m.status}`
-                    }
-                    aria-pressed={isSelected}
-                    className={[
-                      "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
-                      statusRing[m.status] ?? "border-solid",
-                      isSelected
-                        ? selectedRing(m.marker_type)
-                        : "border-foreground/70 hover:border-foreground",
-                      m.marker_type === "camera" ? "rounded-none" : "rounded-full",
-                      editing ? (draggable ? "cursor-move" : "cursor-not-allowed opacity-70") : "",
-                    ].join(" ")}
-                    style={{
-                      left: `${Number(m.x_norm) * 100}%`,
-                      top: `${Number(m.y_norm) * 100}%`,
-                      width: `${markerPx}px`,
-                      height: `${markerPx}px`,
-                      fontSize: `${Math.max(5, 8 / zoom)}px`,
-                      zIndex: isSelected ? 30 : 10,
-                    }}
-                  >
-                    {locked ? (
-                      <Lock style={{ width: "60%", height: "60%" }} strokeWidth={2} />
-                    ) : (
-                      kindShort(m.marker_type)
+                  <React.Fragment key={m.id}>
+                    <button
+                      type="button"
+                      data-marker-id={m.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      title={
+                        locked
+                          ? `${m.label} · ${m.status} — position locked. Only devices with a Planned status can be repositioned.`
+                          : isDraft
+                            ? `${m.label} · unsaved draft — drag to reposition, then save`
+                            : editing
+                              ? `${m.label} · ${m.status} — drag to reposition`
+                              : `${m.label} · ${m.status}`
+                      }
+                      aria-label={
+                        locked
+                          ? `${m.label}, position locked (${m.status})`
+                          : `${m.label}, ${isDraft ? "unsaved draft" : m.status}`
+                      }
+                      aria-pressed={isSelected}
+                      className={[
+                        "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
+                        statusRing[m.status] ?? "border-solid",
+                        isDraft
+                          ? "border-dashed border-[hsl(32_100%_50%)] ring-1 ring-[hsl(32_100%_50%)] animate-pulse"
+                          : isSelected
+                            ? selectedRing(m.marker_type)
+                            : "border-foreground/70 hover:border-foreground",
+                        isCamera ? "rounded-none" : "rounded-full",
+                        isDraft ? "cursor-move" : editing ? (draggable ? "cursor-move" : "cursor-not-allowed opacity-70") : "",
+                      ].join(" ")}
+                      style={{
+                        left: `${Number(m.x_norm) * 100}%`,
+                        top: `${Number(m.y_norm) * 100}%`,
+                        width: `${markerPx}px`,
+                        height: `${markerPx}px`,
+                        fontSize: `${Math.max(5, 8 / zoom)}px`,
+                        color: isCamera ? "hsl(32 100% 42%)" : undefined,
+                        zIndex: isSelected ? 30 : isDraft ? 20 : 10,
+                      }}
+                    >
+                      {locked ? (
+                        <Lock style={{ width: "60%", height: "60%" }} strokeWidth={2} />
+                      ) : (
+                        kindShort(m.marker_type)
+                      )}
+                    </button>
+
+                    {showAim && (
+                      <span
+                        data-aim-for={m.id}
+                        role="slider"
+                        tabIndex={-1}
+                        aria-label={`Aim ${m.label}`}
+                        aria-valuenow={Number(m.direction_deg ?? 0)}
+                        aria-valuemin={0}
+                        aria-valuemax={359}
+                        title={`Drag to aim ${m.label}`}
+                        className="absolute flex items-center justify-center rounded-full border cursor-grab"
+                        style={{
+                          left: `calc(${Number(m.x_norm) * 100}% + ${Math.sin((Number(m.direction_deg ?? 0) * Math.PI) / 180) * handleDist}px)`,
+                          top: `calc(${Number(m.y_norm) * 100}% - ${Math.cos((Number(m.direction_deg ?? 0) * Math.PI) / 180) * handleDist}px)`,
+                          width: `${markerPx * 0.85}px`,
+                          height: `${markerPx * 0.85}px`,
+                          marginLeft: `${-markerPx * 0.425}px`,
+                          marginTop: `${-markerPx * 0.425}px`,
+                          background: "hsl(32 100% 50%)",
+                          borderColor: "hsl(32 100% 35%)",
+                          color: "hsl(0 0% 100%)",
+                          zIndex: 40,
+                          touchAction: "none",
+                        }}
+                      >
+                        <RotateCw style={{ width: "62%", height: "62%" }} strokeWidth={2.5} />
+                      </span>
                     )}
-                  </button>
+                  </React.Fragment>
                 );
               })}
+
             </div>
           </div>
         ) : (
