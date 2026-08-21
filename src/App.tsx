@@ -56,6 +56,8 @@ import PortalFloorPlans from "./pages/portal/PortalFloorPlans";
 import PortalBuildingView from "./pages/portal/PortalBuildingView";
 
 import PortalDocuments from "./pages/portal/PortalDocuments";
+import PortalRegisters from "./pages/portal/PortalRegisters";
+import PortalOnboarding from "./pages/portal/PortalOnboarding";
 import PortalSiteImages from "./pages/portal/PortalSiteImages";
 
 import PortalGallery from "./pages/portal/PortalGallery";
@@ -96,6 +98,8 @@ function App() {
               <Route path="/portal/floor-plans" element={<ClientRoute><PortalFloorPlans /></ClientRoute>} />
               <Route path="/portal/building-view" element={<ClientRoute><PortalBuildingView /></ClientRoute>} />
 
+              <Route path="/portal/registers" element={<ClientRoute><PortalRegisters /></ClientRoute>} />
+              <Route path="/portal/onboarding" element={<ClientRoute><PortalOnboarding /></ClientRoute>} />
               <Route path="/portal/documents" element={<ClientRoute><PortalDocuments /></ClientRoute>} />
               <Route path="/portal/site-images" element={<ClientRoute><PortalSiteImages /></ClientRoute>} />
 
