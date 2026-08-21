@@ -41,6 +41,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
   onPlace,
   onMove,
   onMoveEnd,
+  canDrag,
+  editing = false,
   placing = false,
   height = "h-[60vh] md:h-[70vh]",
   emptyLabel = "Plan image not available yet.",
@@ -54,7 +56,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
 
   const dragRef = useRef<
     | { mode: "pan"; startX: number; startY: number; ox: number; oy: number; moved: boolean }
-    | { mode: "marker"; id: string; startX: number; startY: number; moved: boolean }
+    | { mode: "marker"; id: string; startX: number; startY: number; moved: boolean; draggable: boolean }
+
     | null
   >(null);
 
