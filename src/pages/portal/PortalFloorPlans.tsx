@@ -767,15 +767,20 @@ const PortalFloorPlans: React.FC = () => {
                 {MARKER_KINDS.filter((k) => k.value !== "other").map((k) => (
                   <span key={k.value} className="flex items-center gap-2">
                     <span
-                      className={`inline-flex h-5 w-5 items-center justify-center border border-foreground/70 text-[7px] ${
-                        k.value === "camera" ? "" : "rounded-full"
+                      className={`inline-flex h-5 w-5 items-center justify-center border text-[7px] ${
+                        k.value === "camera" || k.value === "rack" ? "" : "rounded-full"
+                      } ${
+                        k.value === "rack"
+                          ? "border-[hsl(268_85%_58%)] bg-[hsl(268_85%_58%/0.16)] text-[hsl(268_85%_45%)]"
+                          : "border-foreground/70"
                       }`}
                     >
-                      {k.short}
+                      {k.value === "rack" ? "6U" : k.short}
                     </span>
-                    {k.label}
+                    {k.value === "rack" ? "6U network racks" : k.label}
                   </span>
                 ))}
+
                 <span className="flex items-center gap-2">
                   <span className="inline-block h-5 w-5 rounded-full border border-dashed border-foreground/70" />
                   Planned / not installed
