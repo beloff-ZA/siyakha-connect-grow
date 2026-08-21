@@ -1177,7 +1177,18 @@ const PortalFloorPlans: React.FC = () => {
                 </p>
               </div>
 
+              {canManage && (
+                <DeviceManager
+                  floor={floor}
+                  floorMarkers={floorMarkers}
+                  selected={selected}
+                  onSelect={setSelected}
+                  onChanged={load}
+                />
+              )}
+
               <FloorPlanCanvas
+
                 imageUrl={planUrl}
                 markers={shown}
                 selectedId={selected?.id ?? null}
