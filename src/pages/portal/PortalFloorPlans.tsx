@@ -979,7 +979,34 @@ const PortalFloorPlans: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog open={camConfirmOpen} onOpenChange={setCamConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Add {camDrafts.length} planned camera{camDrafts.length === 1 ? "" : "s"}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {camDrafts.length} camera{camDrafts.length === 1 ? "" : "s"} will be created on{" "}
+              {floor?.display_name ?? "this level"} with a Planned status, sequential labels, and the
+              direction and coverage you selected. Every addition is recorded in the project audit
+              trail. {SURVEY_DISCLAIMER}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={savingCams}>Keep placing</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                saveCameras();
+              }}
+              disabled={savingCams}
+            >
+              {savingCams ? "Saving…" : "Save cameras"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
+
   );
 
 };
