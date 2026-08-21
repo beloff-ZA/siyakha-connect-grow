@@ -404,6 +404,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
 
     if (!d.moved) {
       onSelect?.(null);
+      onSelectRoute?.(null);
     }
   };
 
