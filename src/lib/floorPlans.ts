@@ -14,6 +14,8 @@ export type PortalFloor = {
   client_visible: boolean;
 };
 
+export type CameraRange = "small" | "medium" | "large";
+
 export type FloorMarker = {
   id: string;
   floor_id: string;
@@ -35,7 +37,26 @@ export type FloorMarker = {
   evidence_path: string | null;
   evidence_note: string | null;
   sort_order: number;
+  /** Camera aim — 0 = up/north on the plan image. */
+  direction_deg?: number;
+  /** Camera field of view in degrees (60 | 90 | 110). */
+  fov_deg?: number;
+  /** Indicative camera range band. */
+  coverage_range?: CameraRange;
 };
+
+export const FOV_PRESETS: { value: number; label: string }[] = [
+  { value: 60, label: "60° Narrow" },
+  { value: 90, label: "90° Standard" },
+  { value: 110, label: "110° Wide" },
+];
+
+export const CAMERA_RANGES: { value: CameraRange; label: string }[] = [
+  { value: "small", label: "Small" },
+  { value: "medium", label: "Medium" },
+  { value: "large", label: "Large" },
+];
+
 
 export const MARKER_KINDS: { value: MarkerKind; label: string; short: string; layer: string }[] = [
   { value: "wifi_ap", label: "Wi-Fi access point", short: "AP", layer: "Wi-Fi Access Points" },
