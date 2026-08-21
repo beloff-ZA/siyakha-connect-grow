@@ -17,6 +17,8 @@ import {
   Menu,
   X,
   Building2,
+  ClipboardList,
+  PlusCircle,
 } from "lucide-react";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,6 +31,7 @@ const nav = [
   { to: "/portal/boq", label: "BOQ", icon: Calculator },
   { to: "/portal/floor-plans", label: "Floor plans", icon: Layers },
   { to: "/portal/building-view", label: "Building view", icon: Building2 },
+  { to: "/portal/registers", label: "Device registers", icon: ClipboardList },
 
   { to: "/portal/documents", label: "Documents", icon: FileText },
   { to: "/portal/site-images", label: "Site images", icon: Camera },
@@ -36,8 +39,10 @@ const nav = [
 
   { to: "/portal/updates", label: "Updates", icon: Bell },
   { to: "/portal/support", label: "Support", icon: MessageSquare },
+  { to: "/portal/onboarding", label: "Add a site", icon: PlusCircle },
   { to: "/portal/profile", label: "Profile & security", icon: UserRound },
 ];
+
 
 const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { signOut } = useAuth();
