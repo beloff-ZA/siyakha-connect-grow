@@ -1104,6 +1104,9 @@ const PortalFloorPlans: React.FC = () => {
             <AlertDialogDescription>
               {pendingSummary.aps} Wi-Fi access point{pendingSummary.aps === 1 ? "" : "s"} and{" "}
               {pendingSummary.cameras} camera{pendingSummary.cameras === 1 ? "" : "s"}
+              {pendingSummary.racks > 0
+                ? `, ${pendingSummary.racks} network rack${pendingSummary.racks === 1 ? "" : "s"}`
+                : ""}
               {pendingSummary.other > 0 ? ` and ${pendingSummary.other} other device(s)` : ""} will
               move to their new positions. Every move is recorded in the project audit trail.
             </AlertDialogDescription>
