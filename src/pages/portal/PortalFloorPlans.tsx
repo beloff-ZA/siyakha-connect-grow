@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Info, Layers, Lock, MessageSquare, Move, Search, Wifi } from "lucide-react";
+import { Info, Layers, Lock, MessageSquare, Move, Radio, Search, Wifi } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,7 +25,8 @@ import {
   ErrorNote,
   NoProject,
 } from "@/components/portal/ui";
-import FloorPlanCanvas from "@/components/portal/FloorPlanCanvas";
+import FloorPlanCanvas, { type CoverageMode } from "@/components/portal/FloorPlanCanvas";
+import { COVERAGE_BANDS, COVERAGE_DISCLAIMER } from "@/lib/planGeometry";
 import { DOCUMENTS_BUCKET, signedUrl, formatDate } from "@/lib/portalFiles";
 import {
   MARKER_KINDS,
@@ -45,6 +46,12 @@ const LAYERS: { kind: MarkerKind; label: string }[] = [
   { kind: "camera", label: "CCTV Cameras" },
   { kind: "rack", label: "Racks" },
   { kind: "cable_route", label: "Cable Routes" },
+];
+
+const COVERAGE_OPTIONS: { value: CoverageMode; label: string }[] = [
+  { value: "off", label: "Off" },
+  { value: "selected", label: "Selected device" },
+  { value: "all", label: "All on this level" },
 ];
 
 const Metric: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
