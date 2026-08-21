@@ -90,6 +90,8 @@ import {
   RackContents,
 } from "@/components/portal/RackEquipment";
 import { type RackEquipment } from "@/lib/rackEquipment";
+import DeviceManager from "@/components/portal/DeviceManager";
+
 
 type CameraDraft = {
   id: string;
@@ -173,6 +175,23 @@ const PortalFloorPlans: React.FC = () => {
   const [routeFloorFilter, setRouteFloorFilter] = useState<string>("all");
   const [routeServiceFilter, setRouteServiceFilter] = useState<string>("all");
   const [routeStatusFilter, setRouteStatusFilter] = useState<string>("all");
+  // Can this signed-in user create, edit and delete devices on this project?
+  const [canManage, setCanManage] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    if (!activeProject) {
+      setCanManage(false);
+      return;
+    }
+    supabase
+      .rpc("portal_can_manage_project", { _project_id: activeProject.id })
+      .then(({ data }) => {
+        if (!cancelled) setCanManage(data === true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeProject]);
 
 
 
@@ -1158,7 +1177,18 @@ const PortalFloorPlans: React.FC = () => {
                 </p>
               </div>
 
+              {canManage && (
+                <DeviceManager
+                  floor={floor}
+                  floorMarkers={floorMarkers}
+                  selected={selected}
+                  onSelect={setSelected}
+                  onChanged={load}
+                />
+              )}
+
               <FloorPlanCanvas
+
                 imageUrl={planUrl}
                 markers={shown}
                 selectedId={selected?.id ?? null}

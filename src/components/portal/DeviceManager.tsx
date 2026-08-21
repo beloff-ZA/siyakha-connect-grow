@@ -1,0 +1,638 @@
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { MapPin, Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  CAMERA_RANGES,
+  FOV_PRESETS,
+  MARKER_ENVIRONMENTS,
+  MARKER_KINDS,
+  MARKER_STATES,
+  kindLabel,
+  kindShort,
+  stateLabel,
+  type CameraRange,
+  type FloorMarker,
+  type MarkerKind,
+  type MarkerState,
+  type PortalFloor,
+} from "@/lib/floorPlans";
+
+type FormState = {
+  id?: string;
+  marker_type: MarkerKind;
+  label: string;
+  status: MarkerState;
+  area: string;
+  equipment: string;
+  model: string;
+  environment: string;
+  lens_model: string;
+  mounting_height_m: string;
+  nvr_channel: string;
+  notes: string;
+  is_placed: boolean;
+  direction_deg: number;
+  fov_deg: number;
+  coverage_range: CameraRange;
+};
+
+const blank = (kind: MarkerKind = "camera"): FormState => ({
+  marker_type: kind,
+  label: "",
+  status: "planned",
+  area: "",
+  equipment: "",
+  model: "",
+  environment: "",
+  lens_model: "",
+  mounting_height_m: "",
+  nvr_channel: "",
+  notes: "",
+  is_placed: true,
+  direction_deg: 0,
+  fov_deg: 90,
+  coverage_range: "medium",
+});
+
+const fromMarker = (m: FloorMarker): FormState => ({
+  id: m.id,
+  marker_type: m.marker_type,
+  label: m.label,
+  status: m.status,
+  area: m.area ?? "",
+  equipment: m.equipment ?? "",
+  model: m.model ?? "",
+  environment: m.environment ?? "",
+  lens_model: m.lens_model ?? "",
+  mounting_height_m: m.mounting_height_m == null ? "" : String(m.mounting_height_m),
+  nvr_channel: m.nvr_channel == null ? "" : String(m.nvr_channel),
+  notes: m.notes ?? "",
+  is_placed: m.is_placed ?? true,
+  direction_deg: Number(m.direction_deg ?? 0),
+  fov_deg: Number(m.fov_deg ?? 90),
+  coverage_range: (m.coverage_range ?? "medium") as CameraRange,
+});
+
+/** Next sensible label for a device type on a level, e.g. CAM-L03-07. */
+const suggestLabel = (kind: MarkerKind, level: number, onFloor: FloorMarker[]) => {
+  const prefix =
+    kind === "camera" ? "CAM" : kind === "wifi_ap" ? "AP" : kind === "rack" ? "RACK" : "DEV";
+  const stem = `${prefix}-L${String(level).padStart(2, "0")}-`;
+  const used = onFloor
+    .filter((m) => m.label.toUpperCase().startsWith(stem))
+    .map((m) => Number(m.label.slice(stem.length)) || 0);
+  const next = (used.length ? Math.max(...used) : 0) + 1;
+  return `${stem}${String(next).padStart(2, "0")}`;
+};
+
+const selectClass =
+  "w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-foreground";
+
+type Props = {
+  floor: PortalFloor | null;
+  floorMarkers: FloorMarker[];
+  selected: FloorMarker | null;
+  onSelect: (m: FloorMarker | null) => void;
+  onChanged: () => void;
+};
+
+/**
+ * Plan-side device management: create, edit, place, unplace and delete devices on
+ * the selected level. Rendered only for users the backend allows to manage the project.
+ */
+const DeviceManager: React.FC<Props> = ({ floor, floorMarkers, selected, onSelect, onChanged }) => {
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState<FormState | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<FloorMarker | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [query, setQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState<"all" | MarkerKind>("all");
+
+  const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
+    setForm((f) => (f ? { ...f, [key]: value } : f));
+
+  // Editing follows the plan selection so clicking a marker opens its record.
+  useEffect(() => {
+    if (!open || !selected || form?.id === selected.id) return;
+    if (form && !form.id) return; // don't discard an in-progress new device
+    setForm(fromMarker(selected));
+  }, [open, selected, form]);
+
+  const rows = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return floorMarkers
+      .filter((m) => (typeFilter === "all" ? true : m.marker_type === typeFilter))
+      .filter((m) =>
+        !q
+          ? true
+          : [m.label, m.area, m.equipment, m.model].some((v) => (v ?? "").toLowerCase().includes(q)),
+      )
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [floorMarkers, typeFilter, query]);
+
+  const unplaced = useMemo(() => floorMarkers.filter((m) => m.is_placed === false), [floorMarkers]);
+
+  const startCreate = useCallback(
+    (kind: MarkerKind = "camera") => {
+      if (!floor) return;
+      onSelect(null);
+      setOpen(true);
+      setForm({
+        ...blank(kind),
+        label: suggestLabel(kind, floor.level_number, floorMarkers),
+      });
+    },
+    [floor, floorMarkers, onSelect],
+  );
+
+  const startEdit = useCallback(
+    (m: FloorMarker) => {
+      onSelect(m);
+      setOpen(true);
+      setForm(fromMarker(m));
+    },
+    [onSelect],
+  );
+
+  const save = async () => {
+    if (!floor || !form) return;
+    if (!form.label.trim()) {
+      toast({ title: "Label required", description: "Give the device a unique label.", variant: "destructive" });
+      return;
+    }
+    setSaving(true);
+    const existing = form.id ? floorMarkers.find((m) => m.id === form.id) : null;
+    const payload: Record<string, unknown> = {
+      id: form.id ?? null,
+      floor_id: floor.id,
+      marker_type: form.marker_type,
+      label: form.label.trim(),
+      status: form.status,
+      area: form.area,
+      equipment: form.equipment,
+      model: form.model,
+      environment: form.environment,
+      lens_model: form.lens_model,
+      mounting_height_m: form.mounting_height_m,
+      nvr_channel: form.nvr_channel,
+      notes: form.notes,
+      is_placed: form.is_placed,
+      direction_deg: form.direction_deg,
+      fov_deg: form.fov_deg,
+      coverage_range: form.coverage_range,
+    };
+    if (form.is_placed) {
+      // Keep an existing position; new or newly placed devices land in the plan centre.
+      payload.x_norm = existing?.is_placed !== false ? existing?.x_norm ?? 0.5 : existing?.x_norm ?? 0.5;
+      payload.y_norm = existing?.is_placed !== false ? existing?.y_norm ?? 0.5 : existing?.y_norm ?? 0.5;
+    }
+
+    const { error } = await supabase.rpc("portal_save_floor_marker", { _payload: payload as never });
+    setSaving(false);
+    if (error) {
+      toast({ title: "Device not saved", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({
+      title: form.id ? "Device updated" : "Device added",
+      description: `${form.label.trim()} saved on ${floor.display_name}.`,
+    });
+    setForm(null);
+    onSelect(null);
+    onChanged();
+  };
+
+  const remove = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    const { error } = await supabase.rpc("portal_delete_floor_marker", {
+      _marker_id: deleteTarget.id,
+    });
+    setDeleting(false);
+    if (error) {
+      toast({ title: "Device not deleted", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({
+      title: "Device deleted",
+      description: `${deleteTarget.label} and its cable routes were removed.`,
+    });
+    setDeleteTarget(null);
+    setForm(null);
+    onSelect(null);
+    onChanged();
+  };
+
+  const isCamera = form?.marker_type === "camera";
+
+  if (!floor) return null;
+
+  return (
+    <div className="mb-5 border border-border print:hidden">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
+        <div className="min-w-0">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            Device management — {floor.display_name}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {floorMarkers.length} device{floorMarkers.length === 1 ? "" : "s"} on this level
+            {unplaced.length > 0 && ` · ${unplaced.length} not yet placed on the plan`}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {(["camera", "wifi_ap", "rack"] as MarkerKind[]).map((k) => (
+            <Button key={k} type="button" variant="outline" size="sm" onClick={() => startCreate(k)}>
+              <Plus className="mr-1.5 h-3.5 w-3.5" strokeWidth={1.5} />
+              Add {kindShort(k)}
+            </Button>
+          ))}
+          <Button type="button" variant="ghost" size="sm" onClick={() => setOpen((o) => !o)}>
+            {open ? "Hide list" : "Manage devices"}
+          </Button>
+        </div>
+      </div>
+
+      {open && (
+        <div className="grid gap-0 lg:grid-cols-2">
+          {/* Register */}
+          <div className="border-b border-border lg:border-b-0 lg:border-r">
+            <div className="flex flex-wrap items-center gap-2 p-4">
+              <div className="relative flex-1 min-w-[160px]">
+                <Search
+                  className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
+                  strokeWidth={1.5}
+                />
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search label, area or model"
+                  className="pl-9"
+                  aria-label="Search devices on this level"
+                />
+              </div>
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value as "all" | MarkerKind)}
+                className={`${selectClass} w-auto`}
+                aria-label="Filter devices by type"
+              >
+                <option value="all">All types</option>
+                {MARKER_KINDS.map((k) => (
+                  <option key={k.value} value={k.value}>
+                    {k.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="max-h-[380px] overflow-y-auto border-t border-border">
+              {rows.length === 0 ? (
+                <p className="p-4 text-xs text-muted-foreground">
+                  No devices match this filter on {floor.display_name}.
+                </p>
+              ) : (
+                rows.map((m) => (
+                  <div
+                    key={m.id}
+                    className={[
+                      "flex items-center justify-between gap-3 border-b border-border px-4 py-3 last:border-b-0",
+                      selected?.id === m.id ? "bg-muted" : "",
+                    ].join(" ")}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => startEdit(m)}
+                      className="min-w-0 flex-1 text-left"
+                    >
+                      <span className="block text-sm">{m.label}</span>
+                      <span className="block text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                        {kindShort(m.marker_type)} · {stateLabel(m.status)}
+                        {m.is_placed === false ? " · Not placed" : ""}
+                        {m.area ? ` · ${m.area}` : ""}
+                      </span>
+                    </button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => startEdit(m)}
+                        aria-label={`Edit ${m.label}`}
+                      >
+                        <Pencil className="h-3.5 w-3.5" strokeWidth={1.5} />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setDeleteTarget(m)}
+                        aria-label={`Delete ${m.label}`}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} />
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Editor */}
+          <div className="p-4">
+            {!form ? (
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Select a device in the list or on the plan to edit its details, or add a new device
+                above. New and re-placed devices land in the centre of the plan — switch on
+                reposition mode to drag them into place.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                    {form.id ? `Editing ${form.label || "device"}` : "New device"}
+                  </p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setForm(null);
+                      onSelect(null);
+                    }}
+                    aria-label="Close device editor"
+                  >
+                    <X className="h-3.5 w-3.5" strokeWidth={1.5} />
+                  </Button>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="dm-type">Device type</Label>
+                    <select
+                      id="dm-type"
+                      value={form.marker_type}
+                      onChange={(e) => set("marker_type", e.target.value as MarkerKind)}
+                      className={selectClass}
+                    >
+                      {MARKER_KINDS.map((k) => (
+                        <option key={k.value} value={k.value}>
+                          {k.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="dm-label">Label</Label>
+                    <Input
+                      id="dm-label"
+                      value={form.label}
+                      onChange={(e) => set("label", e.target.value)}
+                      placeholder="CAM-L03-07"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="dm-status">Status</Label>
+                    <select
+                      id="dm-status"
+                      value={form.status}
+                      onChange={(e) => set("status", e.target.value as MarkerState)}
+                      className={selectClass}
+                    >
+                      {MARKER_STATES.map((s) => (
+                        <option key={s.value} value={s.value}>
+                          {s.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="dm-area">Area / location</Label>
+                    <Input
+                      id="dm-area"
+                      value={form.area}
+                      onChange={(e) => set("area", e.target.value)}
+                      placeholder="Lift lobby"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="dm-equipment">Equipment</Label>
+                    <Input
+                      id="dm-equipment"
+                      value={form.equipment}
+                      onChange={(e) => set("equipment", e.target.value)}
+                      placeholder="Dome camera"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="dm-model">Model</Label>
+                    <Input
+                      id="dm-model"
+                      value={form.model}
+                      onChange={(e) => set("model", e.target.value)}
+                      placeholder="Hikvision DS-2CD1143G2"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="dm-env">Environment</Label>
+                    <select
+                      id="dm-env"
+                      value={form.environment}
+                      onChange={(e) => set("environment", e.target.value)}
+                      className={selectClass}
+                    >
+                      <option value="">Not specified</option>
+                      {MARKER_ENVIRONMENTS.map((e) => (
+                        <option key={e.value} value={e.value}>
+                          {e.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="dm-height">Mounting height (m)</Label>
+                    <Input
+                      id="dm-height"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      value={form.mounting_height_m}
+                      onChange={(e) => set("mounting_height_m", e.target.value)}
+                    />
+                  </div>
+                  {isCamera && (
+                    <>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="dm-lens">Lens</Label>
+                        <Input
+                          id="dm-lens"
+                          value={form.lens_model}
+                          onChange={(e) => set("lens_model", e.target.value)}
+                          placeholder="2.8 mm fixed"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="dm-channel">NVR channel</Label>
+                        <Input
+                          id="dm-channel"
+                          type="number"
+                          min="1"
+                          value={form.nvr_channel}
+                          onChange={(e) => set("nvr_channel", e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="dm-dir">Direction (°, 0 = north)</Label>
+                        <Input
+                          id="dm-dir"
+                          type="number"
+                          min="0"
+                          max="359"
+                          value={form.direction_deg}
+                          onChange={(e) =>
+                            set("direction_deg", Math.min(359, Math.max(0, Number(e.target.value) || 0)))
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="dm-fov">Field of view</Label>
+                        <select
+                          id="dm-fov"
+                          value={form.fov_deg}
+                          onChange={(e) => set("fov_deg", Number(e.target.value))}
+                          className={selectClass}
+                        >
+                          {FOV_PRESETS.map((f) => (
+                            <option key={f.value} value={f.value}>
+                              {f.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="dm-range">Coverage range</Label>
+                        <select
+                          id="dm-range"
+                          value={form.coverage_range}
+                          onChange={(e) => set("coverage_range", e.target.value as CameraRange)}
+                          className={selectClass}
+                        >
+                          {CAMERA_RANGES.map((r) => (
+                            <option key={r.value} value={r.value}>
+                              {r.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="dm-notes">Notes</Label>
+                  <Textarea
+                    id="dm-notes"
+                    rows={2}
+                    value={form.notes}
+                    onChange={(e) => set("notes", e.target.value)}
+                    placeholder="Survey note, containment or power requirement"
+                  />
+                </div>
+
+                <label className="flex items-start gap-3 text-xs text-muted-foreground">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5"
+                    checked={form.is_placed}
+                    onChange={(e) => set("is_placed", e.target.checked)}
+                  />
+                  <span>
+                    <span className="text-foreground">Placed on the plan.</span> Clear this to keep
+                    the device in the register only — it disappears from the drawing until you place
+                    it again.
+                  </span>
+                </label>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button type="button" onClick={save} disabled={saving}>
+                    {saving ? "Saving…" : form.id ? "Save changes" : "Add device"}
+                  </Button>
+                  {form.id && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        const m = floorMarkers.find((x) => x.id === form.id);
+                        if (m) setDeleteTarget(m);
+                      }}
+                    >
+                      <Trash2 className="mr-1.5 h-3.5 w-3.5" strokeWidth={1.5} />
+                      Delete
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {unplaced.length > 0 && (
+              <div className="mt-6 border-t border-border pt-4">
+                <p className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  <MapPin className="h-3.5 w-3.5" strokeWidth={1.5} /> Not yet on the plan
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {unplaced.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => startEdit(m)}
+                      className="border border-border px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:border-foreground hover:text-foreground"
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {deleteTarget?.label}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This removes the {deleteTarget ? kindLabel(deleteTarget.marker_type).toLowerCase() : "device"}{" "}
+              from {floor.display_name} together with any cable routes drawn to it. The deletion is
+              recorded in the project activity log.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Keep device</AlertDialogCancel>
+            <AlertDialogAction onClick={remove} disabled={deleting}>
+              {deleting ? "Deleting…" : "Delete device"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+};
+
+export default DeviceManager;

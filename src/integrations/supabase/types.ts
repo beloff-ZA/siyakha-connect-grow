@@ -3216,11 +3216,20 @@ export type Database = {
         Args: { _cameras: Json; _floor_id: string }
         Returns: number
       }
+      portal_can_manage_project: {
+        Args: { _project_id: string }
+        Returns: boolean
+      }
+      portal_delete_floor_marker: {
+        Args: { _marker_id: string }
+        Returns: boolean
+      }
       portal_generate_missing_cable_routes: {
         Args: { _floor_id?: string; _project_id: string }
         Returns: number
       }
       portal_move_floor_markers: { Args: { _moves: Json }; Returns: number }
+      portal_save_floor_marker: { Args: { _payload: Json }; Returns: string }
       portal_update_cable_route_waypoints: {
         Args: { _route_id: string; _waypoints: Json }
         Returns: number

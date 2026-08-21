@@ -43,7 +43,47 @@ export type FloorMarker = {
   fov_deg?: number;
   /** Indicative camera range band. */
   coverage_range?: CameraRange;
+  /** False = register-only record with no plan coordinates yet. */
+  is_placed?: boolean;
+  area?: string | null;
+  environment?: string | null;
+  lens_model?: string | null;
+  mounting_height_m?: number | null;
+  coverage_radius_m?: number | null;
+  nvr_id?: string | null;
+  nvr_channel?: number | null;
+  design_hold?: string | null;
 };
+
+/** Fields the plan-side device manager may write through portal_save_floor_marker. */
+export type FloorMarkerInput = {
+  id?: string;
+  floor_id: string;
+  marker_type: MarkerKind;
+  label: string;
+  status: MarkerState;
+  area?: string | null;
+  equipment?: string | null;
+  model?: string | null;
+  notes?: string | null;
+  environment?: string | null;
+  lens_model?: string | null;
+  mounting_height_m?: string | null;
+  nvr_channel?: string | null;
+  is_placed: boolean;
+  x_norm?: number | null;
+  y_norm?: number | null;
+  direction_deg?: number;
+  fov_deg?: number;
+  coverage_range?: CameraRange;
+};
+
+export const MARKER_ENVIRONMENTS = [
+  { value: "internal", label: "Internal" },
+  { value: "external", label: "External" },
+  { value: "covered_external", label: "Covered external" },
+];
+
 
 export const FOV_PRESETS: { value: number; label: string }[] = [
   { value: 60, label: "60° Narrow" },
