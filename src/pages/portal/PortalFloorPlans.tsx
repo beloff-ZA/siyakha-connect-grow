@@ -417,6 +417,8 @@ const PortalFloorPlans: React.FC = () => {
       title: "Cameras added",
       description: `${data ?? 0} planned camera${data === 1 ? "" : "s"} created on ${floor.display_name} and recorded in the audit trail.`,
     });
+    // Newly saved cameras have no cabling yet — offer to add only the missing routes.
+    if ((data ?? 0) > 0) setGenOpen(true);
   }, [camDrafts, floor, load, toast]);
 
   const cancelChanges = useCallback(() => {
