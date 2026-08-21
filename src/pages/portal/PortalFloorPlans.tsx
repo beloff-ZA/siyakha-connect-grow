@@ -358,7 +358,7 @@ const PortalFloorPlans: React.FC = () => {
       description: `${data ?? 0} position${data === 1 ? "" : "s"} and ${opticUpdates.length} camera setting${opticUpdates.length === 1 ? "" : "s"} updated and recorded in the audit trail.`,
     });
 
-  }, [draft, load, toast]);
+  }, [draft, optics, load, toast]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
