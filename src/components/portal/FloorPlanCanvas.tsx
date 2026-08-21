@@ -531,6 +531,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
                 const isSelected = selectedId === m.id;
                 const isDraft = unsaved.has(m.id);
                 const isCamera = m.marker_type === "camera";
+                const isRack = m.marker_type === "rack";
                 const dir = normalizeBearing(Number(m.direction_deg ?? 0));
                 const showAim = isCamera && isSelected && !!onAim && draggable;
                 const handleDist = markerPx * 1.9;
