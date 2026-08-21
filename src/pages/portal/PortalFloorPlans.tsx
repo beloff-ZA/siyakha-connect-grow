@@ -1525,6 +1525,118 @@ const PortalFloorPlans: React.FC = () => {
               )}
             </Panel>
 
+            {/* Cable route schedule */}
+            <Panel title="Cable route schedule">
+              <div className="flex flex-wrap items-end gap-3 mb-5">
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+                    Level
+                  </span>
+                  <select
+                    value={routeFloorFilter}
+                    onChange={(e) => setRouteFloorFilter(e.target.value)}
+                    className="border border-border bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="all">All levels</option>
+                    {floors.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.display_name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+                    Service
+                  </span>
+                  <select
+                    value={routeServiceFilter}
+                    onChange={(e) => setRouteServiceFilter(e.target.value)}
+                    className="border border-border bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="all">All services</option>
+                    <option value="wifi_ap">Wi-Fi access point</option>
+                    <option value="camera">CCTV camera</option>
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+                    Status
+                  </span>
+                  <select
+                    value={routeStatusFilter}
+                    onChange={(e) => setRouteStatusFilter(e.target.value)}
+                    className="border border-border bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="all">All statuses</option>
+                    <option value="planned">Planned</option>
+                    <option value="installed">Installed</option>
+                    <option value="tested">Tested</option>
+                    <option value="active">Active</option>
+                  </select>
+                </label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={exportSchedule}
+                  disabled={scheduleRows.length === 0}
+                >
+                  <Download className="h-3.5 w-3.5 mr-2" strokeWidth={1.5} />
+                  Export CSV
+                </Button>
+              </div>
+
+              {scheduleRows.length === 0 ? (
+                <EmptyState
+                  title="No cable routes match these filters"
+                  description="Cable routes run from each level's 6U rack to the Wi-Fi access points and cameras on that same level."
+                />
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        <th className="text-left py-3 pr-4">Route</th>
+                        <th className="text-left py-3 pr-4">Level</th>
+                        <th className="text-left py-3 pr-4">Source rack</th>
+                        <th className="text-left py-3 pr-4">Destination</th>
+                        <th className="text-left py-3 pr-4">Service</th>
+                        <th className="text-left py-3 pr-4">Cable</th>
+                        <th className="text-left py-3 pr-4">Status</th>
+                        <th className="text-left py-3">Length</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {scheduleRows.map((r) => (
+                        <tr
+                          key={r.id}
+                          className="border-b border-border last:border-b-0 hover:bg-muted/50 cursor-pointer"
+                          onClick={() => {
+                            const route = routeById.get(r.id);
+                            if (route) setFloorId(route.floor_id);
+                            setSelectedRouteId(r.id);
+                            setRouteMode((m) => (m === "off" ? "all" : m));
+                          }}
+                        >
+                          <td className="py-3 pr-4 font-mono text-xs">{r.label}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.floor}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.rack}</td>
+                          <td className="py-3 pr-4">{r.destination}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.service}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.cable}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.status}</td>
+                          <td className="py-3 text-muted-foreground">{CABLE_LENGTH_PENDING}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              <p className="mt-5 text-xs text-muted-foreground leading-relaxed">
+                {CABLE_ROUTE_DISCLAIMER}
+              </p>
+            </Panel>
+
             {floorStats.cameras === 0 && camDrafts.length === 0 && (
               <div className="border border-dashed border-border p-6 flex items-start gap-3">
                 <Camera className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
