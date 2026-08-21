@@ -939,16 +939,17 @@ const PortalFloorPlans: React.FC = () => {
               )}
             </Panel>
 
-            {floorStats.cameras === 0 && (
+            {floorStats.cameras === 0 && camDrafts.length === 0 && (
               <div className="border border-dashed border-border p-6 flex items-start gap-3">
-                <Wifi className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                <Camera className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  <span className="text-foreground">CCTV layout awaiting design.</span> No camera
-                  positions have been issued for this level yet. Surveillance placement will be added
-                  once the security design is agreed.
+                  <span className="text-foreground">No cameras placed on this level yet.</span> Use
+                  “Place CCTV cameras” to click the plan wherever a camera should be installed, then
+                  save your placements.
                 </p>
               </div>
             )}
+
           </div>
         </div>
       )}
