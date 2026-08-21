@@ -61,13 +61,29 @@ const ClientLogin: React.FC = () => {
 
   const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
+  /**
+   * Fire-and-forget admin notification. Only ever called after a fresh, successful
+   * password sign-in — never on failed attempts, refreshes, reloads or recovery.
+   * Delivery problems must never block the client's access to the portal.
+   */
+  const notifyAdminOfLogin = async () => {
+    try {
+      await supabase.functions.invoke("notify-client-login", { body: {} });
+    } catch {
+      /* notification is best-effort only */
+    }
+  };
+
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
     if (!validEmail(email)) return setFormError("Enter a valid email address.");
     if (!password) return setFormError("Enter your password.");
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
     setLoading(false);
     if (error) {
       setFormError(
@@ -77,6 +93,7 @@ const ClientLogin: React.FC = () => {
       );
       return;
     }
+    if (data.session) void notifyAdminOfLogin();
     navigate("/portal", { replace: true });
   };
 
@@ -106,9 +123,12 @@ const ClientLogin: React.FC = () => {
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     setLoading(false);
     if (error) return setFormError(error.message);
+    // First-time setup completes as a successful portal sign-in — notify once here.
+    void notifyAdminOfLogin();
     toast({ title: "Password set", description: "Welcome to your Siyakha client portal." });
     navigate("/portal", { replace: true });
   };
+
 
   const heading =
     mode === "signin" ? "Client Sign In" : mode === "forgot" ? "Reset your password" : "Set your password";
