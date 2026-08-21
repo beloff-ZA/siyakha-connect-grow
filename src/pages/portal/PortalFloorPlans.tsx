@@ -211,8 +211,14 @@ const PortalFloorPlans: React.FC = () => {
         .select("*")
         .eq("project_id", activeProject.id)
         .order("route_label", { ascending: true }),
+      supabase
+        .from("portal_rack_equipment")
+        .select("*")
+        .eq("project_id", activeProject.id)
+        .order("sort_order", { ascending: true }),
     ]);
-    if (fErr || mErr || rErr) setError((fErr ?? mErr ?? rErr)?.message ?? "Unable to load plans");
+    if (fErr || mErr || rErr || eErr)
+      setError((fErr ?? mErr ?? rErr ?? eErr)?.message ?? "Unable to load plans");
     const list = (floorRows ?? []) as unknown as PortalFloor[];
     setFloors(list);
     setFloorId((prev) => (prev && list.some((f) => f.id === prev) ? prev : list[0]?.id ?? ""));
