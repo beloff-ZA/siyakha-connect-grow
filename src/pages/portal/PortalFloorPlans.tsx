@@ -163,56 +163,201 @@ const PortalFloorPlans: React.FC = () => {
 
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
   const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
+  const draftCameras = useMemo<FloorMarker[]>(
+    () =>
+      camDrafts.map((c, i) => ({
+        id: c.id,
+        floor_id: floorId,
+        project_id: activeProject?.id ?? "",
+        marker_type: "camera" as MarkerKind,
+        x_norm: c.x,
+        y_norm: c.y,
+        label: `New camera ${i + 1}`,
+        equipment: null,
+        model: null,
+        status: "planned",
+        client_visible: true,
+        description: null,
+        notes: null,
+        installed_on: null,
+        tested_on: null,
+        serial_number: null,
+        mac_address: null,
+        evidence_path: null,
+        evidence_note: null,
+        sort_order: 9000 + i,
+        direction_deg: c.direction_deg,
+        fov_deg: c.fov_deg,
+        coverage_range: c.coverage_range,
+      })),
+    [camDrafts, floorId, activeProject?.id],
+  );
+
   const shown = useMemo(() => {
-    const base = floorMarkers.filter((m) => visible[m.marker_type]);
-    if (!Object.keys(draft).length) return base;
-    return base.map((m) => (draft[m.id] ? { ...m, x_norm: draft[m.id].x, y_norm: draft[m.id].y } : m));
-  }, [floorMarkers, visible, draft]);
+    const base = floorMarkers.filter((m) => visible[m.marker_type]).map((m) => {
+      const o = optics[m.id];
+      const p = draft[m.id];
+      if (!o && !p) return m;
+      return { ...m, ...(p ? { x_norm: p.x, y_norm: p.y } : {}), ...(o ?? {}) };
+    });
+    return visible.camera ? [...base, ...draftCameras] : base;
+  }, [floorMarkers, visible, draft, optics, draftCameras]);
 
-  const canDrag = useCallback((m: FloorMarker) => m.status === "planned", []);
+  const canDrag = useCallback(
+    (m: FloorMarker) => m.status === "planned" && (editing || m.id.startsWith("draft-")),
+    [editing],
+  );
 
-  const pendingIds = useMemo(() => Object.keys(draft), [draft]);
+  const pendingIds = useMemo(
+    () => Array.from(new Set([...Object.keys(draft), ...Object.keys(optics)])),
+    [draft, optics],
+  );
   const pendingSummary = useMemo(() => {
-    const list = markers.filter((m) => draft[m.id]);
+    const list = markers.filter((m) => draft[m.id] || optics[m.id]);
     return {
       total: list.length,
       aps: list.filter((m) => m.marker_type === "wifi_ap").length,
       cameras: list.filter((m) => m.marker_type === "camera").length,
       other: list.filter((m) => m.marker_type !== "wifi_ap" && m.marker_type !== "camera").length,
     };
-  }, [markers, draft]);
+  }, [markers, draft, optics]);
 
-  const handleDrag = useCallback(
-    (id: string, x: number, y: number) => {
-      setDraft((d) => ({ ...d, [id]: { x, y } }));
-    },
-    [],
+  const opticsOf = useCallback(
+    (m: FloorMarker): Optics =>
+      optics[m.id] ?? {
+        direction_deg: Number(m.direction_deg ?? 0),
+        fov_deg: Number(m.fov_deg ?? 90),
+        coverage_range: (m.coverage_range ?? "medium") as CameraRange,
+      },
+    [optics],
   );
+
+  const handleDrag = useCallback((id: string, x: number, y: number) => {
+    if (id.startsWith("draft-")) {
+      setCamDrafts((list) => list.map((c) => (c.id === id ? { ...c, x, y } : c)));
+      return;
+    }
+    setDraft((d) => ({ ...d, [id]: { x, y } }));
+  }, []);
+
+  /** Aim a camera: drafts update in place, saved planned cameras become optics drafts. */
+  const handleAim = useCallback(
+    (id: string, deg: number) => {
+      if (id.startsWith("draft-")) {
+        setCamDrafts((list) => list.map((c) => (c.id === id ? { ...c, direction_deg: deg } : c)));
+        return;
+      }
+      const m = markers.find((x) => x.id === id);
+      if (!m || m.status !== "planned") return;
+      setOptics((o) => ({ ...o, [id]: { ...opticsOf(m), ...o[id], direction_deg: deg } }));
+    },
+    [markers, opticsOf],
+  );
+
+  const setSelectedOptics = useCallback(
+    (patch: Partial<Optics>) => {
+      if (!selected) return;
+      if (selected.id.startsWith("draft-")) {
+        setCamDrafts((list) => list.map((c) => (c.id === selected.id ? { ...c, ...patch } : c)));
+        return;
+      }
+      if (selected.status !== "planned") return;
+      setOptics((o) => ({ ...o, [selected.id]: { ...opticsOf(selected), ...o[selected.id], ...patch } }));
+    },
+    [selected, opticsOf],
+  );
+
+  const placeCamera = useCallback((x: number, y: number) => {
+    setCamDrafts((list) => [
+      ...list,
+      {
+        id: `draft-${Date.now()}-${list.length}`,
+        x,
+        y,
+        direction_deg: 0,
+        fov_deg: 90,
+        coverage_range: "medium",
+      },
+    ]);
+  }, []);
+
+  const removeDraftCamera = useCallback((id: string) => {
+    setCamDrafts((list) => list.filter((c) => c.id !== id));
+    setSelected((s) => (s?.id === id ? null : s));
+  }, []);
+
+  const cancelCameras = useCallback(() => {
+    setCamDrafts([]);
+    setPlacingCams(false);
+    setSelected((s) => (s?.id.startsWith("draft-") ? null : s));
+  }, []);
+
+  const saveCameras = useCallback(async () => {
+    if (!floor || camDrafts.length === 0) return;
+    setSavingCams(true);
+    const { data, error: rpcErr } = await supabase.rpc("portal_add_floor_cameras", {
+      _floor_id: floor.id,
+      _cameras: camDrafts.map((c) => ({
+        x: c.x,
+        y: c.y,
+        direction_deg: c.direction_deg,
+        fov_deg: c.fov_deg,
+        coverage_range: c.coverage_range,
+      })) as unknown as never,
+    });
+    setSavingCams(false);
+    setCamConfirmOpen(false);
+    if (rpcErr) {
+      toast({ title: "Cameras not saved", description: rpcErr.message, variant: "destructive" });
+      return;
+    }
+    setCamDrafts([]);
+    setPlacingCams(false);
+    setSelected(null);
+    await load();
+    toast({
+      title: "Cameras added",
+      description: `${data ?? 0} planned camera${data === 1 ? "" : "s"} created on ${floor.display_name} and recorded in the audit trail.`,
+    });
+  }, [camDrafts, floor, load, toast]);
 
   const cancelChanges = useCallback(() => {
     setDraft({});
+    setOptics({});
     setEditing(false);
   }, []);
 
   const savePositions = useCallback(async () => {
     setSaving(true);
     const moves = Object.entries(draft).map(([id, p]) => ({ id, x: p.x, y: p.y }));
-    const { data, error: rpcErr } = await supabase.rpc("portal_move_floor_markers", {
-      _moves: moves as unknown as never,
-    });
+    const opticUpdates = Object.entries(optics).map(([id, o]) => ({ id, ...o }));
+    const { data, error: rpcErr } = moves.length
+      ? await supabase.rpc("portal_move_floor_markers", { _moves: moves as unknown as never })
+      : { data: 0, error: null };
+    const { error: oErr } = opticUpdates.length
+      ? await supabase.rpc("portal_update_camera_optics", {
+          _updates: opticUpdates as unknown as never,
+        })
+      : { error: null };
     setSaving(false);
     setConfirmOpen(false);
-    if (rpcErr) {
-      toast({ title: "Positions not saved", description: rpcErr.message, variant: "destructive" });
+    if (rpcErr || oErr) {
+      toast({
+        title: "Changes not saved",
+        description: (rpcErr ?? oErr)?.message ?? "Unknown error",
+        variant: "destructive",
+      });
       return;
     }
     setDraft({});
+    setOptics({});
     setEditing(false);
     await load();
     toast({
-      title: "Positions saved",
-      description: `${data ?? 0} device position${data === 1 ? "" : "s"} updated and recorded in the audit trail.`,
+      title: "Changes saved",
+      description: `${data ?? 0} position${data === 1 ? "" : "s"} and ${opticUpdates.length} camera setting${opticUpdates.length === 1 ? "" : "s"} updated and recorded in the audit trail.`,
     });
+
   }, [draft, load, toast]);
 
   const filtered = useMemo(() => {
