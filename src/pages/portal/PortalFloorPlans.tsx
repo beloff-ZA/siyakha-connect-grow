@@ -725,8 +725,18 @@ const PortalFloorPlans: React.FC = () => {
       <PageHeader
         eyebrow="Virtual building plans"
         title="Building floor plans & device placement"
-        description={`Level 0 through Level 11 for ${activeProject.title}. ${SURVEY_DISCLAIMER}`}
+        description={`11 occupied levels (Level 0–10) plus the Level 11 rooftop/service level for ${activeProject.title}. ${SURVEY_DISCLAIMER}`}
       />
+
+      <div className="mb-8 print:hidden">
+        <Link
+          to="/portal/building-view"
+          className="inline-flex items-center gap-2 border border-foreground px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-foreground hover:text-background"
+        >
+          <Building2 className="h-3.5 w-3.5" strokeWidth={1.5} />
+          Open full building view
+        </Link>
+      </div>
 
       {error && (
         <div className="mb-6">
