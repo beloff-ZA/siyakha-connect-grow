@@ -172,7 +172,7 @@ const PortalBuildingView: React.FC = () => {
   if (!activeProject) return <NoProject />;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 building-print-root">
       <PageHeader
         eyebrow="Building view"
         title={activeProject.title}
