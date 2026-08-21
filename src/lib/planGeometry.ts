@@ -88,5 +88,34 @@ export const COVERAGE_BANDS = [
   { key: "edge", label: "Edge", radius: 0.14 },
 ] as const;
 
+/** Indicative CCTV cone radius as a fraction of the image content rect's smaller side. */
+export const CAMERA_RANGE_RADIUS: Record<string, number> = {
+  small: 0.1,
+  medium: 0.16,
+  large: 0.24,
+};
+
+/** True when a viewport pointer lies inside the (transformed) image content rect. */
+export function pointerInContent(args: {
+  clientX: number;
+  clientY: number;
+  containerRect: { left: number; top: number };
+  offset: { x: number; y: number };
+  zoom: number;
+  content: Rect;
+}): boolean {
+  const { clientX, clientY, containerRect, offset, zoom, content } = args;
+  if (!content.width || !content.height) return false;
+  const lx = (clientX - containerRect.left - offset.x) / zoom;
+  const ly = (clientY - containerRect.top - offset.y) / zoom;
+  return (
+    lx >= content.left &&
+    lx <= content.left + content.width &&
+    ly >= content.top &&
+    ly <= content.top + content.height
+  );
+}
+
 export const COVERAGE_DISCLAIMER =
-  "Indicative coverage only — final placement and signal levels require an on-site wireless survey.";
+  "Indicative coverage only — final camera angles, focal lengths and signal levels require an on-site survey.";
+

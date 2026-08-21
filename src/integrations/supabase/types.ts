@@ -1523,13 +1523,16 @@ export type Database = {
       portal_floor_markers: {
         Row: {
           client_visible: boolean
+          coverage_range: string
           created_at: string
           created_by: string | null
           description: string | null
+          direction_deg: number
           equipment: string | null
           evidence_note: string | null
           evidence_path: string | null
           floor_id: string
+          fov_deg: number
           id: string
           installed_on: string | null
           label: string
@@ -1548,13 +1551,16 @@ export type Database = {
         }
         Insert: {
           client_visible?: boolean
+          coverage_range?: string
           created_at?: string
           created_by?: string | null
           description?: string | null
+          direction_deg?: number
           equipment?: string | null
           evidence_note?: string | null
           evidence_path?: string | null
           floor_id: string
+          fov_deg?: number
           id?: string
           installed_on?: string | null
           label: string
@@ -1573,13 +1579,16 @@ export type Database = {
         }
         Update: {
           client_visible?: boolean
+          coverage_range?: string
           created_at?: string
           created_by?: string | null
           description?: string | null
+          direction_deg?: number
           equipment?: string | null
           evidence_note?: string | null
           evidence_path?: string | null
           floor_id?: string
+          fov_deg?: number
           id?: string
           installed_on?: string | null
           label?: string
@@ -2442,7 +2451,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      portal_add_floor_cameras: {
+        Args: { _cameras: Json; _floor_id: string }
+        Returns: number
+      }
       portal_move_floor_markers: { Args: { _moves: Json }; Returns: number }
+      portal_update_camera_optics: { Args: { _updates: Json }; Returns: number }
     }
     Enums: {
       app_role:

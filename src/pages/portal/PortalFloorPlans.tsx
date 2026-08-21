@@ -1,5 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Info, Layers, Lock, MessageSquare, Move, Radio, Search, Wifi } from "lucide-react";
+import {
+  Camera,
+  Info,
+  Layers,
+  Lock,
+  MessageSquare,
+  Move,
+  Radio,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,16 +39,31 @@ import FloorPlanCanvas, { type CoverageMode } from "@/components/portal/FloorPla
 import { COVERAGE_BANDS, COVERAGE_DISCLAIMER } from "@/lib/planGeometry";
 import { DOCUMENTS_BUCKET, signedUrl, formatDate } from "@/lib/portalFiles";
 import {
+  CAMERA_RANGES,
+  FOV_PRESETS,
   MARKER_KINDS,
   SURVEY_DISCLAIMER,
   kindLabel,
   kindShort,
   markerStats,
   stateLabel,
+  type CameraRange,
   type FloorMarker,
   type MarkerKind,
   type PortalFloor,
 } from "@/lib/floorPlans";
+
+type CameraDraft = {
+  id: string;
+  x: number;
+  y: number;
+  direction_deg: number;
+  fov_deg: number;
+  coverage_range: CameraRange;
+};
+
+type Optics = { direction_deg: number; fov_deg: number; coverage_range: CameraRange };
+
 
 
 const LAYERS: { kind: MarkerKind; label: string }[] = [
@@ -88,6 +113,12 @@ const PortalFloorPlans: React.FC = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [coverage, setCoverage] = useState<CoverageMode>("off");
+  const [placingCams, setPlacingCams] = useState(false);
+  const [camDrafts, setCamDrafts] = useState<CameraDraft[]>([]);
+  const [optics, setOptics] = useState<Record<string, Optics>>({});
+  const [camConfirmOpen, setCamConfirmOpen] = useState(false);
+  const [savingCams, setSavingCams] = useState(false);
+
 
   // Selecting a device defaults the coverage view to that device only.
   useEffect(() => {
@@ -132,57 +163,202 @@ const PortalFloorPlans: React.FC = () => {
 
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
   const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
+  const draftCameras = useMemo<FloorMarker[]>(
+    () =>
+      camDrafts.map((c, i) => ({
+        id: c.id,
+        floor_id: floorId,
+        project_id: activeProject?.id ?? "",
+        marker_type: "camera" as MarkerKind,
+        x_norm: c.x,
+        y_norm: c.y,
+        label: `New camera ${i + 1}`,
+        equipment: null,
+        model: null,
+        status: "planned",
+        client_visible: true,
+        description: null,
+        notes: null,
+        installed_on: null,
+        tested_on: null,
+        serial_number: null,
+        mac_address: null,
+        evidence_path: null,
+        evidence_note: null,
+        sort_order: 9000 + i,
+        direction_deg: c.direction_deg,
+        fov_deg: c.fov_deg,
+        coverage_range: c.coverage_range,
+      })),
+    [camDrafts, floorId, activeProject?.id],
+  );
+
   const shown = useMemo(() => {
-    const base = floorMarkers.filter((m) => visible[m.marker_type]);
-    if (!Object.keys(draft).length) return base;
-    return base.map((m) => (draft[m.id] ? { ...m, x_norm: draft[m.id].x, y_norm: draft[m.id].y } : m));
-  }, [floorMarkers, visible, draft]);
+    const base = floorMarkers.filter((m) => visible[m.marker_type]).map((m) => {
+      const o = optics[m.id];
+      const p = draft[m.id];
+      if (!o && !p) return m;
+      return { ...m, ...(p ? { x_norm: p.x, y_norm: p.y } : {}), ...(o ?? {}) };
+    });
+    return visible.camera ? [...base, ...draftCameras] : base;
+  }, [floorMarkers, visible, draft, optics, draftCameras]);
 
-  const canDrag = useCallback((m: FloorMarker) => m.status === "planned", []);
+  const canDrag = useCallback(
+    (m: FloorMarker) => m.status === "planned" && (editing || m.id.startsWith("draft-")),
+    [editing],
+  );
 
-  const pendingIds = useMemo(() => Object.keys(draft), [draft]);
+  const pendingIds = useMemo(
+    () => Array.from(new Set([...Object.keys(draft), ...Object.keys(optics)])),
+    [draft, optics],
+  );
   const pendingSummary = useMemo(() => {
-    const list = markers.filter((m) => draft[m.id]);
+    const list = markers.filter((m) => draft[m.id] || optics[m.id]);
     return {
       total: list.length,
       aps: list.filter((m) => m.marker_type === "wifi_ap").length,
       cameras: list.filter((m) => m.marker_type === "camera").length,
       other: list.filter((m) => m.marker_type !== "wifi_ap" && m.marker_type !== "camera").length,
     };
-  }, [markers, draft]);
+  }, [markers, draft, optics]);
 
-  const handleDrag = useCallback(
-    (id: string, x: number, y: number) => {
-      setDraft((d) => ({ ...d, [id]: { x, y } }));
-    },
-    [],
+  const opticsOf = useCallback(
+    (m: FloorMarker): Optics =>
+      optics[m.id] ?? {
+        direction_deg: Number(m.direction_deg ?? 0),
+        fov_deg: Number(m.fov_deg ?? 90),
+        coverage_range: (m.coverage_range ?? "medium") as CameraRange,
+      },
+    [optics],
   );
+
+  const handleDrag = useCallback((id: string, x: number, y: number) => {
+    if (id.startsWith("draft-")) {
+      setCamDrafts((list) => list.map((c) => (c.id === id ? { ...c, x, y } : c)));
+      return;
+    }
+    setDraft((d) => ({ ...d, [id]: { x, y } }));
+  }, []);
+
+  /** Aim a camera: drafts update in place, saved planned cameras become optics drafts. */
+  const handleAim = useCallback(
+    (id: string, deg: number) => {
+      if (id.startsWith("draft-")) {
+        setCamDrafts((list) => list.map((c) => (c.id === id ? { ...c, direction_deg: deg } : c)));
+        return;
+      }
+      const m = markers.find((x) => x.id === id);
+      if (!m || m.status !== "planned") return;
+      setOptics((o) => ({ ...o, [id]: { ...opticsOf(m), ...o[id], direction_deg: deg } }));
+    },
+    [markers, opticsOf],
+  );
+
+  const setSelectedOptics = useCallback(
+    (patch: Partial<Optics>) => {
+      if (!selected) return;
+      if (selected.id.startsWith("draft-")) {
+        setCamDrafts((list) => list.map((c) => (c.id === selected.id ? { ...c, ...patch } : c)));
+        return;
+      }
+      if (selected.status !== "planned") return;
+      setOptics((o) => ({ ...o, [selected.id]: { ...opticsOf(selected), ...o[selected.id], ...patch } }));
+    },
+    [selected, opticsOf],
+  );
+
+  const placeCamera = useCallback((x: number, y: number) => {
+    setCamDrafts((list) => [
+      ...list,
+      {
+        id: `draft-${Date.now()}-${list.length}`,
+        x,
+        y,
+        direction_deg: 0,
+        fov_deg: 90,
+        coverage_range: "medium",
+      },
+    ]);
+  }, []);
+
+  const removeDraftCamera = useCallback((id: string) => {
+    setCamDrafts((list) => list.filter((c) => c.id !== id));
+    setSelected((s) => (s?.id === id ? null : s));
+  }, []);
+
+  const cancelCameras = useCallback(() => {
+    setCamDrafts([]);
+    setPlacingCams(false);
+    setSelected((s) => (s?.id.startsWith("draft-") ? null : s));
+  }, []);
+
+  const saveCameras = useCallback(async () => {
+    if (!floor || camDrafts.length === 0) return;
+    setSavingCams(true);
+    const { data, error: rpcErr } = await supabase.rpc("portal_add_floor_cameras", {
+      _floor_id: floor.id,
+      _cameras: camDrafts.map((c) => ({
+        x: c.x,
+        y: c.y,
+        direction_deg: c.direction_deg,
+        fov_deg: c.fov_deg,
+        coverage_range: c.coverage_range,
+      })) as unknown as never,
+    });
+    setSavingCams(false);
+    setCamConfirmOpen(false);
+    if (rpcErr) {
+      toast({ title: "Cameras not saved", description: rpcErr.message, variant: "destructive" });
+      return;
+    }
+    setCamDrafts([]);
+    setPlacingCams(false);
+    setSelected(null);
+    await load();
+    toast({
+      title: "Cameras added",
+      description: `${data ?? 0} planned camera${data === 1 ? "" : "s"} created on ${floor.display_name} and recorded in the audit trail.`,
+    });
+  }, [camDrafts, floor, load, toast]);
 
   const cancelChanges = useCallback(() => {
     setDraft({});
+    setOptics({});
     setEditing(false);
   }, []);
 
   const savePositions = useCallback(async () => {
     setSaving(true);
     const moves = Object.entries(draft).map(([id, p]) => ({ id, x: p.x, y: p.y }));
-    const { data, error: rpcErr } = await supabase.rpc("portal_move_floor_markers", {
-      _moves: moves as unknown as never,
-    });
+    const opticUpdates = Object.entries(optics).map(([id, o]) => ({ id, ...o }));
+    const { data, error: rpcErr } = moves.length
+      ? await supabase.rpc("portal_move_floor_markers", { _moves: moves as unknown as never })
+      : { data: 0, error: null };
+    const { error: oErr } = opticUpdates.length
+      ? await supabase.rpc("portal_update_camera_optics", {
+          _updates: opticUpdates as unknown as never,
+        })
+      : { error: null };
     setSaving(false);
     setConfirmOpen(false);
-    if (rpcErr) {
-      toast({ title: "Positions not saved", description: rpcErr.message, variant: "destructive" });
+    if (rpcErr || oErr) {
+      toast({
+        title: "Changes not saved",
+        description: (rpcErr ?? oErr)?.message ?? "Unknown error",
+        variant: "destructive",
+      });
       return;
     }
     setDraft({});
+    setOptics({});
     setEditing(false);
     await load();
     toast({
-      title: "Positions saved",
-      description: `${data ?? 0} device position${data === 1 ? "" : "s"} updated and recorded in the audit trail.`,
+      title: "Changes saved",
+      description: `${data ?? 0} position${data === 1 ? "" : "s"} and ${opticUpdates.length} camera setting${opticUpdates.length === 1 ? "" : "s"} updated and recorded in the audit trail.`,
     });
-  }, [draft, load, toast]);
+
+  }, [draft, optics, load, toast]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -382,6 +558,62 @@ const PortalFloorPlans: React.FC = () => {
                 </div>
               </div>
 
+              {/* CCTV placement */}
+              <div className="mb-5 border border-border p-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                  <Camera className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {placingCams ? (
+                      <span className="text-foreground">
+                        Click the plan where each camera should be installed. Select a camera to
+                        adjust its direction and coverage.
+                      </span>
+                    ) : (
+                      <>
+                        Add proposed CCTV positions yourself. Cameras stay unsaved until you confirm
+                        them, and remain movable while their status is Planned.
+                      </>
+                    )}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {placingCams ? (
+                    <>
+                      <span className="border border-[hsl(32_100%_50%)] px-3 py-2 text-[10px] uppercase tracking-[0.2em] text-[hsl(32_100%_38%)]">
+                        {camDrafts.length} unsaved camera{camDrafts.length === 1 ? "" : "s"}
+                      </span>
+                      <Button
+                        type="button"
+                        disabled={camDrafts.length === 0 || savingCams}
+                        onClick={() => setCamConfirmOpen(true)}
+                      >
+                        Save cameras
+                      </Button>
+                      <Button type="button" variant="outline" onClick={cancelCameras}>
+                        Cancel additions
+                      </Button>
+                      <Button type="button" variant="outline" onClick={() => setPlacingCams(false)}>
+                        Done placing
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        setPlacingCams(true);
+                        setEditing(false);
+                        setCoverage((c) => (c === "off" ? "all" : c));
+                      }}
+                    >
+                      <Camera className="h-3.5 w-3.5 mr-2" strokeWidth={1.5} />
+                      Place CCTV cameras
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+
+
               {/* Coverage layer */}
               <div className="mb-5 border border-border p-4 space-y-3">
                 <div className="flex flex-wrap items-center gap-2">
@@ -442,11 +674,17 @@ const PortalFloorPlans: React.FC = () => {
                 selectedId={selected?.id ?? null}
                 onSelect={setSelected}
                 editing={editing}
+                placing={placingCams}
+                unsavedIds={camDrafts.map((c) => c.id)}
                 canDrag={canDrag}
                 coverage={coverage}
-                onMove={editing ? handleDrag : undefined}
+                onMove={handleDrag}
+                onMoveEnd={undefined}
+                onAim={handleAim}
+                onPlace={placingCams ? placeCamera : undefined}
                 emptyLabel="Plan image for this level is being prepared."
               />
+
 
 
 
@@ -519,6 +757,105 @@ const PortalFloorPlans: React.FC = () => {
                     </div>
                   ))}
                 </dl>
+
+                {/* Camera optics — editable while the camera is planned or an unsaved draft */}
+                {selected.marker_type === "camera" && (() => {
+                  const live = shown.find((m) => m.id === selected.id) ?? selected;
+                  const o = opticsOf(live);
+                  const isDraft = selected.id.startsWith("draft-");
+                  const editableOptics = isDraft || selected.status === "planned";
+                  return (
+                    <div className="mt-6 border border-border p-4 space-y-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                          Camera direction & coverage
+                        </p>
+                        {isDraft && (
+                          <button
+                            type="button"
+                            onClick={() => removeDraftCamera(selected.id)}
+                            className="flex items-center gap-2 border border-border px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] hover:bg-muted transition-colors"
+                          >
+                            <Trash2 className="h-3 w-3" strokeWidth={1.5} />
+                            Remove
+                          </button>
+                        )}
+                      </div>
+
+                      {editableOptics ? (
+                        <>
+                          <div>
+                            <label
+                              htmlFor="cam-dir"
+                              className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+                            >
+                              Direction · {o.direction_deg}°
+                            </label>
+                            <input
+                              id="cam-dir"
+                              type="range"
+                              min={0}
+                              max={359}
+                              value={o.direction_deg}
+                              onChange={(e) =>
+                                setSelectedOptics({ direction_deg: Number(e.target.value) })
+                              }
+                              className="mt-2 w-full accent-foreground"
+                            />
+                            <p className="text-[11px] text-muted-foreground mt-1">
+                              0° points to the top of the plan. You can also drag the aim handle on
+                              the selected camera.
+                            </p>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2">
+                            {FOV_PRESETS.map((f) => (
+                              <button
+                                key={f.value}
+                                type="button"
+                                onClick={() => setSelectedOptics({ fov_deg: f.value })}
+                                className={`border px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                                  o.fov_deg === f.value
+                                    ? "border-foreground bg-foreground text-background"
+                                    : "border-border hover:bg-muted"
+                                }`}
+                              >
+                                {f.label}
+                              </button>
+                            ))}
+                          </div>
+
+                          <div className="flex flex-wrap gap-2">
+                            {CAMERA_RANGES.map((r) => (
+                              <button
+                                key={r.value}
+                                type="button"
+                                onClick={() => setSelectedOptics({ coverage_range: r.value })}
+                                className={`border px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                                  o.coverage_range === r.value
+                                    ? "border-foreground bg-foreground text-background"
+                                    : "border-border hover:bg-muted"
+                                }`}
+                              >
+                                {r.label} range
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          Aim {o.direction_deg}° · {o.fov_deg}° field of view · {o.coverage_range}{" "}
+                          range. This camera is {stateLabel(selected.status).toLowerCase()}, so its
+                          position and optics are locked.
+                        </p>
+                      )}
+                      <p className="text-[11px] text-muted-foreground leading-relaxed">
+                        {COVERAGE_DISCLAIMER}
+                      </p>
+                    </div>
+                  );
+                })()}
+
                 {selected.description && (
                   <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
                     {selected.description}
@@ -602,16 +939,17 @@ const PortalFloorPlans: React.FC = () => {
               )}
             </Panel>
 
-            {floorStats.cameras === 0 && (
+            {floorStats.cameras === 0 && camDrafts.length === 0 && (
               <div className="border border-dashed border-border p-6 flex items-start gap-3">
-                <Wifi className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                <Camera className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  <span className="text-foreground">CCTV layout awaiting design.</span> No camera
-                  positions have been issued for this level yet. Surveillance placement will be added
-                  once the security design is agreed.
+                  <span className="text-foreground">No cameras placed on this level yet.</span> Use
+                  “Place CCTV cameras” to click the plan wherever a camera should be installed, then
+                  save your placements.
                 </p>
               </div>
             )}
+
           </div>
         </div>
       )}
@@ -641,7 +979,34 @@ const PortalFloorPlans: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog open={camConfirmOpen} onOpenChange={setCamConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Add {camDrafts.length} planned camera{camDrafts.length === 1 ? "" : "s"}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {camDrafts.length} camera{camDrafts.length === 1 ? "" : "s"} will be created on{" "}
+              {floor?.display_name ?? "this level"} with a Planned status, sequential labels, and the
+              direction and coverage you selected. Every addition is recorded in the project audit
+              trail. {SURVEY_DISCLAIMER}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={savingCams}>Keep placing</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                saveCameras();
+              }}
+              disabled={savingCams}
+            >
+              {savingCams ? "Saving…" : "Save cameras"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
+
   );
 
 };

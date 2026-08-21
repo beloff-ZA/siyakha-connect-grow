@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Lock, Maximize2, Minus, Plus } from "lucide-react";
+import { Lock, Maximize2, Minus, Plus, RotateCw } from "lucide-react";
 import { kindShort, type FloorMarker } from "@/lib/floorPlans";
 import {
+  CAMERA_RANGE_RADIUS,
   COVERAGE_BANDS,
   containRect,
+  pointerInContent,
   pointerToNorm,
   wheelZoomFactor,
   zoomAbout,
@@ -21,17 +23,21 @@ type Props = {
   markers: FloorMarker[];
   selectedId?: string | null;
   onSelect?: (marker: FloorMarker | null) => void;
-  /** Admin-only: click on empty plan to place a marker at normalised coords. */
+  /** Click on empty plan to place a marker at normalised coords. */
   onPlace?: (x: number, y: number) => void;
-  /** Admin-only: drag a marker to new normalised coords. */
+  /** Drag a marker to new normalised coords. */
   onMove?: (markerId: string, x: number, y: number) => void;
-  /** Admin-only: called once when a marker drag finishes, to persist the position. */
+  /** Called once when a marker drag finishes, to persist the position. */
   onMoveEnd?: (markerId: string) => void;
+  /** Drag the rotate handle of a selected camera to aim it (0–359). */
+  onAim?: (markerId: string, deg: number) => void;
   /** When false for a marker, dragging is blocked and a lock badge is shown in edit mode. */
   canDrag?: (marker: FloorMarker) => boolean;
   /** Visual affordances for reposition mode. */
   editing?: boolean;
   placing?: boolean;
+  /** Marker ids that exist only as local unsaved drafts. */
+  unsavedIds?: string[];
   /** Coverage overlay: off, selected device only, or all APs on this floor. */
   coverage?: CoverageMode;
   height?: string;
@@ -51,6 +57,7 @@ const selectedRing = (kind: string) =>
     ? "border-[hsl(32_100%_50%)] ring-2 ring-[hsl(32_100%_50%)] shadow-[0_0_0_4px_hsl(32_100%_50%/0.28),0_0_16px_hsl(32_100%_50%/0.55)]"
     : "border-[hsl(190_100%_45%)] ring-2 ring-[hsl(190_100%_45%)] shadow-[0_0_0_4px_hsl(190_100%_45%/0.28),0_0_16px_hsl(190_100%_45%/0.55)]";
 
+
 const FloorPlanCanvas: React.FC<Props> = ({
   imageUrl,
   markers,
@@ -59,9 +66,11 @@ const FloorPlanCanvas: React.FC<Props> = ({
   onPlace,
   onMove,
   onMoveEnd,
+  onAim,
   canDrag,
   editing = false,
   placing = false,
+  unsavedIds,
   coverage = "off",
   height = "h-[60vh] md:h-[70vh]",
   emptyLabel = "Plan image not available yet.",
@@ -71,6 +80,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [natural, setNatural] = useState({ width: 0, height: 0 });
+
+  const unsaved = useMemo(() => new Set(unsavedIds ?? []), [unsavedIds]);
 
   const stateRef = useRef({ zoom: 1, offset: { x: 0, y: 0 } });
   stateRef.current = { zoom, offset };
@@ -86,8 +97,10 @@ const FloorPlanCanvas: React.FC<Props> = ({
   const dragRef = useRef<
     | { mode: "pan"; startX: number; startY: number; ox: number; oy: number; moved: boolean }
     | { mode: "marker"; id: string; startX: number; startY: number; moved: boolean; draggable: boolean }
+    | { mode: "aim"; id: string; startX: number; startY: number; moved: boolean }
     | null
   >(null);
+
 
   const reset = useCallback(() => {
     setZoom(1);
@@ -154,10 +167,44 @@ const FloorPlanCanvas: React.FC<Props> = ({
     });
   }, []);
 
+  /** Guard: only pointer positions over the architectural image may create markers. */
+  const insideImage = useCallback((clientX: number, clientY: number) => {
+    const el = containerRef.current;
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    const { zoom: z, offset: o } = stateRef.current;
+    return pointerInContent({
+      clientX,
+      clientY,
+      containerRect: { left: rect.left, top: rect.top },
+      offset: o,
+      zoom: z,
+      content: contentRef.current,
+    });
+  }, []);
+
+  /** Bearing in degrees from a marker centre to a pointer, 0 = up/north. */
+  const aimDeg = useCallback(
+    (id: string, clientX: number, clientY: number) => {
+      const m = markers.find((x) => x.id === id);
+      if (!m) return 0;
+      const { x, y } = toNorm(clientX, clientY);
+      const c = contentRef.current;
+      const dx = (x - Number(m.x_norm)) * (c.width || 1);
+      const dy = (y - Number(m.y_norm)) * (c.height || 1);
+      const deg = Math.round((Math.atan2(dx, -dy) * 180) / Math.PI);
+      return ((deg % 360) + 360) % 360;
+    },
+    [markers, toNorm],
+  );
+
   const onPointerDown = (e: React.PointerEvent) => {
     const target = e.target as HTMLElement;
+    const aimId = target.closest("[data-aim-for]")?.getAttribute("data-aim-for");
     const markerId = target.closest("[data-marker-id]")?.getAttribute("data-marker-id");
-    if (markerId) {
+    if (aimId) {
+      dragRef.current = { mode: "aim", id: aimId, startX: e.clientX, startY: e.clientY, moved: false };
+    } else if (markerId) {
       const m = markers.find((x) => x.id === markerId);
       dragRef.current = {
         mode: "marker",
@@ -190,6 +237,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
     if (d.mode === "pan") {
       if (!d.moved) return;
       setOffset({ x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) });
+    } else if (d.mode === "aim") {
+      if (onAim) onAim(d.id, aimDeg(d.id, e.clientX, e.clientY));
     } else if (onMove && d.moved && d.draggable) {
       const { x, y } = toNorm(e.clientX, e.clientY);
       onMove(d.id, x, y);
@@ -200,6 +249,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
     const d = dragRef.current;
     dragRef.current = null;
     if (!d) return;
+    if (d.mode === "aim") return;
     if (d.mode === "marker") {
       if (d.moved && d.draggable) onMoveEnd?.(d.id);
       else if (!d.moved) {
@@ -211,6 +261,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
 
     if (!d.moved) {
       if (placing && onPlace) {
+        // Clicks in the letterboxed area around the plan must never create a device.
+        if (!insideImage(e.clientX, e.clientY)) return;
         const { x, y } = toNorm(e.clientX, e.clientY);
         onPlace(x, y);
       } else {
@@ -218,6 +270,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
       }
     }
   };
+
 
   const coverageMarkers = useMemo(() => {
     if (coverage === "off") return [];
@@ -330,9 +383,10 @@ const FloorPlanCanvas: React.FC<Props> = ({
                   const cx = `${Number(m.x_norm) * 100}%`;
                   const cy = `${Number(m.y_norm) * 100}%`;
                   if (m.marker_type === "camera") {
-                    const dir = Number((m as unknown as { direction_deg?: number }).direction_deg ?? 0);
-                    const fov = Number((m as unknown as { fov_deg?: number }).fov_deg ?? 80);
-                    const r = coverageBase * 0.16;
+                    const dir = Number(m.direction_deg ?? 0);
+                    const fov = Number(m.fov_deg ?? 90);
+                    const r = coverageBase * (CAMERA_RANGE_RADIUS[m.coverage_range ?? "medium"] ?? 0.16);
+
                     return (
                       <div
                         key={`cov-${m.id}`}
@@ -388,51 +442,93 @@ const FloorPlanCanvas: React.FC<Props> = ({
                 const draggable = canDrag ? canDrag(m) : true;
                 const locked = editing && !draggable;
                 const isSelected = selectedId === m.id;
+                const isDraft = unsaved.has(m.id);
+                const isCamera = m.marker_type === "camera";
+                const showAim = isCamera && isSelected && !!onAim && draggable;
+                const handleDist = markerPx * 1.9;
                 return (
-                  <button
-                    key={m.id}
-                    type="button"
-                    data-marker-id={m.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    title={
-                      locked
-                        ? `${m.label} · ${m.status} — position locked. Only devices with a Planned status can be repositioned.`
-                        : editing
-                          ? `${m.label} · ${m.status} — drag to reposition`
-                          : `${m.label} · ${m.status}`
-                    }
-                    aria-label={
-                      locked ? `${m.label}, position locked (${m.status})` : `${m.label}, ${m.status}`
-                    }
-                    aria-pressed={isSelected}
-                    className={[
-                      "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
-                      statusRing[m.status] ?? "border-solid",
-                      isSelected
-                        ? selectedRing(m.marker_type)
-                        : "border-foreground/70 hover:border-foreground",
-                      m.marker_type === "camera" ? "rounded-none" : "rounded-full",
-                      editing ? (draggable ? "cursor-move" : "cursor-not-allowed opacity-70") : "",
-                    ].join(" ")}
-                    style={{
-                      left: `${Number(m.x_norm) * 100}%`,
-                      top: `${Number(m.y_norm) * 100}%`,
-                      width: `${markerPx}px`,
-                      height: `${markerPx}px`,
-                      fontSize: `${Math.max(5, 8 / zoom)}px`,
-                      zIndex: isSelected ? 30 : 10,
-                    }}
-                  >
-                    {locked ? (
-                      <Lock style={{ width: "60%", height: "60%" }} strokeWidth={2} />
-                    ) : (
-                      kindShort(m.marker_type)
+                  <React.Fragment key={m.id}>
+                    <button
+                      type="button"
+                      data-marker-id={m.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      title={
+                        locked
+                          ? `${m.label} · ${m.status} — position locked. Only devices with a Planned status can be repositioned.`
+                          : isDraft
+                            ? `${m.label} · unsaved draft — drag to reposition, then save`
+                            : editing
+                              ? `${m.label} · ${m.status} — drag to reposition`
+                              : `${m.label} · ${m.status}`
+                      }
+                      aria-label={
+                        locked
+                          ? `${m.label}, position locked (${m.status})`
+                          : `${m.label}, ${isDraft ? "unsaved draft" : m.status}`
+                      }
+                      aria-pressed={isSelected}
+                      className={[
+                        "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
+                        statusRing[m.status] ?? "border-solid",
+                        isDraft
+                          ? "border-dashed border-[hsl(32_100%_50%)] ring-1 ring-[hsl(32_100%_50%)] animate-pulse"
+                          : isSelected
+                            ? selectedRing(m.marker_type)
+                            : "border-foreground/70 hover:border-foreground",
+                        isCamera ? "rounded-none" : "rounded-full",
+                        isDraft ? "cursor-move" : editing ? (draggable ? "cursor-move" : "cursor-not-allowed opacity-70") : "",
+                      ].join(" ")}
+                      style={{
+                        left: `${Number(m.x_norm) * 100}%`,
+                        top: `${Number(m.y_norm) * 100}%`,
+                        width: `${markerPx}px`,
+                        height: `${markerPx}px`,
+                        fontSize: `${Math.max(5, 8 / zoom)}px`,
+                        color: isCamera ? "hsl(32 100% 42%)" : undefined,
+                        zIndex: isSelected ? 30 : isDraft ? 20 : 10,
+                      }}
+                    >
+                      {locked ? (
+                        <Lock style={{ width: "60%", height: "60%" }} strokeWidth={2} />
+                      ) : (
+                        kindShort(m.marker_type)
+                      )}
+                    </button>
+
+                    {showAim && (
+                      <span
+                        data-aim-for={m.id}
+                        role="slider"
+                        tabIndex={-1}
+                        aria-label={`Aim ${m.label}`}
+                        aria-valuenow={Number(m.direction_deg ?? 0)}
+                        aria-valuemin={0}
+                        aria-valuemax={359}
+                        title={`Drag to aim ${m.label}`}
+                        className="absolute flex items-center justify-center rounded-full border cursor-grab"
+                        style={{
+                          left: `calc(${Number(m.x_norm) * 100}% + ${Math.sin((Number(m.direction_deg ?? 0) * Math.PI) / 180) * handleDist}px)`,
+                          top: `calc(${Number(m.y_norm) * 100}% - ${Math.cos((Number(m.direction_deg ?? 0) * Math.PI) / 180) * handleDist}px)`,
+                          width: `${markerPx * 0.85}px`,
+                          height: `${markerPx * 0.85}px`,
+                          marginLeft: `${-markerPx * 0.425}px`,
+                          marginTop: `${-markerPx * 0.425}px`,
+                          background: "hsl(32 100% 50%)",
+                          borderColor: "hsl(32 100% 35%)",
+                          color: "hsl(0 0% 100%)",
+                          zIndex: 40,
+                          touchAction: "none",
+                        }}
+                      >
+                        <RotateCw style={{ width: "62%", height: "62%" }} strokeWidth={2.5} />
+                      </span>
                     )}
-                  </button>
+                  </React.Fragment>
                 );
               })}
+
             </div>
           </div>
         ) : (
