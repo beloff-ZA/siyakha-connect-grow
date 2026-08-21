@@ -674,11 +674,17 @@ const PortalFloorPlans: React.FC = () => {
                 selectedId={selected?.id ?? null}
                 onSelect={setSelected}
                 editing={editing}
+                placing={placingCams}
+                unsavedIds={camDrafts.map((c) => c.id)}
                 canDrag={canDrag}
                 coverage={coverage}
-                onMove={editing ? handleDrag : undefined}
+                onMove={handleDrag}
+                onMoveEnd={undefined}
+                onAim={handleAim}
+                onPlace={placingCams ? placeCamera : undefined}
                 emptyLabel="Plan image for this level is being prepared."
               />
+
 
 
 
