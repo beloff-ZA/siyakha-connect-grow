@@ -844,11 +844,29 @@ const PortalFloorPlans: React.FC = () => {
                               }
                               className="mt-2 w-full accent-foreground"
                             />
+                            <div className="mt-2 flex flex-wrap gap-1.5">
+                              {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+                                <button
+                                  key={deg}
+                                  type="button"
+                                  onClick={() => setSelectedOptics({ direction_deg: deg })}
+                                  title={`Face ${deg}° ${cardinalLabel(deg)}`}
+                                  className={`border px-2 py-1 text-[10px] uppercase tracking-[0.18em] transition-colors ${
+                                    normalizeBearing(o.direction_deg) === deg
+                                      ? "border-foreground bg-foreground text-background"
+                                      : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                                  }`}
+                                >
+                                  {cardinalLabel(deg)}
+                                </button>
+                              ))}
+                            </div>
                             <p className="text-[11px] text-muted-foreground mt-1">
-                              0° points to the top of the plan. You can also drag the aim handle on
-                              the selected camera.
+                              0° points to the top of the plan (N) and angles increase clockwise. You
+                              can also drag the amber aim handle on the selected camera.
                             </p>
                           </div>
+
 
                           <div className="flex flex-wrap gap-2">
                             {FOV_PRESETS.map((f) => (
