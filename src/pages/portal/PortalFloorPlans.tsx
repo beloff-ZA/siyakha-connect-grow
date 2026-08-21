@@ -82,6 +82,12 @@ import {
   type MarkerKind,
   type PortalFloor,
 } from "@/lib/floorPlans";
+import {
+  BuildingBackbone,
+  EquipmentSchedule,
+  RackContents,
+} from "@/components/portal/RackEquipment";
+import { type RackEquipment } from "@/lib/rackEquipment";
 
 type CameraDraft = {
   id: string;
