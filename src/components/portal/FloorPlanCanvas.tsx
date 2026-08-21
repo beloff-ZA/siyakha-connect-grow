@@ -194,7 +194,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        onClick={handleClick}
+        
         className={`relative overflow-hidden border border-border bg-muted/30 ${height} ${
           placing ? "cursor-crosshair" : "cursor-grab"
         }`}
