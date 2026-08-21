@@ -383,9 +383,10 @@ const FloorPlanCanvas: React.FC<Props> = ({
                   const cx = `${Number(m.x_norm) * 100}%`;
                   const cy = `${Number(m.y_norm) * 100}%`;
                   if (m.marker_type === "camera") {
-                    const dir = Number((m as unknown as { direction_deg?: number }).direction_deg ?? 0);
-                    const fov = Number((m as unknown as { fov_deg?: number }).fov_deg ?? 80);
-                    const r = coverageBase * 0.16;
+                    const dir = Number(m.direction_deg ?? 0);
+                    const fov = Number(m.fov_deg ?? 90);
+                    const r = coverageBase * (CAMERA_RANGE_RADIUS[m.coverage_range ?? "medium"] ?? 0.16);
+
                     return (
                       <div
                         key={`cov-${m.id}`}
