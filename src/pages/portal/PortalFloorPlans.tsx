@@ -183,7 +183,11 @@ const PortalFloorPlans: React.FC = () => {
     }
     setLoading(true);
     setError(null);
-    const [{ data: floorRows, error: fErr }, { data: markerRows, error: mErr }] = await Promise.all([
+    const [
+      { data: floorRows, error: fErr },
+      { data: markerRows, error: mErr },
+      { data: routeRows, error: rErr },
+    ] = await Promise.all([
       supabase
         .from("portal_floors")
         .select("*")
@@ -194,12 +198,23 @@ const PortalFloorPlans: React.FC = () => {
         .select("*")
         .eq("project_id", activeProject.id)
         .order("sort_order", { ascending: true }),
+      supabase
+        .from("portal_cable_routes")
+        .select("*")
+        .eq("project_id", activeProject.id)
+        .order("route_label", { ascending: true }),
     ]);
-    if (fErr || mErr) setError((fErr ?? mErr)?.message ?? "Unable to load plans");
+    if (fErr || mErr || rErr) setError((fErr ?? mErr ?? rErr)?.message ?? "Unable to load plans");
     const list = (floorRows ?? []) as unknown as PortalFloor[];
     setFloors(list);
     setFloorId((prev) => (prev && list.some((f) => f.id === prev) ? prev : list[0]?.id ?? ""));
     setMarkers((markerRows ?? []) as unknown as FloorMarker[]);
+    setRoutes(
+      (routeRows ?? []).map((r) => ({
+        ...(r as unknown as CableRoute),
+        waypoints: parseWaypoints((r as { waypoints?: unknown }).waypoints),
+      })),
+    );
     setLoading(false);
   }, [activeProject]);
 
