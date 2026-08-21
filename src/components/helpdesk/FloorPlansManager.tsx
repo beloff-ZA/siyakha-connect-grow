@@ -58,14 +58,21 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const load = useCallback(async () => {
     if (!projectId) return;
-    const [{ data: f }, { data: m }] = await Promise.all([
+    const [{ data: f }, { data: m }, { data: r }] = await Promise.all([
       supabase.from("portal_floors").select("*").eq("project_id", projectId).order("sort_order"),
       supabase.from("portal_floor_markers").select("*").eq("project_id", projectId).order("sort_order"),
+      supabase.from("portal_cable_routes").select("*").eq("project_id", projectId).order("route_label"),
     ]);
     const list = (f ?? []) as unknown as PortalFloor[];
     setFloors(list);
     setFloorId((prev) => (prev && list.some((x) => x.id === prev) ? prev : list[0]?.id ?? ""));
     setMarkers((m ?? []) as unknown as FloorMarker[]);
+    setRoutes(
+      (r ?? []).map((row) => ({
+        ...(row as unknown as CableRoute),
+        waypoints: parseWaypoints((row as { waypoints?: unknown }).waypoints),
+      })),
+    );
   }, [projectId]);
 
   useEffect(() => {
