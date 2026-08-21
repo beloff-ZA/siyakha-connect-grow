@@ -1994,6 +1994,65 @@ export type Database = {
           },
         ]
       }
+      portal_site_images: {
+        Row: {
+          area: string | null
+          caption: string | null
+          captured_on: string | null
+          category: string
+          client_visible: boolean
+          created_at: string
+          id: string
+          original_filename: string
+          project_id: string
+          sort_order: number
+          storage_path: string
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          area?: string | null
+          caption?: string | null
+          captured_on?: string | null
+          category?: string
+          client_visible?: boolean
+          created_at?: string
+          id?: string
+          original_filename: string
+          project_id: string
+          sort_order?: number
+          storage_path: string
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          area?: string | null
+          caption?: string | null
+          captured_on?: string | null
+          category?: string
+          client_visible?: boolean
+          created_at?: string
+          id?: string
+          original_filename?: string
+          project_id?: string
+          sort_order?: number
+          storage_path?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_site_images_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_tasks: {
         Row: {
           created_at: string
