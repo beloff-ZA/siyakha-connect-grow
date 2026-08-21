@@ -94,6 +94,7 @@ function App() {
               <Route path="/portal/tracker" element={<ClientRoute><PortalTracker /></ClientRoute>} />
               <Route path="/portal/boq" element={<ClientRoute><PortalBOQ /></ClientRoute>} />
               <Route path="/portal/floor-plans" element={<ClientRoute><PortalFloorPlans /></ClientRoute>} />
+              <Route path="/portal/building-view" element={<ClientRoute><PortalBuildingView /></ClientRoute>} />
 
               <Route path="/portal/documents" element={<ClientRoute><PortalDocuments /></ClientRoute>} />
               <Route path="/portal/site-images" element={<ClientRoute><PortalSiteImages /></ClientRoute>} />
