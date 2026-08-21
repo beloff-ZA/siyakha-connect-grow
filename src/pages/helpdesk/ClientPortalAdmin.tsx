@@ -10,6 +10,8 @@ import { DOCUMENTS_BUCKET, PHOTOS_BUCKET, formatDate } from "@/lib/portalFiles";
 import { statusLabel } from "@/hooks/usePortal";
 import BoqManager from "@/components/helpdesk/BoqManager";
 import FloorPlansManager from "@/components/helpdesk/FloorPlansManager";
+import SiteImagesManager from "@/components/helpdesk/SiteImagesManager";
+
 
 
 type Row = Record<string, any>;
