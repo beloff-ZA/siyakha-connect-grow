@@ -698,6 +698,11 @@ const ClientPortalAdmin: React.FC = () => {
           <FloorPlansManager projectId={projectId} />
         </TabsContent>
 
+        <TabsContent value="site-images" className="pt-6">
+          <SiteImagesManager projectId={projectId} />
+        </TabsContent>
+
+
 
         <TabsContent value="updates" className="pt-6">
           {!projectId ? (
