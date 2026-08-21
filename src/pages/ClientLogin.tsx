@@ -42,6 +42,9 @@ const ClientLogin: React.FC = () => {
       new URLSearchParams(window.location.search).get("type") === "recovery";
     if (isRecovery) setMode("setup");
 
+    const mustChange = (u: { user_metadata?: Record<string, unknown> } | undefined | null) =>
+      u?.user_metadata?.must_change_password === true;
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -49,10 +52,18 @@ const ClientLogin: React.FC = () => {
         setMode("setup");
         return;
       }
+      if (mustChange(session?.user)) {
+        setMode("setup");
+        return;
+      }
       if (session?.user && !isRecovery) navigate("/portal", { replace: true });
     });
 
     supabase.auth.getSession().then(({ data }) => {
+      if (mustChange(data.session?.user)) {
+        setMode("setup");
+        return;
+      }
       if (data.session?.user && !isRecovery) navigate("/portal", { replace: true });
     });
 
@@ -94,6 +105,16 @@ const ClientLogin: React.FC = () => {
       return;
     }
     if (data.session) void notifyAdminOfLogin();
+    // Admin-provisioned test accounts may require a password change before access.
+    if (data.user?.user_metadata?.must_change_password === true) {
+      setMode("setup");
+      setPassword("");
+      toast({
+        title: "Set a new password",
+        description: "Choose your own password to continue to the portal.",
+      });
+      return;
+    }
     navigate("/portal", { replace: true });
   };
 
@@ -120,7 +141,10 @@ const ClientLogin: React.FC = () => {
     if (newPassword.length < 8) return setFormError("Use at least 8 characters.");
     if (newPassword !== confirmPassword) return setFormError("Passwords do not match.");
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+      data: { must_change_password: false },
+    });
     setLoading(false);
     if (error) return setFormError(error.message);
     // First-time setup completes as a successful portal sign-in — notify once here.

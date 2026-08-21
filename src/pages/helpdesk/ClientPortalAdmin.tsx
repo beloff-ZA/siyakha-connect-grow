@@ -13,6 +13,7 @@ import FloorPlansManager from "@/components/helpdesk/FloorPlansManager";
 import SiteImagesManager from "@/components/helpdesk/SiteImagesManager";
 import SitesManager from "@/components/helpdesk/SitesManager";
 import NotificationSettings from "@/components/helpdesk/NotificationSettings";
+import TestAccountDialog, { type TestAccountTarget } from "@/components/helpdesk/TestAccountDialog";
 
 
 
@@ -49,6 +50,9 @@ const ClientPortalAdmin: React.FC = () => {
   const [queries, setQueries] = useState<Row[]>([]);
   const [projectId, setProjectId] = useState<string>("");
   const [busy, setBusy] = useState(false);
+  /** Global testing safety switch — while false no client emails may be sent. */
+  const [clientEmailsEnabled, setClientEmailsEnabled] = useState(false);
+
 
   const fail = (e: unknown) =>
     toast({
@@ -58,12 +62,18 @@ const ClientPortalAdmin: React.FC = () => {
     });
 
   const loadBase = useCallback(async () => {
-    const [c, cu, p, q] = await Promise.all([
+    const [c, cu, p, q, s] = await Promise.all([
       supabase.from("portal_clients").select("*").order("display_name"),
       supabase.from("portal_client_users").select("*").order("created_at"),
       supabase.from("portal_projects").select("*").order("created_at"),
       supabase.from("portal_queries").select("*").order("created_at", { ascending: false }),
+      supabase
+        .from("portal_notification_settings")
+        .select("client_emails_enabled")
+        .limit(1)
+        .maybeSingle(),
     ]);
+    setClientEmailsEnabled(((s.data as Row | null)?.client_emails_enabled ?? false) === true);
     setClients(c.data ?? []);
     setClientUsers(cu.data ?? []);
     setProjects(p.data ?? []);
@@ -134,26 +144,11 @@ const ClientPortalAdmin: React.FC = () => {
     loadBase();
   };
 
-  const [credentials, setCredentials] = useState<
-    { client_user_id: string; email: string; password: string } | null
-  >(null);
-
-  /** Creates the client login on our side with a generated password. No email is sent. */
-  const provisionCredentials = async (clientUserId: string) => {
-    setBusy(true);
-    const { data, error } = await supabase.functions.invoke("provision-client-credentials", {
-      body: { client_user_id: clientUserId },
-    });
-    setBusy(false);
-    if (error) return fail(error);
-    const res = data as Row;
-    if (!res?.password) return fail(new Error(res?.error ?? "No credentials returned"));
-    setCredentials({ client_user_id: clientUserId, email: res.email, password: res.password });
-    toast({ title: "Login created", description: "Hand the credentials over securely — no email was sent." });
-    loadBase();
-  };
+  /** TESTING-ONLY: no-email account activation / password reset. */
+  const [testTarget, setTestTarget] = useState<TestAccountTarget | null>(null);
 
   const sendInvite = async (clientUserId: string, redirectTo?: string) => {
+
 
     setBusy(true);
     const { data, error } = await supabase.functions.invoke("invite-client-user", {
@@ -391,6 +386,29 @@ const ClientPortalAdmin: React.FC = () => {
         <h1 className="font-display text-3xl font-light tracking-tight">Client portal management</h1>
       </header>
 
+      {!clientEmailsEnabled && (
+        <div
+          role="status"
+          className="mb-8 border-2 border-foreground bg-muted px-5 py-4"
+        >
+          <p className="text-[10px] uppercase tracking-[0.26em] mb-1">
+            Testing mode — client emails disabled
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            No invitation, setup or notification email can be sent to clients. Invite actions are
+            hidden and the server refuses every client email request. Activate test logins with
+            “Activate test account without email” instead.
+          </p>
+        </div>
+      )}
+
+      <TestAccountDialog
+        target={testTarget}
+        onClose={() => setTestTarget(null)}
+        onDone={() => loadBase()}
+      />
+
+
       <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-end gap-3">
         <div className="w-full sm:w-96">
           <Label htmlFor="admin-project">Active project</Label>
@@ -492,55 +510,43 @@ const ClientPortalAdmin: React.FC = () => {
                     <div className="flex flex-wrap gap-2">
                       <Button
                         size="sm"
-                        onClick={() => provisionCredentials(cu.id)}
+                        onClick={() =>
+                          setTestTarget({
+                            id: cu.id,
+                            email: cu.email,
+                            full_name: cu.full_name ?? null,
+                            mode: cu.status === "active" ? "reset" : "activate",
+                          })
+                        }
                         disabled={busy}
-                        title="Creates the login with a generated password. No email is sent to the client."
+                        title="TESTING ONLY — sets the password directly. No email is sent to the client."
                       >
-                        Create login (no email)
+                        {cu.status === "active"
+                          ? "Reset test password without email"
+                          : "Activate test account without email"}
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => sendInvite(cu.id)} disabled={busy}>
-                        Send / resend invite
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => sendInvite(cu.id, PRODUCTION_LOGIN_URL)}
-                        disabled={busy}
-                        title={`First-time account setup link pointing at ${PRODUCTION_LOGIN_URL}`}
-                      >
-                        Send setup link (production)
-                      </Button>
+                      {clientEmailsEnabled && (
+                        <>
+                          <Button size="sm" variant="outline" onClick={() => sendInvite(cu.id)} disabled={busy}>
+                            Send / resend invite
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => sendInvite(cu.id, PRODUCTION_LOGIN_URL)}
+                            disabled={busy}
+                            title={`First-time account setup link pointing at ${PRODUCTION_LOGIN_URL}`}
+                          >
+                            Send setup link (production)
+                          </Button>
+                        </>
+                      )}
                       <Button size="sm" variant="outline" onClick={() => assignUser(cu.id)} disabled={!projectId}>
                         Assign to project
                       </Button>
                     </div>
-
-                    {credentials?.client_user_id === cu.id && (
-                      <div className="w-full sm:w-auto border border-border p-3 text-xs space-y-1">
-                        <p className="uppercase tracking-[0.2em] text-muted-foreground">
-                          Credentials — shown once
-                        </p>
-                        <p className="font-mono break-all">Username: {credentials.email}</p>
-                        <p className="font-mono break-all">Password: {credentials.password}</p>
-                        <div className="flex gap-2 pt-1">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                              navigator.clipboard
-                                .writeText(`Username: ${credentials.email}\nPassword: ${credentials.password}`)
-                                .then(() => toast({ title: "Copied" }))
-                            }
-                          >
-                            Copy
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={() => setCredentials(null)}>
-                            Hide
-                          </Button>
-                        </div>
-                      </div>
-                    )}
                   </li>
+
 
                 ))}
               </ul>

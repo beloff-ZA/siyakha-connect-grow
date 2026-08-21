@@ -20,6 +20,12 @@ const ClientRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return <Navigate to="/client-login" replace state={{ from: location.pathname }} />;
   }
 
+  // Admin-provisioned accounts flagged for a forced password change get no project access.
+  if ((user.user_metadata as Record<string, unknown> | undefined)?.must_change_password === true) {
+    return <Navigate to="/client-login" replace state={{ from: location.pathname }} />;
+  }
+
+
   return (
     <PortalProvider>
       <PortalLayout>{children}</PortalLayout>
