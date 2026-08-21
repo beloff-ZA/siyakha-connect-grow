@@ -47,6 +47,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const [floors, setFloors] = useState<PortalFloor[]>([]);
   const [markers, setMarkers] = useState<FloorMarker[]>([]);
+  const [routes, setRoutes] = useState<CableRoute[]>([]);
   const [floorId, setFloorId] = useState("");
   const [planUrl, setPlanUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
