@@ -1340,6 +1340,16 @@ const PortalFloorPlans: React.FC = () => {
                   </div>
                 )}
 
+                {selected.marker_type === "rack" && (
+                  <RackContents
+                    rack={selected}
+                    floor={floor}
+                    items={equipment.filter((e) => e.rack_marker_id === selected.id)}
+                    routes={routes}
+                  />
+                )}
+
+
 
 
                 {/* Camera optics — editable while the camera is planned or an unsaved draft */}
