@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION private.portal_can_read_floor(uuid) TO authenticated;
