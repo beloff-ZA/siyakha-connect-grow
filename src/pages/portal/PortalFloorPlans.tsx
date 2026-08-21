@@ -404,7 +404,14 @@ const PortalFloorPlans: React.FC = () => {
                   <span className="inline-block h-5 w-5 rounded-full border border-foreground" />
                   Installed / tested
                 </span>
+                <span className="flex items-center gap-2">
+                  <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-foreground/70">
+                    <Lock className="h-3 w-3" strokeWidth={2} />
+                  </span>
+                  Locked — cannot be moved
+                </span>
               </div>
+
 
               <div className="mt-6 grid gap-4 sm:grid-cols-4">
                 <Metric label="Devices on level" value={floorStats.total} />
