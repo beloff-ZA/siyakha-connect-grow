@@ -194,6 +194,7 @@ const PortalFloorPlans: React.FC = () => {
       { data: floorRows, error: fErr },
       { data: markerRows, error: mErr },
       { data: routeRows, error: rErr },
+      { data: equipRows, error: eErr },
     ] = await Promise.all([
       supabase
         .from("portal_floors")
