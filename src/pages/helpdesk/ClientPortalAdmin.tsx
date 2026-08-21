@@ -50,6 +50,9 @@ const ClientPortalAdmin: React.FC = () => {
   const [queries, setQueries] = useState<Row[]>([]);
   const [projectId, setProjectId] = useState<string>("");
   const [busy, setBusy] = useState(false);
+  /** Global testing safety switch — while false no client emails may be sent. */
+  const [clientEmailsEnabled, setClientEmailsEnabled] = useState(false);
+
 
   const fail = (e: unknown) =>
     toast({
@@ -59,12 +62,18 @@ const ClientPortalAdmin: React.FC = () => {
     });
 
   const loadBase = useCallback(async () => {
-    const [c, cu, p, q] = await Promise.all([
+    const [c, cu, p, q, s] = await Promise.all([
       supabase.from("portal_clients").select("*").order("display_name"),
       supabase.from("portal_client_users").select("*").order("created_at"),
       supabase.from("portal_projects").select("*").order("created_at"),
       supabase.from("portal_queries").select("*").order("created_at", { ascending: false }),
+      supabase
+        .from("portal_notification_settings")
+        .select("client_emails_enabled")
+        .limit(1)
+        .maybeSingle(),
     ]);
+    setClientEmailsEnabled(((s.data as Row | null)?.client_emails_enabled ?? false) === true);
     setClients(c.data ?? []);
     setClientUsers(cu.data ?? []);
     setProjects(p.data ?? []);
