@@ -21,6 +21,7 @@ import {
   type MarkerState,
   type PortalFloor,
 } from "@/lib/floorPlans";
+import { parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
 
 const Section: React.FC<{ title: string; children: React.ReactNode; note?: string }> = ({
   title,
