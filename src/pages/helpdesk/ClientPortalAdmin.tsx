@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DOCUMENTS_BUCKET, PHOTOS_BUCKET, formatDate } from "@/lib/portalFiles";
 import { statusLabel } from "@/hooks/usePortal";
 import BoqManager from "@/components/helpdesk/BoqManager";
+import PlansManager from "@/components/helpdesk/PlansManager";
+
 
 type Row = Record<string, any>;
 
@@ -348,6 +350,8 @@ const ClientPortalAdmin: React.FC = () => {
           <TabsTrigger value="tracker">Tracker</TabsTrigger>
           <TabsTrigger value="files">Documents & photos</TabsTrigger>
           <TabsTrigger value="boq">BOQ</TabsTrigger>
+          <TabsTrigger value="plans">Building plans</TabsTrigger>
+
           <TabsTrigger value="updates">Updates</TabsTrigger>
           <TabsTrigger value="queries">Queries</TabsTrigger>
         </TabsList>
@@ -616,6 +620,11 @@ const ClientPortalAdmin: React.FC = () => {
         <TabsContent value="boq" className="pt-6">
           <BoqManager projectId={projectId} />
         </TabsContent>
+
+        <TabsContent value="plans" className="pt-6">
+          <PlansManager projectId={projectId} />
+        </TabsContent>
+
 
         <TabsContent value="updates" className="pt-6">
           {!projectId ? (

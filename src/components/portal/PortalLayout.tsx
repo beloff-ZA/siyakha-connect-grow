@@ -6,6 +6,8 @@ import {
   Images,
   ListChecks,
   Calculator,
+  Layers,
+
   MessageSquare,
   Bell,
   UserRound,
@@ -23,6 +25,8 @@ const nav = [
   { to: "/portal/project", label: "Project overview", icon: Building2 },
   { to: "/portal/tracker", label: "Planning tracker", icon: ListChecks },
   { to: "/portal/boq", label: "BOQ", icon: Calculator },
+  { to: "/portal/plans", label: "Building plans", icon: Layers },
+
   { to: "/portal/documents", label: "Documents", icon: FileText },
   { to: "/portal/gallery", label: "Site gallery", icon: Images },
   { to: "/portal/updates", label: "Updates", icon: Bell },
