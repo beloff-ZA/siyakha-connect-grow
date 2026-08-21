@@ -97,16 +97,28 @@ export function countBy<T extends string>(values: T[]) {
 export function markerStats(markers: FloorMarker[]) {
   const byType = countBy(markers.map((m) => m.marker_type));
   const byStatus = countBy(markers.map((m) => m.status));
+  const apMarkers = markers.filter((m) => m.marker_type === "wifi_ap");
+  const cameraMarkers = markers.filter((m) => m.marker_type === "camera");
+  const apStatus = countBy(apMarkers.map((m) => m.status));
+  const camStatus = countBy(cameraMarkers.map((m) => m.status));
   return {
+    /** All markers, regardless of type. Never label this as "APs". */
     total: markers.length,
-    aps: byType.wifi_ap ?? 0,
-    cameras: byType.camera ?? 0,
+    aps: apMarkers.length,
+    cameras: cameraMarkers.length,
     racks: byType.rack ?? 0,
     cableRoutes: byType.cable_route ?? 0,
     other: byType.other ?? 0,
+    /** Status counts across all device types. */
     planned: byStatus.planned ?? 0,
     installed: byStatus.installed ?? 0,
     testedActive: (byStatus.tested ?? 0) + (byStatus.active ?? 0),
+    plannedAps: apStatus.planned ?? 0,
+    installedAps: apStatus.installed ?? 0,
+    testedActiveAps: (apStatus.tested ?? 0) + (apStatus.active ?? 0),
+    plannedCameras: camStatus.planned ?? 0,
+    installedCameras: camStatus.installed ?? 0,
+    testedActiveCameras: (camStatus.tested ?? 0) + (camStatus.active ?? 0),
   };
 }
 
