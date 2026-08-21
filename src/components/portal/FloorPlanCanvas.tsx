@@ -395,6 +395,12 @@ const FloorPlanCanvas: React.FC<Props> = ({
       onPlace?.(d.anchor.x, d.anchor.y, deg ?? undefined);
       return;
     }
+    if (d.mode === "wp") return;
+    if (d.mode === "seg") {
+      const { x, y } = toNorm(e.clientX, e.clientY);
+      onAddWaypoint?.(d.id, d.index, x, y);
+      return;
+    }
 
     if (!d.moved) {
       onSelect?.(null);
