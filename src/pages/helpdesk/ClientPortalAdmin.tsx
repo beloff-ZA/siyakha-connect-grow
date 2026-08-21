@@ -247,7 +247,15 @@ const ClientPortalAdmin: React.FC = () => {
   };
 
   /* ---------- Files ---------- */
-  const [docMeta, setDocMeta] = useState({ title: "", category: "General", version: "", document_date: "" });
+  const [docMeta, setDocMeta] = useState({
+    title: "",
+    category: "General",
+    version: "",
+    reference: "",
+    phase_id: "",
+    document_date: "",
+    notes: "",
+  });
   const uploadDocument = async (file: File) => {
     if (!projectId) return;
     setBusy(true);
@@ -266,17 +274,45 @@ const ClientPortalAdmin: React.FC = () => {
       title: docMeta.title.trim() || file.name,
       category: docMeta.category.trim() || "General",
       version: docMeta.version.trim() || null,
+      reference: docMeta.reference.trim() || null,
+      phase_id: docMeta.phase_id || null,
       document_date: docMeta.document_date || null,
+      notes: docMeta.notes.trim() || null,
       storage_path: path,
       file_size: file.size,
       mime_type: file.type || null,
     });
     setBusy(false);
     if (error) return fail(error);
-    setDocMeta({ title: "", category: "General", version: "", document_date: "" });
+    setDocMeta({ title: "", category: "General", version: "", reference: "", phase_id: "", document_date: "", notes: "" });
     toast({ title: "Document uploaded" });
     loadProject();
   };
+
+  /** Attaches a file to an existing document record that is still awaiting its upload. */
+  const attachDocumentFile = async (docId: string, title: string, file: File) => {
+    if (!projectId) return;
+    setBusy(true);
+    const safe = (title || file.name).toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-|-$/g, "");
+    const path = `${projectId}/${Date.now()}-${safe}${file.name.match(/\.[a-z0-9]+$/i)?.[0] ?? ""}`;
+    const { error: upErr } = await supabase.storage.from(DOCUMENTS_BUCKET).upload(path, file, {
+      contentType: file.type || undefined,
+      upsert: false,
+    });
+    if (upErr) {
+      setBusy(false);
+      return fail(upErr);
+    }
+    const { error } = await supabase
+      .from("portal_documents")
+      .update({ storage_path: path, file_size: file.size, mime_type: file.type || null })
+      .eq("id", docId);
+    setBusy(false);
+    if (error) return fail(error);
+    toast({ title: "File attached to document record" });
+    loadProject();
+  };
+
 
   const [photoMeta, setPhotoMeta] = useState({ caption: "", taken_at: "", phase_id: "" });
   const uploadPhoto = async (file: File) => {
