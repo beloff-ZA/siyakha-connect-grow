@@ -158,6 +158,7 @@ const PortalFloorPlans: React.FC = () => {
 
   // ---- Cable routing -------------------------------------------------------
   const [routes, setRoutes] = useState<CableRoute[]>([]);
+  const [equipment, setEquipment] = useState<RackEquipment[]>([]);
   const [routeMode, setRouteMode] = useState<RouteDisplayMode>("all");
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
   const [editingRoutes, setEditingRoutes] = useState(false);
