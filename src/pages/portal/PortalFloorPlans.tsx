@@ -113,6 +113,12 @@ const PortalFloorPlans: React.FC = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [coverage, setCoverage] = useState<CoverageMode>("off");
+  const [placingCams, setPlacingCams] = useState(false);
+  const [camDrafts, setCamDrafts] = useState<CameraDraft[]>([]);
+  const [optics, setOptics] = useState<Record<string, Optics>>({});
+  const [camConfirmOpen, setCamConfirmOpen] = useState(false);
+  const [savingCams, setSavingCams] = useState(false);
+
 
   // Selecting a device defaults the coverage view to that device only.
   useEffect(() => {
