@@ -17,6 +17,8 @@ import {
   Menu,
   X,
   Building2,
+  ClipboardList,
+  PlusCircle,
 } from "lucide-react";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,6 +31,7 @@ const nav = [
   { to: "/portal/boq", label: "BOQ", icon: Calculator },
   { to: "/portal/floor-plans", label: "Floor plans", icon: Layers },
   { to: "/portal/building-view", label: "Building view", icon: Building2 },
+  { to: "/portal/registers", label: "Device registers", icon: ClipboardList },
 
   { to: "/portal/documents", label: "Documents", icon: FileText },
   { to: "/portal/site-images", label: "Site images", icon: Camera },
@@ -36,14 +39,28 @@ const nav = [
 
   { to: "/portal/updates", label: "Updates", icon: Bell },
   { to: "/portal/support", label: "Support", icon: MessageSquare },
+  { to: "/portal/onboarding", label: "Add a site", icon: PlusCircle },
   { to: "/portal/profile", label: "Profile & security", icon: UserRound },
 ];
+
 
 const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { signOut } = useAuth();
   const navigate = useNavigate();
-  const { client, clientUser, projects, activeProjectId, setActiveProjectId, loading } = usePortal();
+  const {
+    client,
+    clientUser,
+    sites,
+    activeSiteId,
+    setActiveSiteId,
+    projects,
+    activeProjectId,
+    setActiveProjectId,
+    loading,
+  } = usePortal();
   const [open, setOpen] = useState(false);
+  const siteProjects = projects.filter((p) => !activeSiteId || !p.site_id || p.site_id === activeSiteId);
+
 
   const handleSignOut = async () => {
     await signOut();
@@ -104,7 +121,30 @@ const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
             )}
           </div>
 
-          {projects.length > 1 && (
+          {sites.length > 1 && (
+            <div className="px-6 py-5 border-b border-border">
+              <label
+                htmlFor="portal-site-select"
+                className="block text-[10px] uppercase tracking-[0.24em] text-muted-foreground mb-2"
+              >
+                Site
+              </label>
+              <select
+                id="portal-site-select"
+                value={activeSiteId ?? ""}
+                onChange={(e) => setActiveSiteId(e.target.value)}
+                className="w-full border border-border bg-background text-sm px-3 py-2"
+              >
+                {sites.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {siteProjects.length > 1 && (
             <div className="px-6 py-5 border-b border-border">
               <label
                 htmlFor="portal-project-select"
@@ -118,7 +158,7 @@ const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                 onChange={(e) => setActiveProjectId(e.target.value)}
                 className="w-full border border-border bg-background text-sm px-3 py-2"
               >
-                {projects.map((p) => (
+                {siteProjects.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.title}
                   </option>
@@ -126,6 +166,7 @@ const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
               </select>
             </div>
           )}
+
 
           <nav className="py-4 flex-1 overflow-y-auto" aria-label="Client portal">
             {nav.map(({ to, label, icon: Icon, end }) => (

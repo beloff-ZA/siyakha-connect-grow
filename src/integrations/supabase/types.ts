@@ -871,6 +871,48 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_activity: {
+        Row: {
+          action: string
+          actor_type: string
+          actor_user_id: string | null
+          client_id: string | null
+          created_at: string
+          detail: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          project_id: string | null
+          site_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_type?: string
+          actor_user_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          project_id?: string | null
+          site_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_type?: string
+          actor_user_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          project_id?: string | null
+          site_id?: string | null
+        }
+        Relationships: []
+      }
       portal_boq_activity: {
         Row: {
           action: string
@@ -1301,15 +1343,27 @@ export type Database = {
           client_visible: boolean
           created_at: string
           created_by: string | null
+          destination_label: string | null
           device_marker_id: string
+          estimated_length_m: number | null
+          fibre_strands: number | null
           floor_id: string
           id: string
+          max_length_m: number
+          measured_length_m: number | null
           notes: string | null
+          patch_panel: string | null
+          patch_panel_port: number | null
           project_id: string
           rack_marker_id: string
+          route_kind: string
           route_label: string
           service_type: string
+          sfp_detail: string | null
+          source_label: string | null
           status: Database["public"]["Enums"]["portal_marker_state"]
+          switch_port: number | null
+          test_result: string | null
           updated_at: string
           waypoints: Json
         }
@@ -1318,15 +1372,27 @@ export type Database = {
           client_visible?: boolean
           created_at?: string
           created_by?: string | null
+          destination_label?: string | null
           device_marker_id: string
+          estimated_length_m?: number | null
+          fibre_strands?: number | null
           floor_id: string
           id?: string
+          max_length_m?: number
+          measured_length_m?: number | null
           notes?: string | null
+          patch_panel?: string | null
+          patch_panel_port?: number | null
           project_id: string
           rack_marker_id: string
+          route_kind?: string
           route_label: string
           service_type: string
+          sfp_detail?: string | null
+          source_label?: string | null
           status?: Database["public"]["Enums"]["portal_marker_state"]
+          switch_port?: number | null
+          test_result?: string | null
           updated_at?: string
           waypoints?: Json
         }
@@ -1335,15 +1401,27 @@ export type Database = {
           client_visible?: boolean
           created_at?: string
           created_by?: string | null
+          destination_label?: string | null
           device_marker_id?: string
+          estimated_length_m?: number | null
+          fibre_strands?: number | null
           floor_id?: string
           id?: string
+          max_length_m?: number
+          measured_length_m?: number | null
           notes?: string | null
+          patch_panel?: string | null
+          patch_panel_port?: number | null
           project_id?: string
           rack_marker_id?: string
+          route_kind?: string
           route_label?: string
           service_type?: string
+          sfp_detail?: string | null
+          source_label?: string | null
           status?: Database["public"]["Enums"]["portal_marker_state"]
+          switch_port?: number | null
+          test_result?: string | null
           updated_at?: string
           waypoints?: Json
         }
@@ -1430,36 +1508,51 @@ export type Database = {
       }
       portal_clients: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           contact_email: string | null
           contact_name: string | null
           created_at: string
           display_name: string
           id: string
           notes: string | null
+          parent_reference: string | null
           phone: string | null
+          review_status: string
           status: string
+          submitted_at: string | null
           updated_at: string
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           contact_email?: string | null
           contact_name?: string | null
           created_at?: string
           display_name: string
           id?: string
           notes?: string | null
+          parent_reference?: string | null
           phone?: string | null
+          review_status?: string
           status?: string
+          submitted_at?: string | null
           updated_at?: string
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           contact_email?: string | null
           contact_name?: string | null
           created_at?: string
           display_name?: string
           id?: string
           notes?: string | null
+          parent_reference?: string | null
           phone?: string | null
+          review_status?: string
           status?: string
+          submitted_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -1658,12 +1751,17 @@ export type Database = {
       }
       portal_floor_markers: {
         Row: {
+          area: string | null
+          capacity_u: number | null
           client_visible: boolean
+          coverage_radius_m: number | null
           coverage_range: string
           created_at: string
           created_by: string | null
           description: string | null
+          design_hold: string | null
           direction_deg: number
+          environment: string | null
           equipment: string | null
           evidence_note: string | null
           evidence_path: string | null
@@ -1671,27 +1769,44 @@ export type Database = {
           fov_deg: number
           id: string
           installed_on: string | null
+          is_placed: boolean
           label: string
+          lens_model: string | null
           mac_address: string | null
           marker_type: Database["public"]["Enums"]["portal_marker_kind"]
           model: string | null
+          mount_type: string | null
+          mounting_height_m: number | null
           notes: string | null
+          nvr_channel: number | null
+          nvr_id: string | null
+          poe_class: string | null
           project_id: string
+          radio_band: string | null
           serial_number: string | null
           sort_order: number
+          ssid: string | null
           status: Database["public"]["Enums"]["portal_marker_state"]
+          switch_marker_id: string | null
+          switch_port: number | null
           tested_on: string | null
           updated_at: string
-          x_norm: number
-          y_norm: number
+          vlan: string | null
+          x_norm: number | null
+          y_norm: number | null
         }
         Insert: {
+          area?: string | null
+          capacity_u?: number | null
           client_visible?: boolean
+          coverage_radius_m?: number | null
           coverage_range?: string
           created_at?: string
           created_by?: string | null
           description?: string | null
+          design_hold?: string | null
           direction_deg?: number
+          environment?: string | null
           equipment?: string | null
           evidence_note?: string | null
           evidence_path?: string | null
@@ -1699,27 +1814,44 @@ export type Database = {
           fov_deg?: number
           id?: string
           installed_on?: string | null
+          is_placed?: boolean
           label: string
+          lens_model?: string | null
           mac_address?: string | null
           marker_type?: Database["public"]["Enums"]["portal_marker_kind"]
           model?: string | null
+          mount_type?: string | null
+          mounting_height_m?: number | null
           notes?: string | null
+          nvr_channel?: number | null
+          nvr_id?: string | null
+          poe_class?: string | null
           project_id: string
+          radio_band?: string | null
           serial_number?: string | null
           sort_order?: number
+          ssid?: string | null
           status?: Database["public"]["Enums"]["portal_marker_state"]
+          switch_marker_id?: string | null
+          switch_port?: number | null
           tested_on?: string | null
           updated_at?: string
-          x_norm?: number
-          y_norm?: number
+          vlan?: string | null
+          x_norm?: number | null
+          y_norm?: number | null
         }
         Update: {
+          area?: string | null
+          capacity_u?: number | null
           client_visible?: boolean
+          coverage_radius_m?: number | null
           coverage_range?: string
           created_at?: string
           created_by?: string | null
           description?: string | null
+          design_hold?: string | null
           direction_deg?: number
+          environment?: string | null
           equipment?: string | null
           evidence_note?: string | null
           evidence_path?: string | null
@@ -1727,19 +1859,31 @@ export type Database = {
           fov_deg?: number
           id?: string
           installed_on?: string | null
+          is_placed?: boolean
           label?: string
+          lens_model?: string | null
           mac_address?: string | null
           marker_type?: Database["public"]["Enums"]["portal_marker_kind"]
           model?: string | null
+          mount_type?: string | null
+          mounting_height_m?: number | null
           notes?: string | null
+          nvr_channel?: number | null
+          nvr_id?: string | null
+          poe_class?: string | null
           project_id?: string
+          radio_band?: string | null
           serial_number?: string | null
           sort_order?: number
+          ssid?: string | null
           status?: Database["public"]["Enums"]["portal_marker_state"]
+          switch_marker_id?: string | null
+          switch_port?: number | null
           tested_on?: string | null
           updated_at?: string
-          x_norm?: number
-          y_norm?: number
+          vlan?: string | null
+          x_norm?: number | null
+          y_norm?: number | null
         }
         Relationships: [
           {
@@ -1865,6 +2009,75 @@ export type Database = {
           },
         ]
       }
+      portal_nvrs: {
+        Row: {
+          channel_count: number
+          channel_from: number | null
+          channel_to: number | null
+          client_visible: boolean
+          created_at: string
+          id: string
+          label: string
+          manufacturer: string
+          model: string | null
+          notes: string | null
+          project_id: string
+          rack_marker_id: string | null
+          sort_order: number
+          status: Database["public"]["Enums"]["portal_marker_state"]
+          updated_at: string
+        }
+        Insert: {
+          channel_count?: number
+          channel_from?: number | null
+          channel_to?: number | null
+          client_visible?: boolean
+          created_at?: string
+          id?: string
+          label: string
+          manufacturer?: string
+          model?: string | null
+          notes?: string | null
+          project_id: string
+          rack_marker_id?: string | null
+          sort_order?: number
+          status?: Database["public"]["Enums"]["portal_marker_state"]
+          updated_at?: string
+        }
+        Update: {
+          channel_count?: number
+          channel_from?: number | null
+          channel_to?: number | null
+          client_visible?: boolean
+          created_at?: string
+          id?: string
+          label?: string
+          manufacturer?: string
+          model?: string | null
+          notes?: string | null
+          project_id?: string
+          rack_marker_id?: string | null
+          sort_order?: number
+          status?: Database["public"]["Enums"]["portal_marker_state"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_nvrs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_nvrs_rack_marker_id_fkey"
+            columns: ["rack_marker_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floor_markers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_phases: {
         Row: {
           created_at: string
@@ -1969,6 +2182,99 @@ export type Database = {
           },
         ]
       }
+      portal_plan_revisions: {
+        Row: {
+          archived_at: string | null
+          checksum: string | null
+          client_visible: boolean
+          created_at: string
+          file_size: number | null
+          floor_id: string | null
+          id: string
+          image_path: string | null
+          is_current: boolean
+          mime_type: string | null
+          notes: string | null
+          original_filename: string | null
+          page_count: number
+          page_number: number
+          project_id: string
+          review_status: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          revision_label: string
+          rotation_deg: number
+          source_path: string | null
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          checksum?: string | null
+          client_visible?: boolean
+          created_at?: string
+          file_size?: number | null
+          floor_id?: string | null
+          id?: string
+          image_path?: string | null
+          is_current?: boolean
+          mime_type?: string | null
+          notes?: string | null
+          original_filename?: string | null
+          page_count?: number
+          page_number?: number
+          project_id: string
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          revision_label: string
+          rotation_deg?: number
+          source_path?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          checksum?: string | null
+          client_visible?: boolean
+          created_at?: string
+          file_size?: number | null
+          floor_id?: string | null
+          id?: string
+          image_path?: string | null
+          is_current?: boolean
+          mime_type?: string | null
+          notes?: string | null
+          original_filename?: string | null
+          page_count?: number
+          page_number?: number
+          project_id?: string
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          revision_label?: string
+          rotation_deg?: number
+          source_path?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_plan_revisions_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_plan_revisions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_project_assignments: {
         Row: {
           client_user_id: string
@@ -2018,6 +2324,7 @@ export type Database = {
           reference: string | null
           risks_notes: string | null
           site_context: string | null
+          site_id: string | null
           stakeholders: string | null
           start_date: string | null
           status: string
@@ -2037,6 +2344,7 @@ export type Database = {
           reference?: string | null
           risks_notes?: string | null
           site_context?: string | null
+          site_id?: string | null
           stakeholders?: string | null
           start_date?: string | null
           status?: string
@@ -2056,6 +2364,7 @@ export type Database = {
           reference?: string | null
           risks_notes?: string | null
           site_context?: string | null
+          site_id?: string | null
           stakeholders?: string | null
           start_date?: string | null
           status?: string
@@ -2069,6 +2378,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "portal_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_projects_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "portal_sites"
             referencedColumns: ["id"]
           },
         ]
@@ -2211,6 +2527,95 @@ export type Database = {
           },
         ]
       }
+      portal_registrations: {
+        Row: {
+          client_id: string | null
+          collaborators: string[]
+          contact_email: string
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          organisation_name: string
+          page_labels: string[]
+          parent_reference: string | null
+          plan_paths: string[]
+          reviewed_at: string | null
+          reviewed_by: string | null
+          services: string[]
+          site_address: string | null
+          site_city: string | null
+          site_name: string | null
+          site_postal_code: string | null
+          site_province: string | null
+          status: string
+          submitted_by: string | null
+          updated_at: string
+          venue_type: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          collaborators?: string[]
+          contact_email: string
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          organisation_name: string
+          page_labels?: string[]
+          parent_reference?: string | null
+          plan_paths?: string[]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          services?: string[]
+          site_address?: string | null
+          site_city?: string | null
+          site_name?: string | null
+          site_postal_code?: string | null
+          site_province?: string | null
+          status?: string
+          submitted_by?: string | null
+          updated_at?: string
+          venue_type?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          collaborators?: string[]
+          contact_email?: string
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          organisation_name?: string
+          page_labels?: string[]
+          parent_reference?: string | null
+          plan_paths?: string[]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          services?: string[]
+          site_address?: string | null
+          site_city?: string | null
+          site_name?: string | null
+          site_postal_code?: string | null
+          site_province?: string | null
+          status?: string
+          submitted_by?: string | null
+          updated_at?: string
+          venue_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_registrations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "portal_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_site_images: {
         Row: {
           area: string | null
@@ -2266,6 +2671,86 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_sites: {
+        Row: {
+          address: string | null
+          archived_at: string | null
+          budget_client_visible: boolean
+          budget_currency: string
+          budget_includes_vat: boolean
+          budget_reference: number | null
+          city: string | null
+          client_id: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          postal_code: string | null
+          province: string | null
+          sort_order: number
+          status: string
+          updated_at: string
+          venue_type: string | null
+        }
+        Insert: {
+          address?: string | null
+          archived_at?: string | null
+          budget_client_visible?: boolean
+          budget_currency?: string
+          budget_includes_vat?: boolean
+          budget_reference?: number | null
+          city?: string | null
+          client_id: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          postal_code?: string | null
+          province?: string | null
+          sort_order?: number
+          status?: string
+          updated_at?: string
+          venue_type?: string | null
+        }
+        Update: {
+          address?: string | null
+          archived_at?: string | null
+          budget_client_visible?: boolean
+          budget_currency?: string
+          budget_includes_vat?: boolean
+          budget_reference?: number | null
+          city?: string | null
+          client_id?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          postal_code?: string | null
+          province?: string | null
+          sort_order?: number
+          status?: string
+          updated_at?: string
+          venue_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_sites_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "portal_clients"
             referencedColumns: ["id"]
           },
         ]
@@ -2749,12 +3234,28 @@ export type Database = {
         | "user"
         | "siyakha_admin"
         | "partner_engineer"
+        | "super_admin"
+        | "project_manager"
+        | "engineer"
+        | "client_admin"
+        | "client_editor"
+        | "client_viewer"
       portal_marker_kind:
         | "wifi_ap"
         | "camera"
         | "rack"
         | "cable_route"
         | "other"
+        | "switch"
+        | "nvr"
+        | "router_firewall"
+        | "data_point"
+        | "fibre_agg_switch"
+        | "fibre_liu"
+        | "fibre_splice"
+        | "patch_panel"
+        | "access_control"
+        | "note_marker"
       portal_marker_state: "planned" | "installed" | "tested" | "active"
     }
     CompositeTypes: {
@@ -2889,8 +3390,30 @@ export const Constants = {
         "user",
         "siyakha_admin",
         "partner_engineer",
+        "super_admin",
+        "project_manager",
+        "engineer",
+        "client_admin",
+        "client_editor",
+        "client_viewer",
       ],
-      portal_marker_kind: ["wifi_ap", "camera", "rack", "cable_route", "other"],
+      portal_marker_kind: [
+        "wifi_ap",
+        "camera",
+        "rack",
+        "cable_route",
+        "other",
+        "switch",
+        "nvr",
+        "router_firewall",
+        "data_point",
+        "fibre_agg_switch",
+        "fibre_liu",
+        "fibre_splice",
+        "patch_panel",
+        "access_control",
+        "note_marker",
+      ],
       portal_marker_state: ["planned", "installed", "tested", "active"],
     },
   },

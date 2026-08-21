@@ -711,7 +711,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
                 </svg>
               )}
 
-              {markers.map((m) => {
+              {/* Unplaced register records have no coordinates and are never drawn. */}
+              {markers.filter((m) => m.x_norm != null && m.y_norm != null).map((m) => {
                 const draggable = canDrag ? canDrag(m) : true;
                 const locked = editing && !draggable;
                 const isSelected = selectedId === m.id;

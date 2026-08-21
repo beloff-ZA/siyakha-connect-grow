@@ -11,6 +11,7 @@ import { statusLabel } from "@/hooks/usePortal";
 import BoqManager from "@/components/helpdesk/BoqManager";
 import FloorPlansManager from "@/components/helpdesk/FloorPlansManager";
 import SiteImagesManager from "@/components/helpdesk/SiteImagesManager";
+import SitesManager from "@/components/helpdesk/SitesManager";
 
 
 
@@ -384,6 +385,7 @@ const ClientPortalAdmin: React.FC = () => {
       <Tabs defaultValue="clients">
         <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="clients">Clients & invites</TabsTrigger>
+          <TabsTrigger value="sites">Sites & registrations</TabsTrigger>
           <TabsTrigger value="project">Project</TabsTrigger>
           <TabsTrigger value="tracker">Tracker</TabsTrigger>
           <TabsTrigger value="files">Documents & photos</TabsTrigger>
@@ -469,6 +471,10 @@ const ClientPortalAdmin: React.FC = () => {
               </ul>
             )}
           </Section>
+        </TabsContent>
+
+        <TabsContent value="sites" className="pt-6">
+          <SitesManager />
         </TabsContent>
 
         <TabsContent value="project" className="pt-6">
