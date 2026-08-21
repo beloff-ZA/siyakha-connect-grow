@@ -1,5 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Info, Layers, Lock, MessageSquare, Move, Radio, Search, Wifi } from "lucide-react";
+import {
+  Camera,
+  Info,
+  Layers,
+  Lock,
+  MessageSquare,
+  Move,
+  Radio,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,16 +39,31 @@ import FloorPlanCanvas, { type CoverageMode } from "@/components/portal/FloorPla
 import { COVERAGE_BANDS, COVERAGE_DISCLAIMER } from "@/lib/planGeometry";
 import { DOCUMENTS_BUCKET, signedUrl, formatDate } from "@/lib/portalFiles";
 import {
+  CAMERA_RANGES,
+  FOV_PRESETS,
   MARKER_KINDS,
   SURVEY_DISCLAIMER,
   kindLabel,
   kindShort,
   markerStats,
   stateLabel,
+  type CameraRange,
   type FloorMarker,
   type MarkerKind,
   type PortalFloor,
 } from "@/lib/floorPlans";
+
+type CameraDraft = {
+  id: string;
+  x: number;
+  y: number;
+  direction_deg: number;
+  fov_deg: number;
+  coverage_range: CameraRange;
+};
+
+type Optics = { direction_deg: number; fov_deg: number; coverage_range: CameraRange };
+
 
 
 const LAYERS: { kind: MarkerKind; label: string }[] = [
