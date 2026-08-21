@@ -776,7 +776,12 @@ const ClientPortalAdmin: React.FC = () => {
             )}
           </Section>
         </TabsContent>
+
+        <TabsContent value="notifications" className="pt-6">
+          <NotificationSettings />
+        </TabsContent>
       </Tabs>
+
     </div>
   );
 };
