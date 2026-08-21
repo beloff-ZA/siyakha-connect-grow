@@ -18,12 +18,30 @@ import {
   zoomAbout,
   type Rect,
 } from "@/lib/planGeometry";
+import { routeColor } from "@/lib/cableRoutes";
+
+const ROUTE_WIFI = routeColor("wifi_ap");
+const ROUTE_CAM = routeColor("camera");
 
 const MIN_ZOOM = 0.4;
 const MAX_ZOOM = 8;
 const DRAG_THRESHOLD = 4;
 
 export type CoverageMode = "off" | "selected" | "all";
+
+/**
+ * A cable route ready to draw. Endpoints are resolved by the caller from the
+ * CURRENT rack / device marker positions, so moving a marker moves the route.
+ */
+export type CanvasRoute = {
+  id: string;
+  service_type: "wifi_ap" | "camera";
+  from: { x: number; y: number };
+  to: { x: number; y: number };
+  waypoints: { x: number; y: number }[];
+  /** False when the route status is progressed and its geometry is locked. */
+  editable?: boolean;
+};
 
 type Props = {
   imageUrl: string | null;
@@ -52,6 +70,17 @@ type Props = {
   unsavedIds?: string[];
   /** Coverage overlay: off, selected device only, or all APs on this floor. */
   coverage?: CoverageMode;
+
+  /** Cable routes to draw on this level (already filtered by the caller). */
+  routes?: CanvasRoute[];
+  selectedRouteId?: string | null;
+  onSelectRoute?: (routeId: string | null) => void;
+  /** Waypoint editing mode — only then are route handles interactive. */
+  editingRoutes?: boolean;
+  onMoveWaypoint?: (routeId: string, index: number, x: number, y: number) => void;
+  onAddWaypoint?: (routeId: string, segment: number, x: number, y: number) => void;
+  onRemoveWaypoint?: (routeId: string, index: number) => void;
+
   height?: string;
   emptyLabel?: string;
 };
@@ -101,6 +130,13 @@ const FloorPlanCanvas: React.FC<Props> = ({
   placing = false,
   unsavedIds,
   coverage = "off",
+  routes,
+  selectedRouteId = null,
+  onSelectRoute,
+  editingRoutes = false,
+  onMoveWaypoint,
+  onAddWaypoint,
+  onRemoveWaypoint,
   height = "h-[60vh] md:h-[70vh]",
   emptyLabel = "Plan image not available yet.",
 }) => {
@@ -134,6 +170,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
         anchor: { x: number; y: number };
         moved: boolean;
       }
+    | { mode: "wp"; id: string; index: number; startX: number; startY: number; moved: boolean }
+    | { mode: "seg"; id: string; index: number; startX: number; startY: number; moved: boolean }
     | null
   >(null);
 
@@ -251,10 +289,35 @@ const FloorPlanCanvas: React.FC<Props> = ({
   );
 
   const onPointerDown = (e: React.PointerEvent) => {
-    const target = e.target as HTMLElement;
+    const target = e.target as Element;
     const aimId = target.closest("[data-aim-for]")?.getAttribute("data-aim-for");
     const markerId = target.closest("[data-marker-id]")?.getAttribute("data-marker-id");
-    if (aimId) {
+    const wpEl = target.closest("[data-wp-route]");
+    const segEl = target.closest("[data-seg-route]");
+    const routeEl = target.closest("[data-route-id]");
+    if (wpEl) {
+      dragRef.current = {
+        mode: "wp",
+        id: wpEl.getAttribute("data-wp-route") ?? "",
+        index: Number(wpEl.getAttribute("data-wp-index") ?? 0),
+        startX: e.clientX,
+        startY: e.clientY,
+        moved: false,
+      };
+    } else if (segEl) {
+      dragRef.current = {
+        mode: "seg",
+        id: segEl.getAttribute("data-seg-route") ?? "",
+        index: Number(segEl.getAttribute("data-seg-index") ?? 0),
+        startX: e.clientX,
+        startY: e.clientY,
+        moved: false,
+      };
+    } else if (routeEl) {
+      onSelectRoute?.(routeEl.getAttribute("data-route-id"));
+      dragRef.current = null;
+      return;
+    } else if (aimId) {
       dragRef.current = { mode: "aim", id: aimId, startX: e.clientX, startY: e.clientY, moved: false };
     } else if (markerId) {
       const m = markers.find((x) => x.id === markerId);
@@ -305,6 +368,12 @@ const FloorPlanCanvas: React.FC<Props> = ({
     } else if (d.mode === "place") {
       const deg = aimFrom(d.anchor, e.clientX, e.clientY);
       setPlacePreview({ x: d.anchor.x, y: d.anchor.y, deg });
+    } else if (d.mode === "wp") {
+      if (!onMoveWaypoint) return;
+      const { x, y } = toNorm(e.clientX, e.clientY);
+      onMoveWaypoint(d.id, d.index, x, y);
+    } else if (d.mode === "seg") {
+      // nothing to preview; the waypoint is inserted on release
     } else if (onMove && d.moved && d.draggable) {
       const { x, y } = toNorm(e.clientX, e.clientY);
       onMove(d.id, x, y);
@@ -330,9 +399,16 @@ const FloorPlanCanvas: React.FC<Props> = ({
       onPlace?.(d.anchor.x, d.anchor.y, deg ?? undefined);
       return;
     }
+    if (d.mode === "wp") return;
+    if (d.mode === "seg") {
+      const { x, y } = toNorm(e.clientX, e.clientY);
+      onAddWaypoint?.(d.id, d.index, x, y);
+      return;
+    }
 
     if (!d.moved) {
       onSelect?.(null);
+      onSelectRoute?.(null);
     }
   };
 
@@ -524,6 +600,116 @@ const FloorPlanCanvas: React.FC<Props> = ({
                     </React.Fragment>
                   );
                 })}
+
+              {/* Cable routes — drawn beneath the device markers so AP dragging and
+                  CCTV aiming always win the pointer. Endpoints come from the live
+                  rack / device positions supplied by the caller. */}
+              {!!routes?.length && content.width > 0 && content.height > 0 && (
+                <svg
+                  className="absolute left-0 top-0 pointer-events-none"
+                  width={content.width}
+                  height={content.height}
+                  style={{ zIndex: 5, overflow: "visible" }}
+                  aria-hidden
+                >
+                  {routes.map((r) => {
+                    const pts = [r.from, ...r.waypoints, r.to].map((p) => ({
+                      x: p.x * content.width,
+                      y: p.y * content.height,
+                    }));
+                    const isSel = selectedRouteId === r.id;
+                    const stroke = r.service_type === "camera" ? ROUTE_CAM : ROUTE_WIFI;
+                    const w = (isSel ? 2.6 : 1.4) / zoom;
+                    const path = pts.map((p, i) => `${i ? "L" : "M"}${p.x} ${p.y}`).join(" ");
+                    const editable = editingRoutes && isSel && r.editable !== false;
+                    return (
+                      <g key={r.id}>
+                        {/* Selection hit area */}
+                        {onSelectRoute && (
+                          <path
+                            d={path}
+                            data-route-id={r.id}
+                            fill="none"
+                            stroke="transparent"
+                            strokeWidth={Math.max(8, 10 / zoom)}
+                            className="pointer-events-stroke cursor-pointer"
+                            style={{ pointerEvents: "stroke" }}
+                          />
+                        )}
+                        <path
+                          d={path}
+                          fill="none"
+                          stroke={stroke}
+                          strokeWidth={w}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeDasharray={r.service_type === "camera" ? `${6 / zoom} ${4 / zoom}` : undefined}
+                          opacity={isSel ? 1 : 0.75}
+                        />
+                        {isSel && (
+                          <path
+                            d={path}
+                            fill="none"
+                            stroke={stroke}
+                            strokeWidth={Math.max(6, 8 / zoom)}
+                            opacity={0.16}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        )}
+                        {/* Endpoint dots — locked to the rack and the device. */}
+                        {[pts[0], pts[pts.length - 1]].map((p, i) => (
+                          <circle
+                            key={`e-${i}`}
+                            cx={p.x}
+                            cy={p.y}
+                            r={Math.max(2, 3 / zoom)}
+                            fill={stroke}
+                          />
+                        ))}
+                        {/* Segment hit areas: press to insert an intermediate waypoint. */}
+                        {editable &&
+                          onAddWaypoint &&
+                          pts.slice(0, -1).map((p, i) => (
+                            <line
+                              key={`s-${i}`}
+                              data-seg-route={r.id}
+                              data-seg-index={i}
+                              x1={p.x}
+                              y1={p.y}
+                              x2={pts[i + 1].x}
+                              y2={pts[i + 1].y}
+                              stroke="transparent"
+                              strokeWidth={Math.max(10, 12 / zoom)}
+                              style={{ pointerEvents: "stroke", cursor: "copy" }}
+                            />
+                          ))}
+                        {/* Draggable intermediate waypoints. */}
+                        {editable &&
+                          r.waypoints.map((p, i) => (
+                            <rect
+                              key={`w-${i}`}
+                              data-wp-route={r.id}
+                              data-wp-index={i}
+                              x={p.x * content.width - Math.max(4, 5 / zoom)}
+                              y={p.y * content.height - Math.max(4, 5 / zoom)}
+                              width={Math.max(8, 10 / zoom)}
+                              height={Math.max(8, 10 / zoom)}
+                              fill="hsl(var(--background))"
+                              stroke={stroke}
+                              strokeWidth={Math.max(1, 1.5 / zoom)}
+                              style={{ pointerEvents: "all", cursor: "move" }}
+                              onDoubleClick={(ev) => {
+                                ev.stopPropagation();
+                                onRemoveWaypoint?.(r.id, i);
+                              }}
+                            />
+                          ))}
+                      </g>
+                    );
+                  })}
+                </svg>
+              )}
 
               {markers.map((m) => {
                 const draggable = canDrag ? canDrag(m) : true;

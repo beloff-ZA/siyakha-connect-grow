@@ -21,6 +21,7 @@ import {
   type MarkerState,
   type PortalFloor,
 } from "@/lib/floorPlans";
+import { parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
 
 const Section: React.FC<{ title: string; children: React.ReactNode; note?: string }> = ({
   title,
@@ -46,6 +47,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const [floors, setFloors] = useState<PortalFloor[]>([]);
   const [markers, setMarkers] = useState<FloorMarker[]>([]);
+  const [routes, setRoutes] = useState<CableRoute[]>([]);
   const [floorId, setFloorId] = useState("");
   const [planUrl, setPlanUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -58,14 +60,21 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const load = useCallback(async () => {
     if (!projectId) return;
-    const [{ data: f }, { data: m }] = await Promise.all([
+    const [{ data: f }, { data: m }, { data: r }] = await Promise.all([
       supabase.from("portal_floors").select("*").eq("project_id", projectId).order("sort_order"),
       supabase.from("portal_floor_markers").select("*").eq("project_id", projectId).order("sort_order"),
+      supabase.from("portal_cable_routes").select("*").eq("project_id", projectId).order("route_label"),
     ]);
     const list = (f ?? []) as unknown as PortalFloor[];
     setFloors(list);
     setFloorId((prev) => (prev && list.some((x) => x.id === prev) ? prev : list[0]?.id ?? ""));
     setMarkers((m ?? []) as unknown as FloorMarker[]);
+    setRoutes(
+      (r ?? []).map((row) => ({
+        ...(row as unknown as CableRoute),
+        waypoints: parseWaypoints((row as { waypoints?: unknown }).waypoints),
+      })),
+    );
   }, [projectId]);
 
   useEffect(() => {
@@ -75,6 +84,10 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
   const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
   const stats = useMemo(() => markerStats(floorMarkers), [floorMarkers]);
+  const floorRouteStats = useMemo(
+    () => routeStats(routes.filter((r) => r.floor_id === floorId)),
+    [routes, floorId],
+  );
   const buildingStats = useMemo(() => markerStats(markers), [markers]);
 
   useEffect(() => {
@@ -209,7 +222,13 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const deleteMarker = async () => {
     if (!selected) return;
-    if (!window.confirm(`Delete marker ${selected.label}? This cannot be undone.`)) return;
+    const attached = routes.filter(
+      (r) => r.rack_marker_id === selected.id || r.device_marker_id === selected.id,
+    ).length;
+    const routeWarning = attached
+      ? `\n\n${attached} preliminary cable route${attached === 1 ? "" : "s"} reference this device and will be removed with it. Remaining devices and their routes are unaffected.`
+      : "";
+    if (!window.confirm(`Delete marker ${selected.label}? This cannot be undone.${routeWarning}`)) return;
     const { error } = await supabase.from("portal_floor_markers").delete().eq("id", selected.id);
     if (error) return fail(error.message);
     await logHistory("marker_delete", `${selected.label} deleted`);
@@ -279,7 +298,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     if (
       clash.length > 0 &&
       !window.confirm(
-        `${clash.length} selected level(s) already have markers. Existing markers on those levels will be deleted and replaced. Continue?`,
+        `${clash.length} selected level(s) already have markers. Existing markers on those levels — and any preliminary cable routes attached to them — will be deleted and replaced. Continue?`,
       )
     )
       return;
@@ -422,7 +441,9 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                 {placing ? "Placement mode: on" : "Placement mode: off"}
               </Button>
               <span className="text-xs text-muted-foreground">
-                This level: {stats.aps} Wi-Fi APs · {stats.cameras} CCTV cameras · {stats.total} devices
+                This level: {stats.aps} Wi-Fi APs · {stats.cameras} CCTV cameras · {stats.racks}{" "}
+                racks · {stats.total} devices · {floorRouteStats.total} cable routes (
+                {floorRouteStats.wifi} Wi-Fi / {floorRouteStats.camera} CCTV)
               </span>
             </div>
 

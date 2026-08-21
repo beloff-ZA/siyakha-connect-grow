@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Camera,
+  Cable,
+  Download,
   Info,
   Layers,
   Lock,
@@ -35,7 +37,28 @@ import {
   ErrorNote,
   NoProject,
 } from "@/components/portal/ui";
-import FloorPlanCanvas, { type CoverageMode } from "@/components/portal/FloorPlanCanvas";
+import FloorPlanCanvas, {
+  type CanvasRoute,
+  type CoverageMode,
+} from "@/components/portal/FloorPlanCanvas";
+import {
+  CABLE_LENGTH_PENDING,
+  CABLE_ROUTE_DISCLAIMER,
+  ROUTE_DISPLAY_OPTIONS,
+  ROUTE_LEGEND,
+  downloadCsv,
+  insertWaypoint,
+  parseWaypoints,
+  removeWaypoint,
+  routeColor,
+  routeStats,
+  routesToCsv,
+  serviceLabel,
+  snapOrthogonal,
+  type CableRoute,
+  type RouteDisplayMode,
+  type Waypoint,
+} from "@/lib/cableRoutes";
 import {
   COVERAGE_BANDS,
   COVERAGE_DISCLAIMER,
@@ -127,6 +150,21 @@ const PortalFloorPlans: React.FC = () => {
   const [savingCams, setSavingCams] = useState(false);
   const [lastDir, setLastDir] = useState(0);
 
+  // ---- Cable routing -------------------------------------------------------
+  const [routes, setRoutes] = useState<CableRoute[]>([]);
+  const [routeMode, setRouteMode] = useState<RouteDisplayMode>("all");
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+  const [editingRoutes, setEditingRoutes] = useState(false);
+  const [routeDraft, setRouteDraft] = useState<Record<string, Waypoint[]>>({});
+  const [snap, setSnap] = useState(true);
+  const [savingRoutes, setSavingRoutes] = useState(false);
+  const [genOpen, setGenOpen] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [routeFloorFilter, setRouteFloorFilter] = useState<string>("all");
+  const [routeServiceFilter, setRouteServiceFilter] = useState<string>("all");
+  const [routeStatusFilter, setRouteStatusFilter] = useState<string>("all");
+
+
 
   // Selecting a device defaults the coverage view to that device only.
   useEffect(() => {
@@ -145,7 +183,11 @@ const PortalFloorPlans: React.FC = () => {
     }
     setLoading(true);
     setError(null);
-    const [{ data: floorRows, error: fErr }, { data: markerRows, error: mErr }] = await Promise.all([
+    const [
+      { data: floorRows, error: fErr },
+      { data: markerRows, error: mErr },
+      { data: routeRows, error: rErr },
+    ] = await Promise.all([
       supabase
         .from("portal_floors")
         .select("*")
@@ -156,12 +198,23 @@ const PortalFloorPlans: React.FC = () => {
         .select("*")
         .eq("project_id", activeProject.id)
         .order("sort_order", { ascending: true }),
+      supabase
+        .from("portal_cable_routes")
+        .select("*")
+        .eq("project_id", activeProject.id)
+        .order("route_label", { ascending: true }),
     ]);
-    if (fErr || mErr) setError((fErr ?? mErr)?.message ?? "Unable to load plans");
+    if (fErr || mErr || rErr) setError((fErr ?? mErr ?? rErr)?.message ?? "Unable to load plans");
     const list = (floorRows ?? []) as unknown as PortalFloor[];
     setFloors(list);
     setFloorId((prev) => (prev && list.some((f) => f.id === prev) ? prev : list[0]?.id ?? ""));
     setMarkers((markerRows ?? []) as unknown as FloorMarker[]);
+    setRoutes(
+      (routeRows ?? []).map((r) => ({
+        ...(r as unknown as CableRoute),
+        waypoints: parseWaypoints((r as { waypoints?: unknown }).waypoints),
+      })),
+    );
     setLoading(false);
   }, [activeProject]);
 
@@ -364,6 +417,8 @@ const PortalFloorPlans: React.FC = () => {
       title: "Cameras added",
       description: `${data ?? 0} planned camera${data === 1 ? "" : "s"} created on ${floor.display_name} and recorded in the audit trail.`,
     });
+    // Newly saved cameras have no cabling yet — offer to add only the missing routes.
+    if ((data ?? 0) > 0) setGenOpen(true);
   }, [camDrafts, floor, load, toast]);
 
   const cancelChanges = useCallback(() => {
@@ -417,6 +472,194 @@ const PortalFloorPlans: React.FC = () => {
 
   const floorStats = useMemo(() => markerStats(floorMarkers), [floorMarkers]);
   const buildingStats = useMemo(() => markerStats(markers), [markers]);
+
+  // ---- Cable route derivation ---------------------------------------------
+  /** Live marker positions, including unsaved position drafts. */
+  const positionOf = useCallback(
+    (id: string): Waypoint | null => {
+      const m = markers.find((x) => x.id === id);
+      if (!m) return null;
+      const d = draft[id];
+      return d ? { x: d.x, y: d.y } : { x: Number(m.x_norm), y: Number(m.y_norm) };
+    },
+    [markers, draft],
+  );
+
+  const routeById = useMemo(
+    () => new Map(routes.map((r) => [r.id, r] as const)),
+    [routes],
+  );
+  const markerById = useMemo(() => new Map(markers.map((m) => [m.id, m] as const)), [markers]);
+  const floorById = useMemo(() => new Map(floors.map((f) => [f.id, f] as const)), [floors]);
+
+  const floorRoutes = useMemo(() => routes.filter((r) => r.floor_id === floorId), [routes, floorId]);
+  const buildingRouteStats = useMemo(() => routeStats(routes), [routes]);
+  const floorRouteStats = useMemo(() => routeStats(floorRoutes), [floorRoutes]);
+
+  /** Waypoints currently displayed for a route — local draft wins. */
+  const waypointsOf = useCallback(
+    (r: CableRoute) => routeDraft[r.id] ?? r.waypoints,
+    [routeDraft],
+  );
+
+  const canvasRoutes = useMemo<CanvasRoute[]>(() => {
+    if (!visible.cable_route || routeMode === "off") return [];
+    const list =
+      routeMode === "selected"
+        ? floorRoutes.filter((r) => r.id === selectedRouteId)
+        : floorRoutes;
+    return list.flatMap((r) => {
+      const from = positionOf(r.rack_marker_id);
+      const to = positionOf(r.device_marker_id);
+      if (!from || !to) return [];
+      return [
+        {
+          id: r.id,
+          service_type: r.service_type,
+          from,
+          to,
+          waypoints: waypointsOf(r),
+          editable: r.status === "planned",
+        },
+      ];
+    });
+  }, [visible.cable_route, routeMode, floorRoutes, selectedRouteId, positionOf, waypointsOf]);
+
+  const selectedRoute = selectedRouteId ? routeById.get(selectedRouteId) ?? null : null;
+  const pendingRouteIds = useMemo(() => Object.keys(routeDraft), [routeDraft]);
+
+  const moveWaypoint = useCallback(
+    (routeId: string, index: number, x: number, y: number) => {
+      const r = routeById.get(routeId);
+      if (!r || r.status !== "planned") return;
+      const current = routeDraft[routeId] ?? r.waypoints;
+      const from = positionOf(r.rack_marker_id);
+      const to = positionOf(r.device_marker_id);
+      const path = [from ?? { x, y }, ...current, to ?? { x, y }];
+      const next = [...current];
+      next[index] = snap
+        ? snapOrthogonal({ x, y }, path[index], path[index + 2], {
+            width: 1000,
+            height: 1000,
+          })
+        : { x, y };
+      setRouteDraft((d) => ({ ...d, [routeId]: next }));
+    },
+    [routeById, routeDraft, positionOf, snap],
+  );
+
+  const addWaypoint = useCallback(
+    (routeId: string, segment: number, x: number, y: number) => {
+      const r = routeById.get(routeId);
+      if (!r || r.status !== "planned") return;
+      const current = routeDraft[routeId] ?? r.waypoints;
+      setRouteDraft((d) => ({ ...d, [routeId]: insertWaypoint(current, segment, { x, y }) }));
+    },
+    [routeById, routeDraft],
+  );
+
+  const dropWaypoint = useCallback(
+    (routeId: string, index: number) => {
+      const r = routeById.get(routeId);
+      if (!r || r.status !== "planned") return;
+      const current = routeDraft[routeId] ?? r.waypoints;
+      setRouteDraft((d) => ({ ...d, [routeId]: removeWaypoint(current, index) }));
+    },
+    [routeById, routeDraft],
+  );
+
+  const cancelRouteEdits = useCallback(() => {
+    setRouteDraft({});
+    setEditingRoutes(false);
+  }, []);
+
+  const saveRouteEdits = useCallback(async () => {
+    const entries = Object.entries(routeDraft);
+    if (entries.length === 0) return;
+    setSavingRoutes(true);
+    let failed: string | null = null;
+    for (const [routeId, wps] of entries) {
+      const { error: wErr } = await supabase.rpc("portal_update_cable_route_waypoints", {
+        _route_id: routeId,
+        _waypoints: wps as unknown as never,
+      });
+      if (wErr) {
+        failed = wErr.message;
+        break;
+      }
+    }
+    setSavingRoutes(false);
+    if (failed) {
+      toast({ title: "Cable routes not saved", description: failed, variant: "destructive" });
+      return;
+    }
+    setRouteDraft({});
+    setEditingRoutes(false);
+    await load();
+    toast({
+      title: "Cable routes saved",
+      description: `${entries.length} route${entries.length === 1 ? "" : "s"} updated and recorded in the audit trail.`,
+    });
+  }, [routeDraft, load, toast]);
+
+  const generateRoutes = useCallback(async () => {
+    if (!activeProject) return;
+    setGenerating(true);
+    const { data, error: gErr } = await supabase.rpc("portal_generate_missing_cable_routes", {
+      _project_id: activeProject.id,
+    });
+    setGenerating(false);
+    setGenOpen(false);
+    if (gErr) {
+      toast({ title: "Routes not generated", description: gErr.message, variant: "destructive" });
+      return;
+    }
+    await load();
+    toast({
+      title: data ? "Cable routes generated" : "No missing routes",
+      description: data
+        ? `${data} preliminary Cat6 UTP route${data === 1 ? "" : "s"} added from each level's 6U rack to its unrouted devices.`
+        : "Every Wi-Fi access point and camera on a rack-bearing level already has a cable route.",
+    });
+  }, [activeProject, load, toast]);
+
+  const scheduleRows = useMemo(() => {
+    return routes
+      .filter((r) => (routeFloorFilter === "all" ? true : r.floor_id === routeFloorFilter))
+      .filter((r) => (routeServiceFilter === "all" ? true : r.service_type === routeServiceFilter))
+      .filter((r) => (routeStatusFilter === "all" ? true : r.status === routeStatusFilter))
+      .map((r) => {
+        const f = floorById.get(r.floor_id);
+        return {
+          id: r.id,
+          label: r.route_label,
+          floor: f?.display_name ?? "—",
+          level: f?.level_number ?? 0,
+          rack: markerById.get(r.rack_marker_id)?.label ?? "—",
+          destination: markerById.get(r.device_marker_id)?.label ?? "—",
+          service: serviceLabel(r.service_type),
+          cable: r.cable_type,
+          status: stateLabel(r.status),
+          waypoints: waypointsOf(r).length,
+        };
+      })
+      .sort((a, b) => a.level - b.level || a.label.localeCompare(b.label));
+  }, [
+    routes,
+    routeFloorFilter,
+    routeServiceFilter,
+    routeStatusFilter,
+    floorById,
+    markerById,
+    waypointsOf,
+  ]);
+
+  const exportSchedule = useCallback(() => {
+    downloadCsv(
+      `cable-route-schedule-${activeProject?.reference ?? "project"}.csv`,
+      routesToCsv(scheduleRows),
+    );
+  }, [scheduleRows, activeProject?.reference]);
 
   useEffect(() => {
     let cancelled = false;
@@ -511,6 +754,14 @@ const PortalFloorPlans: React.FC = () => {
         <Metric label="Planned (all devices)" value={buildingStats.planned} />
         <Metric label="Installed (all devices)" value={buildingStats.installed} />
       </div>
+      {/* Cable routes are cabling, not devices — always counted separately. */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <Metric label="Cable routes (building)" value={buildingRouteStats.total} />
+        <Metric label="Cable routes to Wi-Fi APs" value={buildingRouteStats.wifi} />
+        <Metric label="Cable routes to CCTV" value={buildingRouteStats.camera} />
+        <Metric label="Cable routes planned" value={buildingRouteStats.planned} />
+      </div>
+
 
 
       {floors.length === 0 ? (
@@ -550,8 +801,10 @@ const PortalFloorPlans: React.FC = () => {
                       {rackCount === 1 ? "" : "s"}
                     </span>
                     <span className="block text-[10px] mt-0.5 text-muted-foreground">
-                      {onFloor.length} devices
+                      {onFloor.length} devices ·{" "}
+                      {routes.filter((r) => r.floor_id === f.id).length} cable routes
                     </span>
+
 
                   </button>
                 );
@@ -746,6 +999,114 @@ const PortalFloorPlans: React.FC = () => {
                 </p>
               </div>
 
+              {/* Cable routing layer */}
+              <div className="mb-5 border border-border p-4 space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground mr-1">
+                    <Cable className="h-3.5 w-3.5" strokeWidth={1.5} /> Cable routes
+                  </span>
+                  {ROUTE_DISPLAY_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      aria-pressed={routeMode === opt.value}
+                      onClick={() => setRouteMode(opt.value)}
+                      className={[
+                        "border px-3 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors",
+                        routeMode === opt.value
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border text-muted-foreground hover:border-foreground",
+                      ].join(" ")}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    {floorRouteStats.total} on this level
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  {ROUTE_LEGEND.map((l) => (
+                    <span key={l.service} className="flex items-center gap-2">
+                      <span
+                        className="inline-block h-0 w-6"
+                        style={{
+                          borderTop: `2px ${l.service === "camera" ? "dashed" : "solid"} ${routeColor(l.service)}`,
+                        }}
+                      />
+                      {l.label}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {editingRoutes ? (
+                    <>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {pendingRouteIds.length} route{pendingRouteIds.length === 1 ? "" : "s"} edited
+                      </span>
+                      <button
+                        type="button"
+                        aria-pressed={snap}
+                        onClick={() => setSnap((s) => !s)}
+                        className={[
+                          "border px-3 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors",
+                          snap
+                            ? "border-foreground bg-foreground text-background"
+                            : "border-border text-muted-foreground hover:border-foreground",
+                        ].join(" ")}
+                      >
+                        90° snapping
+                      </button>
+                      <Button type="button" variant="outline" onClick={cancelRouteEdits}>
+                        Cancel route edits
+                      </Button>
+                      <Button
+                        type="button"
+                        disabled={pendingRouteIds.length === 0 || savingRoutes}
+                        onClick={saveRouteEdits}
+                      >
+                        {savingRoutes ? "Saving…" : "Save cable routes"}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setEditingRoutes(true);
+                          setEditing(false);
+                          setPlacingCams(false);
+                          setRouteMode((m) => (m === "off" ? "all" : m));
+                        }}
+                      >
+                        <Cable className="h-3.5 w-3.5 mr-2" strokeWidth={1.5} />
+                        Edit cable routes
+                      </Button>
+                      <Button type="button" variant="outline" onClick={() => setGenOpen(true)}>
+                        Generate missing routes
+                      </Button>
+                    </>
+                  )}
+                </div>
+
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {editingRoutes ? (
+                    <>
+                      <span className="text-foreground">
+                        Select a route, press anywhere along it to add an intermediate waypoint, drag
+                        a waypoint to reshape it and double-click a waypoint to remove it.
+                      </span>{" "}
+                      Route ends stay locked to the 6U rack and the device. {CABLE_ROUTE_DISCLAIMER}
+                    </>
+                  ) : (
+                    CABLE_ROUTE_DISCLAIMER
+                  )}
+                </p>
+              </div>
+
               <FloorPlanCanvas
                 imageUrl={planUrl}
                 markers={shown}
@@ -760,6 +1121,13 @@ const PortalFloorPlans: React.FC = () => {
                 onMoveEnd={undefined}
                 onAim={handleAim}
                 onPlace={placingCams ? placeCamera : undefined}
+                routes={canvasRoutes}
+                selectedRouteId={selectedRouteId}
+                onSelectRoute={setSelectedRouteId}
+                editingRoutes={editingRoutes}
+                onMoveWaypoint={moveWaypoint}
+                onAddWaypoint={addWaypoint}
+                onRemoveWaypoint={dropWaypoint}
                 emptyLabel="Plan image for this level is being prepared."
               />
 
@@ -815,7 +1183,84 @@ const PortalFloorPlans: React.FC = () => {
                 <Metric label="Installed (all devices)" value={floorStats.installed} />
                 <Metric label="Tested / active (all devices)" value={floorStats.testedActive} />
               </div>
+
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <Metric label="Cable routes on level" value={floorRouteStats.total} />
+                <Metric label="Routes to Wi-Fi APs" value={floorRouteStats.wifi} />
+                <Metric label="Routes to CCTV" value={floorRouteStats.camera} />
+              </div>
             </Panel>
+
+            {/* Selected cable route detail */}
+            {selectedRoute && (
+              <Panel title="Cable route detail">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-display text-xl font-light tracking-tight">
+                      {selectedRoute.route_label}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {serviceLabel(selectedRoute.service_type)} ·{" "}
+                      {stateLabel(selectedRoute.status)}
+                    </p>
+                  </div>
+                  <span
+                    className="border px-3 py-1 text-[10px] uppercase tracking-[0.2em]"
+                    style={{
+                      borderColor: routeColor(selectedRoute.service_type),
+                      color: routeColor(selectedRoute.service_type),
+                    }}
+                  >
+                    {selectedRoute.cable_type}
+                  </span>
+                </div>
+                <dl className="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2 text-sm">
+                  {[
+                    ["Source rack", markerById.get(selectedRoute.rack_marker_id)?.label ?? "—"],
+                    ["Destination", markerById.get(selectedRoute.device_marker_id)?.label ?? "—"],
+                    ["Destination type", serviceLabel(selectedRoute.service_type)],
+                    ["Cable", selectedRoute.cable_type],
+                    ["Status", stateLabel(selectedRoute.status)],
+                    ["Floor", floorById.get(selectedRoute.floor_id)?.display_name ?? "—"],
+                    ["Waypoints", String(waypointsOf(selectedRoute).length)],
+                    ["Length", CABLE_LENGTH_PENDING],
+                  ].map(([k, v]) => (
+                    <div
+                      key={String(k)}
+                      className="flex justify-between gap-4 border-b border-border pb-2"
+                    >
+                      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {k}
+                      </dt>
+                      <dd className="text-right">{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+                {editingRoutes && waypointsOf(selectedRoute).length > 0 && (
+                  <ul className="mt-5 border border-border divide-y divide-border text-[11px]">
+                    {waypointsOf(selectedRoute).map((w, i) => (
+                      <li key={`${w.x}-${w.y}-${i}`} className="flex items-center justify-between px-3 py-2">
+                        <span className="font-mono text-muted-foreground">
+                          Waypoint {i + 1} · {w.x.toFixed(3)}, {w.y.toFixed(3)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => dropWaypoint(selectedRoute.id, i)}
+                          className="flex items-center gap-2 border border-border px-2 py-1 uppercase tracking-[0.2em] hover:bg-muted transition-colors"
+                        >
+                          <Trash2 className="h-3 w-3" strokeWidth={1.5} />
+                          Remove
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <p className="mt-4 text-xs text-muted-foreground leading-relaxed">
+                  {selectedRoute.notes ?? CABLE_ROUTE_DISCLAIMER}
+                </p>
+              </Panel>
+            )}
+
 
             {/* Selected marker detail */}
             {selected && (
@@ -1082,6 +1527,118 @@ const PortalFloorPlans: React.FC = () => {
               )}
             </Panel>
 
+            {/* Cable route schedule */}
+            <Panel title="Cable route schedule">
+              <div className="flex flex-wrap items-end gap-3 mb-5">
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+                    Level
+                  </span>
+                  <select
+                    value={routeFloorFilter}
+                    onChange={(e) => setRouteFloorFilter(e.target.value)}
+                    className="border border-border bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="all">All levels</option>
+                    {floors.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.display_name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+                    Service
+                  </span>
+                  <select
+                    value={routeServiceFilter}
+                    onChange={(e) => setRouteServiceFilter(e.target.value)}
+                    className="border border-border bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="all">All services</option>
+                    <option value="wifi_ap">Wi-Fi access point</option>
+                    <option value="camera">CCTV camera</option>
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+                    Status
+                  </span>
+                  <select
+                    value={routeStatusFilter}
+                    onChange={(e) => setRouteStatusFilter(e.target.value)}
+                    className="border border-border bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="all">All statuses</option>
+                    <option value="planned">Planned</option>
+                    <option value="installed">Installed</option>
+                    <option value="tested">Tested</option>
+                    <option value="active">Active</option>
+                  </select>
+                </label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={exportSchedule}
+                  disabled={scheduleRows.length === 0}
+                >
+                  <Download className="h-3.5 w-3.5 mr-2" strokeWidth={1.5} />
+                  Export CSV
+                </Button>
+              </div>
+
+              {scheduleRows.length === 0 ? (
+                <EmptyState
+                  title="No cable routes match these filters"
+                  description="Cable routes run from each level's 6U rack to the Wi-Fi access points and cameras on that same level."
+                />
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        <th className="text-left py-3 pr-4">Route</th>
+                        <th className="text-left py-3 pr-4">Level</th>
+                        <th className="text-left py-3 pr-4">Source rack</th>
+                        <th className="text-left py-3 pr-4">Destination</th>
+                        <th className="text-left py-3 pr-4">Service</th>
+                        <th className="text-left py-3 pr-4">Cable</th>
+                        <th className="text-left py-3 pr-4">Status</th>
+                        <th className="text-left py-3">Length</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {scheduleRows.map((r) => (
+                        <tr
+                          key={r.id}
+                          className="border-b border-border last:border-b-0 hover:bg-muted/50 cursor-pointer"
+                          onClick={() => {
+                            const route = routeById.get(r.id);
+                            if (route) setFloorId(route.floor_id);
+                            setSelectedRouteId(r.id);
+                            setRouteMode((m) => (m === "off" ? "all" : m));
+                          }}
+                        >
+                          <td className="py-3 pr-4 font-mono text-xs">{r.label}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.floor}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.rack}</td>
+                          <td className="py-3 pr-4">{r.destination}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.service}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.cable}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{r.status}</td>
+                          <td className="py-3 text-muted-foreground">{CABLE_LENGTH_PENDING}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              <p className="mt-5 text-xs text-muted-foreground leading-relaxed">
+                {CABLE_ROUTE_DISCLAIMER}
+              </p>
+            </Panel>
+
             {floorStats.cameras === 0 && camDrafts.length === 0 && (
               <div className="border border-dashed border-border p-6 flex items-start gap-3">
                 <Camera className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
@@ -1157,7 +1714,33 @@ const PortalFloorPlans: React.FC = () => {
               }}
               disabled={savingCams}
             >
-              {savingCams ? "Saving…" : "Save cameras"}
+            {savingCams ? "Saving…" : "Save cameras"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={genOpen} onOpenChange={setGenOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Generate missing cable routes?</AlertDialogTitle>
+            <AlertDialogDescription>
+              One preliminary Cat6 UTP route will be added from each level's 6U rack to every Wi-Fi
+              access point and CCTV camera on that same level that does not have one yet. Existing
+              routes and their waypoints are never changed or duplicated, and no routes are created
+              between levels. {CABLE_ROUTE_DISCLAIMER}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={generating}>Not now</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                generateRoutes();
+              }}
+              disabled={generating}
+            >
+              {generating ? "Generating…" : "Generate missing routes"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
