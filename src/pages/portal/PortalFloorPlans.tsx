@@ -778,11 +778,15 @@ const PortalFloorPlans: React.FC = () => {
               </div>
 
 
-              <div className="mt-6 grid gap-4 sm:grid-cols-4">
-                <Metric label="Devices on level" value={floorStats.total} />
-                <Metric label="Planned" value={floorStats.planned} />
-                <Metric label="Installed" value={floorStats.installed} />
-                <Metric label="Tested / active" value={floorStats.testedActive} />
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                <Metric label="Wi-Fi access points on level" value={floorStats.aps} />
+                <Metric label="CCTV cameras on level" value={floorStats.cameras} />
+                <Metric label="Devices on level (all types)" value={floorStats.total} />
+              </div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <Metric label="Planned (all devices)" value={floorStats.planned} />
+                <Metric label="Installed (all devices)" value={floorStats.installed} />
+                <Metric label="Tested / active (all devices)" value={floorStats.testedActive} />
               </div>
             </Panel>
 
