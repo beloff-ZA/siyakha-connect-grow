@@ -13,6 +13,7 @@ import FloorPlansManager from "@/components/helpdesk/FloorPlansManager";
 import SiteImagesManager from "@/components/helpdesk/SiteImagesManager";
 import SitesManager from "@/components/helpdesk/SitesManager";
 import NotificationSettings from "@/components/helpdesk/NotificationSettings";
+import TestAccountDialog, { type TestAccountTarget } from "@/components/helpdesk/TestAccountDialog";
 
 
 
@@ -134,26 +135,11 @@ const ClientPortalAdmin: React.FC = () => {
     loadBase();
   };
 
-  const [credentials, setCredentials] = useState<
-    { client_user_id: string; email: string; password: string } | null
-  >(null);
-
-  /** Creates the client login on our side with a generated password. No email is sent. */
-  const provisionCredentials = async (clientUserId: string) => {
-    setBusy(true);
-    const { data, error } = await supabase.functions.invoke("provision-client-credentials", {
-      body: { client_user_id: clientUserId },
-    });
-    setBusy(false);
-    if (error) return fail(error);
-    const res = data as Row;
-    if (!res?.password) return fail(new Error(res?.error ?? "No credentials returned"));
-    setCredentials({ client_user_id: clientUserId, email: res.email, password: res.password });
-    toast({ title: "Login created", description: "Hand the credentials over securely — no email was sent." });
-    loadBase();
-  };
+  /** TESTING-ONLY: no-email account activation / password reset. */
+  const [testTarget, setTestTarget] = useState<TestAccountTarget | null>(null);
 
   const sendInvite = async (clientUserId: string, redirectTo?: string) => {
+
 
     setBusy(true);
     const { data, error } = await supabase.functions.invoke("invite-client-user", {
