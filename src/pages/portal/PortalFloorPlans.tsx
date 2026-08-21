@@ -799,8 +799,10 @@ const PortalFloorPlans: React.FC = () => {
                       {rackCount === 1 ? "" : "s"}
                     </span>
                     <span className="block text-[10px] mt-0.5 text-muted-foreground">
-                      {onFloor.length} devices
+                      {onFloor.length} devices ·{" "}
+                      {routes.filter((r) => r.floor_id === f.id).length} cable routes
                     </span>
+
 
                   </button>
                 );
