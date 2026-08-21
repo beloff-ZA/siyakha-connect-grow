@@ -53,6 +53,7 @@ import PortalProject from "./pages/portal/PortalProject";
 import PortalTracker from "./pages/portal/PortalTracker";
 import PortalBOQ from "./pages/portal/PortalBOQ";
 import PortalFloorPlans from "./pages/portal/PortalFloorPlans";
+import PortalBuildingView from "./pages/portal/PortalBuildingView";
 
 import PortalDocuments from "./pages/portal/PortalDocuments";
 import PortalSiteImages from "./pages/portal/PortalSiteImages";
