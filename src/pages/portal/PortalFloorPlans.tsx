@@ -481,10 +481,19 @@ const PortalFloorPlans: React.FC = () => {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Metric label="Planned APs (building)" value={buildingStats.planned} />
-        <Metric label="Installed" value={buildingStats.installed} />
-        <Metric label="Tested / active" value={buildingStats.testedActive} />
-        <Metric label="Planned cameras" value={buildingStats.cameras} />
+        <Metric label="Wi-Fi access points (building)" value={buildingStats.aps} />
+        <Metric label="CCTV cameras (building)" value={buildingStats.cameras} />
+        <Metric label="Devices (all types)" value={buildingStats.total} />
+        <Metric label="Planned (all devices)" value={buildingStats.planned} />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <Metric label="APs planned" value={buildingStats.plannedAps} />
+        <Metric label="APs installed / tested" value={buildingStats.installedAps + buildingStats.testedActiveAps} />
+        <Metric label="Cameras planned" value={buildingStats.plannedCameras} />
+        <Metric
+          label="Cameras installed / tested"
+          value={buildingStats.installedCameras + buildingStats.testedActiveCameras}
+        />
       </div>
 
       {floors.length === 0 ? (
