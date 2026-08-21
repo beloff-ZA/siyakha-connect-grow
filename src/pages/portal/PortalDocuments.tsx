@@ -12,12 +12,15 @@ type Doc = {
   title: string;
   category: string;
   version: string | null;
+  reference: string | null;
+  phase_id: string | null;
   document_date: string | null;
   storage_path: string | null;
   file_size: number | null;
   mime_type: string | null;
   notes: string | null;
 };
+
 
 const PortalDocuments: React.FC = () => {
   const { activeProject, loading, error } = usePortal();
