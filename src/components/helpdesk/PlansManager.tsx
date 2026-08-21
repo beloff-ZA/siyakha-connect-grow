@@ -172,7 +172,7 @@ const PlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     if (!level) return;
     setBusy(true);
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "png";
-    const path = `plans/${projectId}/${level.id}-${Date.now()}.${ext}`;
+    const path = `${projectId}/plans/${level.id}-${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from(DOCUMENTS_BUCKET).upload(path, file, {
       contentType: file.type || "image/png",
       upsert: true,
