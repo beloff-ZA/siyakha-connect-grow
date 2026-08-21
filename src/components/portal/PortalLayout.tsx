@@ -28,6 +28,7 @@ const nav = [
   { to: "/portal/tracker", label: "Planning tracker", icon: ListChecks },
   { to: "/portal/boq", label: "BOQ", icon: Calculator },
   { to: "/portal/floor-plans", label: "Floor plans", icon: Layers },
+  { to: "/portal/building-view", label: "Building view", icon: Building2 },
 
   { to: "/portal/documents", label: "Documents", icon: FileText },
   { to: "/portal/site-images", label: "Site images", icon: Camera },
