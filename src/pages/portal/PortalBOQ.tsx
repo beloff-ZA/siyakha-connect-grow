@@ -9,7 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { PageHeader, Panel, EmptyState, Loading, ErrorNote, NoProject, StatusPill } from "@/components/portal/ui";
+import BoqCatalogue from "@/components/portal/BoqCatalogue";
 import { formatDate } from "@/lib/portalFiles";
+
 import {
   computeTotals,
   formatQty,
@@ -42,7 +44,7 @@ type Decision = {
 type DesignSnapshot = { aps: number; cameras: number; racks: number; routes: number; floors: number };
 
 const PortalBOQ: React.FC = () => {
-  const { activeProject, clientUser, loading: portalLoading } = usePortal();
+  const { activeProject, client, clientUser, loading: portalLoading } = usePortal();
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -168,6 +170,17 @@ const PortalBOQ: React.FC = () => {
     [items],
   );
 
+  /** Jump from a catalogue card to the matching detailed BOQ line. */
+  const openLine = (code: string) => {
+    const target = items.find((it) => it.item_code === code);
+    if (!target) return;
+    setQuery("");
+    setOpenItem(target.id);
+    requestAnimationFrame(() => {
+      document.getElementById(`boq-line-${code}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  };
+
 
   const filteredItems = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -230,12 +243,70 @@ const PortalBOQ: React.FC = () => {
   if (!activeProject) return <NoProject />;
 
   return (
-    <div>
-      <PageHeader
-        eyebrow="Bill of Quantities"
-        title="BOQ"
-        description={`Customer-facing bill of quantities for ${activeProject.title}. All amounts in South African Rand.`}
-      />
+    <div className="boq-print-root">
+      {/* Print-only branded cover / running header */}
+      <header className="hidden print:block border-b-2 border-foreground pb-4 mb-6">
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.34em]">Siyakha Technology</p>
+            <h1 className="mt-2 font-display text-2xl font-light tracking-tight">Bill of Quantities</h1>
+            <p className="mt-1 text-sm">{boq?.title ?? activeProject.title}</p>
+          </div>
+          <dl className="text-right text-[11px] leading-relaxed">
+            <div>
+              <dt className="inline uppercase tracking-[0.2em]">Client: </dt>
+              <dd className="inline">{client?.display_name ?? "E. Ally"}</dd>
+            </div>
+            <div>
+              <dt className="inline uppercase tracking-[0.2em]">Company: </dt>
+              <dd className="inline">Ebrahim Ally</dd>
+            </div>
+            <div>
+              <dt className="inline uppercase tracking-[0.2em]">Contact: </dt>
+              <dd className="inline">{clientUser?.full_name ?? "Ebrahim Ally"}</dd>
+            </div>
+            <div>
+              <dt className="inline uppercase tracking-[0.2em]">Revision: </dt>
+              <dd className="inline">{boq?.revision_label}</dd>
+            </div>
+            <div>
+              <dt className="inline uppercase tracking-[0.2em]">Shared: </dt>
+              <dd className="inline">{boq?.published_at ? formatDate(boq.published_at) : "—"}</dd>
+            </div>
+          </dl>
+        </div>
+        <dl className="mt-4 grid grid-cols-4 gap-4 text-[11px]">
+          <div>
+            <dt className="uppercase tracking-[0.2em] text-muted-foreground">Project</dt>
+            <dd>{activeProject.title}</dd>
+          </div>
+          <div>
+            <dt className="uppercase tracking-[0.2em] text-muted-foreground">Address</dt>
+            <dd>{activeProject.address ?? "353 Anton Lembede Street, Durban"}</dd>
+          </div>
+          <div>
+            <dt className="uppercase tracking-[0.2em] text-muted-foreground">Planning basis</dt>
+            <dd>400-bed residential conversion</dd>
+          </div>
+          <div>
+            <dt className="uppercase tracking-[0.2em] text-muted-foreground">Target launch</dt>
+            <dd>1 November 2026</dd>
+          </div>
+        </dl>
+        <p className="mt-3 border border-foreground px-3 py-1.5 text-[11px] uppercase tracking-[0.2em]">
+          Planning quantity schedule — commercial rates TBC
+        </p>
+      </header>
+
+      <div className="print:hidden">
+        <PageHeader
+          eyebrow="Bill of Quantities"
+          title="BOQ"
+          description={`Customer-facing bill of quantities for ${activeProject.title}. All amounts in South African Rand.`}
+        />
+      </div>
+
+
 
       {error && <ErrorNote message={error} />}
 
@@ -424,6 +495,20 @@ const PortalBOQ: React.FC = () => {
             </Panel>
           )}
 
+          {items.length > 0 && (
+            <Panel title="Equipment catalogue">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                The main equipment families proposed for this building, with live quantities taken from the schedule below.
+                Badges show what is confirmed, what is still proposed pending validation, and what is provisional or on
+                design hold.
+              </p>
+              <div className="mt-6">
+                <BoqCatalogue items={items} snapshot={snapshot} onOpenLine={openLine} />
+              </div>
+            </Panel>
+          )}
+
+
           {items.length === 0 ? (
             <EmptyState
               title="This revision has no priced lines yet"
@@ -464,7 +549,11 @@ const PortalBOQ: React.FC = () => {
                           const expanded = openItem === it.id;
                           return (
                             <React.Fragment key={it.id}>
-                              <tr className="border-b border-border/60 align-top">
+                              <tr
+                                id={it.item_code ? `boq-line-${it.item_code}` : undefined}
+                                className="border-b border-border/60 align-top print:break-inside-avoid"
+                              >
+
                                 <td className="py-3 pr-3 text-xs text-muted-foreground">{it.item_code ?? "—"}</td>
                                 <td className="py-3 pr-3">
                                   <button

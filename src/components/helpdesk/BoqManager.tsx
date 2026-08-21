@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowDown, ArrowUp, Lock, Printer, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Lock, Printer, RefreshCcw, Trash2 } from "lucide-react";
 import { formatDate } from "@/lib/portalFiles";
 import {
   BOQ_UNITS,
@@ -118,7 +118,99 @@ const BoqManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     return { cost, gross: revenue - cost, margin: revenue ? ((revenue - cost) / revenue) * 100 : 0 };
   }, [items, costs, totals.subtotal]);
 
+  /* ---- Live quantity sync from the floor-plan design ---- */
+  const [syncSummary, setSyncSummary] = useState<string[]>([]);
+
+  /**
+   * Recalculates the planning quantities that are derived from placed markers and
+   * generated cable routes. Only quantity fields listed here are touched — rates,
+   * inclusion flags, specifications, notes and private costs are never changed.
+   */
+  const syncPlanningQuantities = async () => {
+    if (!boqId || !projectId) return;
+    if (
+      !window.confirm(
+        "Recalculate the planning quantities on this BOQ from the current floor plans?\n\nOnly device, cabling and testing quantities are updated. Rates, inclusions, specifications and private costs stay exactly as they are.",
+      )
+    )
+      return;
+
+    setBusy(true);
+    try {
+      const [{ data: floors, error: fErr }, { data: markers, error: mErr }, { data: routes, error: rErr }] =
+        await Promise.all([
+          supabase.from("portal_floors").select("id, level_number").eq("project_id", projectId),
+          supabase.from("portal_floor_markers").select("floor_id, marker_type").eq("project_id", projectId),
+          supabase.from("portal_cable_routes").select("floor_id").eq("project_id", projectId),
+        ]);
+      if (fErr || mErr || rErr) throw fErr ?? mErr ?? rErr;
+
+      const levelOf = new Map((floors ?? []).map((f: Row) => [f.id as string, Number(f.level_number)]));
+      const isTop = (floorId: string) => levelOf.get(floorId) === 11;
+
+      const cameras = (markers ?? []).filter((m: Row) => m.marker_type === "camera");
+      const aps = (markers ?? []).filter((m: Row) => m.marker_type === "wifi_ap");
+      const totalCameras = cameras.length;
+      const topCameras = cameras.filter((m: Row) => isTop(m.floor_id)).length;
+      const topAps = aps.filter((m: Row) => isTop(m.floor_id)).length;
+      const eligibleRoutes = (routes ?? []).filter((r: Row) => {
+        const level = levelOf.get(r.floor_id as string);
+        return level !== undefined && level >= 0 && level <= 10;
+      }).length;
+      const basePoints = 100 + totalCameras;
+
+      const targets: Record<string, number> = {
+        "WIFI-002": topAps,
+        "WIFI-004": topAps,
+        "CCTV-001": totalCameras,
+        "CCTV-002": totalCameras,
+        "CCTV-007": totalCameras,
+        "TEST-004": totalCameras,
+        "CAB-003": topCameras,
+        "CCTV-003": topCameras,
+        "CAB-002": eligibleRoutes,
+        "CAB-006": basePoints,
+        "CAB-007": basePoints,
+        "TEST-001": basePoints,
+        "TEST-002": basePoints,
+      };
+
+      const changed: string[] = [];
+      for (const item of items) {
+        const code = item.item_code;
+        if (!code || !(code in targets)) continue;
+        const next = targets[code];
+        const prev = Number(item.quantity);
+        if (prev === next) continue;
+        const { error } = await supabase.from("portal_boq_items").update({ quantity: next }).eq("id", item.id);
+        if (error) throw error;
+        changed.push(`${code} — ${formatQty(prev)} → ${formatQty(next)} ${item.unit}`);
+      }
+
+      await logActivity(
+        "planning_quantities_synced",
+        [
+          `Synced ${changed.length} line(s) at ${new Date().toISOString()}.`,
+          `Live design: ${aps.length} APs (Level 11: ${topAps}), ${totalCameras} cameras (Level 11: ${topCameras}), ${eligibleRoutes} cable routes on Levels 0–10.`,
+          changed.length ? `Changes: ${changed.join("; ")}` : "No quantity changes required.",
+        ].join(" "),
+      );
+
+      setSyncSummary(changed.length ? changed : ["All derived quantities already matched the live design."]);
+      await loadDetail();
+      toast({
+        title: changed.length ? `${changed.length} quantities updated` : "Quantities already in sync",
+        description: `${totalCameras} cameras · ${topAps} rooftop AP(s) · ${eligibleRoutes} routes · base AP quantity preserved at 100.`,
+      });
+    } catch (e) {
+      fail(e);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   /* ---- BOQ level ---- */
+
   const [newBoq, setNewBoq] = useState({ title: "", revision_label: "Draft v1" });
   const createBoq = async () => {
     if (!projectId || !newBoq.title.trim()) return;
@@ -444,7 +536,26 @@ const BoqManager: React.FC<{ projectId: string }> = ({ projectId }) => {
               <Button size="sm" variant="outline" onClick={() => window.print()}>
                 <Printer className="h-4 w-4 mr-2" strokeWidth={1.5} /> Print customer BOQ
               </Button>
+              <Button size="sm" variant="outline" onClick={syncPlanningQuantities} disabled={busy || locked}>
+                <RefreshCcw className="h-4 w-4 mr-2" strokeWidth={1.5} /> Sync planning quantities from floor plans
+              </Button>
             </div>
+
+            {syncSummary.length > 0 && (
+              <div className="mt-4 border border-border p-4">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  Last quantity sync — changed lines
+                </p>
+                <ul className="mt-2 space-y-1">
+                  {syncSummary.map((line) => (
+                    <li key={line} className="text-sm">
+                      {line}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
 
             <dl className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-border pt-5">
               <div>
