@@ -76,6 +76,11 @@ const PortalFloorPlans: React.FC = () => {
   const [query, setQuery] = useState("");
   const [comment, setComment] = useState("");
   const [sending, setSending] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState<Record<string, { x: number; y: number }>>({});
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+
 
   useEffect(() => {
     document.title = "Building floor plans | Siyakha Client Portal";
