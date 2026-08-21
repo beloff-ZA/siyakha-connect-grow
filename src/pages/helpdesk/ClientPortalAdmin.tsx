@@ -478,55 +478,43 @@ const ClientPortalAdmin: React.FC = () => {
                     <div className="flex flex-wrap gap-2">
                       <Button
                         size="sm"
-                        onClick={() => provisionCredentials(cu.id)}
+                        onClick={() =>
+                          setTestTarget({
+                            id: cu.id,
+                            email: cu.email,
+                            full_name: cu.full_name ?? null,
+                            mode: cu.status === "active" ? "reset" : "activate",
+                          })
+                        }
                         disabled={busy}
-                        title="Creates the login with a generated password. No email is sent to the client."
+                        title="TESTING ONLY — sets the password directly. No email is sent to the client."
                       >
-                        Create login (no email)
+                        {cu.status === "active"
+                          ? "Reset test password without email"
+                          : "Activate test account without email"}
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => sendInvite(cu.id)} disabled={busy}>
-                        Send / resend invite
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => sendInvite(cu.id, PRODUCTION_LOGIN_URL)}
-                        disabled={busy}
-                        title={`First-time account setup link pointing at ${PRODUCTION_LOGIN_URL}`}
-                      >
-                        Send setup link (production)
-                      </Button>
+                      {clientEmailsEnabled && (
+                        <>
+                          <Button size="sm" variant="outline" onClick={() => sendInvite(cu.id)} disabled={busy}>
+                            Send / resend invite
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => sendInvite(cu.id, PRODUCTION_LOGIN_URL)}
+                            disabled={busy}
+                            title={`First-time account setup link pointing at ${PRODUCTION_LOGIN_URL}`}
+                          >
+                            Send setup link (production)
+                          </Button>
+                        </>
+                      )}
                       <Button size="sm" variant="outline" onClick={() => assignUser(cu.id)} disabled={!projectId}>
                         Assign to project
                       </Button>
                     </div>
-
-                    {credentials?.client_user_id === cu.id && (
-                      <div className="w-full sm:w-auto border border-border p-3 text-xs space-y-1">
-                        <p className="uppercase tracking-[0.2em] text-muted-foreground">
-                          Credentials — shown once
-                        </p>
-                        <p className="font-mono break-all">Username: {credentials.email}</p>
-                        <p className="font-mono break-all">Password: {credentials.password}</p>
-                        <div className="flex gap-2 pt-1">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                              navigator.clipboard
-                                .writeText(`Username: ${credentials.email}\nPassword: ${credentials.password}`)
-                                .then(() => toast({ title: "Copied" }))
-                            }
-                          >
-                            Copy
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={() => setCredentials(null)}>
-                            Hide
-                          </Button>
-                        </div>
-                      </div>
-                    )}
                   </li>
+
 
                 ))}
               </ul>
