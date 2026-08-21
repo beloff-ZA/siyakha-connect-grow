@@ -1,10 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Lock, Maximize2, Minus, Plus, RotateCw } from "lucide-react";
+import { Lock, Maximize2, Minus, Plus, Video } from "lucide-react";
 import { kindShort, type FloorMarker } from "@/lib/floorPlans";
 import {
+  AIM_DEADZONE_PX,
   CAMERA_RANGE_RADIUS,
   COVERAGE_BANDS,
+  aimOffsetPx,
+  bearingBetween,
+  bearingText,
+  bearingToRotation,
   containRect,
+  normDistancePx,
+  normalizeBearing,
   pointerInContent,
   pointerToNorm,
   wheelZoomFactor,
@@ -23,14 +30,19 @@ type Props = {
   markers: FloorMarker[];
   selectedId?: string | null;
   onSelect?: (marker: FloorMarker | null) => void;
-  /** Click on empty plan to place a marker at normalised coords. */
-  onPlace?: (x: number, y: number) => void;
+  /**
+   * Click (or click-drag-to-aim) on empty plan to place a marker at normalised
+   * coords. `direction` is the plan bearing the pointer was dragged toward, or
+   * undefined when the gesture was a plain tap.
+   */
+  onPlace?: (x: number, y: number, direction?: number) => void;
   /** Drag a marker to new normalised coords. */
   onMove?: (markerId: string, x: number, y: number) => void;
   /** Called once when a marker drag finishes, to persist the position. */
   onMoveEnd?: (markerId: string) => void;
-  /** Drag the rotate handle of a selected camera to aim it (0–359). */
+  /** Drag the aim handle of a selected camera to change its bearing (0–359). */
   onAim?: (markerId: string, deg: number) => void;
+
   /** When false for a marker, dragging is blocked and a lock badge is shown in edit mode. */
   canDrag?: (marker: FloorMarker) => boolean;
   /** Visual affordances for reposition mode. */
@@ -43,6 +55,20 @@ type Props = {
   height?: string;
   emptyLabel?: string;
 };
+
+/**
+ * Clip path for a true circular sector of `fov` degrees, centred on the box centre
+ * and pointing UP at rest — so a CSS `rotate(bearing)` aims it on the plan bearing.
+ */
+function sectorClipPath(fov: number, steps = 24) {
+  const half = Math.min(Math.max(fov, 10), 170) / 2;
+  const pts = ["50% 50%"];
+  for (let i = 0; i <= steps; i++) {
+    const a = ((-half + (2 * half * i) / steps) * Math.PI) / 180;
+    pts.push(`${(50 + Math.sin(a) * 50).toFixed(3)}% ${(50 - Math.cos(a) * 50).toFixed(3)}%`);
+  }
+  return `polygon(${pts.join(", ")})`;
+}
 
 const statusRing: Record<string, string> = {
   planned: "border-dashed",
@@ -98,8 +124,21 @@ const FloorPlanCanvas: React.FC<Props> = ({
     | { mode: "pan"; startX: number; startY: number; ox: number; oy: number; moved: boolean }
     | { mode: "marker"; id: string; startX: number; startY: number; moved: boolean; draggable: boolean }
     | { mode: "aim"; id: string; startX: number; startY: number; moved: boolean }
+    | {
+        mode: "place";
+        startX: number;
+        startY: number;
+        anchor: { x: number; y: number };
+        moved: boolean;
+      }
     | null
   >(null);
+
+  /** Live preview of a placement gesture: where it started and where it aims. */
+  const [placePreview, setPlacePreview] = useState<
+    { x: number; y: number; deg: number | null } | null
+  >(null);
+
 
 
   const reset = useCallback(() => {
@@ -183,19 +222,29 @@ const FloorPlanCanvas: React.FC<Props> = ({
     });
   }, []);
 
-  /** Bearing in degrees from a marker centre to a pointer, 0 = up/north. */
+  /** Bearing from a marker centre to a pointer, using the plan convention (0° = up). */
   const aimDeg = useCallback(
     (id: string, clientX: number, clientY: number) => {
       const m = markers.find((x) => x.id === id);
       if (!m) return 0;
-      const { x, y } = toNorm(clientX, clientY);
-      const c = contentRef.current;
-      const dx = (x - Number(m.x_norm)) * (c.width || 1);
-      const dy = (y - Number(m.y_norm)) * (c.height || 1);
-      const deg = Math.round((Math.atan2(dx, -dy) * 180) / Math.PI);
-      return ((deg % 360) + 360) % 360;
+      return bearingBetween(
+        { x: Number(m.x_norm), y: Number(m.y_norm) },
+        toNorm(clientX, clientY),
+        contentRef.current,
+      );
     },
     [markers, toNorm],
+  );
+
+  /** Bearing from a fixed normalised anchor to a pointer; null inside the deadzone. */
+  const aimFrom = useCallback(
+    (anchor: { x: number; y: number }, clientX: number, clientY: number) => {
+      const p = toNorm(clientX, clientY);
+      const c = contentRef.current;
+      if (normDistancePx(anchor, p, c) < AIM_DEADZONE_PX) return null;
+      return bearingBetween(anchor, p, c);
+    },
+    [toNorm],
   );
 
   const onPointerDown = (e: React.PointerEvent) => {
@@ -214,6 +263,17 @@ const FloorPlanCanvas: React.FC<Props> = ({
         moved: false,
         draggable: !!m && (canDrag ? canDrag(m) : true),
       };
+    } else if (placing && onPlace && insideImage(e.clientX, e.clientY)) {
+      // Placement mode: this press fixes the position, the drag aims the camera.
+      const anchor = toNorm(e.clientX, e.clientY);
+      dragRef.current = {
+        mode: "place",
+        startX: e.clientX,
+        startY: e.clientY,
+        anchor,
+        moved: false,
+      };
+      setPlacePreview({ x: anchor.x, y: anchor.y, deg: null });
     } else {
       dragRef.current = {
         mode: "pan",
@@ -239,6 +299,9 @@ const FloorPlanCanvas: React.FC<Props> = ({
       setOffset({ x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) });
     } else if (d.mode === "aim") {
       if (onAim) onAim(d.id, aimDeg(d.id, e.clientX, e.clientY));
+    } else if (d.mode === "place") {
+      const deg = aimFrom(d.anchor, e.clientX, e.clientY);
+      setPlacePreview({ x: d.anchor.x, y: d.anchor.y, deg });
     } else if (onMove && d.moved && d.draggable) {
       const { x, y } = toNorm(e.clientX, e.clientY);
       onMove(d.id, x, y);
@@ -258,18 +321,19 @@ const FloorPlanCanvas: React.FC<Props> = ({
       }
       return;
     }
+    if (d.mode === "place") {
+      setPlacePreview(null);
+      const deg = aimFrom(d.anchor, e.clientX, e.clientY);
+      onPlace?.(d.anchor.x, d.anchor.y, deg ?? undefined);
+      return;
+    }
 
     if (!d.moved) {
-      if (placing && onPlace) {
-        // Clicks in the letterboxed area around the plan must never create a device.
-        if (!insideImage(e.clientX, e.clientY)) return;
-        const { x, y } = toNorm(e.clientX, e.clientY);
-        onPlace(x, y);
-      } else {
-        onSelect?.(null);
-      }
+      onSelect?.(null);
     }
   };
+
+
 
 
   const coverageMarkers = useMemo(() => {
@@ -288,9 +352,11 @@ const FloorPlanCanvas: React.FC<Props> = ({
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-3">
         <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-          {editing
-            ? "Drag planned devices · scroll or pinch to zoom · drag the plan to pan"
-            : "Scroll or pinch to zoom · drag to pan"}
+          {placing
+            ? "Click to place, then drag toward the area the camera must face"
+            : editing
+              ? "Drag planned devices · scroll or pinch to zoom · drag the plan to pan"
+              : "Scroll or pinch to zoom · drag to pan"}
         </p>
 
         <div className="flex items-center gap-2">
@@ -383,30 +449,48 @@ const FloorPlanCanvas: React.FC<Props> = ({
                   const cx = `${Number(m.x_norm) * 100}%`;
                   const cy = `${Number(m.y_norm) * 100}%`;
                   if (m.marker_type === "camera") {
-                    const dir = Number(m.direction_deg ?? 0);
+                    const dir = bearingToRotation(Number(m.direction_deg ?? 0));
                     const fov = Number(m.fov_deg ?? 90);
                     const r = coverageBase * (CAMERA_RANGE_RADIUS[m.coverage_range ?? "medium"] ?? 0.16);
 
                     return (
-                      <div
-                        key={`cov-${m.id}`}
-                        aria-hidden
-                        className="absolute pointer-events-none"
-                        style={{
-                          left: cx,
-                          top: cy,
-                          width: r * 2,
-                          height: r * 2,
-                          marginLeft: -r,
-                          marginTop: -r,
-                          transform: `rotate(${dir}deg)`,
-                          background:
-                            "radial-gradient(circle, hsl(32 100% 50% / 0.38) 0%, hsl(32 100% 50% / 0.16) 60%, hsl(32 100% 50% / 0) 100%)",
-                          clipPath: `polygon(50% 50%, ${50 - Math.tan((Math.min(fov, 170) / 2) * (Math.PI / 180)) * 50}% 0%, ${50 + Math.tan((Math.min(fov, 170) / 2) * (Math.PI / 180)) * 50}% 0%)`,
-                        }}
-                      />
+                      <React.Fragment key={`cov-${m.id}`}>
+                        {/* Sector: apex exactly at the camera centre, centreline on the bearing. */}
+                        <div
+                          aria-hidden
+                          className="absolute pointer-events-none"
+                          style={{
+                            left: cx,
+                            top: cy,
+                            width: r * 2,
+                            height: r * 2,
+                            marginLeft: -r,
+                            marginTop: -r,
+                            transform: `rotate(${dir}deg)`,
+                            transformOrigin: "50% 50%",
+                            background:
+                              "radial-gradient(circle, hsl(32 100% 50% / 0.38) 0%, hsl(32 100% 50% / 0.16) 60%, hsl(32 100% 50% / 0) 100%)",
+                            clipPath: sectorClipPath(fov),
+                          }}
+                        />
+                        {/* Lens centreline, so the aim is unambiguous at any zoom. */}
+                        <div
+                          aria-hidden
+                          className="absolute pointer-events-none"
+                          style={{
+                            left: cx,
+                            top: cy,
+                            width: 0,
+                            height: r,
+                            borderLeft: "1px dashed hsl(32 100% 45% / 0.85)",
+                            transform: `rotate(${dir}deg) translateY(${-r}px)`,
+                            transformOrigin: "0 0",
+                          }}
+                        />
+                      </React.Fragment>
                     );
                   }
+
                   return (
                     <React.Fragment key={`cov-${m.id}`}>
                       {[...COVERAGE_BANDS]
@@ -444,10 +528,30 @@ const FloorPlanCanvas: React.FC<Props> = ({
                 const isSelected = selectedId === m.id;
                 const isDraft = unsaved.has(m.id);
                 const isCamera = m.marker_type === "camera";
+                const dir = normalizeBearing(Number(m.direction_deg ?? 0));
                 const showAim = isCamera && isSelected && !!onAim && draggable;
                 const handleDist = markerPx * 1.9;
+                const handle = aimOffsetPx(dir, handleDist);
                 return (
                   <React.Fragment key={m.id}>
+                    {/* Aim line from the camera centre to the handle. */}
+                    {showAim && (
+                      <div
+                        aria-hidden
+                        className="absolute pointer-events-none"
+                        style={{
+                          left: `${Number(m.x_norm) * 100}%`,
+                          top: `${Number(m.y_norm) * 100}%`,
+                          width: 0,
+                          height: handleDist,
+                          borderLeft: "2px solid hsl(32 100% 45%)",
+                          transform: `rotate(${bearingToRotation(dir)}deg) translateY(${-handleDist}px)`,
+                          transformOrigin: "0 0",
+                          zIndex: 35,
+                        }}
+                      />
+                    )}
+
                     <button
                       type="button"
                       data-marker-id={m.id}
@@ -457,23 +561,27 @@ const FloorPlanCanvas: React.FC<Props> = ({
                       title={
                         locked
                           ? `${m.label} · ${m.status} — position locked. Only devices with a Planned status can be repositioned.`
-                          : isDraft
-                            ? `${m.label} · unsaved draft — drag to reposition, then save`
-                            : editing
-                              ? `${m.label} · ${m.status} — drag to reposition`
-                              : `${m.label} · ${m.status}`
+                          : isCamera
+                            ? `${m.label} · ${isDraft ? "unsaved draft" : m.status} · aim ${bearingText(dir)}${draggable ? " — drag to reposition, drag the handle to aim" : ""}`
+                            : isDraft
+                              ? `${m.label} · unsaved draft — drag to reposition, then save`
+                              : editing
+                                ? `${m.label} · ${m.status} — drag to reposition`
+                                : `${m.label} · ${m.status}`
                       }
                       aria-label={
                         locked
                           ? `${m.label}, position locked (${m.status})`
-                          : `${m.label}, ${isDraft ? "unsaved draft" : m.status}`
+                          : isCamera
+                            ? `${m.label}, ${isDraft ? "unsaved draft" : m.status}, facing ${bearingText(dir)}`
+                            : `${m.label}, ${isDraft ? "unsaved draft" : m.status}`
                       }
                       aria-pressed={isSelected}
                       className={[
                         "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
                         statusRing[m.status] ?? "border-solid",
                         isDraft
-                          ? "border-dashed border-[hsl(32_100%_50%)] ring-1 ring-[hsl(32_100%_50%)] animate-pulse"
+                          ? "border-dashed border-[hsl(32_100%_50%)] ring-1 ring-[hsl(32_100%_50%)]"
                           : isSelected
                             ? selectedRing(m.marker_type)
                             : "border-foreground/70 hover:border-foreground",
@@ -492,6 +600,18 @@ const FloorPlanCanvas: React.FC<Props> = ({
                     >
                       {locked ? (
                         <Lock style={{ width: "60%", height: "60%" }} strokeWidth={2} />
+                      ) : isCamera ? (
+                        // Only the lens glyph rotates; the marker box stays upright.
+                        <Video
+                          aria-hidden
+                          style={{
+                            width: "72%",
+                            height: "72%",
+                            transform: `rotate(${bearingToRotation(dir - 90)}deg)`,
+                            transformOrigin: "50% 50%",
+                          }}
+                          strokeWidth={2}
+                        />
                       ) : (
                         kindShort(m.marker_type)
                       )}
@@ -503,14 +623,15 @@ const FloorPlanCanvas: React.FC<Props> = ({
                         role="slider"
                         tabIndex={-1}
                         aria-label={`Aim ${m.label}`}
-                        aria-valuenow={Number(m.direction_deg ?? 0)}
+                        aria-valuenow={dir}
+                        aria-valuetext={bearingText(dir)}
                         aria-valuemin={0}
                         aria-valuemax={359}
-                        title={`Drag to aim ${m.label}`}
+                        title={`Drag to aim ${m.label} — currently ${bearingText(dir)}`}
                         className="absolute flex items-center justify-center rounded-full border cursor-grab"
                         style={{
-                          left: `calc(${Number(m.x_norm) * 100}% + ${Math.sin((Number(m.direction_deg ?? 0) * Math.PI) / 180) * handleDist}px)`,
-                          top: `calc(${Number(m.y_norm) * 100}% - ${Math.cos((Number(m.direction_deg ?? 0) * Math.PI) / 180) * handleDist}px)`,
+                          left: `calc(${Number(m.x_norm) * 100}% + ${handle.dx}px)`,
+                          top: `calc(${Number(m.y_norm) * 100}% + ${handle.dy}px)`,
                           width: `${markerPx * 0.85}px`,
                           height: `${markerPx * 0.85}px`,
                           marginLeft: `${-markerPx * 0.425}px`,
@@ -522,12 +643,76 @@ const FloorPlanCanvas: React.FC<Props> = ({
                           touchAction: "none",
                         }}
                       >
-                        <RotateCw style={{ width: "62%", height: "62%" }} strokeWidth={2.5} />
+                        <Video
+                          aria-hidden
+                          style={{
+                            width: "62%",
+                            height: "62%",
+                            transform: `rotate(${bearingToRotation(dir - 90)}deg)`,
+                          }}
+                          strokeWidth={2.5}
+                        />
                       </span>
                     )}
                   </React.Fragment>
                 );
               })}
+
+              {/* Live placement gesture: position pinned, aim following the pointer. */}
+              {placePreview && (
+                <>
+                  <div
+                    aria-hidden
+                    className="absolute -translate-x-1/2 -translate-y-1/2 border border-dashed rounded-none"
+                    style={{
+                      left: `${placePreview.x * 100}%`,
+                      top: `${placePreview.y * 100}%`,
+                      width: `${markerPx}px`,
+                      height: `${markerPx}px`,
+                      borderColor: "hsl(32 100% 45%)",
+                      background: "hsl(32 100% 50% / 0.2)",
+                      zIndex: 45,
+                    }}
+                  />
+                  {placePreview.deg !== null && coverageBase > 0 && (
+                    <>
+                      <div
+                        aria-hidden
+                        className="absolute pointer-events-none"
+                        style={{
+                          left: `${placePreview.x * 100}%`,
+                          top: `${placePreview.y * 100}%`,
+                          width: coverageBase * 0.32,
+                          height: coverageBase * 0.32,
+                          marginLeft: -coverageBase * 0.16,
+                          marginTop: -coverageBase * 0.16,
+                          transform: `rotate(${bearingToRotation(placePreview.deg)}deg)`,
+                          transformOrigin: "50% 50%",
+                          background:
+                            "radial-gradient(circle, hsl(32 100% 50% / 0.3) 0%, hsl(32 100% 50% / 0.12) 60%, hsl(32 100% 50% / 0) 100%)",
+                          clipPath: sectorClipPath(90),
+                          zIndex: 44,
+                        }}
+                      />
+                      <div
+                        aria-hidden
+                        className="absolute pointer-events-none"
+                        style={{
+                          left: `${placePreview.x * 100}%`,
+                          top: `${placePreview.y * 100}%`,
+                          width: 0,
+                          height: coverageBase * 0.16,
+                          borderLeft: "2px solid hsl(32 100% 45%)",
+                          transform: `rotate(${bearingToRotation(placePreview.deg)}deg) translateY(${-coverageBase * 0.16}px)`,
+                          transformOrigin: "0 0",
+                          zIndex: 46,
+                        }}
+                      />
+                    </>
+                  )}
+                </>
+              )}
+
 
             </div>
           </div>
