@@ -208,19 +208,29 @@ const FloorPlanCanvas: React.FC<Props> = ({
     });
   }, []);
 
-  /** Bearing in degrees from a marker centre to a pointer, 0 = up/north. */
+  /** Bearing from a marker centre to a pointer, using the plan convention (0° = up). */
   const aimDeg = useCallback(
     (id: string, clientX: number, clientY: number) => {
       const m = markers.find((x) => x.id === id);
       if (!m) return 0;
-      const { x, y } = toNorm(clientX, clientY);
-      const c = contentRef.current;
-      const dx = (x - Number(m.x_norm)) * (c.width || 1);
-      const dy = (y - Number(m.y_norm)) * (c.height || 1);
-      const deg = Math.round((Math.atan2(dx, -dy) * 180) / Math.PI);
-      return ((deg % 360) + 360) % 360;
+      return bearingBetween(
+        { x: Number(m.x_norm), y: Number(m.y_norm) },
+        toNorm(clientX, clientY),
+        contentRef.current,
+      );
     },
     [markers, toNorm],
+  );
+
+  /** Bearing from a fixed normalised anchor to a pointer; null inside the deadzone. */
+  const aimFrom = useCallback(
+    (anchor: { x: number; y: number }, clientX: number, clientY: number) => {
+      const p = toNorm(clientX, clientY);
+      const c = contentRef.current;
+      if (normDistancePx(anchor, p, c) < AIM_DEADZONE_PX) return null;
+      return bearingBetween(anchor, p, c);
+    },
+    [toNorm],
   );
 
   const onPointerDown = (e: React.PointerEvent) => {
@@ -239,6 +249,17 @@ const FloorPlanCanvas: React.FC<Props> = ({
         moved: false,
         draggable: !!m && (canDrag ? canDrag(m) : true),
       };
+    } else if (placing && onPlace && insideImage(e.clientX, e.clientY)) {
+      // Placement mode: this press fixes the position, the drag aims the camera.
+      const anchor = toNorm(e.clientX, e.clientY);
+      dragRef.current = {
+        mode: "place",
+        startX: e.clientX,
+        startY: e.clientY,
+        anchor,
+        moved: false,
+      };
+      setPlacePreview({ x: anchor.x, y: anchor.y, deg: null });
     } else {
       dragRef.current = {
         mode: "pan",
@@ -264,6 +285,9 @@ const FloorPlanCanvas: React.FC<Props> = ({
       setOffset({ x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) });
     } else if (d.mode === "aim") {
       if (onAim) onAim(d.id, aimDeg(d.id, e.clientX, e.clientY));
+    } else if (d.mode === "place") {
+      const deg = aimFrom(d.anchor, e.clientX, e.clientY);
+      setPlacePreview({ x: d.anchor.x, y: d.anchor.y, deg });
     } else if (onMove && d.moved && d.draggable) {
       const { x, y } = toNorm(e.clientX, e.clientY);
       onMove(d.id, x, y);
@@ -283,11 +307,18 @@ const FloorPlanCanvas: React.FC<Props> = ({
       }
       return;
     }
+    if (d.mode === "place") {
+      setPlacePreview(null);
+      const deg = aimFrom(d.anchor, e.clientX, e.clientY);
+      onPlace?.(d.anchor.x, d.anchor.y, deg ?? undefined);
+      return;
+    }
 
     if (!d.moved) {
-      if (placing && onPlace) {
-        // Clicks in the letterboxed area around the plan must never create a device.
-        if (!insideImage(e.clientX, e.clientY)) return;
+      onSelect?.(null);
+    }
+  };
+
         const { x, y } = toNorm(e.clientX, e.clientY);
         onPlace(x, y);
       } else {
