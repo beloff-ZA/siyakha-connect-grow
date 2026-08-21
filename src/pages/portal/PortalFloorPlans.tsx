@@ -238,6 +238,7 @@ const PortalFloorPlans: React.FC = () => {
   }, [load]);
 
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
+  const rackMarkers = useMemo(() => markers.filter((m) => m.marker_type === "rack"), [markers]);
   const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
   const draftCameras = useMemo<FloorMarker[]>(
     () =>
