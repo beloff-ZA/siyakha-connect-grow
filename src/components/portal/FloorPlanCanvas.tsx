@@ -352,9 +352,11 @@ const FloorPlanCanvas: React.FC<Props> = ({
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-3">
         <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-          {editing
-            ? "Drag planned devices · scroll or pinch to zoom · drag the plan to pan"
-            : "Scroll or pinch to zoom · drag to pan"}
+          {placing
+            ? "Click to place, then drag toward the area the camera must face"
+            : editing
+              ? "Drag planned devices · scroll or pinch to zoom · drag the plan to pan"
+              : "Scroll or pinch to zoom · drag to pan"}
         </p>
 
         <div className="flex items-center gap-2">
@@ -605,7 +607,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
                           style={{
                             width: "72%",
                             height: "72%",
-                            transform: `rotate(${bearingToRotation(dir + 90)}deg)`,
+                            transform: `rotate(${bearingToRotation(dir - 90)}deg)`,
                             transformOrigin: "50% 50%",
                           }}
                           strokeWidth={2}
@@ -646,7 +648,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
                           style={{
                             width: "62%",
                             height: "62%",
-                            transform: `rotate(${bearingToRotation(dir + 90)}deg)`,
+                            transform: `rotate(${bearingToRotation(dir - 90)}deg)`,
                           }}
                           strokeWidth={2.5}
                         />
