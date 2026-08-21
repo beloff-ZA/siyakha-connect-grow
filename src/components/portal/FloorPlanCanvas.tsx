@@ -319,13 +319,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
     }
   };
 
-        const { x, y } = toNorm(e.clientX, e.clientY);
-        onPlace(x, y);
-      } else {
-        onSelect?.(null);
-      }
-    }
-  };
+
 
 
   const coverageMarkers = useMemo(() => {
