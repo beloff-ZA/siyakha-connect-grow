@@ -558,6 +558,62 @@ const PortalFloorPlans: React.FC = () => {
                 </div>
               </div>
 
+              {/* CCTV placement */}
+              <div className="mb-5 border border-border p-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                  <Camera className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {placingCams ? (
+                      <span className="text-foreground">
+                        Click the plan where each camera should be installed. Select a camera to
+                        adjust its direction and coverage.
+                      </span>
+                    ) : (
+                      <>
+                        Add proposed CCTV positions yourself. Cameras stay unsaved until you confirm
+                        them, and remain movable while their status is Planned.
+                      </>
+                    )}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {placingCams ? (
+                    <>
+                      <span className="border border-[hsl(32_100%_50%)] px-3 py-2 text-[10px] uppercase tracking-[0.2em] text-[hsl(32_100%_38%)]">
+                        {camDrafts.length} unsaved camera{camDrafts.length === 1 ? "" : "s"}
+                      </span>
+                      <Button
+                        type="button"
+                        disabled={camDrafts.length === 0 || savingCams}
+                        onClick={() => setCamConfirmOpen(true)}
+                      >
+                        Save cameras
+                      </Button>
+                      <Button type="button" variant="outline" onClick={cancelCameras}>
+                        Cancel additions
+                      </Button>
+                      <Button type="button" variant="outline" onClick={() => setPlacingCams(false)}>
+                        Done placing
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        setPlacingCams(true);
+                        setEditing(false);
+                        setCoverage((c) => (c === "off" ? "all" : c));
+                      }}
+                    >
+                      <Camera className="h-3.5 w-3.5 mr-2" strokeWidth={1.5} />
+                      Place CCTV cameras
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+
+
               {/* Coverage layer */}
               <div className="mb-5 border border-border p-4 space-y-3">
                 <div className="flex flex-wrap items-center gap-2">
