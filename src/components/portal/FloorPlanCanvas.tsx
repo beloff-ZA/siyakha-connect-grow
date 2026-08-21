@@ -526,10 +526,30 @@ const FloorPlanCanvas: React.FC<Props> = ({
                 const isSelected = selectedId === m.id;
                 const isDraft = unsaved.has(m.id);
                 const isCamera = m.marker_type === "camera";
+                const dir = normalizeBearing(Number(m.direction_deg ?? 0));
                 const showAim = isCamera && isSelected && !!onAim && draggable;
                 const handleDist = markerPx * 1.9;
+                const handle = aimOffsetPx(dir, handleDist);
                 return (
                   <React.Fragment key={m.id}>
+                    {/* Aim line from the camera centre to the handle. */}
+                    {showAim && (
+                      <div
+                        aria-hidden
+                        className="absolute pointer-events-none"
+                        style={{
+                          left: `${Number(m.x_norm) * 100}%`,
+                          top: `${Number(m.y_norm) * 100}%`,
+                          width: 0,
+                          height: handleDist,
+                          borderLeft: "2px solid hsl(32 100% 45%)",
+                          transform: `rotate(${bearingToRotation(dir)}deg) translateY(${-handleDist}px)`,
+                          transformOrigin: "0 0",
+                          zIndex: 35,
+                        }}
+                      />
+                    )}
+
                     <button
                       type="button"
                       data-marker-id={m.id}
@@ -539,23 +559,27 @@ const FloorPlanCanvas: React.FC<Props> = ({
                       title={
                         locked
                           ? `${m.label} · ${m.status} — position locked. Only devices with a Planned status can be repositioned.`
-                          : isDraft
-                            ? `${m.label} · unsaved draft — drag to reposition, then save`
-                            : editing
-                              ? `${m.label} · ${m.status} — drag to reposition`
-                              : `${m.label} · ${m.status}`
+                          : isCamera
+                            ? `${m.label} · ${isDraft ? "unsaved draft" : m.status} · aim ${bearingText(dir)}${draggable ? " — drag to reposition, drag the handle to aim" : ""}`
+                            : isDraft
+                              ? `${m.label} · unsaved draft — drag to reposition, then save`
+                              : editing
+                                ? `${m.label} · ${m.status} — drag to reposition`
+                                : `${m.label} · ${m.status}`
                       }
                       aria-label={
                         locked
                           ? `${m.label}, position locked (${m.status})`
-                          : `${m.label}, ${isDraft ? "unsaved draft" : m.status}`
+                          : isCamera
+                            ? `${m.label}, ${isDraft ? "unsaved draft" : m.status}, facing ${bearingText(dir)}`
+                            : `${m.label}, ${isDraft ? "unsaved draft" : m.status}`
                       }
                       aria-pressed={isSelected}
                       className={[
                         "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
                         statusRing[m.status] ?? "border-solid",
                         isDraft
-                          ? "border-dashed border-[hsl(32_100%_50%)] ring-1 ring-[hsl(32_100%_50%)] animate-pulse"
+                          ? "border-dashed border-[hsl(32_100%_50%)] ring-1 ring-[hsl(32_100%_50%)]"
                           : isSelected
                             ? selectedRing(m.marker_type)
                             : "border-foreground/70 hover:border-foreground",
@@ -574,6 +598,18 @@ const FloorPlanCanvas: React.FC<Props> = ({
                     >
                       {locked ? (
                         <Lock style={{ width: "60%", height: "60%" }} strokeWidth={2} />
+                      ) : isCamera ? (
+                        // Only the lens glyph rotates; the marker box stays upright.
+                        <Video
+                          aria-hidden
+                          style={{
+                            width: "72%",
+                            height: "72%",
+                            transform: `rotate(${bearingToRotation(dir + 90)}deg)`,
+                            transformOrigin: "50% 50%",
+                          }}
+                          strokeWidth={2}
+                        />
                       ) : (
                         kindShort(m.marker_type)
                       )}
@@ -585,14 +621,15 @@ const FloorPlanCanvas: React.FC<Props> = ({
                         role="slider"
                         tabIndex={-1}
                         aria-label={`Aim ${m.label}`}
-                        aria-valuenow={Number(m.direction_deg ?? 0)}
+                        aria-valuenow={dir}
+                        aria-valuetext={bearingText(dir)}
                         aria-valuemin={0}
                         aria-valuemax={359}
-                        title={`Drag to aim ${m.label}`}
+                        title={`Drag to aim ${m.label} — currently ${bearingText(dir)}`}
                         className="absolute flex items-center justify-center rounded-full border cursor-grab"
                         style={{
-                          left: `calc(${Number(m.x_norm) * 100}% + ${Math.sin((Number(m.direction_deg ?? 0) * Math.PI) / 180) * handleDist}px)`,
-                          top: `calc(${Number(m.y_norm) * 100}% - ${Math.cos((Number(m.direction_deg ?? 0) * Math.PI) / 180) * handleDist}px)`,
+                          left: `calc(${Number(m.x_norm) * 100}% + ${handle.dx}px)`,
+                          top: `calc(${Number(m.y_norm) * 100}% + ${handle.dy}px)`,
                           width: `${markerPx * 0.85}px`,
                           height: `${markerPx * 0.85}px`,
                           marginLeft: `${-markerPx * 0.425}px`,
@@ -604,12 +641,76 @@ const FloorPlanCanvas: React.FC<Props> = ({
                           touchAction: "none",
                         }}
                       >
-                        <RotateCw style={{ width: "62%", height: "62%" }} strokeWidth={2.5} />
+                        <Video
+                          aria-hidden
+                          style={{
+                            width: "62%",
+                            height: "62%",
+                            transform: `rotate(${bearingToRotation(dir + 90)}deg)`,
+                          }}
+                          strokeWidth={2.5}
+                        />
                       </span>
                     )}
                   </React.Fragment>
                 );
               })}
+
+              {/* Live placement gesture: position pinned, aim following the pointer. */}
+              {placePreview && (
+                <>
+                  <div
+                    aria-hidden
+                    className="absolute -translate-x-1/2 -translate-y-1/2 border border-dashed rounded-none"
+                    style={{
+                      left: `${placePreview.x * 100}%`,
+                      top: `${placePreview.y * 100}%`,
+                      width: `${markerPx}px`,
+                      height: `${markerPx}px`,
+                      borderColor: "hsl(32 100% 45%)",
+                      background: "hsl(32 100% 50% / 0.2)",
+                      zIndex: 45,
+                    }}
+                  />
+                  {placePreview.deg !== null && coverageBase > 0 && (
+                    <>
+                      <div
+                        aria-hidden
+                        className="absolute pointer-events-none"
+                        style={{
+                          left: `${placePreview.x * 100}%`,
+                          top: `${placePreview.y * 100}%`,
+                          width: coverageBase * 0.32,
+                          height: coverageBase * 0.32,
+                          marginLeft: -coverageBase * 0.16,
+                          marginTop: -coverageBase * 0.16,
+                          transform: `rotate(${bearingToRotation(placePreview.deg)}deg)`,
+                          transformOrigin: "50% 50%",
+                          background:
+                            "radial-gradient(circle, hsl(32 100% 50% / 0.3) 0%, hsl(32 100% 50% / 0.12) 60%, hsl(32 100% 50% / 0) 100%)",
+                          clipPath: sectorClipPath(90),
+                          zIndex: 44,
+                        }}
+                      />
+                      <div
+                        aria-hidden
+                        className="absolute pointer-events-none"
+                        style={{
+                          left: `${placePreview.x * 100}%`,
+                          top: `${placePreview.y * 100}%`,
+                          width: 0,
+                          height: coverageBase * 0.16,
+                          borderLeft: "2px solid hsl(32 100% 45%)",
+                          transform: `rotate(${bearingToRotation(placePreview.deg)}deg) translateY(${-coverageBase * 0.16}px)`,
+                          transformOrigin: "0 0",
+                          zIndex: 46,
+                        }}
+                      />
+                    </>
+                  )}
+                </>
+              )}
+
 
             </div>
           </div>
