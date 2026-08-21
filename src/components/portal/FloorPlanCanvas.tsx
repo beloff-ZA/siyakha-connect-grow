@@ -167,10 +167,44 @@ const FloorPlanCanvas: React.FC<Props> = ({
     });
   }, []);
 
+  /** Guard: only pointer positions over the architectural image may create markers. */
+  const insideImage = useCallback((clientX: number, clientY: number) => {
+    const el = containerRef.current;
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    const { zoom: z, offset: o } = stateRef.current;
+    return pointerInContent({
+      clientX,
+      clientY,
+      containerRect: { left: rect.left, top: rect.top },
+      offset: o,
+      zoom: z,
+      content: contentRef.current,
+    });
+  }, []);
+
+  /** Bearing in degrees from a marker centre to a pointer, 0 = up/north. */
+  const aimDeg = useCallback(
+    (id: string, clientX: number, clientY: number) => {
+      const m = markers.find((x) => x.id === id);
+      if (!m) return 0;
+      const { x, y } = toNorm(clientX, clientY);
+      const c = contentRef.current;
+      const dx = (x - Number(m.x_norm)) * (c.width || 1);
+      const dy = (y - Number(m.y_norm)) * (c.height || 1);
+      const deg = Math.round((Math.atan2(dx, -dy) * 180) / Math.PI);
+      return ((deg % 360) + 360) % 360;
+    },
+    [markers, toNorm],
+  );
+
   const onPointerDown = (e: React.PointerEvent) => {
     const target = e.target as HTMLElement;
+    const aimId = target.closest("[data-aim-for]")?.getAttribute("data-aim-for");
     const markerId = target.closest("[data-marker-id]")?.getAttribute("data-marker-id");
-    if (markerId) {
+    if (aimId) {
+      dragRef.current = { mode: "aim", id: aimId, startX: e.clientX, startY: e.clientY, moved: false };
+    } else if (markerId) {
       const m = markers.find((x) => x.id === markerId);
       dragRef.current = {
         mode: "marker",
@@ -203,6 +237,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
     if (d.mode === "pan") {
       if (!d.moved) return;
       setOffset({ x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) });
+    } else if (d.mode === "aim") {
+      if (onAim) onAim(d.id, aimDeg(d.id, e.clientX, e.clientY));
     } else if (onMove && d.moved && d.draggable) {
       const { x, y } = toNorm(e.clientX, e.clientY);
       onMove(d.id, x, y);
@@ -213,6 +249,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
     const d = dragRef.current;
     dragRef.current = null;
     if (!d) return;
+    if (d.mode === "aim") return;
     if (d.mode === "marker") {
       if (d.moved && d.draggable) onMoveEnd?.(d.id);
       else if (!d.moved) {
@@ -224,6 +261,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
 
     if (!d.moved) {
       if (placing && onPlace) {
+        // Clicks in the letterboxed area around the plan must never create a device.
+        if (!insideImage(e.clientX, e.clientY)) return;
         const { x, y } = toNorm(e.clientX, e.clientY);
         onPlace(x, y);
       } else {
@@ -231,6 +270,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
       }
     }
   };
+
 
   const coverageMarkers = useMemo(() => {
     if (coverage === "off") return [];
