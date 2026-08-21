@@ -90,6 +90,8 @@ import {
   RackContents,
 } from "@/components/portal/RackEquipment";
 import { type RackEquipment } from "@/lib/rackEquipment";
+import DeviceManager from "@/components/portal/DeviceManager";
+
 
 type CameraDraft = {
   id: string;
