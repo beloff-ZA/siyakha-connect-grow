@@ -69,9 +69,8 @@ export const RackContents: React.FC<{
             {ordered.map((e, i) => {
               const isAgg = e.model === AGGREGATION_SWITCH_MODEL;
               const tone = isAgg ? routeColor("camera") : routeColor("wifi_ap");
-              const ports = isAgg
-                ? backbonePortUtilisation(e.port_count ?? 12)
-                : accessPortUtilisation(e.port_count ?? 24, routes, rack.floor_id);
+              const access = accessPortUtilisation(e.port_count ?? 24, routes, rack.floor_id);
+              const ports = isAgg ? backbonePortUtilisation(e.port_count ?? 12) : access;
               return (
                 <li key={e.id} className="p-3 space-y-3">
                   <div className="flex flex-wrap items-start justify-between gap-3">
