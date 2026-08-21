@@ -322,13 +322,64 @@ const PortalFloorPlans: React.FC = () => {
                 })}
               </div>
 
+              {/* Reposition controls */}
+              <div className="mb-5 border border-border p-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                  <Move className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {editing ? (
+                      <>
+                        <span className="text-foreground">
+                          Drag planned devices to their proposed positions. Save when the layout is
+                          ready.
+                        </span>{" "}
+                        Devices that are installed, tested or active are locked and cannot be moved.
+                      </>
+                    ) : (
+                      <>
+                        Positions are preliminary. Turn on edit mode to drag planned devices to the
+                        exact positions you want.
+                      </>
+                    )}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {editing ? (
+                    <>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {pendingIds.length} unsaved
+                      </span>
+                      <Button type="button" variant="outline" onClick={cancelChanges}>
+                        Cancel changes
+                      </Button>
+                      <Button
+                        type="button"
+                        disabled={pendingIds.length === 0 || saving}
+                        onClick={() => setConfirmOpen(true)}
+                      >
+                        Save positions
+                      </Button>
+                    </>
+                  ) : (
+                    <Button type="button" variant="outline" onClick={() => setEditing(true)}>
+                      <Move className="h-3.5 w-3.5 mr-2" strokeWidth={1.5} />
+                      Edit positions
+                    </Button>
+                  )}
+                </div>
+              </div>
+
               <FloorPlanCanvas
                 imageUrl={planUrl}
                 markers={shown}
                 selectedId={selected?.id ?? null}
                 onSelect={setSelected}
+                editing={editing}
+                canDrag={canDrag}
+                onMove={editing ? handleDrag : undefined}
                 emptyLabel="Plan image for this level is being prepared."
               />
+
 
               {/* Legend */}
               <div className="mt-5 flex flex-wrap gap-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
