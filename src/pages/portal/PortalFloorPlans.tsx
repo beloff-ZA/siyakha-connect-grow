@@ -1181,7 +1181,84 @@ const PortalFloorPlans: React.FC = () => {
                 <Metric label="Installed (all devices)" value={floorStats.installed} />
                 <Metric label="Tested / active (all devices)" value={floorStats.testedActive} />
               </div>
+
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <Metric label="Cable routes on level" value={floorRouteStats.total} />
+                <Metric label="Routes to Wi-Fi APs" value={floorRouteStats.wifi} />
+                <Metric label="Routes to CCTV" value={floorRouteStats.camera} />
+              </div>
             </Panel>
+
+            {/* Selected cable route detail */}
+            {selectedRoute && (
+              <Panel title="Cable route detail">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-display text-xl font-light tracking-tight">
+                      {selectedRoute.route_label}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {serviceLabel(selectedRoute.service_type)} ·{" "}
+                      {stateLabel(selectedRoute.status)}
+                    </p>
+                  </div>
+                  <span
+                    className="border px-3 py-1 text-[10px] uppercase tracking-[0.2em]"
+                    style={{
+                      borderColor: routeColor(selectedRoute.service_type),
+                      color: routeColor(selectedRoute.service_type),
+                    }}
+                  >
+                    {selectedRoute.cable_type}
+                  </span>
+                </div>
+                <dl className="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2 text-sm">
+                  {[
+                    ["Source rack", markerById.get(selectedRoute.rack_marker_id)?.label ?? "—"],
+                    ["Destination", markerById.get(selectedRoute.device_marker_id)?.label ?? "—"],
+                    ["Destination type", serviceLabel(selectedRoute.service_type)],
+                    ["Cable", selectedRoute.cable_type],
+                    ["Status", stateLabel(selectedRoute.status)],
+                    ["Floor", floorById.get(selectedRoute.floor_id)?.display_name ?? "—"],
+                    ["Waypoints", String(waypointsOf(selectedRoute).length)],
+                    ["Length", CABLE_LENGTH_PENDING],
+                  ].map(([k, v]) => (
+                    <div
+                      key={String(k)}
+                      className="flex justify-between gap-4 border-b border-border pb-2"
+                    >
+                      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {k}
+                      </dt>
+                      <dd className="text-right">{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+                {editingRoutes && waypointsOf(selectedRoute).length > 0 && (
+                  <ul className="mt-5 border border-border divide-y divide-border text-[11px]">
+                    {waypointsOf(selectedRoute).map((w, i) => (
+                      <li key={`${w.x}-${w.y}-${i}`} className="flex items-center justify-between px-3 py-2">
+                        <span className="font-mono text-muted-foreground">
+                          Waypoint {i + 1} · {w.x.toFixed(3)}, {w.y.toFixed(3)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => dropWaypoint(selectedRoute.id, i)}
+                          className="flex items-center gap-2 border border-border px-2 py-1 uppercase tracking-[0.2em] hover:bg-muted transition-colors"
+                        >
+                          <Trash2 className="h-3 w-3" strokeWidth={1.5} />
+                          Remove
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <p className="mt-4 text-xs text-muted-foreground leading-relaxed">
+                  {selectedRoute.notes ?? CABLE_ROUTE_DISCLAIMER}
+                </p>
+              </Panel>
+            )}
+
 
             {/* Selected marker detail */}
             {selected && (
