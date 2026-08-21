@@ -79,7 +79,7 @@ const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       {/* Sidebar */}
       <aside
         className={[
-          "lg:w-72 lg:flex-shrink-0 border-b lg:border-b-0 lg:border-r border-border lg:min-h-screen",
+          "lg:w-72 lg:flex-shrink-0 border-b lg:border-b-0 lg:border-r border-border lg:min-h-screen print:hidden",
           open ? "block" : "hidden lg:block",
         ].join(" ")}
       >
