@@ -239,6 +239,28 @@ const PortalFloorPlans: React.FC = () => {
     load();
   }, [load]);
 
+  // Deep-link support: /portal/floor-plans?floor=<uuid> or ?level=<number>.
+  useEffect(() => {
+    if (floors.length === 0) return;
+    const wanted = params.get("floor");
+    const level = params.get("level");
+    let target: PortalFloor | undefined;
+    if (wanted) target = floors.find((f) => f.id === wanted);
+    if (!target && level !== null && /^\d{1,2}$/.test(level))
+      target = floors.find((f) => f.level_number === Number(level));
+    if (target) {
+      setFloorId(target.id);
+      setSelected(null);
+    }
+    if (wanted || level !== null) {
+      const next = new URLSearchParams(params);
+      next.delete("floor");
+      next.delete("level");
+      setParams(next, { replace: true });
+    }
+  }, [floors, params, setParams]);
+
+
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
   const rackMarkers = useMemo(() => markers.filter((m) => m.marker_type === "rack"), [markers]);
   const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
