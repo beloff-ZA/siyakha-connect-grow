@@ -37,7 +37,28 @@ import {
   ErrorNote,
   NoProject,
 } from "@/components/portal/ui";
-import FloorPlanCanvas, { type CoverageMode } from "@/components/portal/FloorPlanCanvas";
+import FloorPlanCanvas, {
+  type CanvasRoute,
+  type CoverageMode,
+} from "@/components/portal/FloorPlanCanvas";
+import {
+  CABLE_LENGTH_PENDING,
+  CABLE_ROUTE_DISCLAIMER,
+  ROUTE_DISPLAY_OPTIONS,
+  ROUTE_LEGEND,
+  downloadCsv,
+  insertWaypoint,
+  parseWaypoints,
+  removeWaypoint,
+  routeColor,
+  routeStats,
+  routesToCsv,
+  serviceLabel,
+  snapOrthogonal,
+  type CableRoute,
+  type RouteDisplayMode,
+  type Waypoint,
+} from "@/lib/cableRoutes";
 import {
   COVERAGE_BANDS,
   COVERAGE_DISCLAIMER,
