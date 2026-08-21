@@ -2749,12 +2749,28 @@ export type Database = {
         | "user"
         | "siyakha_admin"
         | "partner_engineer"
+        | "super_admin"
+        | "project_manager"
+        | "engineer"
+        | "client_admin"
+        | "client_editor"
+        | "client_viewer"
       portal_marker_kind:
         | "wifi_ap"
         | "camera"
         | "rack"
         | "cable_route"
         | "other"
+        | "switch"
+        | "nvr"
+        | "router_firewall"
+        | "data_point"
+        | "fibre_agg_switch"
+        | "fibre_liu"
+        | "fibre_splice"
+        | "patch_panel"
+        | "access_control"
+        | "note_marker"
       portal_marker_state: "planned" | "installed" | "tested" | "active"
     }
     CompositeTypes: {
@@ -2889,8 +2905,30 @@ export const Constants = {
         "user",
         "siyakha_admin",
         "partner_engineer",
+        "super_admin",
+        "project_manager",
+        "engineer",
+        "client_admin",
+        "client_editor",
+        "client_viewer",
       ],
-      portal_marker_kind: ["wifi_ap", "camera", "rack", "cable_route", "other"],
+      portal_marker_kind: [
+        "wifi_ap",
+        "camera",
+        "rack",
+        "cable_route",
+        "other",
+        "switch",
+        "nvr",
+        "router_firewall",
+        "data_point",
+        "fibre_agg_switch",
+        "fibre_liu",
+        "fibre_splice",
+        "patch_panel",
+        "access_control",
+        "note_marker",
+      ],
       portal_marker_state: ["planned", "installed", "tested", "active"],
     },
   },
