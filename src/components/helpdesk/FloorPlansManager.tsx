@@ -431,15 +431,14 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
               onSelect={setSelected}
               onPlace={addMarker}
               onMove={(id, x, y) => moveMarker(id, x, y)}
+              onMoveEnd={(id) => persistMove(id)}
               placing={placing}
               height="h-[55vh]"
               emptyLabel="Upload a plan image for this level to start placing devices."
             />
-            <div className="flex justify-end">
-              <Button variant="outline" onClick={() => selected && persistMove(selected.id)} disabled={!selected}>
-                Save dragged position
-              </Button>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              Dragged positions save automatically when you release the marker.
+            </p>
           </Section>
 
           {selected && (

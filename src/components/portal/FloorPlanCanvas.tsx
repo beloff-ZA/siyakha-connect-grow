@@ -14,6 +14,8 @@ type Props = {
   onPlace?: (x: number, y: number) => void;
   /** Admin-only: drag a marker to new normalised coords. */
   onMove?: (markerId: string, x: number, y: number) => void;
+  /** Admin-only: called once when a marker drag finishes, to persist the position. */
+  onMoveEnd?: (markerId: string) => void;
   placing?: boolean;
   height?: string;
   emptyLabel?: string;
@@ -33,6 +35,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
   onSelect,
   onPlace,
   onMove,
+  onMoveEnd,
   placing = false,
   height = "h-[60vh] md:h-[70vh]",
   emptyLabel = "Plan image not available yet.",
@@ -130,7 +133,8 @@ const FloorPlanCanvas: React.FC<Props> = ({
     dragRef.current = null;
     if (!d) return;
     if (d.mode === "marker") {
-      if (!d.moved) {
+      if (d.moved) onMoveEnd?.(d.id);
+      else {
         const m = markers.find((x) => x.id === d.id);
         if (m) onSelect?.(m);
       }
