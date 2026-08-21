@@ -1664,6 +1664,36 @@ const PortalFloorPlans: React.FC = () => {
               </p>
             </Panel>
 
+            {/* Rack equipment */}
+            {equipment.length > 0 && (
+              <>
+                <Panel title="Building backbone (preliminary)">
+                  <BuildingBackbone
+                    floors={floors}
+                    racks={rackMarkers}
+                    equipment={equipment}
+                    onSelectFloor={(id) => {
+                      setFloorId(id);
+                      setSelected(null);
+                    }}
+                  />
+                </Panel>
+
+                <Panel title="Rack equipment schedule">
+                  <EquipmentSchedule
+                    floors={floors}
+                    racks={rackMarkers}
+                    equipment={equipment}
+                    routes={routes}
+                    onSelectFloor={(id) => {
+                      setFloorId(id);
+                      setSelected(null);
+                    }}
+                  />
+                </Panel>
+              </>
+            )}
+
             {floorStats.cameras === 0 && camDrafts.length === 0 && (
               <div className="border border-dashed border-border p-6 flex items-start gap-3">
                 <Camera className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
