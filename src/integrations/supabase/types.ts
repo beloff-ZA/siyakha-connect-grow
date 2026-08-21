@@ -1955,6 +1955,78 @@ export type Database = {
           },
         ]
       }
+      portal_login_notifications: {
+        Row: {
+          client_id: string | null
+          client_name: string | null
+          client_user_id: string | null
+          created_at: string
+          delivery_status: string
+          error_message: string | null
+          event_kind: string
+          full_name: string | null
+          id: string
+          project_summary: string | null
+          recipient_email: string | null
+          signed_in_at: string
+          site_summary: string | null
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          client_name?: string | null
+          client_user_id?: string | null
+          created_at?: string
+          delivery_status?: string
+          error_message?: string | null
+          event_kind?: string
+          full_name?: string | null
+          id?: string
+          project_summary?: string | null
+          recipient_email?: string | null
+          signed_in_at?: string
+          site_summary?: string | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          client_name?: string | null
+          client_user_id?: string | null
+          created_at?: string
+          delivery_status?: string
+          error_message?: string | null
+          event_kind?: string
+          full_name?: string | null
+          id?: string
+          project_summary?: string | null
+          recipient_email?: string | null
+          signed_in_at?: string
+          site_summary?: string | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_login_notifications_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "portal_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_login_notifications_client_user_id_fkey"
+            columns: ["client_user_id"]
+            isOneToOne: false
+            referencedRelation: "portal_client_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_milestones: {
         Row: {
           created_at: string
@@ -2008,6 +2080,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      portal_notification_settings: {
+        Row: {
+          created_at: string
+          id: string
+          login_notify_enabled: boolean
+          recipient_email: string
+          singleton: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          login_notify_enabled?: boolean
+          recipient_email?: string
+          singleton?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          login_notify_enabled?: boolean
+          recipient_email?: string
+          singleton?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       portal_nvrs: {
         Row: {
