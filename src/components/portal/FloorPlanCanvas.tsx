@@ -109,7 +109,15 @@ const FloorPlanCanvas: React.FC<Props> = ({
     const target = e.target as HTMLElement;
     const markerId = target.closest("[data-marker-id]")?.getAttribute("data-marker-id");
     if (markerId) {
-      dragRef.current = { mode: "marker", id: markerId, startX: e.clientX, startY: e.clientY, moved: false };
+      const m = markers.find((x) => x.id === markerId);
+      dragRef.current = {
+        mode: "marker",
+        id: markerId,
+        startX: e.clientX,
+        startY: e.clientY,
+        moved: false,
+        draggable: !!m && (canDrag ? canDrag(m) : true),
+      };
     } else {
       dragRef.current = {
         mode: "pan",
@@ -130,11 +138,12 @@ const FloorPlanCanvas: React.FC<Props> = ({
     if (far) d.moved = true;
     if (d.mode === "pan") {
       setOffset({ x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) });
-    } else if (onMove && d.moved) {
+    } else if (onMove && d.moved && d.draggable) {
       const { x, y } = stageCoords(e.clientX, e.clientY);
       onMove(d.id, x, y);
     }
   };
+
 
   const onPointerUp = (e: React.PointerEvent) => {
     const d = dragRef.current;
