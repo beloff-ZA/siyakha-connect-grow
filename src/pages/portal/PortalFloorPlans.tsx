@@ -987,6 +987,114 @@ const PortalFloorPlans: React.FC = () => {
                 </p>
               </div>
 
+              {/* Cable routing layer */}
+              <div className="mb-5 border border-border p-4 space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground mr-1">
+                    <Cable className="h-3.5 w-3.5" strokeWidth={1.5} /> Cable routes
+                  </span>
+                  {ROUTE_DISPLAY_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      aria-pressed={routeMode === opt.value}
+                      onClick={() => setRouteMode(opt.value)}
+                      className={[
+                        "border px-3 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors",
+                        routeMode === opt.value
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border text-muted-foreground hover:border-foreground",
+                      ].join(" ")}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    {floorRouteStats.total} on this level
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  {ROUTE_LEGEND.map((l) => (
+                    <span key={l.service} className="flex items-center gap-2">
+                      <span
+                        className="inline-block h-0 w-6"
+                        style={{
+                          borderTop: `2px ${l.service === "camera" ? "dashed" : "solid"} ${routeColor(l.service)}`,
+                        }}
+                      />
+                      {l.label}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {editingRoutes ? (
+                    <>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {pendingRouteIds.length} route{pendingRouteIds.length === 1 ? "" : "s"} edited
+                      </span>
+                      <button
+                        type="button"
+                        aria-pressed={snap}
+                        onClick={() => setSnap((s) => !s)}
+                        className={[
+                          "border px-3 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors",
+                          snap
+                            ? "border-foreground bg-foreground text-background"
+                            : "border-border text-muted-foreground hover:border-foreground",
+                        ].join(" ")}
+                      >
+                        90° snapping
+                      </button>
+                      <Button type="button" variant="outline" onClick={cancelRouteEdits}>
+                        Cancel route edits
+                      </Button>
+                      <Button
+                        type="button"
+                        disabled={pendingRouteIds.length === 0 || savingRoutes}
+                        onClick={saveRouteEdits}
+                      >
+                        {savingRoutes ? "Saving…" : "Save cable routes"}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setEditingRoutes(true);
+                          setEditing(false);
+                          setPlacingCams(false);
+                          setRouteMode((m) => (m === "off" ? "all" : m));
+                        }}
+                      >
+                        <Cable className="h-3.5 w-3.5 mr-2" strokeWidth={1.5} />
+                        Edit cable routes
+                      </Button>
+                      <Button type="button" variant="outline" onClick={() => setGenOpen(true)}>
+                        Generate missing routes
+                      </Button>
+                    </>
+                  )}
+                </div>
+
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {editingRoutes ? (
+                    <>
+                      <span className="text-foreground">
+                        Select a route, press anywhere along it to add an intermediate waypoint, drag
+                        a waypoint to reshape it and double-click a waypoint to remove it.
+                      </span>{" "}
+                      Route ends stay locked to the 6U rack and the device. {CABLE_ROUTE_DISCLAIMER}
+                    </>
+                  ) : (
+                    CABLE_ROUTE_DISCLAIMER
+                  )}
+                </p>
+              </div>
+
               <FloorPlanCanvas
                 imageUrl={planUrl}
                 markers={shown}
@@ -1001,6 +1109,13 @@ const PortalFloorPlans: React.FC = () => {
                 onMoveEnd={undefined}
                 onAim={handleAim}
                 onPlace={placingCams ? placeCamera : undefined}
+                routes={canvasRoutes}
+                selectedRouteId={selectedRouteId}
+                onSelectRoute={setSelectedRouteId}
+                editingRoutes={editingRoutes}
+                onMoveWaypoint={moveWaypoint}
+                onAddWaypoint={addWaypoint}
+                onRemoveWaypoint={dropWaypoint}
                 emptyLabel="Plan image for this level is being prepared."
               />
 
