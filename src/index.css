@@ -310,4 +310,25 @@
     text-decoration: none;
     color: inherit;
   }
+
+  /* Building view: high-rise overview + infrastructure section */
+  .building-print-root {
+    font-size: 10pt;
+  }
+
+  .building-print-root section,
+  .building-print-root article,
+  .building-print-root li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .building-print-root [style*="skewY"] {
+    transform: none !important;
+  }
+
+  .building-print-root .max-h-\[720px\] {
+    max-height: none !important;
+    overflow: visible !important;
+  }
 }
