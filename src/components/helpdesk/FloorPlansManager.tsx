@@ -298,7 +298,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     if (
       clash.length > 0 &&
       !window.confirm(
-        `${clash.length} selected level(s) already have markers. Existing markers on those levels will be deleted and replaced. Continue?`,
+        `${clash.length} selected level(s) already have markers. Existing markers on those levels — and any preliminary cable routes attached to them — will be deleted and replaced. Continue?`,
       )
     )
       return;
