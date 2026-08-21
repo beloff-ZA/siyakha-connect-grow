@@ -542,11 +542,13 @@ const PortalFloorPlans: React.FC = () => {
                       Level {f.level_number}
                     </span>
                     <span className="block text-xs mt-1">
-                      {apCount} AP · {camCount} CCTV
+                      {apCount} AP · {camCount} CCTV · {rackCount} rack
+                      {rackCount === 1 ? "" : "s"}
                     </span>
                     <span className="block text-[10px] mt-0.5 text-muted-foreground">
                       {onFloor.length} devices
                     </span>
+
                   </button>
                 );
               })}
