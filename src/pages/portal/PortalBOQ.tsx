@@ -39,6 +39,8 @@ type Decision = {
   created_at: string;
 };
 
+type DesignSnapshot = { aps: number; cameras: number; racks: number; routes: number; floors: number };
+
 const PortalBOQ: React.FC = () => {
   const { activeProject, clientUser, loading: portalLoading } = usePortal();
   const { user } = useAuth();
@@ -52,12 +54,14 @@ const PortalBOQ: React.FC = () => {
   const [items, setItems] = useState<BoqItem[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [decisions, setDecisions] = useState<Decision[]>([]);
+  const [snapshot, setSnapshot] = useState<DesignSnapshot | null>(null);
   const [query, setQuery] = useState("");
   const [openItem, setOpenItem] = useState<string | null>(null);
   const [commentDraft, setCommentDraft] = useState<Record<string, string>>({});
   const [decisionMode, setDecisionMode] = useState<"accepted" | "changes_requested" | null>(null);
   const [decisionMessage, setDecisionMessage] = useState("");
   const [busy, setBusy] = useState(false);
+
 
   useEffect(() => {
     document.title = "Bill of Quantities | Siyakha Client Portal";
@@ -90,6 +94,31 @@ const PortalBOQ: React.FC = () => {
     load();
   }, [load]);
 
+  useEffect(() => {
+    if (!activeProject) return;
+    let cancelled = false;
+    (async () => {
+      const [markers, routes, floors] = await Promise.all([
+        supabase.from("portal_floor_markers").select("marker_type").eq("project_id", activeProject.id),
+        supabase.from("portal_cable_routes").select("id", { count: "exact", head: true }).eq("project_id", activeProject.id),
+        supabase.from("portal_floors").select("id", { count: "exact", head: true }).eq("project_id", activeProject.id),
+      ]);
+      if (cancelled) return;
+      const rows = (markers.data ?? []) as { marker_type: string }[];
+      setSnapshot({
+        aps: rows.filter((m) => m.marker_type === "wifi_ap").length,
+        cameras: rows.filter((m) => m.marker_type === "camera").length,
+        racks: rows.filter((m) => m.marker_type === "rack").length,
+        routes: routes.count ?? 0,
+        floors: floors.count ?? 0,
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeProject]);
+
+
   const loadDetail = useCallback(async () => {
     if (!boqId) {
       setSections([]);
@@ -119,6 +148,26 @@ const PortalBOQ: React.FC = () => {
     () => computeTotals(items, { vat_enabled: boq?.vat_enabled ?? true, vat_rate: Number(boq?.vat_rate ?? 15) }),
     [items, boq],
   );
+
+  /** Rates are not yet released: every included line is still R 0.00 (TBC). */
+  const pricingPending = useMemo(
+    () => items.length > 0 && items.every((it) => Number(it.customer_unit_rate) === 0),
+    [items],
+  );
+  const money = (value: number) => (pricingPending ? "TBC" : formatZar(value));
+
+  const holds = useMemo(
+    () =>
+      items.filter(
+        (it) =>
+          !it.is_included ||
+          /\bTBC\b|WARNING|provisional|pending|NOT confirmed|not final/i.test(
+            `${it.notes ?? ""} ${it.specification ?? ""}`,
+          ),
+      ),
+    [items],
+  );
+
 
   const filteredItems = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -240,20 +289,31 @@ const PortalBOQ: React.FC = () => {
               <dl className="grid grid-cols-3 gap-6 lg:text-right">
                 <div>
                   <dt className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">Subtotal</dt>
-                  <dd className="mt-1 text-sm">{formatZar(totals.subtotal)}</dd>
+                  <dd className="mt-1 text-sm">{money(totals.subtotal)}</dd>
                 </div>
                 <div>
                   <dt className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
                     VAT {boq?.vat_enabled ? `${Number(boq.vat_rate)}%` : "n/a"}
                   </dt>
-                  <dd className="mt-1 text-sm">{formatZar(totals.vat)}</dd>
+                  <dd className="mt-1 text-sm">{money(totals.vat)}</dd>
                 </div>
+
                 <div>
                   <dt className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">Total</dt>
-                  <dd className="mt-1 font-display text-xl font-light tracking-tight">{formatZar(totals.total)}</dd>
+                  <dd className="mt-1 font-display text-xl font-light tracking-tight">{money(totals.total)}</dd>
                 </div>
               </dl>
             </div>
+
+            {pricingPending && (
+              <p className="mt-6 border border-dashed border-border p-4 text-xs leading-relaxed text-muted-foreground">
+                This revision is a <strong className="font-normal text-foreground">quantity schedule</strong>. Rates are
+                marked TBC while the RF, riser and CCTV validation and supplier confirmations are completed — quantities,
+                specifications and scope are open for your review and queries now, and priced rates will follow in the
+                next revision.
+              </p>
+            )}
+
 
             <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:items-center justify-between print:hidden">
               <div className="relative w-full sm:max-w-xs">
@@ -271,7 +331,8 @@ const PortalBOQ: React.FC = () => {
                   <Printer className="h-4 w-4 mr-2" strokeWidth={1.5} /> Print / download
                 </Button>
                 <Button size="sm" onClick={() => setDecisionMode("accepted")} disabled={items.length === 0}>
-                  <Check className="h-4 w-4 mr-2" strokeWidth={1.5} /> Accept BOQ
+                  <Check className="h-4 w-4 mr-2" strokeWidth={1.5} />{" "}
+                  {pricingPending ? "Accept quantities & scope" : "Accept BOQ"}
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => setDecisionMode("changes_requested")}>
                   <RefreshCcw className="h-4 w-4 mr-2" strokeWidth={1.5} /> Request changes
@@ -280,11 +341,67 @@ const PortalBOQ: React.FC = () => {
             </div>
           </Panel>
 
+          {snapshot && (
+            <Panel title="Live design snapshot">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                These figures are read directly from the project floor plans and cable-route model, so the schedule below
+                always reflects the current design.
+              </p>
+              <dl className="mt-5 grid grid-cols-2 sm:grid-cols-5 gap-6">
+                {[
+                  { label: "Levels", value: snapshot.floors },
+                  { label: "Wi-Fi access points", value: snapshot.aps },
+                  { label: "CCTV cameras", value: snapshot.cameras },
+                  { label: "Racks", value: snapshot.racks },
+                  { label: "Cable routes", value: snapshot.routes },
+                ].map((m) => (
+                  <div key={m.label}>
+                    <dt className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">{m.label}</dt>
+                    <dd className="mt-1 font-display text-2xl font-light tracking-tight">{m.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Panel>
+          )}
+
+          {boq?.notes && (
+            <Panel title="Basis of this revision">
+              <p className="text-sm leading-relaxed whitespace-pre-line text-muted-foreground">{boq.notes}</p>
+            </Panel>
+          )}
+
+          {holds.length > 0 && (
+            <Panel title="Design holds & items to confirm">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {holds.length} line{holds.length === 1 ? "" : "s"} carry a provisional, excluded or to-be-confirmed status.
+                These are the decisions we need from you or from site validation before rates are released.
+              </p>
+              <ul className="mt-5 divide-y divide-border">
+                {holds.map((it) => (
+                  <li key={it.id} className="py-3">
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <span className="text-xs text-muted-foreground">{it.item_code ?? "—"}</span>
+                      <span className="text-sm">{it.description}</span>
+                      <span className="border border-dashed border-border px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {it.is_included ? "To confirm" : "Excluded / provisional"}
+                      </span>
+                    </div>
+                    {it.notes && <p className="mt-1 text-xs text-muted-foreground">{it.notes}</p>}
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+          )}
+
+
           {decisionMode && (
             <Panel title="Confirm your decision">
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {decisionMode === "accepted"
-                  ? `You are accepting ${boq?.revision_label} at ${formatZar(totals.total)} including VAT. Your name and the current time will be recorded.`
+                  ? pricingPending
+                    ? `You are accepting the quantities, specifications and scope of ${boq?.revision_label}. Rates remain TBC and will be issued for separate approval. Your name and the current time will be recorded.`
+                    : `You are accepting ${boq?.revision_label} at ${formatZar(totals.total)} including VAT. Your name and the current time will be recorded.`
+
                   : "Tell Siyakha what needs to change. Your request will be recorded with your name and the current time."}
               </p>
               <div className="mt-4 space-y-2">
@@ -326,7 +443,7 @@ const PortalBOQ: React.FC = () => {
                         <p className="mt-1 text-xs text-muted-foreground">{section.description}</p>
                       )}
                     </div>
-                    <p className="text-sm whitespace-nowrap">{formatZar(secTotal)}</p>
+                    <p className="text-sm whitespace-nowrap">{money(secTotal)}</p>
                   </div>
 
                   <div className="overflow-x-auto">
@@ -366,10 +483,11 @@ const PortalBOQ: React.FC = () => {
                                 </td>
                                 <td className="py-3 pr-3 text-right">{formatQty(it.quantity)}</td>
                                 <td className="py-3 pr-3">{it.unit}</td>
-                                <td className="py-3 pr-3 text-right">{formatZar(Number(it.customer_unit_rate))}</td>
+                                <td className="py-3 pr-3 text-right">{money(Number(it.customer_unit_rate))}</td>
                                 <td className="py-3 text-right">
-                                  {it.is_included ? formatZar(Number(it.line_total)) : "—"}
+                                  {it.is_included ? money(Number(it.line_total)) : "—"}
                                 </td>
+
                               </tr>
                               {expanded && (
                                 <tr className="border-b border-border/60 bg-muted/40">
