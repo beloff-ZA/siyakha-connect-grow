@@ -240,35 +240,54 @@ const FloorPlanCanvas: React.FC<Props> = ({
                 draggable={false}
                 className="w-full h-full object-contain select-none pointer-events-none"
               />
-              {markers.map((m) => (
-                <button
-                  key={m.id}
-                  type="button"
-                  data-marker-id={m.id}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelect?.(m);
-                  }}
-                  title={`${m.label} · ${m.status}`}
-                  className={[
-                    "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
-                    statusRing[m.status] ?? "border-solid",
-                    selectedId === m.id
-                      ? "border-foreground ring-2 ring-foreground/40"
-                      : "border-foreground/70 hover:border-foreground",
-                    m.marker_type === "camera" ? "rounded-none" : "rounded-full",
-                  ].join(" ")}
-                  style={{
-                    left: `${Number(m.x_norm) * 100}%`,
-                    top: `${Number(m.y_norm) * 100}%`,
-                    width: `${Math.max(14, 22 / zoom)}px`,
-                    height: `${Math.max(14, 22 / zoom)}px`,
-                    fontSize: `${Math.max(5, 8 / zoom)}px`,
-                  }}
-                >
-                  {kindShort(m.marker_type)}
-                </button>
-              ))}
+              {markers.map((m) => {
+                const draggable = canDrag ? canDrag(m) : true;
+                const locked = editing && !draggable;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    data-marker-id={m.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelect?.(m);
+                    }}
+                    title={
+                      locked
+                        ? `${m.label} · ${m.status} — position locked. Only devices with a Planned status can be repositioned.`
+                        : editing
+                          ? `${m.label} · ${m.status} — drag to reposition`
+                          : `${m.label} · ${m.status}`
+                    }
+                    aria-label={
+                      locked ? `${m.label}, position locked (${m.status})` : `${m.label}, ${m.status}`
+                    }
+                    className={[
+                      "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center border bg-background/90 text-[7px] font-medium tracking-tight",
+                      statusRing[m.status] ?? "border-solid",
+                      selectedId === m.id
+                        ? "border-foreground ring-2 ring-foreground/40"
+                        : "border-foreground/70 hover:border-foreground",
+                      m.marker_type === "camera" ? "rounded-none" : "rounded-full",
+                      editing ? (draggable ? "cursor-move" : "cursor-not-allowed opacity-70") : "",
+                    ].join(" ")}
+                    style={{
+                      left: `${Number(m.x_norm) * 100}%`,
+                      top: `${Number(m.y_norm) * 100}%`,
+                      width: `${Math.max(14, 22 / zoom)}px`,
+                      height: `${Math.max(14, 22 / zoom)}px`,
+                      fontSize: `${Math.max(5, 8 / zoom)}px`,
+                    }}
+                  >
+                    {locked ? (
+                      <Lock style={{ width: "60%", height: "60%" }} strokeWidth={2} />
+                    ) : (
+                      kindShort(m.marker_type)
+                    )}
+                  </button>
+                );
+              })}
+
             </div>
           </div>
         ) : (
