@@ -53,6 +53,7 @@ import PortalProject from "./pages/portal/PortalProject";
 import PortalTracker from "./pages/portal/PortalTracker";
 import PortalBOQ from "./pages/portal/PortalBOQ";
 import PortalFloorPlans from "./pages/portal/PortalFloorPlans";
+import PortalBuildingView from "./pages/portal/PortalBuildingView";
 
 import PortalDocuments from "./pages/portal/PortalDocuments";
 import PortalSiteImages from "./pages/portal/PortalSiteImages";
@@ -93,6 +94,7 @@ function App() {
               <Route path="/portal/tracker" element={<ClientRoute><PortalTracker /></ClientRoute>} />
               <Route path="/portal/boq" element={<ClientRoute><PortalBOQ /></ClientRoute>} />
               <Route path="/portal/floor-plans" element={<ClientRoute><PortalFloorPlans /></ClientRoute>} />
+              <Route path="/portal/building-view" element={<ClientRoute><PortalBuildingView /></ClientRoute>} />
 
               <Route path="/portal/documents" element={<ClientRoute><PortalDocuments /></ClientRoute>} />
               <Route path="/portal/site-images" element={<ClientRoute><PortalSiteImages /></ClientRoute>} />

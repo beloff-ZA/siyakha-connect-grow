@@ -362,6 +362,14 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
           installed · {buildingStats.testedActive} tested/active
         </p>
         {busy && <span className="text-xs text-muted-foreground">Working…</span>}
+        <a
+          href="/portal/building-view"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 border border-border px-3 py-2 text-[10px] uppercase tracking-[0.18em] hover:bg-muted"
+        >
+          Preview client building view
+        </a>
       </div>
 
       <Section title="Add level">

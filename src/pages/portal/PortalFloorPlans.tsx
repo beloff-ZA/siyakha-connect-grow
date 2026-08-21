@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import {
+  Building2,
   Camera,
   Cable,
   Download,
@@ -132,6 +134,7 @@ const PortalFloorPlans: React.FC = () => {
   const [floors, setFloors] = useState<PortalFloor[]>([]);
   const [markers, setMarkers] = useState<FloorMarker[]>([]);
   const [floorId, setFloorId] = useState("");
+  const [params, setParams] = useSearchParams();
   const [planUrl, setPlanUrl] = useState<string | null>(null);
   const [visible, setVisible] = useState<Record<MarkerKind, boolean>>({
     wifi_ap: true,
@@ -236,6 +239,28 @@ const PortalFloorPlans: React.FC = () => {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Deep-link support: /portal/floor-plans?floor=<uuid> or ?level=<number>.
+  useEffect(() => {
+    if (floors.length === 0) return;
+    const wanted = params.get("floor");
+    const level = params.get("level");
+    let target: PortalFloor | undefined;
+    if (wanted) target = floors.find((f) => f.id === wanted);
+    if (!target && level !== null && /^\d{1,2}$/.test(level))
+      target = floors.find((f) => f.level_number === Number(level));
+    if (target) {
+      setFloorId(target.id);
+      setSelected(null);
+    }
+    if (wanted || level !== null) {
+      const next = new URLSearchParams(params);
+      next.delete("floor");
+      next.delete("level");
+      setParams(next, { replace: true });
+    }
+  }, [floors, params, setParams]);
+
 
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
   const rackMarkers = useMemo(() => markers.filter((m) => m.marker_type === "rack"), [markers]);
@@ -725,8 +750,18 @@ const PortalFloorPlans: React.FC = () => {
       <PageHeader
         eyebrow="Virtual building plans"
         title="Building floor plans & device placement"
-        description={`Level 0 through Level 11 for ${activeProject.title}. ${SURVEY_DISCLAIMER}`}
+        description={`11 occupied levels (Level 0–10) plus the Level 11 rooftop/service level for ${activeProject.title}. ${SURVEY_DISCLAIMER}`}
       />
+
+      <div className="mb-8 print:hidden">
+        <Link
+          to="/portal/building-view"
+          className="inline-flex items-center gap-2 border border-foreground px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-foreground hover:text-background"
+        >
+          <Building2 className="h-3.5 w-3.5" strokeWidth={1.5} />
+          Open full building view
+        </Link>
+      </div>
 
       {error && (
         <div className="mb-6">
