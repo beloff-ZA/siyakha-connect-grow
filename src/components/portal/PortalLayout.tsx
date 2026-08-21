@@ -47,8 +47,20 @@ const nav = [
 const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { signOut } = useAuth();
   const navigate = useNavigate();
-  const { client, clientUser, projects, activeProjectId, setActiveProjectId, loading } = usePortal();
+  const {
+    client,
+    clientUser,
+    sites,
+    activeSiteId,
+    setActiveSiteId,
+    projects,
+    activeProjectId,
+    setActiveProjectId,
+    loading,
+  } = usePortal();
   const [open, setOpen] = useState(false);
+  const siteProjects = projects.filter((p) => !activeSiteId || !p.site_id || p.site_id === activeSiteId);
+
 
   const handleSignOut = async () => {
     await signOut();
