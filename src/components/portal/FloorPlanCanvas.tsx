@@ -597,6 +597,116 @@ const FloorPlanCanvas: React.FC<Props> = ({
                   );
                 })}
 
+              {/* Cable routes — drawn beneath the device markers so AP dragging and
+                  CCTV aiming always win the pointer. Endpoints come from the live
+                  rack / device positions supplied by the caller. */}
+              {!!routes?.length && content.width > 0 && content.height > 0 && (
+                <svg
+                  className="absolute left-0 top-0 pointer-events-none"
+                  width={content.width}
+                  height={content.height}
+                  style={{ zIndex: 5, overflow: "visible" }}
+                  aria-hidden
+                >
+                  {routes.map((r) => {
+                    const pts = [r.from, ...r.waypoints, r.to].map((p) => ({
+                      x: p.x * content.width,
+                      y: p.y * content.height,
+                    }));
+                    const isSel = selectedRouteId === r.id;
+                    const stroke = r.service_type === "camera" ? ROUTE_CAM : ROUTE_WIFI;
+                    const w = (isSel ? 2.6 : 1.4) / zoom;
+                    const path = pts.map((p, i) => `${i ? "L" : "M"}${p.x} ${p.y}`).join(" ");
+                    const editable = editingRoutes && isSel && r.editable !== false;
+                    return (
+                      <g key={r.id}>
+                        {/* Selection hit area */}
+                        {onSelectRoute && (
+                          <path
+                            d={path}
+                            data-route-id={r.id}
+                            fill="none"
+                            stroke="transparent"
+                            strokeWidth={Math.max(8, 10 / zoom)}
+                            className="pointer-events-stroke cursor-pointer"
+                            style={{ pointerEvents: "stroke" }}
+                          />
+                        )}
+                        <path
+                          d={path}
+                          fill="none"
+                          stroke={stroke}
+                          strokeWidth={w}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeDasharray={r.service_type === "camera" ? `${6 / zoom} ${4 / zoom}` : undefined}
+                          opacity={isSel ? 1 : 0.75}
+                        />
+                        {isSel && (
+                          <path
+                            d={path}
+                            fill="none"
+                            stroke={stroke}
+                            strokeWidth={Math.max(6, 8 / zoom)}
+                            opacity={0.16}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        )}
+                        {/* Endpoint dots — locked to the rack and the device. */}
+                        {[pts[0], pts[pts.length - 1]].map((p, i) => (
+                          <circle
+                            key={`e-${i}`}
+                            cx={p.x}
+                            cy={p.y}
+                            r={Math.max(2, 3 / zoom)}
+                            fill={stroke}
+                          />
+                        ))}
+                        {/* Segment hit areas: press to insert an intermediate waypoint. */}
+                        {editable &&
+                          onAddWaypoint &&
+                          pts.slice(0, -1).map((p, i) => (
+                            <line
+                              key={`s-${i}`}
+                              data-seg-route={r.id}
+                              data-seg-index={i}
+                              x1={p.x}
+                              y1={p.y}
+                              x2={pts[i + 1].x}
+                              y2={pts[i + 1].y}
+                              stroke="transparent"
+                              strokeWidth={Math.max(10, 12 / zoom)}
+                              style={{ pointerEvents: "stroke", cursor: "copy" }}
+                            />
+                          ))}
+                        {/* Draggable intermediate waypoints. */}
+                        {editable &&
+                          r.waypoints.map((p, i) => (
+                            <rect
+                              key={`w-${i}`}
+                              data-wp-route={r.id}
+                              data-wp-index={i}
+                              x={p.x * content.width - Math.max(4, 5 / zoom)}
+                              y={p.y * content.height - Math.max(4, 5 / zoom)}
+                              width={Math.max(8, 10 / zoom)}
+                              height={Math.max(8, 10 / zoom)}
+                              fill="hsl(var(--background))"
+                              stroke={stroke}
+                              strokeWidth={Math.max(1, 1.5 / zoom)}
+                              style={{ pointerEvents: "all", cursor: "move" }}
+                              onDoubleClick={(ev) => {
+                                ev.stopPropagation();
+                                onRemoveWaypoint?.(r.id, i);
+                              }}
+                            />
+                          ))}
+                      </g>
+                    );
+                  })}
+                </svg>
+              )}
+
               {markers.map((m) => {
                 const draggable = canDrag ? canDrag(m) : true;
                 const locked = editing && !draggable;
