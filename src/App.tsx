@@ -55,6 +55,8 @@ import PortalBOQ from "./pages/portal/PortalBOQ";
 import PortalFloorPlans from "./pages/portal/PortalFloorPlans";
 
 import PortalDocuments from "./pages/portal/PortalDocuments";
+import PortalSiteImages from "./pages/portal/PortalSiteImages";
+
 import PortalGallery from "./pages/portal/PortalGallery";
 import PortalUpdates from "./pages/portal/PortalUpdates";
 import PortalSupport from "./pages/portal/PortalSupport";
