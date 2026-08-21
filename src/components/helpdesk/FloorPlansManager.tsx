@@ -421,7 +421,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                 {placing ? "Placement mode: on" : "Placement mode: off"}
               </Button>
               <span className="text-xs text-muted-foreground">
-                This level: {stats.total} devices · {stats.aps} APs · {stats.cameras} cameras
+                This level: {stats.aps} Wi-Fi APs · {stats.cameras} CCTV cameras · {stats.total} devices
               </span>
             </div>
 
