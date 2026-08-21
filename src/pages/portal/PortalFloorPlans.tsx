@@ -1714,7 +1714,33 @@ const PortalFloorPlans: React.FC = () => {
               }}
               disabled={savingCams}
             >
-              {savingCams ? "Saving…" : "Save cameras"}
+            {savingCams ? "Saving…" : "Save cameras"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={genOpen} onOpenChange={setGenOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Generate missing cable routes?</AlertDialogTitle>
+            <AlertDialogDescription>
+              One preliminary Cat6 UTP route will be added from each level's 6U rack to every Wi-Fi
+              access point and CCTV camera on that same level that does not have one yet. Existing
+              routes and their waypoints are never changed or duplicated, and no routes are created
+              between levels. {CABLE_ROUTE_DISCLAIMER}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={generating}>Not now</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                generateRoutes();
+              }}
+              disabled={generating}
+            >
+              {generating ? "Generating…" : "Generate missing routes"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
