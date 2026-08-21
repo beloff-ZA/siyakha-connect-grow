@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   Building2,
@@ -12,8 +12,18 @@ import {
   Move,
   Radio,
   Search,
+  Settings2,
   Trash2,
 } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
 import { supabase } from "@/integrations/supabase/client";
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
@@ -193,6 +203,21 @@ const PortalFloorPlans: React.FC = () => {
     };
   }, [activeProject]);
 
+  // ---- Plan-side device management ------------------------------------------
+  const [managerOpen, setManagerOpen] = useState(false);
+  /** One-shot placement: the next click on the plan positions this device. */
+  const [placeTarget, setPlaceTarget] = useState<{ id: string; label: string } | null>(null);
+  type AutoSaveState =
+    | { state: "idle" }
+    | { state: "saving"; label: string }
+    | { state: "saved"; label: string; at: string }
+    | { state: "error"; id: string; label: string; message: string };
+  const [autoSave, setAutoSave] = useState<AutoSaveState>({ state: "idle" });
+  /** Latest dragged position per marker, readable synchronously on pointer release. */
+  const dragPositions = useRef<Record<string, { x: number; y: number }>>({});
+
+
+
 
 
   // Selecting a device defaults the coverage view to that device only.
@@ -361,8 +386,112 @@ const PortalFloorPlans: React.FC = () => {
       setCamDrafts((list) => list.map((c) => (c.id === id ? { ...c, x, y } : c)));
       return;
     }
+    dragPositions.current[id] = { x, y };
     setDraft((d) => ({ ...d, [id]: { x, y } }));
   }, []);
+
+  /**
+   * Persist a marker's natural-image normalised position through the secured RPC.
+   * On failure the local draft position is kept so the user's intent survives and
+   * can be retried — the marker never snaps back silently.
+   */
+  const persistPosition = useCallback(
+    async (id: string, pos?: { x: number; y: number }) => {
+      const marker = markers.find((m) => m.id === id);
+      const p = pos ?? dragPositions.current[id] ?? draft[id];
+      if (!marker || !p) return;
+      setAutoSave({ state: "saving", label: marker.label });
+      const { error: rpcErr } = await supabase.rpc("portal_save_floor_marker", {
+        _payload: {
+          id,
+          floor_id: marker.floor_id,
+          is_placed: true,
+          x_norm: p.x,
+          y_norm: p.y,
+        } as unknown as never,
+      });
+      if (rpcErr) {
+        setAutoSave({ state: "error", id, label: marker.label, message: rpcErr.message });
+        return;
+      }
+      setMarkers((list) =>
+        list.map((m) => (m.id === id ? { ...m, x_norm: p.x, y_norm: p.y, is_placed: true } : m)),
+      );
+      setSelected((s) => (s?.id === id ? { ...s, x_norm: p.x, y_norm: p.y, is_placed: true } : s));
+      setDraft((d) => {
+        const next = { ...d };
+        delete next[id];
+        return next;
+      });
+      delete dragPositions.current[id];
+      setAutoSave({
+        state: "saved",
+        label: marker.label,
+        at: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      });
+    },
+    [markers, draft],
+  );
+
+  /** Pointer release on the plan saves the new position immediately. */
+  const handleMoveEnd = useCallback(
+    (id: string) => {
+      if (id.startsWith("draft-")) return; // unsaved camera drafts are committed in bulk
+      void persistPosition(id);
+    },
+    [persistPosition],
+  );
+
+  /** Enter one-shot placement mode for a register-only device. */
+  const requestPlace = useCallback(
+    (id: string, label: string) => {
+      setManagerOpen(false);
+      setPlacingCams(false);
+      setEditing(false);
+      setPlaceTarget({ id, label });
+      toast({
+        title: `Placing ${label}`,
+        description: "Click or tap the position on the plan. The position saves immediately.",
+      });
+    },
+    [toast],
+  );
+
+  /** The single click that positions the device chosen for placement. */
+  const placeExistingMarker = useCallback(
+    async (x: number, y: number) => {
+      if (!placeTarget || !floor) return;
+      const target = placeTarget;
+      setPlaceTarget(null);
+      setAutoSave({ state: "saving", label: target.label });
+      const { error: rpcErr } = await supabase.rpc("portal_save_floor_marker", {
+        _payload: {
+          id: target.id,
+          floor_id: floor.id,
+          is_placed: true,
+          x_norm: x,
+          y_norm: y,
+        } as unknown as never,
+      });
+      if (rpcErr) {
+        setAutoSave({ state: "error", id: target.id, label: target.label, message: rpcErr.message });
+        toast({ title: "Device not placed", description: rpcErr.message, variant: "destructive" });
+        return;
+      }
+      await load();
+      setAutoSave({
+        state: "saved",
+        label: target.label,
+        at: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      });
+      toast({
+        title: "Device placed",
+        description: `${target.label} is now on ${floor.display_name} and recorded in the audit trail.`,
+      });
+    },
+    [placeTarget, floor, load, toast],
+  );
+
 
   /** Aim a camera: drafts update in place, saved planned cameras become optics drafts. */
   const handleAim = useCallback(
@@ -1177,40 +1306,147 @@ const PortalFloorPlans: React.FC = () => {
                 </p>
               </div>
 
-              {canManage && (
-                <DeviceManager
-                  floor={floor}
-                  floorMarkers={floorMarkers}
-                  selected={selected}
-                  onSelect={setSelected}
-                  onChanged={load}
-                />
-              )}
+              {/* Management sidebar beside the plan on desktop, drawer on smaller screens */}
+              <div
+                className={
+                  canManage
+                    ? "xl:grid xl:grid-cols-[minmax(320px,360px)_minmax(0,1fr)] xl:items-start xl:gap-6"
+                    : undefined
+                }
+              >
+                {canManage && (
+                  <>
+                    <div className="hidden xl:block xl:sticky xl:top-24 xl:max-h-[calc(100vh-8rem)] xl:overflow-y-auto">
+                      <DeviceManager
+                        floor={floor}
+                        floorMarkers={floorMarkers}
+                        selected={selected}
+                        onSelect={setSelected}
+                        onChanged={load}
+                        onRequestPlace={requestPlace}
+                        layout="sidebar"
+                      />
+                    </div>
 
-              <FloorPlanCanvas
+                    <div className="mb-5 xl:hidden">
+                      <Sheet open={managerOpen} onOpenChange={setManagerOpen}>
+                        <SheetTrigger asChild>
+                          <Button type="button" variant="outline" className="w-full">
+                            <Settings2 className="mr-2 h-3.5 w-3.5" strokeWidth={1.5} />
+                            Device management
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-full overflow-y-auto p-0 sm:max-w-lg">
+                          <SheetHeader className="px-4 pt-6">
+                            <SheetTitle className="text-left font-display text-xl font-light">
+                              Devices on {floor?.display_name ?? "this level"}
+                            </SheetTitle>
+                            <SheetDescription className="text-left text-xs">
+                              Add, edit, place or remove devices. Placement and drag positions save
+                              straight to the project audit trail.
+                            </SheetDescription>
+                          </SheetHeader>
+                          <DeviceManager
+                            floor={floor}
+                            floorMarkers={floorMarkers}
+                            selected={selected}
+                            onSelect={setSelected}
+                            onChanged={load}
+                            onRequestPlace={requestPlace}
+                            layout="sheet"
+                          />
+                        </SheetContent>
+                      </Sheet>
+                    </div>
+                  </>
+                )}
 
-                imageUrl={planUrl}
-                markers={shown}
-                selectedId={selected?.id ?? null}
-                onSelect={setSelected}
-                editing={editing}
-                placing={placingCams}
-                unsavedIds={camDrafts.map((c) => c.id)}
-                canDrag={canDrag}
-                coverage={coverage}
-                onMove={handleDrag}
-                onMoveEnd={undefined}
-                onAim={handleAim}
-                onPlace={placingCams ? placeCamera : undefined}
-                routes={canvasRoutes}
-                selectedRouteId={selectedRouteId}
-                onSelectRoute={setSelectedRouteId}
-                editingRoutes={editingRoutes}
-                onMoveWaypoint={moveWaypoint}
-                onAddWaypoint={addWaypoint}
-                onRemoveWaypoint={dropWaypoint}
-                emptyLabel="Plan image for this level is being prepared."
-              />
+                <div className="min-w-0">
+                  {placeTarget && (
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-3 border border-foreground bg-muted/60 px-4 py-3">
+                      <p className="text-xs">
+                        <span className="text-foreground">Placing {placeTarget.label}.</span>{" "}
+                        <span className="text-muted-foreground">
+                          Click the plan to set its position.
+                        </span>
+                      </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPlaceTarget(null)}
+                      >
+                        Cancel placement
+                      </Button>
+                    </div>
+                  )}
+
+                  <FloorPlanCanvas
+                    imageUrl={planUrl}
+                    markers={shown}
+                    selectedId={selected?.id ?? null}
+                    onSelect={setSelected}
+                    editing={editing}
+                    placing={placingCams || !!placeTarget}
+                    unsavedIds={camDrafts.map((c) => c.id)}
+                    canDrag={canDrag}
+                    coverage={coverage}
+                    onMove={handleDrag}
+                    onMoveEnd={handleMoveEnd}
+                    onAim={handleAim}
+                    onPlace={
+                      placeTarget ? placeExistingMarker : placingCams ? placeCamera : undefined
+                    }
+                    routes={canvasRoutes}
+                    selectedRouteId={selectedRouteId}
+                    onSelectRoute={setSelectedRouteId}
+                    editingRoutes={editingRoutes}
+                    onMoveWaypoint={moveWaypoint}
+                    onAddWaypoint={addWaypoint}
+                    onRemoveWaypoint={dropWaypoint}
+                    emptyLabel="Plan image for this level is being prepared."
+                  />
+
+                  {/* Position autosave feedback */}
+                  {autoSave.state !== "idle" && (
+                    <div
+                      role="status"
+                      aria-live="polite"
+                      className={[
+                        "mt-3 flex flex-wrap items-center justify-between gap-3 border px-4 py-3 text-xs",
+                        autoSave.state === "error"
+                          ? "border-destructive/50 bg-destructive/5 text-destructive"
+                          : "border-border text-muted-foreground",
+                      ].join(" ")}
+                    >
+                      {autoSave.state === "saving" && <span>Saving {autoSave.label} position…</span>}
+                      {autoSave.state === "saved" && (
+                        <span>
+                          <span className="text-foreground">Saved</span> — {autoSave.label} position
+                          stored at {autoSave.at}.
+                        </span>
+                      )}
+                      {autoSave.state === "error" && (
+                        <>
+                          <span>
+                            {autoSave.label} position not saved ({autoSave.message}). Your position is
+                            kept as an unsaved draft.
+                          </span>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => persistPosition(autoSave.id)}
+                          >
+                            Retry save
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
 
 
 
