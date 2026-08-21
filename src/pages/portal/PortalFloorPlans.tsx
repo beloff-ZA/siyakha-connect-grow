@@ -48,6 +48,7 @@ import {
   CAMERA_RANGES,
   FOV_PRESETS,
   MARKER_KINDS,
+  RACK_MOVE_HINT,
   SURVEY_DISCLAIMER,
   kindLabel,
   kindShort,
