@@ -134,7 +134,27 @@ const ClientPortalAdmin: React.FC = () => {
     loadBase();
   };
 
+  const [credentials, setCredentials] = useState<
+    { client_user_id: string; email: string; password: string } | null
+  >(null);
+
+  /** Creates the client login on our side with a generated password. No email is sent. */
+  const provisionCredentials = async (clientUserId: string) => {
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("provision-client-credentials", {
+      body: { client_user_id: clientUserId },
+    });
+    setBusy(false);
+    if (error) return fail(error);
+    const res = data as Row;
+    if (!res?.password) return fail(new Error(res?.error ?? "No credentials returned"));
+    setCredentials({ client_user_id: clientUserId, email: res.email, password: res.password });
+    toast({ title: "Login created", description: "Hand the credentials over securely — no email was sent." });
+    loadBase();
+  };
+
   const sendInvite = async (clientUserId: string, redirectTo?: string) => {
+
     setBusy(true);
     const { data, error } = await supabase.functions.invoke("invite-client-user", {
       body: {
@@ -470,11 +490,20 @@ const ClientPortalAdmin: React.FC = () => {
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => provisionCredentials(cu.id)}
+                        disabled={busy}
+                        title="Creates the login with a generated password. No email is sent to the client."
+                      >
+                        Create login (no email)
+                      </Button>
                       <Button size="sm" variant="outline" onClick={() => sendInvite(cu.id)} disabled={busy}>
                         Send / resend invite
                       </Button>
                       <Button
                         size="sm"
+                        variant="outline"
                         onClick={() => sendInvite(cu.id, PRODUCTION_LOGIN_URL)}
                         disabled={busy}
                         title={`First-time account setup link pointing at ${PRODUCTION_LOGIN_URL}`}
@@ -486,7 +515,33 @@ const ClientPortalAdmin: React.FC = () => {
                       </Button>
                     </div>
 
+                    {credentials?.client_user_id === cu.id && (
+                      <div className="w-full sm:w-auto border border-border p-3 text-xs space-y-1">
+                        <p className="uppercase tracking-[0.2em] text-muted-foreground">
+                          Credentials — shown once
+                        </p>
+                        <p className="font-mono break-all">Username: {credentials.email}</p>
+                        <p className="font-mono break-all">Password: {credentials.password}</p>
+                        <div className="flex gap-2 pt-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() =>
+                              navigator.clipboard
+                                .writeText(`Username: ${credentials.email}\nPassword: ${credentials.password}`)
+                                .then(() => toast({ title: "Copied" }))
+                            }
+                          >
+                            Copy
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => setCredentials(null)}>
+                            Hide
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </li>
+
                 ))}
               </ul>
             )}
