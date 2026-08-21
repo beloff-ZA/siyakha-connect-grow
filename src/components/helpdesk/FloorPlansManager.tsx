@@ -84,6 +84,10 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
   const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
   const stats = useMemo(() => markerStats(floorMarkers), [floorMarkers]);
+  const floorRouteStats = useMemo(
+    () => routeStats(routes.filter((r) => r.floor_id === floorId)),
+    [routes, floorId],
+  );
   const buildingStats = useMemo(() => markerStats(markers), [markers]);
 
   useEffect(() => {
