@@ -293,8 +293,9 @@ describe("unified BOQ item editor", () => {
       selling_price: "abc",
     });
     expect(res.ok).toBe(false);
-    if (res.ok) return;
-    expect(Object.keys(res.errors).sort()).toEqual(["category", "description", "quantity", "selling_price", "unit"]);
+    if (!res.ok) {
+      expect(Object.keys(res.errors).sort()).toEqual(["category", "description", "quantity", "selling_price", "unit"]);
+    }
     expect(unifiedItemPatch(cur, { ...baseInput, quantity: 0 }).ok).toBe(true);
   });
 
