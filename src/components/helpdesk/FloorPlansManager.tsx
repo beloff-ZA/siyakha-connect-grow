@@ -590,9 +590,29 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
             />
           </Section>
 
-          <Section title="Place & edit markers" note="Click the plan to place a marker when placement mode is on. Drag markers to reposition, then release to save.">
+          <Section
+            title="Place & edit devices"
+            note="Pick a catalogue product (or a plain device type), switch placement mode on and click the plan. Each catalogue-linked device you place, archive or delete updates the project's design bill of quantities in the same transaction."
+          >
             <div className="flex flex-wrap items-center gap-3">
-              <select className={selectCls + " max-w-[220px]"} value={placeKind} onChange={(e) => setPlaceKind(e.target.value as MarkerKind)}>
+              <select
+                className={selectCls + " max-w-[320px]"}
+                value={placeProductId}
+                onChange={(e) => setPlaceProductId(e.target.value)}
+              >
+                <option value="">No catalogue product (device type only)</option>
+                {products.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {[p.manufacturer, p.model, p.name].filter(Boolean).join(" ")}
+                  </option>
+                ))}
+              </select>
+              <select
+                className={selectCls + " max-w-[220px]"}
+                value={placeKind}
+                onChange={(e) => setPlaceKind(e.target.value as MarkerKind)}
+                disabled={!!placeProductId}
+              >
                 {MARKER_KINDS.map((k) => (
                   <option key={k.value} value={k.value}>
                     {k.label}
@@ -606,6 +626,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                 This level: {stats.aps} Wi-Fi APs · {stats.cameras} CCTV cameras · {stats.racks}{" "}
                 racks · {stats.total} devices · {floorRouteStats.total} cable routes (
                 {floorRouteStats.wifi} Wi-Fi / {floorRouteStats.camera} CCTV)
+                {archivedFloorMarkers.length > 0 && ` · ${archivedFloorMarkers.length} archived`}
               </span>
             </div>
 
@@ -660,6 +681,24 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                     {MARKER_STATES.map((s) => (
                       <option key={s.value} value={s.value}>
                         {s.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Catalogue product (drives bill quantity)</Label>
+                  <select
+                    className={selectCls}
+                    value={selected.product_id ?? ""}
+                    onChange={(e) =>
+                      saveMarker({ product_id: e.target.value || null } as Partial<FloorMarker>)
+                    }
+                    disabled={busy}
+                  >
+                    <option value="">Not linked to the catalogue</option>
+                    {products.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {[p.manufacturer, p.model, p.name].filter(Boolean).join(" ")}
                       </option>
                     ))}
                   </select>
@@ -751,7 +790,10 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                 <Button variant="outline" onClick={duplicateMarker}>
                   Duplicate
                 </Button>
-                <Button variant="outline" onClick={deleteMarker}>
+                <Button variant="outline" onClick={archiveMarker} disabled={busy}>
+                  Archive device
+                </Button>
+                <Button variant="outline" onClick={deleteMarker} disabled={busy}>
                   Delete
                 </Button>
               </div>
@@ -759,6 +801,36 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                 Current status: {stateLabel(selected.status)} · client visible:{" "}
                 {selected.client_visible ? "yes" : "no"}
               </p>
+            </Section>
+          )}
+
+          {archivedFloorMarkers.length > 0 && (
+            <Section
+              title={`Archived devices on ${floor.display_name}`}
+              note="Archived devices are excluded from the plan and from bill quantities, but their history is retained. Restoring one puts its quantity back."
+            >
+              <Button variant="outline" onClick={() => setShowArchived((v) => !v)}>
+                {showArchived ? "Hide archived devices" : `Show ${archivedFloorMarkers.length} archived device(s)`}
+              </Button>
+              {showArchived && (
+                <ul className="divide-y divide-border border border-border">
+                  {archivedFloorMarkers.map((m) => (
+                    <li key={m.id} className="flex flex-wrap items-center justify-between gap-3 px-3 py-2 text-sm">
+                      <span>
+                        {m.label} · {kindLabel(m.marker_type)} · {stateLabel(m.status)}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={busy}
+                        onClick={() => restoreMarker(m.id, m.label)}
+                      >
+                        Restore
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </Section>
           )}
 
