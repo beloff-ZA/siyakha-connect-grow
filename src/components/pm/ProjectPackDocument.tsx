@@ -5,6 +5,7 @@ import { SIYAKHA, PROPOSAL_DEFAULTS } from "@/lib/proposals";
 import { assetStatusLabel, deviceTypeLabel, lineKindLabel, NOT_PROCURED, packSectionFlags, stageLabel } from "@/lib/lifecycle";
 import type { ProjectPack } from "@/lib/projectPack";
 import PlanSheet from "./PlanSheet";
+import { ROOFTOP_EXCLUDED_NOTE, ROOFTOP_SECTION_TITLE, floorCountLabel, splitFloorAreas } from "@/lib/reporting";
 
 /** Page-level block. Adds a print page break before every section but the first. */
 const Page: React.FC<{ title?: string; first?: boolean; children: React.ReactNode }> = ({ title, first, children }) => (
@@ -82,6 +83,9 @@ const ProjectPackDocument: React.FC<{ pack: ProjectPack }> = ({ pack }) => {
   const alternatives = boqLines.filter((l) => l.line_kind === "alternative");
   const provisional = boqLines.filter((l) => l.line_kind === "provisional" || l.line_kind === "contingency");
   const exclusionLines = boqLines.filter((l) => l.line_kind === "exclusion");
+
+  const { floors: storeys, rooftop: rooftopAreas } = splitFloorAreas(floors);
+  const floorCount = floorCountLabel(floors);
 
   const markers = floors.flatMap((f) => f.markers.map((m) => ({ ...m, floor: f.display_name })));
   const cameras = markers.filter((m) => m.marker_type === "camera");
@@ -216,7 +220,7 @@ const ProjectPackDocument: React.FC<{ pack: ProjectPack }> = ({ pack }) => {
             text={narrative.executive_summary ?? project.planning_narrative}
             fallback={`Siyakha Technology Solutions has designed a structured technology infrastructure solution for ${
               site?.name ?? project.title
-            }, covering ${floors.length} area(s) and ${markers.length} planned devices. The design is documented per level with mapped device positions, schedules and a priced bill of quantities.`}
+            }, covering ${floorCount} and ${markers.length} planned devices. The design is documented per level with mapped device positions, schedules and a priced bill of quantities.`}
           />
         </Block>
         <Block title="Current stage">
@@ -268,13 +272,28 @@ const ProjectPackDocument: React.FC<{ pack: ProjectPack }> = ({ pack }) => {
 
       {/* Floor / area schedule */}
       <Page title="Floor and area schedule">
+        <p className="mb-2 text-[9pt] font-semibold">{floorCount}</p>
         <Table
-          head={["Level", "Area / level name", "Use", "Cameras", "Access points", "Data points", "Racks", "Total devices"]}
-          rows={floors.map((f) => {
+          head={["Level", "Floor name", "Use", "Cameras", "Access points", "Data points", "Racks", "Total devices"]}
+          rows={storeys.map((f) => {
             const t = (k: string) => f.markers.filter((m) => m.marker_type === k).length;
             return [f.level_number, f.display_name, deviceTypeLabel(f.floor_use), t("camera"), t("wifi_ap"), t("data_point"), t("rack"), f.markers.length];
           })}
         />
+        {rooftopAreas.length > 0 && (
+          <div className="print-block mt-4">
+            <p className="mb-1 text-[9pt] font-semibold">
+              {ROOFTOP_SECTION_TITLE} — {ROOFTOP_EXCLUDED_NOTE}
+            </p>
+            <Table
+              head={["Level", "Area name", "Use", "Cameras", "Access points", "Data points", "Racks", "Total devices"]}
+              rows={rooftopAreas.map((f) => {
+                const t = (k: string) => f.markers.filter((m) => m.marker_type === k).length;
+                return [f.level_number, f.display_name, deviceTypeLabel(f.floor_use), t("camera"), t("wifi_ap"), t("data_point"), t("rack"), f.markers.length];
+              })}
+            />
+          </div>
+        )}
         <p className="mt-3 text-[8.5pt] text-neutral-600">
           Total planned devices: {markers.length}. Mapped on plan: {markers.filter((m) => m.is_placed).length}.
         </p>
