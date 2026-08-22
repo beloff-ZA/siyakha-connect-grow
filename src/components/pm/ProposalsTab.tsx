@@ -251,6 +251,24 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
     }
   };
 
+  /** Shares the exact issued revision; a draft must be generated first. */
+  const openShare = (p: Proposal, variant: "full" | "costing") => {
+    if (!p.snapshot) {
+      toast({ title: "Generate the document first", description: "A frozen revision is required before sharing.", variant: "destructive" as never });
+      return;
+    }
+    const project = projects.find((x) => x.id === p.project_id);
+    setShare({
+      resource_type: variant === "costing" ? "costing" : "proposal",
+      resource_id: p.id,
+      revision_label: `${p.proposal_number} · ${p.revision_label}`,
+      title: p.title,
+      project_id: p.project_id,
+      client_id: project?.client_id ?? null,
+      snapshot: { proposal: p },
+    });
+  };
+
   const setStatus = async (p: Proposal, status: Proposal["status"]) => {
     setBusy(true);
     try {
