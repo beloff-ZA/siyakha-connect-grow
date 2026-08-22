@@ -34,11 +34,10 @@ import { BOQ_UNITS, computeTotals, formatQty, formatZar, lineTotal, type Boq, ty
 import {
   DEFAULT_CATEGORY,
   isRevisionLocked,
+  itemEditPatch,
   pickDefaultBoq,
   previewLineTotal,
-  priceUpdatePatch,
   searchBoqItems,
-  validateNewPrice,
   validateQuickLine,
 } from "@/lib/quickBoq";
 import { buildSnapshot, type ProposalSnapshot } from "@/lib/proposals";
