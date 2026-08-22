@@ -231,3 +231,14 @@ export const bearingText = (deg: number) => `${normalizeBearing(deg)}° ${cardin
 
 /** Minimum drag distance (image px) before a placement drag is treated as aiming. */
 export const AIM_DEADZONE_PX = 8;
+
+/**
+ * CSS rotation (deg, clockwise) for the reusable CCTV camera pictogram, which is
+ * drawn pointing UP at rest. Identity with the plan bearing so the barrel always
+ * points the same way as the amber field-of-view cone. Null/undefined/non-finite
+ * directions fall back to 0° (up).
+ */
+export function cameraPictogramRotation(deg?: number | null): number {
+  const n = Number(deg);
+  return Number.isFinite(n) ? normalizeBearing(n) : 0;
+}
