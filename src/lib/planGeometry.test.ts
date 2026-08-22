@@ -203,3 +203,38 @@ describe("camera bearings", () => {
     expect(AIM_DEADZONE_PX).toBeGreaterThan(0);
   });
 });
+
+describe("camera aim persistence contract", () => {
+  const content = { width: 1000, height: 800 };
+  const camera = { x: 0.4, y: 0.6 };
+
+  it("persists an integer bearing in 0..359 from the release pointer", () => {
+    const release = bearingBetween(camera, { x: 0.4, y: 0.2 }, content);
+    const saved = normalizeBearing(release);
+    expect(Number.isInteger(saved)).toBe(true);
+    expect(saved).toBe(0);
+    expect(saved).toBeGreaterThanOrEqual(0);
+    expect(saved).toBeLessThan(360);
+  });
+
+  it("normalizes out-of-range and negative degree edits typed into the editor", () => {
+    expect(normalizeBearing(-1)).toBe(359);
+    expect(normalizeBearing(400)).toBe(40);
+    expect(normalizeBearing(359.4)).toBe(359);
+  });
+
+  it("keeps aiming independent of the camera position", () => {
+    const moved = { x: 0.7, y: 0.2 };
+    const deg = 118;
+    const handleA = aimOffsetPx(deg, 30);
+    const handleB = aimOffsetPx(deg, 30);
+    expect(handleA).toEqual(handleB);
+    expect(bearingBetween(camera, { x: camera.x, y: camera.y - 0.1 }, content)).toBe(0);
+    expect(bearingBetween(moved, { x: moved.x, y: moved.y - 0.1 }, content)).toBe(0);
+  });
+
+  it("reports a compass label alongside the degrees for the editor", () => {
+    expect(bearingText(0)).toBe("0° N");
+    expect(bearingText(270)).toBe("270° W");
+  });
+});

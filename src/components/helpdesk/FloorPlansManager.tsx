@@ -23,6 +23,7 @@ import {
   type MarkerState,
   type PortalFloor,
 } from "@/lib/floorPlans";
+import { bearingText, normalizeBearing } from "@/lib/planGeometry";
 import { parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
 import {
   bulkCreateMarkers,
@@ -320,6 +321,27 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     }
   };
 
+  /** Live local preview while the aim handle is dragged — no database write. */
+  const aimMarker = (id: string, deg: number) => {
+    const d = normalizeBearing(deg);
+    setMarkers((prev) => prev.map((m) => (m.id === id ? { ...m, direction_deg: d } : m)));
+    setSelected((prev) => (prev && prev.id === id ? { ...prev, direction_deg: d } : prev));
+  };
+
+  /** Persists the exact release bearing once, leaving the position untouched. */
+  const persistAim = async (id: string, deg: number) => {
+    const m = markers.find((v) => v.id === id);
+    if (!m) return;
+    const d = normalizeBearing(deg);
+    aimMarker(id, d);
+    try {
+      await markerTransaction("save", { id, floor_id: m.floor_id, direction_deg: d });
+    } catch (e) {
+      fail(e instanceof Error ? e.message : "Could not save the camera direction");
+      await load();
+    }
+  };
+
   const saveMarker = async (patch: Partial<FloorMarker>) => {
     if (!selected) return;
     // Every field, catalogue linkage included, goes through the one server
@@ -584,12 +606,15 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
               onPlace={(x, y, deg) => addMarker(x, y, deg)}
               onMove={(id, x, y) => moveMarker(id, x, y)}
               onMoveEnd={(id, x, y) => persistMove(id, x, y)}
+              onAim={(id, deg) => aimMarker(id, deg)}
+              onAimEnd={(id, deg) => persistAim(id, deg)}
               placing={placing}
               height="h-[55vh]"
               emptyLabel="Upload a plan image for this level to start placing devices."
             />
             <p className="text-xs text-muted-foreground">
-              Dragged positions save automatically when you release the marker.
+              Dragged positions save automatically when you release the marker. Select a camera and
+              drag its orange aim handle to set the direction — it saves on release.
             </p>
           </Section>
 
@@ -698,6 +723,34 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                     placeholder="e.g. photo set / test report reference"
                   />
                 </div>
+                {selected.marker_type === "camera" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="camera-direction">Camera direction</Label>
+                    <div className="flex items-center gap-3">
+                      <Input
+                        id="camera-direction"
+                        type="number"
+                        min={0}
+                        max={359}
+                        step={1}
+                        className="max-w-[7rem]"
+                        value={normalizeBearing(Number(selected.direction_deg ?? 0))}
+                        onChange={(e) =>
+                          setSelected({
+                            ...selected,
+                            direction_deg: normalizeBearing(Number(e.target.value) || 0),
+                          })
+                        }
+                      />
+                      <span className="text-sm font-medium">
+                        {bearingText(Number(selected.direction_deg ?? 0))}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      0° up · 90° right · 180° down · 270° left
+                    </p>
+                  </div>
+                )}
               </div>
               <Textarea
                 rows={3}
@@ -725,6 +778,9 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                       notes: selected.notes || null,
                       x_norm: selected.x_norm,
                       y_norm: selected.y_norm,
+                      ...(selected.marker_type === "camera"
+                        ? { direction_deg: normalizeBearing(Number(selected.direction_deg ?? 0)) }
+                        : {}),
                     });
                   }}
                 >
