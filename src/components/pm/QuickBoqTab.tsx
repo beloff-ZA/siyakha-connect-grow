@@ -222,36 +222,88 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     return data.id as string;
   };
 
+  /** Reuses the existing portal_boq_activity log — no new logging system. */
+  const logActivity = async (action: string, detail: string) => {
+    try {
+      const { data } = await supabase.auth.getUser();
+      await supabase.from("portal_boq_activity").insert({
+        boq_id: boqId,
+        actor_user_id: data.user?.id ?? null,
+        actor_type: "admin",
+        action,
+        detail,
+      });
+    } catch {
+      /* logging must never block the save */
+    }
+  };
+
+  /** The one save path for both adding and editing a BOQ line. */
   const submitForm = async () => {
     if (!form || !boqId) return;
-    const category = form.category === "__new" ? form.newCategory : form.category;
-    const result = validateQuickLine({ ...form, category, selling_price: form.selling_price });
-    if (!result.ok) {
-      setErrors(result.errors);
-      return;
-    }
-    setErrors({});
-    setBusy(true);
-    try {
-      const sectionId = await resolveSection(form);
-      const values = result.values;
-      if (form.id) {
-        const { error } = await supabase
-          .from("portal_boq_items")
-          .update({ ...values, section_id: sectionId })
-          .eq("id", form.id);
-        if (error) throw error;
-        toast({ title: "Item updated" });
-      } else {
+    const category = (form.category === "__new" ? form.newCategory : form.category).trim();
+    const current = form.id ? items.find((i) => i.id === form.id) ?? null : null;
+
+    if (!form.id) {
+      const result = validateQuickLine({ ...form, category, selling_price: form.selling_price });
+      if (!result.ok) return setErrors(result.errors);
+      setErrors({});
+      setBusy(true);
+      try {
+        const sectionId = await resolveSection(form);
         const { error } = await supabase.from("portal_boq_items").insert({
           boq_id: boqId,
           section_id: sectionId,
-          ...values,
+          ...result.values,
+          is_included: form.is_included,
+          item_code: form.item_code.trim() || null,
+          reference: form.reference.trim() || null,
+          notes: form.notes.trim() || null,
           sort_order: items.length + 1,
         });
         if (error) throw error;
         toast({ title: "Item added" });
+        setForm(null);
+        await refresh();
+      } catch (e) {
+        fail(e);
+      } finally {
+        setBusy(false);
       }
+      return;
+    }
+
+    if (!current) return;
+    setBusy(true);
+    try {
+      const sectionId = category ? await resolveSection(form) : current.section_id;
+      const result = unifiedItemPatch(current, {
+        title: form.description,
+        category,
+        section_id: sectionId,
+        quantity: form.quantity,
+        unit: form.unit,
+        selling_price: form.selling_price,
+        vat_applicable: form.vat_applicable,
+        is_included: form.is_included,
+        item_code: form.item_code,
+        specification: form.specification,
+        reference: form.reference,
+        notes: form.notes,
+      });
+      if (result.ok !== true) {
+        setErrors(result.errors as Record<string, string>);
+        return;
+      }
+      setErrors({});
+      if (!result.changed) {
+        setForm(null);
+        return;
+      }
+      const { error } = await supabase.from("portal_boq_items").update(result.patch).eq("id", form.id);
+      if (error) throw error;
+      await logActivity("item_updated", result.summary);
+      toast({ title: "Changes saved", description: form.description.trim() });
       setForm(null);
       await refresh();
     } catch (e) {
@@ -259,27 +311,6 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     } finally {
       setBusy(false);
     }
-  };
-
-  const saveInline = async () => {
-    if (!edit) return;
-    const item = items.find((i) => i.id === edit.id);
-    if (!item) return;
-    const qty = Number(edit.quantity);
-    const rate = Number(edit.rate);
-    if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(rate) || rate < 0) {
-      return toast({ title: "Check the quantity and selling price", description: "Quantity must be above zero and the price zero or more.", variant: "destructive" as never });
-    }
-    setBusy(true);
-    const { error } = await supabase
-      .from("portal_boq_items")
-      .update({ quantity: qty, customer_unit_rate: rate })
-      .eq("id", edit.id);
-    setBusy(false);
-    if (error) return fail(error);
-    setEdit(null);
-    toast({ title: "Line saved" });
-    await refresh();
   };
 
   const toggleIncluded = async (item: BoqItem, value: boolean) => {
@@ -299,52 +330,6 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     await refresh();
   };
 
-  /** Reuses the existing portal_boq_activity log — no new logging system. */
-  const logActivity = async (action: string, detail: string) => {
-    try {
-      const { data } = await supabase.auth.getUser();
-      await supabase.from("portal_boq_activity").insert({
-        boq_id: boqId,
-        actor_user_id: data.user?.id ?? null,
-        actor_type: "admin",
-        action,
-        detail,
-      });
-    } catch {
-      /* logging must never block the price update */
-    }
-  };
-
-  const openPriceDialog = (it: BoqItem) => {
-    setEditErrors({});
-    setTitleValue(it.description);
-    setPriceValue(String(Number(it.customer_unit_rate)));
-    setPriceTarget(it);
-  };
-
-  const saveItemEdit = async () => {
-    if (!priceTarget) return;
-    const result = itemEditPatch(priceTarget, { title: titleValue, selling_price: priceValue });
-    if (result.ok !== true) {
-      setEditErrors(result.errors);
-      return;
-    }
-
-    setEditErrors({});
-    if (!result.changed) {
-      setPriceTarget(null);
-      return;
-    }
-
-    setBusy(true);
-    const { error } = await supabase.from("portal_boq_items").update(result.patch).eq("id", priceTarget.id);
-    setBusy(false);
-    if (error) return fail(error);
-    await logActivity("item_updated", result.summary);
-    toast({ title: "Changes saved", description: titleValue.trim() });
-    setPriceTarget(null);
-    await refresh();
-  };
 
 
   const openCustomerDocument = async () => {
