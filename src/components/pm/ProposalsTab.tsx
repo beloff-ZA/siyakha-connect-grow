@@ -475,6 +475,8 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
       >
         {view && <ProposalDocument proposal={view.proposal} variant={view.variant} />}
       </PrintSurface>
+
+      <ShareDialog open={!!share} onOpenChange={(v) => !v && setShare(null)} target={share} />
     </div>
   );
 };
