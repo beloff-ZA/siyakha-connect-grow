@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.portal_log_client_activity(uuid, text, uuid, text, text) FROM anon;
