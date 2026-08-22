@@ -3435,6 +3435,63 @@ export type Database = {
           },
         ]
       }
+      portal_share_acceptances: {
+        Row: {
+          accepted_at: string
+          accepted_by_user_id: string | null
+          client_id: string | null
+          id: string
+          note: string | null
+          project_id: string
+          resource_id: string | null
+          resource_type: string
+          revision_label: string | null
+          share_link_id: string
+          snapshot_hash: string
+        }
+        Insert: {
+          accepted_at?: string
+          accepted_by_user_id?: string | null
+          client_id?: string | null
+          id?: string
+          note?: string | null
+          project_id: string
+          resource_id?: string | null
+          resource_type: string
+          revision_label?: string | null
+          share_link_id: string
+          snapshot_hash: string
+        }
+        Update: {
+          accepted_at?: string
+          accepted_by_user_id?: string | null
+          client_id?: string | null
+          id?: string
+          note?: string | null
+          project_id?: string
+          resource_id?: string | null
+          resource_type?: string
+          revision_label?: string | null
+          share_link_id?: string
+          snapshot_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_share_acceptances_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_share_acceptances_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: true
+            referencedRelation: "portal_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_share_access_log: {
         Row: {
           accessed_at: string
