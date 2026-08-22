@@ -129,9 +129,11 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     [markers, floorId],
   );
   const stats = useMemo(() => markerStats(floorMarkers), [floorMarkers]);
+  // Archived cable routes stay on record but are never counted or drawn.
+  const liveRoutes = useMemo(() => activeRoutes(routes), [routes]);
   const floorRouteStats = useMemo(
-    () => routeStats(routes.filter((r) => r.floor_id === floorId)),
-    [routes, floorId],
+    () => routeStats(liveRoutes.filter((r) => r.floor_id === floorId)),
+    [liveRoutes, floorId],
   );
   const buildingStats = useMemo(() => markerStats(activeMarkers), [activeMarkers]);
 
