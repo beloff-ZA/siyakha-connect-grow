@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { applyGuestPrivacyMeta, canApprove, resolveShare } from "@/lib/shareLinks";
+import { isLiveView, nextLiveState, updatedLabel, LIVE_REFRESH_MS } from "@/lib/liveShare";
 import { SIYAKHA } from "@/lib/proposals";
 import { formatDate } from "@/lib/portalFiles";
 import { formatQty, formatZar } from "@/lib/boq";
@@ -12,7 +13,7 @@ import { deviceTypeLabel, stageLabel } from "@/lib/lifecycle";
 import type { ProjectPack } from "@/lib/projectPack";
 import ProjectPackDocument from "@/components/pm/ProjectPackDocument";
 import PlanSheet from "@/components/pm/PlanSheet";
-import { Check, Download, MessageSquare, ShieldCheck } from "lucide-react";
+import { Check, Download, MessageSquare, RefreshCw, ShieldCheck } from "lucide-react";
 
 type Resolved = Awaited<ReturnType<typeof resolveShare>>;
 
@@ -61,15 +62,37 @@ const ProjectDeckPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<"comment" | "approve" | null>(null);
+  const [stale, setStale] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const load = async () => {
+  /**
+   * `refresh` marks a background/manual live poll: it still participates in rate
+   * limiting and access logging, but never inflates the link's view count. A
+   * failed refresh keeps the last valid view on screen.
+   */
+  const load = async (refresh = false) => {
+    if (refresh) setRefreshing(true);
     try {
       const { data: sess } = await supabase.auth.getSession();
-      const res = await resolveShare(token, { access_token: sess.session?.access_token ?? "" });
-      setData(res);
-      setState(res.state);
+      const res = await resolveShare(token, {
+        access_token: sess.session?.access_token ?? "",
+        ...(refresh ? { refresh: true } : {}),
+      });
+      if (refresh) {
+        const next = nextLiveState(data, res as never);
+        setData(next.data as never);
+        setStale(next.stale);
+        if (!next.stale) setState(res.state);
+      } else {
+        setData(res);
+        setState(res.state);
+        setStale(false);
+      }
     } catch {
-      setState("unavailable");
+      if (refresh && data) setStale(true);
+      else setState("unavailable");
+    } finally {
+      if (refresh) setRefreshing(false);
     }
   };
 
@@ -79,6 +102,23 @@ const ProjectDeckPage: React.FC = () => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  const live = isLiveView(data as never);
+
+  // Live decks poll the saved design every 30s and on window focus.
+  useEffect(() => {
+    if (!live) return;
+    const tick = () => {
+      if (document.visibilityState === "visible") void load(true);
+    };
+    const id = window.setInterval(tick, LIVE_REFRESH_MS);
+    window.addEventListener("focus", tick);
+    return () => {
+      window.clearInterval(id);
+      window.removeEventListener("focus", tick);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live, token]);
 
   const submit = async (action: "comment" | "approve") => {
     setBusy(true);
@@ -188,12 +228,31 @@ const ProjectDeckPage: React.FC = () => {
                 </a>
               ))}
             </nav>
-            {link?.download_allowed && (
-              <Button size="sm" onClick={() => window.print()}>
-                <Download className="mr-2 h-4 w-4" strokeWidth={1.5} /> Download pack
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              {live && (
+                <span className="flex items-center gap-2 border border-border px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                  <span className="h-1.5 w-1.5 rounded-full bg-foreground" aria-hidden />
+                  Live project view · {updatedLabel(data?.live_updated_at ?? null)}
+                </span>
+              )}
+              {live && (
+                <Button size="sm" variant="outline" disabled={refreshing} onClick={() => load(true)}>
+                  <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} strokeWidth={1.5} />
+                  Refresh
+                </Button>
+              )}
+              {link?.download_allowed && (
+                <Button size="sm" onClick={() => window.print()}>
+                  <Download className="mr-2 h-4 w-4" strokeWidth={1.5} /> Download pack
+                </Button>
+              )}
+            </div>
           </div>
+          {live && stale && (
+            <p className="mx-auto max-w-6xl px-4 pb-2 text-xs text-muted-foreground">
+              Could not refresh the live plan data just now — showing the last loaded view.
+            </p>
+          )}
         </header>
 
         {/* Cover */}
@@ -201,6 +260,7 @@ const ProjectDeckPage: React.FC = () => {
           <div className="mx-auto max-w-6xl">
             <p className="text-[10px] uppercase tracking-[0.32em] opacity-70">
               Project portfolio · Revision {pack.revision_no ?? 1}
+              {live ? " · Plans live, commercials frozen at issue" : ""}
             </p>
             <h1 className="mt-4 max-w-4xl text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
               {pack.project?.title ?? link?.title}

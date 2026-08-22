@@ -28,6 +28,8 @@ export type ShareLink = {
   comments_allowed: boolean;
   approval_allowed: boolean;
   require_client_login: boolean;
+  /** Immutable: plans/devices refresh from live saved design; commercials stay frozen. */
+  live_project_view: boolean;
   recipient_label: string | null;
   recipient_email: string | null;
   created_at: string;
@@ -98,6 +100,8 @@ export type CreateShareInput = {
   comments_allowed?: boolean;
   approval_allowed?: boolean;
   require_client_login: boolean;
+  /** Immutable at issue. Only meaningful for project_pack links. */
+  live_project_view?: boolean;
   recipient_label?: string | null;
   recipient_email?: string | null;
   expires_at: string;
@@ -124,6 +128,7 @@ export async function createShareLink(input: CreateShareInput): Promise<{ link: 
       comments_allowed: input.comments_allowed ?? input.permission_scope === "view_comment",
       approval_allowed: input.approval_allowed ?? input.permission_scope === "view_approve",
       require_client_login: input.require_client_login,
+      live_project_view: input.resource_type === "project_pack" ? !!input.live_project_view : false,
       recipient_label: input.recipient_label?.trim() || null,
       recipient_email: input.recipient_email?.trim() || null,
       expires_at: input.expires_at,
@@ -187,7 +192,10 @@ export const shareState = (l: ShareLink) =>
 export const inDays = (days: number) => new Date(Date.now() + days * 86400000).toISOString();
 
 /** Resolves a share token through the public edge function. */
-export async function resolveShare(token: string, body: { action?: string; message?: string; access_token?: string } = {}) {
+export async function resolveShare(
+  token: string,
+  body: { action?: string; message?: string; access_token?: string; refresh?: boolean } = {},
+) {
   const { data, error } = await supabase.functions.invoke("share-resolve", { body: { token, ...body } });
   if (error) throw error;
   return data as {
@@ -201,7 +209,10 @@ export async function resolveShare(token: string, body: { action?: string; messa
       download_allowed: boolean;
       comments_allowed: boolean;
       approval_allowed: boolean;
+      live_project_view?: boolean;
     };
+    /** Set when the resolver overlaid live saved plan/device data. */
+    live_updated_at?: string | null;
     snapshot?: any;
   };
 }

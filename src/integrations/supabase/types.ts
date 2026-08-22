@@ -3570,6 +3570,7 @@ export type Database = {
           first_accessed_at: string | null
           id: string
           last_accessed_at: string | null
+          live_project_view: boolean
           permission_scope: string
           project_id: string
           recipient_email: string | null
@@ -3596,6 +3597,7 @@ export type Database = {
           first_accessed_at?: string | null
           id?: string
           last_accessed_at?: string | null
+          live_project_view?: boolean
           permission_scope?: string
           project_id: string
           recipient_email?: string | null
@@ -3622,6 +3624,7 @@ export type Database = {
           first_accessed_at?: string | null
           id?: string
           last_accessed_at?: string | null
+          live_project_view?: boolean
           permission_scope?: string
           project_id?: string
           recipient_email?: string | null
