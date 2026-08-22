@@ -3165,6 +3165,143 @@ export type Database = {
           },
         ]
       }
+      portal_share_access_log: {
+        Row: {
+          accessed_at: string
+          action: string
+          detail: string | null
+          id: string
+          ip_hash: string | null
+          outcome: string
+          share_link_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          accessed_at?: string
+          action?: string
+          detail?: string | null
+          id?: string
+          ip_hash?: string | null
+          outcome?: string
+          share_link_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          accessed_at?: string
+          action?: string
+          detail?: string | null
+          id?: string
+          ip_hash?: string | null
+          outcome?: string
+          share_link_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_share_access_log_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "portal_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_share_links: {
+        Row: {
+          access_count: number
+          approval_allowed: boolean
+          client_id: string | null
+          comments_allowed: boolean
+          created_at: string
+          created_by: string | null
+          download_allowed: boolean
+          expires_at: string
+          first_accessed_at: string | null
+          id: string
+          last_accessed_at: string | null
+          permission_scope: string
+          project_id: string
+          recipient_email: string | null
+          recipient_label: string | null
+          require_client_login: boolean
+          resource_id: string | null
+          resource_type: string
+          revision_label: string | null
+          revoked_at: string | null
+          snapshot: Json
+          title: string
+          token_hash: string
+          updated_at: string
+        }
+        Insert: {
+          access_count?: number
+          approval_allowed?: boolean
+          client_id?: string | null
+          comments_allowed?: boolean
+          created_at?: string
+          created_by?: string | null
+          download_allowed?: boolean
+          expires_at?: string
+          first_accessed_at?: string | null
+          id?: string
+          last_accessed_at?: string | null
+          permission_scope?: string
+          project_id: string
+          recipient_email?: string | null
+          recipient_label?: string | null
+          require_client_login?: boolean
+          resource_id?: string | null
+          resource_type: string
+          revision_label?: string | null
+          revoked_at?: string | null
+          snapshot?: Json
+          title: string
+          token_hash: string
+          updated_at?: string
+        }
+        Update: {
+          access_count?: number
+          approval_allowed?: boolean
+          client_id?: string | null
+          comments_allowed?: boolean
+          created_at?: string
+          created_by?: string | null
+          download_allowed?: boolean
+          expires_at?: string
+          first_accessed_at?: string | null
+          id?: string
+          last_accessed_at?: string | null
+          permission_scope?: string
+          project_id?: string
+          recipient_email?: string | null
+          recipient_label?: string | null
+          require_client_login?: boolean
+          resource_id?: string | null
+          resource_type?: string
+          revision_label?: string | null
+          revoked_at?: string | null
+          snapshot?: Json
+          title?: string
+          token_hash?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_share_links_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "portal_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_share_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_site_images: {
         Row: {
           area: string | null
