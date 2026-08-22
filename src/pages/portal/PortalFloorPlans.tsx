@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/sheet";
 
 import { supabase } from "@/integrations/supabase/client";
+import { markerTransaction, placeCameras } from "@/lib/designApi";
+
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
