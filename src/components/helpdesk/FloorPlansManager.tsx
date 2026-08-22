@@ -378,7 +378,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const deleteMarker = async () => {
     if (!selected) return;
-    const attached = routes.filter(
+    const attached = liveRoutes.filter(
       (r) => r.rack_marker_id === selected.id || r.device_marker_id === selected.id,
     ).length;
     const routeWarning = attached
