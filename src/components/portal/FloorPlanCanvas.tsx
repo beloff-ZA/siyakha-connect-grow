@@ -61,6 +61,8 @@ type Props = {
   onMoveEnd?: (markerId: string, x: number, y: number) => void;
   /** Drag the aim handle of a selected camera to change its bearing (0–359). */
   onAim?: (markerId: string, deg: number) => void;
+  /** Fired once on pointer release with the exact bearing to persist (0–359). */
+  onAimEnd?: (markerId: string, deg: number) => void;
 
   /** When false for a marker, dragging is blocked and a lock badge is shown in edit mode. */
   canDrag?: (marker: FloorMarker) => boolean;
@@ -126,6 +128,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
   onMove,
   onMoveEnd,
   onAim,
+  onAimEnd,
   canDrag,
   editing = false,
   placing = false,
@@ -172,7 +175,15 @@ const FloorPlanCanvas: React.FC<Props> = ({
         /** Last normalised position previewed during the drag — persisted verbatim on release. */
         last?: { x: number; y: number };
       }
-    | { mode: "aim"; id: string; startX: number; startY: number; moved: boolean }
+    | {
+        mode: "aim";
+        id: string;
+        startX: number;
+        startY: number;
+        moved: boolean;
+        /** Last bearing previewed during the drag — persisted verbatim on release. */
+        lastDeg?: number;
+      }
     | {
         mode: "place";
         startX: number;
@@ -374,7 +385,9 @@ const FloorPlanCanvas: React.FC<Props> = ({
       if (!d.moved) return;
       setOffset({ x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) });
     } else if (d.mode === "aim") {
-      if (onAim) onAim(d.id, aimDeg(d.id, e.clientX, e.clientY));
+      const deg = aimDeg(d.id, e.clientX, e.clientY);
+      d.lastDeg = deg;
+      if (onAim) onAim(d.id, deg);
     } else if (d.mode === "place") {
       const deg = aimFrom(d.anchor, e.clientX, e.clientY);
       setPlacePreview({ x: d.anchor.x, y: d.anchor.y, deg });
@@ -395,7 +408,11 @@ const FloorPlanCanvas: React.FC<Props> = ({
     const d = dragRef.current;
     dragRef.current = null;
     if (!d) return;
-    if (d.mode === "aim") return;
+    if (d.mode === "aim") {
+      const deg = d.lastDeg ?? (d.moved ? aimDeg(d.id, e.clientX, e.clientY) : undefined);
+      if (deg != null) onAimEnd?.(d.id, normalizeBearing(deg));
+      return;
+    }
     if (d.mode === "marker") {
       // Persist the exact position previewed on screen, never a stale render value.
       if (d.moved && d.draggable) {
@@ -735,7 +752,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
                 const isCamera = m.marker_type === "camera";
                 const isRack = m.marker_type === "rack";
                 const dir = normalizeBearing(Number(m.direction_deg ?? 0));
-                const showAim = isCamera && isSelected && !!onAim && draggable;
+                const showAim = isCamera && isSelected && (!!onAim || !!onAimEnd) && draggable;
                 const handleDist = markerPx * 1.9;
                 const handle = aimOffsetPx(dir, handleDist);
                 return (
