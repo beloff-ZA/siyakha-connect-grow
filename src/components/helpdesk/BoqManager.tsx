@@ -413,6 +413,64 @@ const BoqManager: React.FC<{ projectId: string; onPrintCustomerBoq?: (boqId: str
     loadDetail();
   };
 
+  /** Customer rate = supplier cost x (1 + markup%). The rate stays manually editable afterwards. */
+  const applyMarkupToItem = async (item: BoqItem, silent = false) => {
+    const cost = costs.find((c) => c.item_id === item.id);
+    const supplierCost = Number(cost?.supplier_unit_cost ?? 0);
+    const markup = Number(cost?.markup_percent ?? 0);
+    if (!supplierCost) {
+      if (!silent) toast({ title: "Capture a supplier unit cost first", variant: "destructive" as never });
+      return false;
+    }
+    const rate = Math.round(supplierCost * (1 + markup / 100) * 100) / 100;
+    const { error } = await supabase.from("portal_boq_items").update({ customer_unit_rate: rate }).eq("id", item.id);
+    if (error) {
+      fail(error);
+      return false;
+    }
+    if (!silent) {
+      await logActivity("markup_applied", `${item.description} → ${formatZar(rate)} (${markup}% markup)`);
+      toast({ title: `Rate set to ${formatZar(rate)}` });
+      loadDetail();
+    }
+    return true;
+  };
+
+  const [bulkMarkup, setBulkMarkup] = useState("");
+  const applyMarkupToBoq = async () => {
+    const pct = Number(bulkMarkup);
+    if (!Number.isFinite(pct) || pct < 0) return toast({ title: "Enter a valid markup %", variant: "destructive" as never });
+    setBusy(true);
+    try {
+      let changed = 0;
+      for (const it of items) {
+        const cost = costs.find((c) => c.item_id === it.id);
+        const supplierCost = Number(cost?.supplier_unit_cost ?? 0);
+        if (!supplierCost) continue;
+        await saveCostQuiet(it.id, { markup_percent: pct });
+        const rate = Math.round(supplierCost * (1 + pct / 100) * 100) / 100;
+        const { error } = await supabase.from("portal_boq_items").update({ customer_unit_rate: rate }).eq("id", it.id);
+        if (error) throw error;
+        changed += 1;
+      }
+      await logActivity("markup_applied_bulk", `${pct}% markup applied to ${changed} line(s)`);
+      toast({ title: `Markup applied to ${changed} line(s)` });
+      loadDetail();
+    } catch (e) {
+      fail(e);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const saveCostQuiet = async (itemId: string, patch: Row) => {
+    const existing = costs.find((c) => c.item_id === itemId);
+    const { error } = existing
+      ? await supabase.from("portal_boq_item_costs").update(patch).eq("item_id", itemId)
+      : await supabase.from("portal_boq_item_costs").insert({ item_id: itemId, ...patch });
+    if (error) throw error;
+  };
+
   const respondToComment = async (id: string, response: string) => {
     const { error } = await supabase
       .from("portal_boq_comments")
