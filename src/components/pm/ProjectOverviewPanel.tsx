@@ -23,7 +23,7 @@ const ProjectOverviewPanel: React.FC<{ ws: PmWorkspace; project: PmProject }> = 
     (async () => {
       const [floors, revisions, markers, routes, racks, boqItems, docs, images] = await Promise.all([
         db.from("portal_floors").select("id", { count: "exact", head: true }).eq("project_id", project.id),
-        supabase
+        db
           .from("portal_plan_revisions")
           .select("id", { count: "exact", head: true })
           .eq("project_id", project.id)
