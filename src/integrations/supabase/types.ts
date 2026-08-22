@@ -427,49 +427,88 @@ export type Database = {
       }
       director_projects: {
         Row: {
+          assigned_to: string | null
           client: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string
+          deal_source: string | null
           description: string | null
           due_date: string | null
           estimated_value: number | null
           id: string
+          lost_reason: string | null
+          next_action: string | null
+          next_action_date: string | null
           notes: string | null
+          portal_client_id: string | null
+          portal_project_id: string | null
           priority: string
+          probability_percent: number | null
+          site_name: string | null
           start_date: string | null
           status: string
           title: string
           updated_at: string
           user_id: string
+          won_at: string | null
         }
         Insert: {
+          assigned_to?: string | null
           client?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
+          deal_source?: string | null
           description?: string | null
           due_date?: string | null
           estimated_value?: number | null
           id?: string
+          lost_reason?: string | null
+          next_action?: string | null
+          next_action_date?: string | null
           notes?: string | null
+          portal_client_id?: string | null
+          portal_project_id?: string | null
           priority?: string
+          probability_percent?: number | null
+          site_name?: string | null
           start_date?: string | null
           status?: string
           title: string
           updated_at?: string
           user_id: string
+          won_at?: string | null
         }
         Update: {
+          assigned_to?: string | null
           client?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
+          deal_source?: string | null
           description?: string | null
           due_date?: string | null
           estimated_value?: number | null
           id?: string
+          lost_reason?: string | null
+          next_action?: string | null
+          next_action_date?: string | null
           notes?: string | null
+          portal_client_id?: string | null
+          portal_project_id?: string | null
           priority?: string
+          probability_percent?: number | null
+          site_name?: string | null
           start_date?: string | null
           status?: string
           title?: string
           updated_at?: string
           user_id?: string
+          won_at?: string | null
         }
         Relationships: []
       }
@@ -2527,6 +2566,111 @@ export type Database = {
           },
         ]
       }
+      portal_proposals: {
+        Row: {
+          accepted_at: string | null
+          assumptions: string | null
+          boq_id: string | null
+          created_at: string
+          created_by: string | null
+          deliverables: string | null
+          exclusions: string | null
+          executive_summary: string | null
+          id: string
+          issued_at: string | null
+          methodology: string | null
+          payment_terms: string | null
+          planned_completion_date: string | null
+          planned_start_date: string | null
+          prepared_by_email: string | null
+          prepared_by_name: string | null
+          project_id: string
+          project_understanding: string | null
+          proposal_number: string
+          revision_label: string
+          scope_of_work: string | null
+          snapshot: Json | null
+          status: string
+          title: string
+          updated_at: string
+          validity_days: number
+          warranty_terms: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          assumptions?: string | null
+          boq_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deliverables?: string | null
+          exclusions?: string | null
+          executive_summary?: string | null
+          id?: string
+          issued_at?: string | null
+          methodology?: string | null
+          payment_terms?: string | null
+          planned_completion_date?: string | null
+          planned_start_date?: string | null
+          prepared_by_email?: string | null
+          prepared_by_name?: string | null
+          project_id: string
+          project_understanding?: string | null
+          proposal_number: string
+          revision_label?: string
+          scope_of_work?: string | null
+          snapshot?: Json | null
+          status?: string
+          title?: string
+          updated_at?: string
+          validity_days?: number
+          warranty_terms?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          assumptions?: string | null
+          boq_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deliverables?: string | null
+          exclusions?: string | null
+          executive_summary?: string | null
+          id?: string
+          issued_at?: string | null
+          methodology?: string | null
+          payment_terms?: string | null
+          planned_completion_date?: string | null
+          planned_start_date?: string | null
+          prepared_by_email?: string | null
+          prepared_by_name?: string | null
+          project_id?: string
+          project_understanding?: string | null
+          proposal_number?: string
+          revision_label?: string
+          scope_of_work?: string | null
+          snapshot?: Json | null
+          status?: string
+          title?: string
+          updated_at?: string
+          validity_days?: number
+          warranty_terms?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_proposals_boq_id_fkey"
+            columns: ["boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_proposals_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_queries: {
         Row: {
           admin_response: string | null
@@ -3367,6 +3511,7 @@ export type Database = {
         Returns: number
       }
       portal_move_floor_markers: { Args: { _moves: Json }; Returns: number }
+      portal_next_proposal_number: { Args: never; Returns: string }
       portal_save_floor_marker: { Args: { _payload: Json }; Returns: string }
       portal_update_cable_route_waypoints: {
         Args: { _route_id: string; _waypoints: Json }
