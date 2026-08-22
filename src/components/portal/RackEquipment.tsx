@@ -13,7 +13,9 @@ import {
   accessPortUtilisation,
   backbonePortUtilisation,
   equipmentTotals,
+  equipmentPurpose,
   equipmentTypeLabel,
+  TBC,
   rackUtilisation,
   type RackEquipment as RackEquipmentRow,
 } from "@/lib/rackEquipment";
