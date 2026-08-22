@@ -135,17 +135,12 @@ export async function createShareLink(input: CreateShareInput): Promise<{ link: 
   return { link: data as ShareLink, url: linkUrlFor(input.resource_type, token) };
 }
 
-/** Issues a fresh token for an existing link; the previous URL stops working. */
-export async function regenerateShareLink(id: string, resourceType: ShareResourceType = "project_pack"): Promise<string> {
-  const token = generateToken();
-  const token_hash = await hashToken(token);
-  const { error } = await db
-    .from("portal_share_links")
-    .update({ token_hash, revoked_at: null, access_count: 0, first_accessed_at: null, last_accessed_at: null })
-    .eq("id", id);
-  if (error) throw error;
-  return linkUrlFor(resourceType, token);
-}
+/**
+ * A link's token, snapshot and resource identity are immutable at database
+ * level. A lost link is replaced by revoking it and creating a new one, so a
+ * frozen document can never silently change under a recipient.
+ */
+
 
 /** Toggle download / comment / acceptance on an already issued link. */
 export async function updateShareCapabilities(
