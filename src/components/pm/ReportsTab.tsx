@@ -5,6 +5,8 @@ import { Panel, Field, Stat, Chip, selectCls } from "./ui";
 import PrintSurface from "./PrintSurface";
 import ProjectPackDocument from "./ProjectPackDocument";
 import InternalReportDocument from "./InternalReportDocument";
+import ShareDialog, { type ShareTarget } from "./ShareDialog";
+import { Share2 } from "lucide-react";
 import {
   buildInternalCommercial,
   buildProjectPack,
@@ -32,6 +34,19 @@ const ReportsTab: React.FC<{ ws: PmWorkspace; projectId: string; setProjectId: (
   const [busy, setBusy] = useState(false);
   const [showPack, setShowPack] = useState(false);
   const [showInternal, setShowInternal] = useState(false);
+  const [share, setShare] = useState<ShareTarget | null>(null);
+
+  /** Shares a frozen, client-safe pack snapshot — internal commercials are never included. */
+  const sharePack = (snapshot: ProjectPack, revision: string | null, id?: string) =>
+    setShare({
+      resource_type: "project_pack",
+      resource_id: id ?? null,
+      revision_label: revision,
+      title: `${snapshot.project.title} — full project pack`,
+      project_id: snapshot.project.id,
+      client_id: (snapshot.client as any)?.id ?? null,
+      snapshot,
+    });
 
   const options = useMemo(
     () =>
@@ -343,9 +358,28 @@ const ReportsTab: React.FC<{ ws: PmWorkspace; projectId: string; setProjectId: (
                         {stageLabel(p.lifecycle_stage)} · {formatDate(p.issued_at)}
                       </span>
                     </span>
-                    <Button size="sm" variant="outline" onClick={() => openIssued(p.id)}>
-                      Open snapshot
-                    </Button>
+                    <span className="flex flex-wrap gap-2">
+                      <Button size="sm" variant="outline" onClick={() => openIssued(p.id)}>
+                        Open snapshot
+                      </Button>
+                      {p.pack_kind !== "internal" && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          disabled={busy}
+                          onClick={async () => {
+                            try {
+                              const row: any = await loadPackSnapshot(p.id);
+                              sharePack(row.snapshot as ProjectPack, `${p.pack_number} · rev ${p.revision_no}`, p.id);
+                            } catch (e) {
+                              toast({ title: "Could not prepare share", description: (e as any)?.message, variant: "destructive" as never });
+                            }
+                          }}
+                        >
+                          <Share2 className="mr-2 h-4 w-4" strokeWidth={1.5} /> Share
+                        </Button>
+                      )}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -370,6 +404,8 @@ const ReportsTab: React.FC<{ ws: PmWorkspace; projectId: string; setProjectId: (
           <InternalReportDocument report={internal} />
         </PrintSurface>
       )}
+
+      <ShareDialog open={!!share} onOpenChange={(v) => !v && setShare(null)} target={share} />
     </div>
   );
 };
