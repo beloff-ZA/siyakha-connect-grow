@@ -10,7 +10,7 @@ import type { InternalCommercial } from "@/lib/projectPack";
  * pack and is generated from its own loader, so it cannot leak into client output.
  */
 const InternalReportDocument: React.FC<{ report: InternalCommercial }> = ({ report }) => (
-  <article className="doc-root internal-only bg-white text-black">
+  <article className="doc-root bg-white text-black">
     <header className="mb-6 border-b-2 border-black pb-3">
       <p className="text-[14pt] font-bold uppercase tracking-[0.14em]">{SIYAKHA.company}</p>
       <p className="mt-1 text-[10pt] font-semibold uppercase tracking-[0.18em]">Internal commercial report — confidential</p>

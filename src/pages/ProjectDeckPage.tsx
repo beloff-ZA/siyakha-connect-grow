@@ -82,7 +82,12 @@ const ProjectDeckPage: React.FC = () => {
   const submit = async (action: "comment" | "approve") => {
     setBusy(true);
     try {
-      const res = await resolveShare(token, { action, message });
+      const { data: sess } = await supabase.auth.getSession();
+      const res = await resolveShare(token, {
+        action,
+        message,
+        access_token: sess.session?.access_token ?? "",
+      });
       if (res.state !== "ok") throw new Error("This action is not permitted on this link.");
       setDone(action);
       setMessage("");

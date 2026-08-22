@@ -72,19 +72,6 @@ const ClientLogin: React.FC = () => {
 
   const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-  /**
-   * Fire-and-forget admin notification. Only ever called after a fresh, successful
-   * password sign-in — never on failed attempts, refreshes, reloads or recovery.
-   * Delivery problems must never block the client's access to the portal.
-   */
-  const notifyAdminOfLogin = async () => {
-    try {
-      await supabase.functions.invoke("notify-client-login", { body: {} });
-    } catch {
-      /* notification is best-effort only */
-    }
-  };
-
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
@@ -104,7 +91,6 @@ const ClientLogin: React.FC = () => {
       );
       return;
     }
-    if (data.session) void notifyAdminOfLogin();
     // Admin-provisioned test accounts may require a password change before access.
     if (data.user?.user_metadata?.must_change_password === true) {
       setMode("setup");
