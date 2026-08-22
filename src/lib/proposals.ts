@@ -31,6 +31,7 @@ export type Proposal = {
   status: ProposalStatus;
   executive_summary: string | null;
   project_understanding: string | null;
+  objectives: string | null;
   scope_of_work: string | null;
   methodology: string | null;
   deliverables: string | null;

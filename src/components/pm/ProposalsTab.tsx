@@ -33,6 +33,7 @@ type Form = {
   revision_label: string;
   executive_summary: string;
   project_understanding: string;
+  objectives: string;
   scope_of_work: string;
   methodology: string;
   deliverables: string;
@@ -55,6 +56,7 @@ const blankForm = (preparedByName?: string | null): Form => ({
   revision_label: "Rev A",
   executive_summary: "",
   project_understanding: "",
+  objectives: "",
   scope_of_work: "",
   methodology: PROPOSAL_DEFAULTS.methodology,
   deliverables: PROPOSAL_DEFAULTS.deliverables,
@@ -117,6 +119,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
         revision_label: nextRevision(reviseFrom.revision_label),
         executive_summary: reviseFrom.executive_summary ?? "",
         project_understanding: reviseFrom.project_understanding ?? "",
+        objectives: reviseFrom.objectives ?? "",
         scope_of_work: reviseFrom.scope_of_work ?? "",
         methodology: reviseFrom.methodology ?? base.methodology,
         deliverables: reviseFrom.deliverables ?? base.deliverables,
@@ -189,6 +192,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
     revision_label: f.revision_label.trim() || "Rev A",
     executive_summary: f.executive_summary.trim() || null,
     project_understanding: f.project_understanding.trim() || null,
+    objectives: f.objectives.trim() || null,
     scope_of_work: f.scope_of_work.trim() || null,
     methodology: f.methodology.trim() || null,
     deliverables: f.deliverables.trim() || null,
@@ -448,6 +452,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
               [
                 ["Executive summary", "executive_summary", 4],
                 ["Project understanding", "project_understanding", 4],
+                ["Objectives", "objectives", 4],
                 ["Scope of work", "scope_of_work", 5],
                 ["Methodology / implementation approach", "methodology", 6],
                 ["Deliverables", "deliverables", 5],
