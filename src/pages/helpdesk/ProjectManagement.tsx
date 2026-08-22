@@ -7,6 +7,9 @@ import ProjectsTab from "@/components/pm/ProjectsTab";
 import ClientsSitesTab from "@/components/pm/ClientsSitesTab";
 import BoqCostingTab from "@/components/pm/BoqCostingTab";
 import ProposalsTab from "@/components/pm/ProposalsTab";
+import LifecycleTab from "@/components/pm/LifecycleTab";
+import AssetsTab from "@/components/pm/AssetsTab";
+import ReportsTab from "@/components/pm/ReportsTab";
 
 const TABS = [
   { value: "overview", label: "Overview" },
@@ -15,7 +18,11 @@ const TABS = [
   { value: "clients", label: "Clients & sites" },
   { value: "boq", label: "BOQ & costing" },
   { value: "proposals", label: "Proposals" },
+  { value: "lifecycle", label: "Lifecycle & variations" },
+  { value: "assets", label: "Devices & assets" },
+  { value: "reports", label: "Reports & pack" },
 ];
+
 
 const ProjectManagement: React.FC = () => {
   const ws = usePmWorkspace();
