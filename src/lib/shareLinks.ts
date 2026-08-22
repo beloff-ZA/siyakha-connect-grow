@@ -72,7 +72,16 @@ export const hashToken = async (token: string) => {
     .join("");
 };
 
+/** Document-style share page (single frozen revision). */
 export const shareUrl = (token: string) => `${window.location.origin}/share/${token}`;
+
+/** Default client delivery: branded, read-only Project Portfolio Deck. */
+export const deckUrl = (token: string) => `${window.location.origin}/project-deck/${token}`;
+
+/** Packs and reports are delivered as a portfolio deck by default. */
+export const isDeckResource = (t: ShareResourceType) => t === "project_pack" || t === "report";
+
+export const linkUrlFor = (t: ShareResourceType, token: string) => (isDeckResource(t) ? deckUrl(token) : shareUrl(token));
 
 export type CreateShareInput = {
   resource_type: ShareResourceType;
@@ -84,6 +93,10 @@ export type CreateShareInput = {
   /** Frozen, client-safe snapshot of exactly what is shared. */
   snapshot: unknown;
   permission_scope: SharePermission;
+  /** Independent capability flags. Omit to derive them from permission_scope. */
+  download_allowed?: boolean;
+  comments_allowed?: boolean;
+  approval_allowed?: boolean;
   require_client_login: boolean;
   recipient_label?: string | null;
   recipient_email?: string | null;
@@ -107,9 +120,9 @@ export async function createShareLink(input: CreateShareInput): Promise<{ link: 
       client_id: input.client_id ?? null,
       snapshot: input.snapshot ?? {},
       permission_scope: input.permission_scope,
-      download_allowed: input.permission_scope === "view_download",
-      comments_allowed: input.permission_scope === "view_comment",
-      approval_allowed: input.permission_scope === "view_approve",
+      download_allowed: input.download_allowed ?? input.permission_scope === "view_download",
+      comments_allowed: input.comments_allowed ?? input.permission_scope === "view_comment",
+      approval_allowed: input.approval_allowed ?? input.permission_scope === "view_approve",
       require_client_login: input.require_client_login,
       recipient_label: input.recipient_label?.trim() || null,
       recipient_email: input.recipient_email?.trim() || null,
@@ -119,11 +132,11 @@ export async function createShareLink(input: CreateShareInput): Promise<{ link: 
     .select("*")
     .maybeSingle();
   if (error) throw error;
-  return { link: data as ShareLink, url: shareUrl(token) };
+  return { link: data as ShareLink, url: linkUrlFor(input.resource_type, token) };
 }
 
 /** Issues a fresh token for an existing link; the previous URL stops working. */
-export async function regenerateShareLink(id: string): Promise<string> {
+export async function regenerateShareLink(id: string, resourceType: ShareResourceType = "project_pack"): Promise<string> {
   const token = generateToken();
   const token_hash = await hashToken(token);
   const { error } = await db
@@ -131,7 +144,16 @@ export async function regenerateShareLink(id: string): Promise<string> {
     .update({ token_hash, revoked_at: null, access_count: 0, first_accessed_at: null, last_accessed_at: null })
     .eq("id", id);
   if (error) throw error;
-  return shareUrl(token);
+  return linkUrlFor(resourceType, token);
+}
+
+/** Toggle download / comment / acceptance on an already issued link. */
+export async function updateShareCapabilities(
+  id: string,
+  flags: Partial<Pick<ShareLink, "download_allowed" | "comments_allowed" | "approval_allowed">>,
+) {
+  const { error } = await db.from("portal_share_links").update(flags).eq("id", id);
+  if (error) throw error;
 }
 
 export async function loadShareLinks(filter: { project_id?: string; resource_id?: string }) {

@@ -167,6 +167,16 @@ Deno.serve(async (req) => {
     }
   }
 
+  // Gallery photos live in a private bucket: mint short-lived URLs and drop paths.
+  const gallery = Array.isArray((snapshot as any).gallery) ? ((snapshot as any).gallery as any[]) : [];
+  for (const g of gallery) {
+    if (g?.storage_path) {
+      const { data } = await admin.storage.from("client-photos").createSignedUrl(g.storage_path, 900);
+      g.photo_url = data?.signedUrl ?? null;
+      delete g.storage_path;
+    }
+  }
+
   await admin
     .from("portal_share_links")
     .update({
