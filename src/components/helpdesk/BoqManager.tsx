@@ -814,7 +814,7 @@ const BoqManager: React.FC<{ projectId: string; onPrintCustomerBoq?: (boqId: str
                                 </Button>
                               </div>
 
-                              <div className="mt-3 border-t border-dashed border-border pt-3">
+                              <div className="internal-only mt-3 border-t border-dashed border-border pt-3">
                                 <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">
                                   Private costing — internal only
                                 </p>
@@ -843,11 +843,15 @@ const BoqManager: React.FC<{ projectId: string; onPrintCustomerBoq?: (boqId: str
                                     defaultValue={Number(cost.markup_percent ?? 0)}
                                     onBlur={(e) => saveCost(it.id, { markup_percent: Math.max(0, Number(e.target.value)) })}
                                   />
-                                  <p className="text-xs text-muted-foreground self-center">
-                                    Margin{" "}
-                                    {marginPercent(Number(it.customer_unit_rate), Number(cost.supplier_unit_cost ?? 0)).toFixed(2)}
-                                    %
-                                  </p>
+                                  <div className="flex flex-wrap items-center gap-2 self-center">
+                                    <span className="text-xs text-muted-foreground">
+                                      Margin{" "}
+                                      {marginPercent(Number(it.customer_unit_rate), Number(cost.supplier_unit_cost ?? 0)).toFixed(2)}%
+                                    </span>
+                                    <Button size="sm" variant="outline" onClick={() => applyMarkupToItem(it)} disabled={locked}>
+                                      Apply markup
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
