@@ -15,6 +15,7 @@ import {
   normDistancePx,
   CARDINAL_LABELS,
   selectedCoverageMode,
+  coverageKind,
   coverageHelpText,
   AIM_DEADZONE_PX,
   type Size,
