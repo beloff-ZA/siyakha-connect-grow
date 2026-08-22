@@ -185,3 +185,48 @@ export const VIEW_ONLY_SHARE_DEFAULTS = {
   comments_allowed: false,
   approval_allowed: false,
 };
+
+/* ---------------------------------------------- floor vs rooftop semantics */
+
+/**
+ * Floor-count semantics shared by every report, proposal and pack surface.
+ *
+ * A project's plan records include non-storey areas (rooftop / service plans).
+ * Those plans, their devices and their cable routes stay fully available, but
+ * they must never be added to a "Floors" / "Levels" / "Storeys" headline.
+ * Nothing here is hard-coded to a specific building.
+ */
+export const ROOFTOP_FLOOR_USE = "rooftop_service";
+
+export const ROOFTOP_SECTION_TITLE = "Rooftop / service area";
+export const ROOFTOP_EXCLUDED_NOTE = "Excluded from floor count";
+
+export type FloorUseLike = { floor_use?: string | null };
+
+export const isRooftopArea = (floor: FloorUseLike) =>
+  (floor.floor_use ?? "").trim().toLowerCase() === ROOFTOP_FLOOR_USE;
+
+/** Splits plan records into occupied floors and rooftop / service areas. */
+export function splitFloorAreas<T extends FloorUseLike>(rows: readonly T[]): { floors: T[]; rooftop: T[] } {
+  return {
+    floors: rows.filter((r) => !isRooftopArea(r)),
+    rooftop: rows.filter((r) => isRooftopArea(r)),
+  };
+}
+
+export type FloorCounts = { floors: number; rooftopAreas: number; planRecords: number };
+
+export function floorCounts(rows: readonly FloorUseLike[]): FloorCounts {
+  const { floors, rooftop } = splitFloorAreas(rows);
+  return { floors: floors.length, rooftopAreas: rooftop.length, planRecords: rows.length };
+}
+
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+/** e.g. "11 floors + 1 rooftop/service area" — never "12 floors". */
+export function floorCountLabel(rows: readonly FloorUseLike[]): string {
+  const { floors, rooftopAreas } = floorCounts(rows);
+  const base = plural(floors, "floor");
+  if (!rooftopAreas) return base;
+  return `${base} + ${rooftopAreas} rooftop/service area${rooftopAreas === 1 ? "" : "s"}`;
+}
