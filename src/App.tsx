@@ -33,6 +33,7 @@ import HelpdeskCalendar from "./pages/helpdesk/DirectorCalendar";
 import DirectorPA from "./pages/helpdesk/DirectorPA";
 import DirectorProjects from "./pages/helpdesk/DirectorProjects";
 import ProjectManagement from "./pages/helpdesk/ProjectManagement";
+import ProjectWorkspace from "./pages/helpdesk/ProjectWorkspace";
 import DirectorCosts from "./pages/helpdesk/DirectorCosts";
 import HelpdeskLeads from "./pages/helpdesk/Leads";
 import DirectorInbox from "./pages/helpdesk/DirectorInbox";
