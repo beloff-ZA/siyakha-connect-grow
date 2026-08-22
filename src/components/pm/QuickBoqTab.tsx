@@ -33,11 +33,13 @@ import { Panel, Stat, Field, selectCls } from "./ui";
 import { BOQ_UNITS, computeTotals, formatQty, formatZar, lineTotal, type Boq, type BoqItem, type BoqSection } from "@/lib/boq";
 import {
   DEFAULT_CATEGORY,
+  isPlanQuantityLocked,
   isRevisionLocked,
-  itemEditPatch,
+  PLAN_QUANTITY_NOTE,
   pickDefaultBoq,
   previewLineTotal,
   searchBoqItems,
+  unifiedItemPatch,
   validateQuickLine,
 } from "@/lib/quickBoq";
 import { buildSnapshot, type ProposalSnapshot } from "@/lib/proposals";
@@ -49,6 +51,9 @@ const todayPlus = (days: number) => {
   return d.toISOString().slice(0, 10);
 };
 
+/** BOQ item plus the plan-linkage column the unified editor must respect. */
+type QuickItem = BoqItem & { quantity_source?: string | null };
+
 type QuickForm = {
   id?: string;
   category: string;
@@ -58,7 +63,12 @@ type QuickForm = {
   unit: string;
   selling_price: string;
   vat_applicable: boolean;
+  is_included: boolean;
+  item_code: string;
   specification: string;
+  reference: string;
+  notes: string;
+  planLocked: boolean;
 };
 
 const emptyForm = (category: string): QuickForm => ({
@@ -69,7 +79,12 @@ const emptyForm = (category: string): QuickForm => ({
   unit: "each",
   selling_price: "0",
   vat_applicable: true,
+  is_included: true,
+  item_code: "",
   specification: "",
+  reference: "",
+  notes: "",
+  planLocked: false,
 });
 
 /**
@@ -82,7 +97,7 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   const [boqs, setBoqs] = useState<Boq[]>([]);
   const [boqId, setBoqId] = useState("");
   const [sections, setSections] = useState<BoqSection[]>([]);
-  const [items, setItems] = useState<BoqItem[]>([]);
+  const [items, setItems] = useState<QuickItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [snapshot, setSnapshot] = useState<ProposalSnapshot | null>(null);
@@ -92,13 +107,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   const [form, setForm] = useState<QuickForm | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [edit, setEdit] = useState<{ id: string; quantity: string; rate: string } | null>(null);
   const [query, setQuery] = useState("");
   const [appliedQuery, setAppliedQuery] = useState("");
-  const [priceTarget, setPriceTarget] = useState<BoqItem | null>(null);
-  const [priceValue, setPriceValue] = useState("0");
-  const [titleValue, setTitleValue] = useState("");
-  const [editErrors, setEditErrors] = useState<{ description?: string; selling_price?: string }>({});
   const [creating, setCreating] = useState({ title: "Bill of quantities", revision_label: "Draft v1", vat_enabled: true, valid_until: todayPlus(30) });
 
   const fail = (e: unknown) =>
