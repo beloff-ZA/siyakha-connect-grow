@@ -2998,68 +2998,111 @@ export type Database = {
       portal_rack_equipment: {
         Row: {
           client_visible: boolean
+          copper_ports: number | null
           created_at: string
+          created_by: string | null
           description: string | null
+          equipment_name: string | null
           equipment_type: string
+          floor_id: string | null
           id: string
           layer3_capable: boolean
+          mac_address: string | null
           manufacturer: string
           model: string
+          network_layer: string | null
           notes: string | null
           poe_capable: boolean
           port_count: number | null
           port_type: string | null
+          product_url: string | null
           project_id: string
           quantity: number
           rack_marker_id: string
+          rack_position: number | null
           rack_units: number
+          role: string | null
+          serial_number: string | null
+          sfp_plus_ports: number | null
+          sfp_ports: number | null
           sort_order: number
           status: Database["public"]["Enums"]["portal_marker_state"]
           updated_at: string
         }
         Insert: {
           client_visible?: boolean
+          copper_ports?: number | null
           created_at?: string
+          created_by?: string | null
           description?: string | null
+          equipment_name?: string | null
           equipment_type?: string
+          floor_id?: string | null
           id?: string
           layer3_capable?: boolean
+          mac_address?: string | null
           manufacturer: string
           model: string
+          network_layer?: string | null
           notes?: string | null
           poe_capable?: boolean
           port_count?: number | null
           port_type?: string | null
+          product_url?: string | null
           project_id: string
           quantity?: number
           rack_marker_id: string
+          rack_position?: number | null
           rack_units?: number
+          role?: string | null
+          serial_number?: string | null
+          sfp_plus_ports?: number | null
+          sfp_ports?: number | null
           sort_order?: number
           status?: Database["public"]["Enums"]["portal_marker_state"]
           updated_at?: string
         }
         Update: {
           client_visible?: boolean
+          copper_ports?: number | null
           created_at?: string
+          created_by?: string | null
           description?: string | null
+          equipment_name?: string | null
           equipment_type?: string
+          floor_id?: string | null
           id?: string
           layer3_capable?: boolean
+          mac_address?: string | null
           manufacturer?: string
           model?: string
+          network_layer?: string | null
           notes?: string | null
           poe_capable?: boolean
           port_count?: number | null
           port_type?: string | null
+          product_url?: string | null
           project_id?: string
           quantity?: number
           rack_marker_id?: string
+          rack_position?: number | null
           rack_units?: number
+          role?: string | null
+          serial_number?: string | null
+          sfp_plus_ports?: number | null
+          sfp_ports?: number | null
           sort_order?: number
           status?: Database["public"]["Enums"]["portal_marker_state"]
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "portal_rack_equipment_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "portal_rack_equipment_project_id_fkey"
             columns: ["project_id"]
@@ -3075,6 +3118,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      portal_rack_equipment_history: {
+        Row: {
+          action: string
+          actor_type: string
+          actor_user_id: string | null
+          created_at: string
+          detail: string | null
+          equipment_id: string
+          id: string
+          new_values: Json | null
+          prev_values: Json | null
+          project_id: string
+          rack_marker_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_type?: string
+          actor_user_id?: string | null
+          created_at?: string
+          detail?: string | null
+          equipment_id: string
+          id?: string
+          new_values?: Json | null
+          prev_values?: Json | null
+          project_id: string
+          rack_marker_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_type?: string
+          actor_user_id?: string | null
+          created_at?: string
+          detail?: string | null
+          equipment_id?: string
+          id?: string
+          new_values?: Json | null
+          prev_values?: Json | null
+          project_id?: string
+          rack_marker_id?: string | null
+        }
+        Relationships: []
       }
       portal_registrations: {
         Row: {
