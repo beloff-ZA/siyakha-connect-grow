@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { adminDisplayName, adminIdentityLabel } from "@/lib/adminIdentity";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays,
