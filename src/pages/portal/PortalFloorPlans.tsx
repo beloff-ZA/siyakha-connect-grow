@@ -408,19 +408,20 @@ const PortalFloorPlans: React.FC = () => {
       const p = pos ?? dragPositions.current[id] ?? draft[id];
       if (!marker || !p) return;
       setAutoSave({ state: "saving", label: marker.label });
-      const { error: rpcErr } = await supabase.rpc("portal_save_floor_marker", {
-        _payload: {
+      try {
+        await markerTransaction("save", {
           id,
           floor_id: marker.floor_id,
           is_placed: true,
           x_norm: p.x,
           y_norm: p.y,
-        } as unknown as never,
-      });
-      if (rpcErr) {
-        setAutoSave({ state: "error", id, label: marker.label, message: rpcErr.message });
+        });
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "Unknown error";
+        setAutoSave({ state: "error", id, label: marker.label, message });
         return;
       }
+
       setMarkers((list) =>
         list.map((m) => (m.id === id ? { ...m, x_norm: p.x, y_norm: p.y, is_placed: true } : m)),
       );
