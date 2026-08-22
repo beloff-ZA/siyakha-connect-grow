@@ -20,6 +20,7 @@ import {
   AIM_DEADZONE_PX,
   type Size,
 } from "./planGeometry";
+import { rackItemsFor } from "./rackEquipment";
 
 describe("containRect", () => {
   it("letterboxes a wide image in a square container", () => {

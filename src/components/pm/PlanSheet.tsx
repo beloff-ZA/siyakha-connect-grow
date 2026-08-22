@@ -5,18 +5,8 @@ import { kindLabel, type FloorMarker, type PortalFloor } from "@/lib/floorPlans"
 import { selectedCoverageMode, coverageHelpText } from "@/lib/planGeometry";
 import FloorPlanCanvas from "@/components/portal/FloorPlanCanvas";
 import { RackContents } from "@/components/portal/RackEquipment";
-import type { RackEquipment } from "@/lib/rackEquipment";
+import { rackItemsFor, type RackEquipment } from "@/lib/rackEquipment";
 import type { PackFloor, PackMarker, PackRackItem, PackCable } from "@/lib/projectPack";
-
-/** Rack equipment installed in one rack marker. */
-export function rackItemsFor(
-  equipment: (PackRackItem | RackEquipment)[] | undefined,
-  rackMarkerId: string,
-): RackEquipment[] {
-  return ((equipment ?? []) as RackEquipment[]).filter(
-    (e) => (e as { rack_marker_id?: string | null }).rack_marker_id === rackMarkerId,
-  );
-}
 
 /**
  * Renders a saved plan background with normalised marker coordinates on top,
@@ -109,7 +99,7 @@ const PlanSheet: React.FC<{
           <RackContents
             rack={selected as unknown as FloorMarker}
             floor={floor as unknown as PortalFloor}
-            items={rackItemsFor(rackEquipment, selected.id)}
+            items={rackItemsFor(rackEquipment as RackEquipment[] | undefined, selected.id)}
             routes={((cables ?? []) as unknown as { floor_id: string; service_type: string }[]).filter(
               (c) => c.floor_id === floor.id,
             )}
