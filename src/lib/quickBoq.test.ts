@@ -57,18 +57,14 @@ describe("quick line calculation and validation", () => {
   });
 
   it("never silently discards invalid input", () => {
-    const res = validateQuickLine({ category: "", description: " ", quantity: "0", unit: "", selling_price: "-2" });
+    const res = validateQuickLine({ category: "", description: " ", quantity: "0", unit: "", selling_price: "-2" }) as {
+      ok: boolean;
+      errors?: Record<string, string>;
+    };
     expect(res.ok).toBe(false);
-    if (!res.ok) {
-      expect(Object.keys(res.errors).sort()).toEqual([
-        "category",
-        "description",
-        "quantity",
-        "selling_price",
-        "unit",
-      ]);
-    }
+    expect(Object.keys(res.errors ?? {}).sort()).toEqual(["category", "description", "quantity", "selling_price", "unit"]);
   });
+
 });
 
 describe("client-safe output", () => {
