@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveLandingPath } from "@/lib/authRouting";
 
 const AuthPage: React.FC = () => {
   const { toast } = useToast();
@@ -37,27 +38,14 @@ const AuthPage: React.FC = () => {
         return;
       }
       if (session?.user) {
-        // Check if admin
-        const { data: adminRow } = await supabase
-          .from("user_roles")
-          .select("id")
-          .eq("user_id", session.user.id)
-          .eq("role", "siyakha_admin")
-          .maybeSingle();
-        window.location.replace(adminRow ? "/helpdesk" : "/portal");
+        window.location.replace(await resolveLandingPath(session.user.id));
       }
     });
     supabase.auth.getSession().then(async ({ data }) => {
       const params = new URLSearchParams(window.location.search);
       const isRecovery = params.get('type') === 'recovery';
       if (data.session?.user && !isRecovery) {
-        const { data: adminRow } = await supabase
-          .from("user_roles")
-          .select("id")
-          .eq("user_id", data.session.user.id)
-          .eq("role", "siyakha_admin")
-          .maybeSingle();
-        window.location.replace(adminRow ? "/helpdesk" : "/portal");
+        window.location.replace(await resolveLandingPath(data.session.user.id));
       }
     });
     return () => subscription.unsubscribe();
