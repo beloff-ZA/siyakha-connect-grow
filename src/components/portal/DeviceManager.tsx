@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Copy, MapPin, MapPinOff, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  DISCIPLINES,
+  disciplineLabel,
+  listProducts,
+  type CatalogProduct,
+  type Discipline,
+} from "@/lib/productCatalog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,6 +57,9 @@ type FormState = {
   direction_deg: number;
   fov_deg: number;
   coverage_range: CameraRange;
+  /** Catalogue product this instance represents — drives BOQ quantities. */
+  product_id: string | null;
+  discipline: string | null;
 };
 
 const blank = (kind: MarkerKind = "camera"): FormState => ({
@@ -68,6 +78,8 @@ const blank = (kind: MarkerKind = "camera"): FormState => ({
   direction_deg: 0,
   fov_deg: 90,
   coverage_range: "medium",
+  product_id: null,
+  discipline: null,
 });
 
 const fromMarker = (m: FloorMarker): FormState => ({
@@ -87,6 +99,8 @@ const fromMarker = (m: FloorMarker): FormState => ({
   direction_deg: Number(m.direction_deg ?? 0),
   fov_deg: Number(m.fov_deg ?? 90),
   coverage_range: (m.coverage_range ?? "medium") as CameraRange,
+  product_id: (m as any).product_id ?? null,
+  discipline: (m as any).discipline ?? null,
 });
 
 const prefixFor = (kind: MarkerKind) =>
@@ -152,6 +166,46 @@ const DeviceManager: React.FC<Props> = ({
   const [deleting, setDeleting] = useState(false);
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<"all" | MarkerKind>("all");
+  const [products, setProducts] = useState<CatalogProduct[]>([]);
+  const [palette, setPalette] = useState<"all" | Discipline>("all");
+
+  // Active catalogue products power the plan palette for every discipline.
+  useEffect(() => {
+    let alive = true;
+    void listProducts()
+      .then((list) => alive && setProducts(list.filter((p) => p.is_active)))
+      .catch(() => alive && setProducts([]));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const paletteProducts = useMemo(
+    () => products.filter((p) => (palette === "all" ? true : p.discipline === palette)),
+    [products, palette],
+  );
+
+  /** Applying a product sets sensible defaults but every field stays editable. */
+  const applyProduct = useCallback(
+    (productId: string) => {
+      const product = products.find((p) => p.id === productId) ?? null;
+      setForm((f) => {
+        if (!f) return f;
+        if (!product) return { ...f, product_id: null };
+        return {
+          ...f,
+          product_id: product.id,
+          discipline: product.discipline,
+          marker_type: (product.default_marker_type ?? f.marker_type) as MarkerKind,
+          equipment: product.name,
+          model: [product.manufacturer, product.model].filter(Boolean).join(" ") || f.model,
+          fov_deg: product.default_fov_deg ?? f.fov_deg,
+          coverage_range: (product.default_coverage_range ?? f.coverage_range) as CameraRange,
+        };
+      });
+    },
+    [products],
+  );
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => (f ? { ...f, [key]: value } : f));
@@ -289,6 +343,8 @@ const DeviceManager: React.FC<Props> = ({
       direction_deg: form.direction_deg,
       fov_deg: form.fov_deg,
       coverage_range: form.coverage_range,
+      product_id: form.product_id,
+      discipline: form.discipline,
     };
 
     try {
@@ -487,6 +543,43 @@ const DeviceManager: React.FC<Props> = ({
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="dm-discipline">Design discipline</Label>
+                <select
+                  id="dm-discipline"
+                  value={palette}
+                  onChange={(e) => setPalette(e.target.value as "all" | Discipline)}
+                  className={selectClass}
+                >
+                  <option value="all">All disciplines</option>
+                  {DISCIPLINES.map((d) => (
+                    <option key={d.value} value={d.value}>
+                      {d.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="dm-product">Catalogue product</Label>
+                <select
+                  id="dm-product"
+                  value={form.product_id ?? ""}
+                  onChange={(e) => applyProduct(e.target.value)}
+                  className={selectClass}
+                >
+                  <option value="">No catalogue product (not billed from the plan)</option>
+                  {paletteProducts.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {[p.manufacturer, p.model, p.name].filter(Boolean).join(" ")}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-muted-foreground">
+                  {form.product_id
+                    ? `Plan-linked — this instance adds 1 to the ${disciplineLabel(form.discipline)} product quantity on the linked BOQ. Moving or rotating it does not change quantities.`
+                    : "Link a catalogue product so this device feeds the project bill of quantities automatically."}
+                </p>
+              </div>
               <div className="space-y-1.5">
                 <Label htmlFor="dm-type">Device type</Label>
                 <select

@@ -10,6 +10,8 @@ import ProposalsTab from "@/components/pm/ProposalsTab";
 import LifecycleTab from "@/components/pm/LifecycleTab";
 import AssetsTab from "@/components/pm/AssetsTab";
 import ReportsTab from "@/components/pm/ReportsTab";
+import ProductCatalogTab from "@/components/pm/ProductCatalogTab";
+import PlansDesignTab from "@/components/pm/PlansDesignTab";
 
 const TABS = [
   { value: "overview", label: "Overview" },
@@ -20,6 +22,8 @@ const TABS = [
   { value: "proposals", label: "Proposals" },
   { value: "lifecycle", label: "Lifecycle & variations" },
   { value: "assets", label: "Devices & assets" },
+  { value: "catalogue", label: "Product catalogue" },
+  { value: "plans", label: "Plans & design" },
   { value: "reports", label: "Reports & pack" },
 ];
 
@@ -85,6 +89,12 @@ const ProjectManagement: React.FC = () => {
             </TabsContent>
             <TabsContent value="assets">
               <AssetsTab ws={ws} projectId={projectId} setProjectId={setProjectId} />
+            </TabsContent>
+            <TabsContent value="catalogue">
+              <ProductCatalogTab />
+            </TabsContent>
+            <TabsContent value="plans">
+              <PlansDesignTab ws={ws} projectId={projectId} setProjectId={setProjectId} />
             </TabsContent>
             <TabsContent value="reports">
               <ReportsTab ws={ws} projectId={projectId} setProjectId={setProjectId} />

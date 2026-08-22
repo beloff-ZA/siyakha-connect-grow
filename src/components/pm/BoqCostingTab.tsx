@@ -3,12 +3,14 @@ import BoqManager from "@/components/helpdesk/BoqManager";
 import PrintSurface from "./PrintSurface";
 import BoqPrintView from "./BoqPrintView";
 import ShareDialog, { type ShareTarget } from "./ShareDialog";
+import PlanBoqSyncPanel from "./PlanBoqSyncPanel";
 import { Button } from "@/components/ui/button";
 import { Panel, Field, selectCls } from "./ui";
 import { useToast } from "@/hooks/use-toast";
 import { buildSnapshot, type ProposalSnapshot } from "@/lib/proposals";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
 import { Share2 } from "lucide-react";
+
 
 const BoqCostingTab: React.FC<{
   ws: PmWorkspace;
@@ -33,6 +35,9 @@ const BoqCostingTab: React.FC<{
   );
 
   const projectBoqs = useMemo(() => boqs.filter((b) => b.project_id === projectId), [boqs, projectId]);
+  const [syncBoqId, setSyncBoqId] = useState("");
+  const syncBoq = useMemo(() => projectBoqs.find((b) => b.id === syncBoqId) ?? null, [projectBoqs, syncBoqId]);
+
 
   const openCustomerPrint = async (boqId: string) => {
     try {
@@ -98,11 +103,43 @@ const BoqCostingTab: React.FC<{
           </div>
         )}
 
+        {projectId && (
+          <div className="mt-4">
+            <Field label="BOQ used for design (plan) quantity sync">
+              <select className={selectCls} value={syncBoqId} onChange={(e) => setSyncBoqId(e.target.value)}>
+                <option value="">Select the BOQ the design should feed…</option>
+                {projectBoqs.map((b: any) => (
+                  <option key={b.id} value={b.id}>
+                    {b.title} · {b.revision_label} ({b.status})
+                  </option>
+                ))}
+              </select>
+            </Field>
+            {projectBoqs.length === 0 && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                This project has no bill of quantities yet. Create a draft BOQ below before syncing the design.
+              </p>
+            )}
+          </div>
+        )}
+
         <p className="mt-3 text-xs text-muted-foreground">
           Supplier names, supplier costs, markup and margin stay internal. The customer document and every share link are
           generated from a client-safe snapshot only, and nothing is emailed.
         </p>
       </Panel>
+
+      {projectId && syncBoq && (
+        <PlanBoqSyncPanel
+          projectId={projectId}
+          boqId={syncBoq.id}
+          boqStatus={(syncBoq as any).status}
+          boqLabel={`${(syncBoq as any).title} · ${(syncBoq as any).revision_label}`}
+          onSynced={ws.reload}
+        />
+      )}
+
+
 
       {projectId ? (
         <BoqManager projectId={projectId} onPrintCustomerBoq={openCustomerPrint} />

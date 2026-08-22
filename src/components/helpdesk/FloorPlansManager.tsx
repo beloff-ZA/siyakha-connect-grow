@@ -149,24 +149,75 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     load();
   };
 
+  /**
+   * Upload a plan as PDF or image. The original file is always retained under a
+   * unique timestamped path, prior revisions are never overwritten, and the
+   * interactive workspace image is switched only for image uploads (a PDF is kept
+   * as the source until an interactive preview image is uploaded for it).
+   */
   const uploadPlan = async (file: File) => {
     if (!floor) return;
-    if (floor.plan_image_path && !window.confirm(`Replace the existing plan image for ${floor.display_name}? The current image will be overwritten.`))
-      return;
-    if (!file.type.startsWith("image/")) return fail("Plan must be an image (PNG or JPG).");
+    const isPdf = file.type === "application/pdf";
+    const isImage = file.type.startsWith("image/");
+    if (!isPdf && !isImage) return fail("Upload a PDF or an image (PNG, JPG or WEBP).");
     setBusy(true);
-    const ext = file.name.split(".").pop()?.toLowerCase() ?? "png";
-    const path = `${projectId}/floor-plans/level-${String(floor.level_number).padStart(2, "0")}-${Date.now()}.${ext}`;
-    const { error: upErr } = await supabase.storage.from(DOCUMENTS_BUCKET).upload(path, file, { upsert: true });
+    const ext = file.name.split(".").pop()?.toLowerCase() ?? (isPdf ? "pdf" : "png");
+    const stamp = Date.now();
+    const path = `${projectId}/floor-plans/level-${String(floor.level_number).padStart(2, "0")}-${stamp}.${ext}`;
+    // upsert:false so an earlier revision can never be overwritten.
+    const { error: upErr } = await supabase.storage.from(DOCUMENTS_BUCKET).upload(path, file, { upsert: false });
     if (upErr) {
       setBusy(false);
       return fail(upErr.message);
     }
-    const { error } = await supabase.from("portal_floors").update({ plan_image_path: path }).eq("id", floor.id);
+
+    const { count } = await supabase
+      .from("portal_plan_revisions")
+      .select("id", { count: "exact", head: true })
+      .eq("floor_id", floor.id);
+    const revisionLabel = `Rev ${String((count ?? 0) + 1).padStart(2, "0")}`;
+
+    // Only one revision per floor stays current.
+    await supabase.from("portal_plan_revisions").update({ is_current: false }).eq("floor_id", floor.id);
+    const { error: revErr } = await supabase.from("portal_plan_revisions").insert({
+      project_id: projectId,
+      floor_id: floor.id,
+      revision_label: revisionLabel,
+      source_path: path,
+      image_path: isImage ? path : null,
+      original_filename: file.name,
+      mime_type: file.type,
+      file_size: file.size,
+      is_current: true,
+      uploaded_by: user?.id ?? null,
+      notes: isPdf
+        ? "PDF source retained. Upload an interactive preview image to make this revision the design workspace."
+        : null,
+    });
+    if (revErr) {
+      setBusy(false);
+      return fail(revErr.message);
+    }
+
+    if (isImage) {
+      const { error } = await supabase.from("portal_floors").update({ plan_image_path: path }).eq("id", floor.id);
+      if (error) {
+        setBusy(false);
+        return fail(error.message);
+      }
+    }
+
     setBusy(false);
-    if (error) return fail(error.message);
-    await logHistory("plan_upload", `Plan image set for ${floor.display_name}`);
-    toast({ title: "Plan image updated" });
+    await logHistory(
+      "plan_upload",
+      `${revisionLabel} uploaded for ${floor.display_name} (${file.name})${isImage ? " and set as the interactive workspace" : " — PDF source retained"}`,
+    );
+    toast({
+      title: isImage ? "Plan revision uploaded" : "PDF source uploaded",
+      description: isImage
+        ? `${revisionLabel} is now the interactive design workspace. Earlier revisions are retained.`
+        : `${revisionLabel} source stored. Upload an image preview to design on it.`,
+    });
     load();
   };
 
@@ -406,7 +457,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
               <input
                 ref={fileRef}
                 type="file"
-                accept="image/png,image/jpeg,image/webp"
+                accept="application/pdf,image/png,image/jpeg,image/webp"
                 className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0];
@@ -415,7 +466,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                 }}
               />
               <Button variant="outline" onClick={() => fileRef.current?.click()}>
-                {floor.plan_image_path ? "Replace plan image" : "Upload plan image"}
+                {floor.plan_image_path ? "Upload new plan revision" : "Upload plan (PDF or image)"}
               </Button>
               <Button
                 variant="outline"

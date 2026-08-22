@@ -1309,12 +1309,14 @@ export type Database = {
           line_kind: string
           line_total: number | null
           notes: string | null
+          product_id: string | null
           qty_commissioned: number
           qty_installed: number
           qty_procured: number
           qty_received: number
           qty_tested: number
           quantity: number
+          quantity_source: string
           reference: string | null
           section_id: string
           sort_order: number
@@ -1337,12 +1339,14 @@ export type Database = {
           line_kind?: string
           line_total?: number | null
           notes?: string | null
+          product_id?: string | null
           qty_commissioned?: number
           qty_installed?: number
           qty_procured?: number
           qty_received?: number
           qty_tested?: number
           quantity?: number
+          quantity_source?: string
           reference?: string | null
           section_id: string
           sort_order?: number
@@ -1365,12 +1369,14 @@ export type Database = {
           line_kind?: string
           line_total?: number | null
           notes?: string | null
+          product_id?: string | null
           qty_commissioned?: number
           qty_installed?: number
           qty_procured?: number
           qty_received?: number
           qty_tested?: number
           quantity?: number
+          quantity_source?: string
           reference?: string | null
           section_id?: string
           sort_order?: number
@@ -1393,6 +1399,13 @@ export type Database = {
             columns: ["floor_id"]
             isOneToOne: false
             referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_boq_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "portal_product_catalog"
             referencedColumns: ["id"]
           },
           {
@@ -2000,6 +2013,7 @@ export type Database = {
           description: string | null
           design_hold: string | null
           direction_deg: number
+          discipline: string | null
           environment: string | null
           equipment: string | null
           evidence_note: string | null
@@ -2020,6 +2034,7 @@ export type Database = {
           nvr_channel: number | null
           nvr_id: string | null
           poe_class: string | null
+          product_id: string | null
           project_id: string
           radio_band: string | null
           serial_number: string | null
@@ -2045,6 +2060,7 @@ export type Database = {
           description?: string | null
           design_hold?: string | null
           direction_deg?: number
+          discipline?: string | null
           environment?: string | null
           equipment?: string | null
           evidence_note?: string | null
@@ -2065,6 +2081,7 @@ export type Database = {
           nvr_channel?: number | null
           nvr_id?: string | null
           poe_class?: string | null
+          product_id?: string | null
           project_id: string
           radio_band?: string | null
           serial_number?: string | null
@@ -2090,6 +2107,7 @@ export type Database = {
           description?: string | null
           design_hold?: string | null
           direction_deg?: number
+          discipline?: string | null
           environment?: string | null
           equipment?: string | null
           evidence_note?: string | null
@@ -2110,6 +2128,7 @@ export type Database = {
           nvr_channel?: number | null
           nvr_id?: string | null
           poe_class?: string | null
+          product_id?: string | null
           project_id?: string
           radio_band?: string | null
           serial_number?: string | null
@@ -2130,6 +2149,13 @@ export type Database = {
             columns: ["floor_id"]
             isOneToOne: false
             referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_floor_markers_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "portal_product_catalog"
             referencedColumns: ["id"]
           },
           {
@@ -2618,6 +2644,102 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      portal_product_catalog: {
+        Row: {
+          archived_at: string | null
+          category: string | null
+          created_at: string
+          created_by: string | null
+          customer_unit_rate: number
+          datasheet_path: string | null
+          default_coverage_radius_m: number | null
+          default_coverage_range: string | null
+          default_fov_deg: number | null
+          default_marker_type:
+            | Database["public"]["Enums"]["portal_marker_kind"]
+            | null
+          default_markup_pct: number | null
+          description: string | null
+          discipline: string
+          id: string
+          image_path: string | null
+          is_active: boolean
+          manufacturer: string | null
+          model: string | null
+          name: string
+          notes: string | null
+          sku: string | null
+          specification: string | null
+          supplier_name: string | null
+          supplier_unit_cost: number | null
+          unit: string
+          updated_at: string
+          vat_applicable: boolean
+        }
+        Insert: {
+          archived_at?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_unit_rate?: number
+          datasheet_path?: string | null
+          default_coverage_radius_m?: number | null
+          default_coverage_range?: string | null
+          default_fov_deg?: number | null
+          default_marker_type?:
+            | Database["public"]["Enums"]["portal_marker_kind"]
+            | null
+          default_markup_pct?: number | null
+          description?: string | null
+          discipline: string
+          id?: string
+          image_path?: string | null
+          is_active?: boolean
+          manufacturer?: string | null
+          model?: string | null
+          name: string
+          notes?: string | null
+          sku?: string | null
+          specification?: string | null
+          supplier_name?: string | null
+          supplier_unit_cost?: number | null
+          unit?: string
+          updated_at?: string
+          vat_applicable?: boolean
+        }
+        Update: {
+          archived_at?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_unit_rate?: number
+          datasheet_path?: string | null
+          default_coverage_radius_m?: number | null
+          default_coverage_range?: string | null
+          default_fov_deg?: number | null
+          default_marker_type?:
+            | Database["public"]["Enums"]["portal_marker_kind"]
+            | null
+          default_markup_pct?: number | null
+          description?: string | null
+          discipline?: string
+          id?: string
+          image_path?: string | null
+          is_active?: boolean
+          manufacturer?: string | null
+          model?: string | null
+          name?: string
+          notes?: string | null
+          sku?: string | null
+          specification?: string | null
+          supplier_name?: string | null
+          supplier_unit_cost?: number | null
+          unit?: string
+          updated_at?: string
+          vat_applicable?: boolean
+        }
+        Relationships: []
       }
       portal_project_assignments: {
         Row: {
@@ -4078,6 +4200,7 @@ export type Database = {
       }
       portal_next_proposal_number: { Args: never; Returns: string }
       portal_save_floor_marker: { Args: { _payload: Json }; Returns: string }
+      portal_sync_boq_from_plan: { Args: { _boq_id: string }; Returns: Json }
       portal_update_cable_route_waypoints: {
         Args: { _route_id: string; _waypoints: Json }
         Returns: number
