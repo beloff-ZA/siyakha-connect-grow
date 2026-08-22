@@ -23,9 +23,13 @@ import {
   type MarkerState,
   type PortalFloor,
 } from "@/lib/floorPlans";
-import { bearingText, normalizeBearing } from "@/lib/planGeometry";
+import {
+  bearingText,
+  coverageHelpText,
+  normalizeBearing,
+  selectedCoverageMode,
+} from "@/lib/planGeometry";
 import { activeRoutes, parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
-import { coverageHelpText, selectedCoverageMode } from "@/lib/planGeometry";
 import {
   bulkCreateMarkers,
   copyFloorLayout,
