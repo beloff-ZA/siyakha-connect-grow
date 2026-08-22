@@ -151,11 +151,12 @@ export const nextProposalNumber = async () => {
 export const buildSnapshot = async (projectId: string, boqId: string | null): Promise<ProposalSnapshot> => {
   const { data: project, error: pErr } = await db
     .from("portal_projects")
-    .select("id, title, reference, address, status, client_id, site_id")
+    .select("id, title, reference, address, status, client_id, site_id, building_details")
     .eq("id", projectId)
     .maybeSingle();
   if (pErr) throw pErr;
   if (!project) throw new Error("Project not found");
+
 
   const [{ data: client }, { data: site }] = await Promise.all([
     project.client_id
