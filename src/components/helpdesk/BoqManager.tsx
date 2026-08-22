@@ -30,7 +30,10 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
 
 const selectCls = "h-10 border border-input bg-background px-3 text-sm w-full";
 
-const BoqManager: React.FC<{ projectId: string }> = ({ projectId }) => {
+const BoqManager: React.FC<{ projectId: string; onPrintCustomerBoq?: (boqId: string) => void }> = ({
+  projectId,
+  onPrintCustomerBoq,
+}) => {
   const { toast } = useToast();
   const [boqs, setBoqs] = useState<Boq[]>([]);
   const [boqId, setBoqId] = useState("");
