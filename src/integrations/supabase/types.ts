@@ -4197,13 +4197,36 @@ export type Database = {
         Args: { _cameras: Json; _floor_id: string }
         Returns: number
       }
+      portal_bulk_create_markers: { Args: { _payload: Json }; Returns: Json }
       portal_can_manage_project: {
         Args: { _project_id: string }
         Returns: boolean
       }
+      portal_client_catalogue: {
+        Args: { _project_id: string }
+        Returns: {
+          default_coverage_radius_m: number
+          default_coverage_range: string
+          default_fov_deg: number
+          default_marker_type: Database["public"]["Enums"]["portal_marker_kind"]
+          discipline: string
+          id: string
+          manufacturer: string
+          model: string
+          name: string
+          sku: string
+          specification: string
+          unit: string
+        }[]
+      }
+      portal_copy_floor_layout: { Args: { _payload: Json }; Returns: Json }
       portal_delete_floor_marker: {
         Args: { _marker_id: string }
         Returns: boolean
+      }
+      portal_duplicate_marker: {
+        Args: { _marker_id: string; _payload?: Json }
+        Returns: Json
       }
       portal_generate_missing_cable_routes: {
         Args: { _floor_id?: string; _project_id: string }
