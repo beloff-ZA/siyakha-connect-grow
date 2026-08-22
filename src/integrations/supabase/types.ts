@@ -985,6 +985,139 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_assets: {
+        Row: {
+          area: string | null
+          asset_tag: string | null
+          commissioned_on: string | null
+          created_at: string
+          created_by: string | null
+          document_path: string | null
+          evidence_path: string | null
+          floor_id: string | null
+          id: string
+          installed_on: string | null
+          installer: string | null
+          ip_address: string | null
+          lifecycle_status: string
+          mac_address: string | null
+          manufacturer: string | null
+          marker_id: string | null
+          model: string | null
+          notes: string | null
+          nvr_channel: number | null
+          nvr_label: string | null
+          patch_panel: string | null
+          patch_panel_port: number | null
+          po_reference: string | null
+          project_id: string
+          purchase_date: string | null
+          rack_label: string | null
+          serial_number: string | null
+          supplier: string | null
+          switch_label: string | null
+          switch_port: number | null
+          test_result: string | null
+          tested_on: string | null
+          updated_at: string
+          warranty_expiry: string | null
+        }
+        Insert: {
+          area?: string | null
+          asset_tag?: string | null
+          commissioned_on?: string | null
+          created_at?: string
+          created_by?: string | null
+          document_path?: string | null
+          evidence_path?: string | null
+          floor_id?: string | null
+          id?: string
+          installed_on?: string | null
+          installer?: string | null
+          ip_address?: string | null
+          lifecycle_status?: string
+          mac_address?: string | null
+          manufacturer?: string | null
+          marker_id?: string | null
+          model?: string | null
+          notes?: string | null
+          nvr_channel?: number | null
+          nvr_label?: string | null
+          patch_panel?: string | null
+          patch_panel_port?: number | null
+          po_reference?: string | null
+          project_id: string
+          purchase_date?: string | null
+          rack_label?: string | null
+          serial_number?: string | null
+          supplier?: string | null
+          switch_label?: string | null
+          switch_port?: number | null
+          test_result?: string | null
+          tested_on?: string | null
+          updated_at?: string
+          warranty_expiry?: string | null
+        }
+        Update: {
+          area?: string | null
+          asset_tag?: string | null
+          commissioned_on?: string | null
+          created_at?: string
+          created_by?: string | null
+          document_path?: string | null
+          evidence_path?: string | null
+          floor_id?: string | null
+          id?: string
+          installed_on?: string | null
+          installer?: string | null
+          ip_address?: string | null
+          lifecycle_status?: string
+          mac_address?: string | null
+          manufacturer?: string | null
+          marker_id?: string | null
+          model?: string | null
+          notes?: string | null
+          nvr_channel?: number | null
+          nvr_label?: string | null
+          patch_panel?: string | null
+          patch_panel_port?: number | null
+          po_reference?: string | null
+          project_id?: string
+          purchase_date?: string | null
+          rack_label?: string | null
+          serial_number?: string | null
+          supplier?: string | null
+          switch_label?: string | null
+          switch_port?: number | null
+          test_result?: string | null
+          tested_on?: string | null
+          updated_at?: string
+          warranty_expiry?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_assets_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_assets_marker_id_fkey"
+            columns: ["marker_id"]
+            isOneToOne: true
+            referencedRelation: "portal_floor_markers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_assets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_boq_activity: {
         Row: {
           action: string
@@ -1168,11 +1301,19 @@ export type Database = {
           created_at: string
           customer_unit_rate: number
           description: string
+          discipline: string | null
+          floor_id: string | null
           id: string
           is_included: boolean
           item_code: string | null
+          line_kind: string
           line_total: number | null
           notes: string | null
+          qty_commissioned: number
+          qty_installed: number
+          qty_procured: number
+          qty_received: number
+          qty_tested: number
           quantity: number
           reference: string | null
           section_id: string
@@ -1181,17 +1322,26 @@ export type Database = {
           unit: string
           updated_at: string
           vat_applicable: boolean
+          work_package: string | null
         }
         Insert: {
           boq_id: string
           created_at?: string
           customer_unit_rate?: number
           description: string
+          discipline?: string | null
+          floor_id?: string | null
           id?: string
           is_included?: boolean
           item_code?: string | null
+          line_kind?: string
           line_total?: number | null
           notes?: string | null
+          qty_commissioned?: number
+          qty_installed?: number
+          qty_procured?: number
+          qty_received?: number
+          qty_tested?: number
           quantity?: number
           reference?: string | null
           section_id: string
@@ -1200,17 +1350,26 @@ export type Database = {
           unit?: string
           updated_at?: string
           vat_applicable?: boolean
+          work_package?: string | null
         }
         Update: {
           boq_id?: string
           created_at?: string
           customer_unit_rate?: number
           description?: string
+          discipline?: string | null
+          floor_id?: string | null
           id?: string
           is_included?: boolean
           item_code?: string | null
+          line_kind?: string
           line_total?: number | null
           notes?: string | null
+          qty_commissioned?: number
+          qty_installed?: number
+          qty_procured?: number
+          qty_received?: number
+          qty_tested?: number
           quantity?: number
           reference?: string | null
           section_id?: string
@@ -1219,6 +1378,7 @@ export type Database = {
           unit?: string
           updated_at?: string
           vat_applicable?: boolean
+          work_package?: string | null
         }
         Relationships: [
           {
@@ -1226,6 +1386,13 @@ export type Database = {
             columns: ["boq_id"]
             isOneToOne: false
             referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_boq_items_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
             referencedColumns: ["id"]
           },
           {
@@ -2488,6 +2655,94 @@ export type Database = {
           },
         ]
       }
+      portal_project_packs: {
+        Row: {
+          client_visible: boolean
+          id: string
+          issued_at: string
+          issued_by: string | null
+          lifecycle_stage: string | null
+          pack_kind: string
+          pack_number: string
+          project_id: string
+          revision_no: number
+          snapshot: Json
+          title: string
+        }
+        Insert: {
+          client_visible?: boolean
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          lifecycle_stage?: string | null
+          pack_kind?: string
+          pack_number: string
+          project_id: string
+          revision_no?: number
+          snapshot: Json
+          title: string
+        }
+        Update: {
+          client_visible?: boolean
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          lifecycle_stage?: string | null
+          pack_kind?: string
+          pack_number?: string
+          project_id?: string
+          revision_no?: number
+          snapshot?: Json
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_project_packs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_project_stage_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          from_stage: string | null
+          id: string
+          note: string | null
+          project_id: string
+          to_stage: string
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          note?: string | null
+          project_id: string
+          to_stage: string
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          note?: string | null
+          project_id?: string
+          to_stage?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_project_stage_history_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_projects: {
         Row: {
           address: string | null
@@ -2495,9 +2750,13 @@ export type Database = {
           consultant: string | null
           created_at: string
           description: string | null
+          design_concept: string | null
           id: string
+          lifecycle_note: string | null
+          lifecycle_stage: string | null
           objectives: string | null
           planning_narrative: string | null
+          project_approach: string | null
           reference: string | null
           risks_notes: string | null
           site_context: string | null
@@ -2515,9 +2774,13 @@ export type Database = {
           consultant?: string | null
           created_at?: string
           description?: string | null
+          design_concept?: string | null
           id?: string
+          lifecycle_note?: string | null
+          lifecycle_stage?: string | null
           objectives?: string | null
           planning_narrative?: string | null
+          project_approach?: string | null
           reference?: string | null
           risks_notes?: string | null
           site_context?: string | null
@@ -2535,9 +2798,13 @@ export type Database = {
           consultant?: string | null
           created_at?: string
           description?: string | null
+          design_concept?: string | null
           id?: string
+          lifecycle_note?: string | null
+          lifecycle_stage?: string | null
           objectives?: string | null
           planning_narrative?: string | null
+          project_approach?: string | null
           reference?: string | null
           risks_notes?: string | null
           site_context?: string | null
@@ -3141,6 +3408,78 @@ export type Database = {
           },
         ]
       }
+      portal_variations: {
+        Row: {
+          boq_id: string | null
+          client_visible: boolean
+          created_at: string
+          created_by: string | null
+          customer_amount: number
+          decided_on: string | null
+          description: string | null
+          discipline: string | null
+          id: string
+          notes: string | null
+          project_id: string
+          raised_on: string
+          reference: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          boq_id?: string | null
+          client_visible?: boolean
+          created_at?: string
+          created_by?: string | null
+          customer_amount?: number
+          decided_on?: string | null
+          description?: string | null
+          discipline?: string | null
+          id?: string
+          notes?: string | null
+          project_id: string
+          raised_on?: string
+          reference: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          boq_id?: string | null
+          client_visible?: boolean
+          created_at?: string
+          created_by?: string | null
+          customer_amount?: number
+          decided_on?: string | null
+          description?: string | null
+          discipline?: string | null
+          id?: string
+          notes?: string | null
+          project_id?: string
+          raised_on?: string
+          reference?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_variations_boq_id_fkey"
+            columns: ["boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_variations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_performance: {
         Row: {
           client_name: string
@@ -3511,6 +3850,10 @@ export type Database = {
         Returns: number
       }
       portal_move_floor_markers: { Args: { _moves: Json }; Returns: number }
+      portal_next_pack_revision: {
+        Args: { _pack_kind: string; _project_id: string }
+        Returns: number
+      }
       portal_next_proposal_number: { Args: never; Returns: string }
       portal_save_floor_marker: { Args: { _payload: Json }; Returns: string }
       portal_update_cable_route_waypoints: {
