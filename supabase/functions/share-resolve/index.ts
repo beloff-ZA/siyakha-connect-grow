@@ -458,7 +458,7 @@ Deno.serve(async (req) => {
   // Background refreshes are still rate-limited and logged, but must not inflate
   // the unique/initial view statistics for the link.
   if (!refresh) await admin.rpc("portal_share_register_view", { _share_link_id: link.id });
-  await log("granted", refresh ? "live refresh" : null);
+  await log("granted", refresh ? "live refresh" : undefined);
 
   return json({
     state: "ok",
