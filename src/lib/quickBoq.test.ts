@@ -13,6 +13,10 @@ import {
   validateQuickLine,
   validateItemTitle,
   itemEditPatch,
+  unifiedItemPatch,
+  UNIFIED_EDIT_KEYS,
+  isPlanQuantityLocked,
+  PLAN_QUANTITY_NOTE,
 } from "@/lib/quickBoq";
 
 vi.mock("@/integrations/supabase/client", () => ({ supabase: {} }));
@@ -268,6 +272,99 @@ describe("editing item title and price together", () => {
 
   it("treats locked revisions as non-editable", () => {
     expect(isRevisionLocked("approved")).toBe(true);
+    expect(isRevisionLocked("draft")).toBe(false);
+  });
+});
+
+describe("unified BOQ item editor", () => {
+  const cur = {
+    ...mkItem(),
+    quantity_source: "manual" as string | null,
+  };
+  const baseInput = {
+    title: cur.description,
+    category: "Networking",
+    section_id: cur.section_id,
+    quantity: cur.quantity,
+    unit: cur.unit,
+    selling_price: cur.customer_unit_rate,
+    vat_applicable: true,
+    is_included: true,
+    item_code: cur.item_code ?? "",
+    specification: cur.specification ?? "",
+    reference: cur.reference ?? "",
+    notes: cur.notes ?? "",
+  };
+
+  it("returns no changes when nothing was touched", () => {
+    const res = unifiedItemPatch(cur, baseInput);
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.changed).toBe(false);
+    expect(res.patch).toEqual({});
+  });
+
+  it("only ever patches allowlisted fields and never linkage columns", () => {
+    const res = unifiedItemPatch(cur, {
+      ...baseInput,
+      title: "Cat6A point",
+      quantity: 6,
+      unit: "each",
+      selling_price: "1600.004",
+      vat_applicable: false,
+      is_included: false,
+      item_code: "NET-02",
+      specification: "New spec",
+      reference: "",
+      notes: "revised",
+    });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    for (const k of Object.keys(res.patch)) expect(UNIFIED_EDIT_KEYS as readonly string[]).toContain(k);
+    expect(res.patch.customer_unit_rate).toBe(1600);
+    expect(res.patch.reference).toBeNull();
+    const after = { ...cur, ...res.patch } as any;
+    expect(after.boq_id).toBe(cur.boq_id);
+    expect(after.sort_order).toBe(cur.sort_order);
+    expect(after.quantity_source).toBe("manual");
+    expect(after.line_total).toBe(cur.line_total);
+    expect(JSON.stringify(res.patch)).not.toMatch(/cost|markup|margin|supplier/i);
+  });
+
+  it("protects plan-derived quantities without blocking other edits", () => {
+    const planned = { ...cur, quantity_source: "plan" };
+    expect(isPlanQuantityLocked(planned)).toBe(true);
+    expect(isPlanQuantityLocked(cur)).toBe(false);
+    const res = unifiedItemPatch(planned, { ...baseInput, quantity: 999, selling_price: 1500 });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.patch.quantity).toBeUndefined();
+    expect(res.patch.customer_unit_rate).toBe(1500);
+    expect(PLAN_QUANTITY_NOTE).toMatch(/Review items from plans/);
+  });
+
+  it("validates title, category, unit, quantity and selling price", () => {
+    const res = unifiedItemPatch(cur, {
+      ...baseInput,
+      title: "  ",
+      category: "",
+      section_id: "",
+      unit: " ",
+      quantity: -1,
+      selling_price: "abc",
+    });
+    expect(res.ok).toBe(false);
+    if (res.ok) return;
+    expect(Object.keys(res.errors).sort()).toEqual(["category", "description", "quantity", "selling_price", "unit"]);
+    expect(unifiedItemPatch(cur, { ...baseInput, quantity: 0 }).ok).toBe(true);
+  });
+
+  it("keeps the same editor usable from search results and respects locked revisions", () => {
+    const hit = searchBoqItems([cur] as any, secs, "cat6", "b1")[0];
+    expect(hit).toBeTruthy();
+    const res = unifiedItemPatch({ ...cur, ...hit.item }, { ...baseInput, title: "Renamed from search" });
+    expect(res.ok && res.patch.description).toBe("Renamed from search");
+    expect(isRevisionLocked("superseded")).toBe(true);
     expect(isRevisionLocked("draft")).toBe(false);
   });
 });
