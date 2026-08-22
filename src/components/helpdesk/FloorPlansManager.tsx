@@ -13,7 +13,9 @@ import {
   MARKER_KINDS,
   MARKER_STATES,
   SURVEY_DISCLAIMER,
+  clamp01,
   kindLabel,
+  kindShort,
   markerStats,
   stateLabel,
   type FloorMarker,
@@ -22,6 +24,17 @@ import {
   type PortalFloor,
 } from "@/lib/floorPlans";
 import { parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
+import { markerTransaction, reconciliationNote } from "@/lib/designApi";
+
+type CatalogProduct = {
+  id: string;
+  name: string;
+  manufacturer: string | null;
+  model: string | null;
+  discipline: string | null;
+  default_marker_type: MarkerKind | null;
+  unit: string | null;
+};
 
 const Section: React.FC<{ title: string; children: React.ReactNode; note?: string }> = ({
   title,
@@ -53,6 +66,9 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [busy, setBusy] = useState(false);
   const [placing, setPlacing] = useState(false);
   const [placeKind, setPlaceKind] = useState<MarkerKind>("wifi_ap");
+  const [products, setProducts] = useState<CatalogProduct[]>([]);
+  const [placeProductId, setPlaceProductId] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
   const [selected, setSelected] = useState<FloorMarker | null>(null);
   const [bulk, setBulk] = useState({ prefix: "", count: 10, kind: "wifi_ap" as MarkerKind });
   const [copyTargets, setCopyTargets] = useState<string[]>([]);
@@ -60,11 +76,18 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const load = useCallback(async () => {
     if (!projectId) return;
-    const [{ data: f }, { data: m }, { data: r }] = await Promise.all([
+    const [{ data: f }, { data: m }, { data: r }, { data: pc }] = await Promise.all([
       supabase.from("portal_floors").select("*").eq("project_id", projectId).order("sort_order"),
       supabase.from("portal_floor_markers").select("*").eq("project_id", projectId).order("sort_order"),
       supabase.from("portal_cable_routes").select("*").eq("project_id", projectId).order("route_label"),
+      supabase
+        .from("portal_product_catalog")
+        .select("id,name,manufacturer,model,discipline,default_marker_type,unit")
+        .eq("is_active", true)
+        .is("archived_at", null)
+        .order("name"),
     ]);
+    setProducts((pc ?? []) as unknown as CatalogProduct[]);
     const list = (f ?? []) as unknown as PortalFloor[];
     setFloors(list);
     setFloorId((prev) => (prev && list.some((x) => x.id === prev) ? prev : list[0]?.id ?? ""));
@@ -82,13 +105,22 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   }, [load]);
 
   const floor = useMemo(() => floors.find((f) => f.id === floorId) ?? null, [floors, floorId]);
-  const floorMarkers = useMemo(() => markers.filter((m) => m.floor_id === floorId), [markers, floorId]);
+  // Archived devices stay on record but never appear on the plan or in quantities.
+  const activeMarkers = useMemo(() => markers.filter((m) => !m.archived_at), [markers]);
+  const floorMarkers = useMemo(
+    () => activeMarkers.filter((m) => m.floor_id === floorId),
+    [activeMarkers, floorId],
+  );
+  const archivedFloorMarkers = useMemo(
+    () => markers.filter((m) => m.floor_id === floorId && m.archived_at),
+    [markers, floorId],
+  );
   const stats = useMemo(() => markerStats(floorMarkers), [floorMarkers]);
   const floorRouteStats = useMemo(
     () => routeStats(routes.filter((r) => r.floor_id === floorId)),
     [routes, floorId],
   );
-  const buildingStats = useMemo(() => markerStats(markers), [markers]);
+  const buildingStats = useMemo(() => markerStats(activeMarkers), [activeMarkers]);
 
   useEffect(() => {
     let cancelled = false;
@@ -223,52 +255,121 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   /* ---------------- Markers ---------------- */
 
-  const addMarker = async (x: number, y: number) => {
+  /**
+   * Every design change goes through one server transaction that also reconciles
+   * the project's nominated design bill, so devices and quantities cannot drift.
+   */
+  const runTransaction = async (
+    action: "save" | "archive" | "restore" | "delete",
+    payload: Record<string, unknown>,
+    successTitle: string,
+  ) => {
+    setBusy(true);
+    try {
+      const res = await markerTransaction(action, payload);
+      const note = reconciliationNote(res.reconciliation);
+      toast({ title: successTitle, description: note });
+      await load();
+      return res;
+    } catch (e) {
+      fail(e instanceof Error ? e.message : "Unexpected error");
+      await load();
+      return null;
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const addMarker = async (x: number, y: number, direction?: number) => {
     if (!floor) return;
-    const existing = floorMarkers.filter((m) => m.marker_type === placeKind).length;
-    const prefix = placeKind === "wifi_ap" ? "AP" : placeKind === "camera" ? "CAM" : placeKind === "rack" ? "RK" : placeKind === "cable_route" ? "CR" : "DEV";
-    const label = `${prefix}-L${String(floor.level_number).padStart(2, "0")}-${String(existing + 1).padStart(2, "0")}`;
-    const { error } = await supabase.from("portal_floor_markers").insert({
-      floor_id: floor.id,
-      project_id: projectId,
-      marker_type: placeKind,
-      x_norm: x,
-      y_norm: y,
-      label,
-      status: "planned",
-      description: SURVEY_DISCLAIMER,
-      sort_order: existing + 1,
-      created_by: user?.id ?? null,
-    });
-    if (error) return fail(error.message);
-    await logHistory("marker_create", `${label} placed on ${floor.display_name}`);
-    load();
+    const product = products.find((p) => p.id === placeProductId) ?? null;
+    const kind = product?.default_marker_type ?? placeKind;
+    const existing = floorMarkers.filter((m) => m.marker_type === kind).length;
+    const label = `${kindShort(kind)}-L${String(floor.level_number).padStart(2, "0")}-${String(existing + 1).padStart(2, "0")}`;
+    await runTransaction(
+      "save",
+      {
+        floor_id: floor.id,
+        marker_type: kind,
+        label,
+        status: "planned",
+        is_placed: true,
+        x_norm: clamp01(x),
+        y_norm: clamp01(y),
+        ...(direction != null ? { direction_deg: Math.round(direction) } : {}),
+        notes: SURVEY_DISCLAIMER,
+        ...(product ? { product_id: product.id } : {}),
+      },
+      product ? `${label} placed — ${product.name}` : `${label} placed`,
+    );
   };
 
   const moveMarker = (id: string, x: number, y: number) => {
     setMarkers((prev) => prev.map((m) => (m.id === id ? { ...m, x_norm: x, y_norm: y } : m)));
   };
 
-  const persistMove = async (id: string) => {
-    const m = markers.find((x) => x.id === id);
+  /** Persists the exact release position reported by the canvas, never a stale render value. */
+  const persistMove = async (id: string, x: number, y: number) => {
+    const m = markers.find((v) => v.id === id);
     if (!m) return;
-    const { error } = await supabase
-      .from("portal_floor_markers")
-      .update({ x_norm: m.x_norm, y_norm: m.y_norm })
-      .eq("id", id);
-    if (error) fail(error.message);
-    else await logHistory("marker_move", `${m.label} repositioned`, id);
+    setMarkers((prev) => prev.map((v) => (v.id === id ? { ...v, x_norm: x, y_norm: y } : v)));
+    try {
+      await markerTransaction("save", {
+        id,
+        floor_id: m.floor_id,
+        is_placed: true,
+        x_norm: clamp01(x),
+        y_norm: clamp01(y),
+      });
+    } catch (e) {
+      fail(e instanceof Error ? e.message : "Could not save the new position");
+      await load();
+    }
   };
 
   const saveMarker = async (patch: Partial<FloorMarker>) => {
     if (!selected) return;
+    // Catalogue linkage is quantity-bearing: it is only ever written through the
+    // transactional API so the design bill is reconciled in the same transaction.
+    const linkProduct = Object.prototype.hasOwnProperty.call(patch, "product_id");
+    const rest = { ...patch };
+    delete (rest as { product_id?: string | null }).product_id;
+
     setBusy(true);
-    const { error } = await supabase.from("portal_floor_markers").update(patch).eq("id", selected.id);
+    if (Object.keys(rest).length > 0) {
+      const { error } = await supabase.from("portal_floor_markers").update(rest).eq("id", selected.id);
+      if (error) {
+        setBusy(false);
+        return fail(error.message);
+      }
+      await logHistory("marker_update", `${selected.label} updated`, selected.id);
+    }
     setBusy(false);
-    if (error) return fail(error.message);
-    await logHistory("marker_update", `${selected.label} updated`, selected.id);
+
+    if (linkProduct) {
+      await runTransaction(
+        "save",
+        { id: selected.id, floor_id: selected.floor_id, product_id: patch.product_id ?? null },
+        "Device and bill updated",
+      );
+      return;
+    }
     toast({ title: "Marker saved" });
     load();
+  };
+
+  const archiveMarker = async () => {
+    if (!selected) return;
+    await runTransaction(
+      "archive",
+      { id: selected.id },
+      `${selected.label} archived — kept on record, removed from quantities`,
+    );
+    setSelected(null);
+  };
+
+  const restoreMarker = async (id: string, label: string) => {
+    await runTransaction("restore", { id }, `${label} restored to the active design`);
   };
 
   const deleteMarker = async () => {
@@ -279,12 +380,14 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     const routeWarning = attached
       ? `\n\n${attached} preliminary cable route${attached === 1 ? "" : "s"} reference this device and will be removed with it. Remaining devices and their routes are unaffected.`
       : "";
-    if (!window.confirm(`Delete marker ${selected.label}? This cannot be undone.${routeWarning}`)) return;
-    const { error } = await supabase.from("portal_floor_markers").delete().eq("id", selected.id);
-    if (error) return fail(error.message);
-    await logHistory("marker_delete", `${selected.label} deleted`);
-    setSelected(null);
-    load();
+    if (
+      !window.confirm(
+        `Delete marker ${selected.label}? This cannot be undone — archive it instead if it has any site history.${routeWarning}`,
+      )
+    )
+      return;
+    const res = await runTransaction("delete", { id: selected.id }, `${selected.label} deleted`);
+    if (res) setSelected(null);
   };
 
   const duplicateMarker = async () => {
@@ -511,9 +614,9 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
               markers={floorMarkers}
               selectedId={selected?.id ?? null}
               onSelect={setSelected}
-              onPlace={addMarker}
+              onPlace={(x, y, deg) => addMarker(x, y, deg)}
               onMove={(id, x, y) => moveMarker(id, x, y)}
-              onMoveEnd={(id) => persistMove(id)}
+              onMoveEnd={(id, x, y) => persistMove(id, x, y)}
               placing={placing}
               height="h-[55vh]"
               emptyLabel="Upload a plan image for this level to start placing devices."
