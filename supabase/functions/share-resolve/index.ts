@@ -180,6 +180,67 @@ const sanitiseSnapshot = (raw: unknown) => {
   return out;
 };
 
+/* ------------------------------------------------------------- live overlay */
+
+/**
+ * Replaces ONLY the saved-design portions of a frozen snapshot with the current
+ * client-visible design for the link's own trusted project id. Narrative,
+ * commercial, BOQ, proposal and milestone data always stay frozen.
+ *
+ * Fails closed: any query error returns null and the caller keeps the snapshot.
+ */
+const liveDesignOverlay = async (
+  admin: ReturnType<typeof createClient>,
+  projectId: string,
+  snapshot: Record<string, any>,
+) => {
+  const [floors, markers, racks, cables] = await Promise.all([
+    admin
+      .from("portal_floors")
+      .select("id, level_number, display_name, floor_use, notes, plan_image_path")
+      .eq("project_id", projectId)
+      .eq("client_visible", true)
+      .order("level_number", { ascending: true }),
+    admin
+      .from("portal_floor_markers")
+      .select(MARKER_KEYS.join(", "))
+      .eq("project_id", projectId)
+      .eq("client_visible", true)
+      .eq("is_placed", true)
+      .is("archived_at", null),
+    admin
+      .from("portal_rack_equipment")
+      .select(RACK_KEYS.join(", "))
+      .eq("project_id", projectId)
+      .eq("client_visible", true)
+      .is("archived_at", null),
+    admin
+      .from("portal_cable_routes")
+      .select(CABLE_KEYS.join(", "))
+      .eq("project_id", projectId)
+      .eq("client_visible", true)
+      .is("archived_at", null),
+  ]);
+  if (floors.error || markers.error || racks.error || cables.error) return null;
+
+  const byFloor = new Map<string, Record<string, unknown>[]>();
+  for (const m of pickList(markers.data, MARKER_KEYS)) {
+    const key = String(m.floor_id ?? "");
+    if (!byFloor.has(key)) byFloor.set(key, []);
+    byFloor.get(key)!.push(m);
+  }
+
+  return {
+    ...snapshot,
+    floors: pickList(floors.data, FLOOR_KEYS).map((f) => ({
+      ...f,
+      markers: byFloor.get(String(f.id ?? "")) ?? [],
+    })),
+    rackEquipment: pickList(racks.data, RACK_KEYS),
+    cables: pickList(cables.data, CABLE_KEYS),
+  };
+};
+
 /* ------------------------------------------------------------------- handler */
 
 Deno.serve(async (req) => {
@@ -194,8 +255,10 @@ Deno.serve(async (req) => {
   let action = "view";
   let message = "";
   let accessToken = "";
+  let refresh = false;
   try {
     const body = await req.json();
+    refresh = body?.refresh === true;
     token = String(body?.token ?? "").slice(0, 200);
     action = String(body?.action ?? "view").slice(0, 20);
     message = String(body?.message ?? "").slice(0, 2000);
@@ -231,7 +294,7 @@ Deno.serve(async (req) => {
   const { data: link, error: linkErr } = await admin
     .from("portal_share_links")
     .select(
-      "id, project_id, client_id, resource_type, resource_id, revision_label, title, snapshot, permission_scope, download_allowed, comments_allowed, approval_allowed, require_client_login, recipient_label, expires_at, revoked_at, access_count, first_accessed_at",
+      "id, project_id, client_id, resource_type, resource_id, revision_label, title, snapshot, permission_scope, download_allowed, comments_allowed, approval_allowed, require_client_login, live_project_view, recipient_label, expires_at, revoked_at, access_count, first_accessed_at",
     )
     .eq("token_hash", tokenHash)
     .maybeSingle();
@@ -344,7 +407,20 @@ Deno.serve(async (req) => {
   }
 
   // View: re-sanitise the stored JSON, then sign only verified project images.
-  const snapshot = sanitiseSnapshot(link.snapshot);
+  let snapshot = sanitiseSnapshot(link.snapshot);
+
+  // Live project view: saved plan/device data only, and only for project packs.
+  const liveEligible = link.live_project_view === true && link.resource_type === "project_pack";
+  let liveUpdatedAt: string | null = null;
+  if (liveEligible) {
+    const live = await liveDesignOverlay(admin, link.project_id, snapshot);
+    if (!live) {
+      await log("error", "live design unavailable");
+      return json({ state: "unavailable" }, 200);
+    }
+    snapshot = live as typeof snapshot;
+    liveUpdatedAt = new Date().toISOString();
+  }
 
   const signIfOwned = async (path: unknown) => {
     if (typeof path !== "string" || !path) return null;
@@ -379,8 +455,10 @@ Deno.serve(async (req) => {
       })()) ?? null;
   }
 
-  await admin.rpc("portal_share_register_view", { _share_link_id: link.id });
-  await log("granted");
+  // Background refreshes are still rate-limited and logged, but must not inflate
+  // the unique/initial view statistics for the link.
+  if (!refresh) await admin.rpc("portal_share_register_view", { _share_link_id: link.id });
+  await log("granted", refresh ? "live refresh" : null);
 
   return json({
     state: "ok",
@@ -393,7 +471,9 @@ Deno.serve(async (req) => {
       download_allowed: link.download_allowed,
       comments_allowed: link.comments_allowed,
       approval_allowed: link.approval_allowed,
+      live_project_view: liveEligible,
     },
+    live_updated_at: liveUpdatedAt,
     snapshot,
   });
 });
