@@ -3,6 +3,7 @@ import { formatQty, formatZar } from "@/lib/boq";
 import { formatDate } from "@/lib/portalFiles";
 import { SIYAKHA, validUntil, type Proposal } from "@/lib/proposals";
 import { deviceTypeLabel } from "@/lib/lifecycle";
+import { ROOFTOP_EXCLUDED_NOTE, ROOFTOP_SECTION_TITLE, floorCountLabel, splitFloorAreas } from "@/lib/reporting";
 
 /**
  * Client-facing A4 document. It renders exclusively from the immutable snapshot,
@@ -43,6 +44,8 @@ const ProposalDocument: React.FC<{ proposal: Proposal; variant: "full" | "costin
   const n = () => String(++idx);
 
   const floors = s?.floors ?? [];
+  const { floors: storeys, rooftop: rooftopAreas } = splitFloorAreas(floors);
+  const floorCount = floorCountLabel(floors);
   const devices = s?.devices ?? null;
   const b = s?.building ?? null;
   const buildingRows: [string, string][] = [];
@@ -51,7 +54,8 @@ const ProposalDocument: React.FC<{ proposal: Proposal; variant: "full" | "costin
     buildingRows.push([label, `${value}${suffix}`]);
   };
   push("Building type", b?.building_type);
-  push("Levels", b?.levels_note);
+  push("Floors", floorCount);
+  push("Levels note", b?.levels_note);
   push("Gross floor area", b?.gfa_sqm, " m²");
   push("Building length", b?.length_m, " m");
   push("Building width", b?.width_m, " m");
@@ -175,6 +179,7 @@ const ProposalDocument: React.FC<{ proposal: Proposal; variant: "full" | "costin
           {/* Floor / plan schedule */}
           <Block>
             <H n={n()}>Floor and plan schedule</H>
+            <p className="mb-2 text-[9.5pt] font-semibold">{floorCount}</p>
             {floors.length ? (
               <table className="w-full border-collapse text-[9pt]">
                 <thead>
@@ -188,7 +193,7 @@ const ProposalDocument: React.FC<{ proposal: Proposal; variant: "full" | "costin
                   </tr>
                 </thead>
                 <tbody>
-                  {floors.map((f) => (
+                  {storeys.map((f) => (
                     <tr key={f.id} className="border-b border-neutral-300 align-top">
                       <td className="py-1 pr-2 tabular-nums">{f.level_number}</td>
                       <td className="py-1 pr-2">
@@ -206,6 +211,28 @@ const ProposalDocument: React.FC<{ proposal: Proposal; variant: "full" | "costin
                     </tr>
                   ))}
                 </tbody>
+                {rooftopAreas.length > 0 && (
+                  <tbody>
+                    <tr className="border-y border-black">
+                      <td colSpan={6} className="py-1 text-[8.5pt] font-semibold uppercase tracking-[0.12em]">
+                        {ROOFTOP_SECTION_TITLE} — {ROOFTOP_EXCLUDED_NOTE}
+                      </td>
+                    </tr>
+                    {rooftopAreas.map((f) => (
+                      <tr key={f.id} className="border-b border-neutral-300 align-top">
+                        <td className="py-1 pr-2 tabular-nums">{f.level_number}</td>
+                        <td className="py-1 pr-2">
+                          {f.display_name}
+                          {f.notes && <span className="block text-[8pt] text-neutral-600">{f.notes}</span>}
+                        </td>
+                        <td className="py-1 pr-2">{f.floor_use ?? "—"}</td>
+                        <td className="py-1 pr-2">{f.drawing_number ?? "—"}</td>
+                        <td className="py-1 pr-2">{f.revision_label ?? "—"}</td>
+                        <td className="py-1 text-right tabular-nums">{f.device_count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
               </table>
             ) : (
               <p className="text-[10pt] italic text-neutral-500">No client-visible floors or plans recorded yet.</p>

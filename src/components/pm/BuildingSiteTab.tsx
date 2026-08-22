@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Field, Panel, selectCls } from "./ui";
 import useClientSiteDialogs from "./ClientSiteDialogs";
 import { FLOOR_USES } from "@/lib/floorPlans";
+import { ROOFTOP_EXCLUDED_NOTE, floorCountLabel, isRooftopArea } from "@/lib/reporting";
 import { normalizeBuildingDetails, type BuildingDetails } from "@/lib/projectWizard";
 import type { PmProject, PmWorkspace } from "@/hooks/usePmWorkspace";
 
@@ -204,7 +205,7 @@ const BuildingSiteTab: React.FC<{ ws: PmWorkspace; project: PmProject }> = ({ ws
           <Field label="Building type / use">
             <Input value={building.building_type} onChange={(e) => setBuilding({ ...building, building_type: e.target.value })} />
           </Field>
-          <Field label={`Levels (${floors.length} floor records)`}>
+          <Field label={`Levels (${floorCountLabel(floors)})`}>
             <Input
               value={building.levels_note}
               onChange={(e) => setBuilding({ ...building, levels_note: e.target.value })}
@@ -266,7 +267,7 @@ const BuildingSiteTab: React.FC<{ ws: PmWorkspace; project: PmProject }> = ({ ws
         )}
       </Panel>
 
-      <Panel title={`Floor schedule (${floors.length})`}>
+      <Panel title={`Floor schedule — ${floorCountLabel(floors)}`}>
         {floors.length === 0 ? (
           <p className="text-sm text-muted-foreground">No floor records yet. Add floors in Plans &amp; mapping.</p>
         ) : (
