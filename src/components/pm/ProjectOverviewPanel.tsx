@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Panel, Stat } from "./ui";
 import type { PmProject, PmWorkspace } from "@/hooks/usePmWorkspace";
+import { floorCountLabel } from "@/lib/reporting";
 
-type Counts = Record<string, number>;
+type Counts = Record<string, number> & { floorLabel?: string };
 
 // Untyped handle: the generated Database types make these head-count queries too
 // deep for the compiler, and no row data is read here.
@@ -22,7 +23,7 @@ const ProjectOverviewPanel: React.FC<{ ws: PmWorkspace; project: PmProject }> = 
     let cancelled = false;
     (async () => {
       const [floors, revisions, markers, routes, racks, boqItems, docs, images] = await Promise.all([
-        db.from("portal_floors").select("id", { count: "exact", head: true }).eq("project_id", project.id),
+        db.from("portal_floors").select("floor_use").eq("project_id", project.id),
         db
           .from("portal_plan_revisions")
           .select("id", { count: "exact", head: true })
@@ -38,8 +39,9 @@ const ProjectOverviewPanel: React.FC<{ ws: PmWorkspace; project: PmProject }> = 
       if (cancelled) return;
       const types = ((markers.data ?? []) as { marker_type: string }[]).map((m) => m.marker_type);
       const of = (...kinds: string[]) => types.filter((t) => kinds.includes(t)).length;
+      const floorRows = ((floors.data ?? []) as { floor_use: string | null }[]);
       setCounts({
-        floors: floors.count ?? 0,
+        floorLabel: floorCountLabel(floorRows),
         revisions: revisions.count ?? 0,
         aps: of("wifi_ap"),
         cameras: of("camera"),
@@ -88,7 +90,7 @@ const ProjectOverviewPanel: React.FC<{ ws: PmWorkspace; project: PmProject }> = 
           <p className="text-sm text-muted-foreground">Counting records…</p>
         ) : (
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            <Stat label="Floors" value={counts.floors} />
+            <Stat label="Floors" value={counts.floorLabel ?? "—"} />
             <Stat label="Plan revisions" value={counts.revisions} />
             <Stat label="Wi-Fi APs" value={counts.aps} />
             <Stat label="CCTV cameras" value={counts.cameras} />
