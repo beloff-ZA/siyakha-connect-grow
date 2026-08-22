@@ -280,13 +280,13 @@ describe("selected coverage mode", () => {
 
 describe("rack contents filtering", () => {
   it("returns only equipment installed in the selected rack", () => {
-    const items = [
+    const items: { id: string; rack_marker_id: string | null }[] = [
       { id: "a", rack_marker_id: "r1" },
       { id: "b", rack_marker_id: "r2" },
       { id: "c", rack_marker_id: null },
     ];
-    expect(rackItemsFor(items as never, "r1").map((i) => i.id)).toEqual(["a"]);
-    expect(rackItemsFor(items as never, "r2").map((i) => i.id)).toEqual(["b"]);
+    expect(rackItemsFor(items, "r1").map((i) => i.id)).toEqual(["a"]);
+    expect(rackItemsFor(items, "r2").map((i) => i.id)).toEqual(["b"]);
     expect(rackItemsFor(undefined, "r1")).toEqual([]);
   });
 });
