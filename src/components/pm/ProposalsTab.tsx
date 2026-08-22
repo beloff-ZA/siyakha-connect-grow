@@ -21,7 +21,8 @@ import type { PmWorkspace } from "@/hooks/usePmWorkspace";
 import { Chip, Field, Panel, selectCls } from "./ui";
 import PrintSurface from "./PrintSurface";
 import ProposalDocument from "./ProposalDocument";
-import { FileText, Plus, Receipt } from "lucide-react";
+import ShareDialog, { type ShareTarget } from "./ShareDialog";
+import { FileText, Plus, Receipt, Share2 } from "lucide-react";
 
 type Form = {
   project_id: string;
