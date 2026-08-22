@@ -307,35 +307,36 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   };
 
   const openPriceDialog = (it: BoqItem) => {
-    setPriceError(null);
+    setEditErrors({});
+    setTitleValue(it.description);
     setPriceValue(String(Number(it.customer_unit_rate)));
     setPriceTarget(it);
   };
 
-  const saveNewPrice = async () => {
+  const saveItemEdit = async () => {
     if (!priceTarget) return;
-    const result = validateNewPrice(priceValue);
+    const result = itemEditPatch(priceTarget, { title: titleValue, selling_price: priceValue });
     if (result.ok !== true) {
-      setPriceError(result.error);
+      setEditErrors(result.errors);
       return;
     }
 
-    setPriceError(null);
+    setEditErrors({});
+    if (!result.changed) {
+      setPriceTarget(null);
+      return;
+    }
+
     setBusy(true);
-    const { error } = await supabase
-      .from("portal_boq_items")
-      .update(priceUpdatePatch(result.value))
-      .eq("id", priceTarget.id);
+    const { error } = await supabase.from("portal_boq_items").update(result.patch).eq("id", priceTarget.id);
     setBusy(false);
     if (error) return fail(error);
-    await logActivity(
-      "item_price_updated",
-      `${priceTarget.description}: ${formatZar(Number(priceTarget.customer_unit_rate))} → ${formatZar(result.value)}`,
-    );
-    toast({ title: "New price saved", description: priceTarget.description });
+    await logActivity("item_updated", result.summary);
+    toast({ title: "Changes saved", description: titleValue.trim() });
     setPriceTarget(null);
     await refresh();
   };
+
 
   const openCustomerDocument = async () => {
     if (!boqId) return;
