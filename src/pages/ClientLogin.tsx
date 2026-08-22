@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { resolveLandingPath } from "@/lib/authRouting";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 
 type Mode = "signin" | "forgot" | "setup";
@@ -128,7 +129,7 @@ const ClientLogin: React.FC = () => {
       });
       return;
     }
-    navigate("/portal", { replace: true });
+    if (data.user) await routeAfterAuth(data.user.id);
   };
 
   const sendReset = async (e: React.FormEvent) => {
@@ -162,8 +163,9 @@ const ClientLogin: React.FC = () => {
     if (error) return setFormError(error.message);
     // No outbound notification is sent from the portal in this environment.
 
-    toast({ title: "Password set", description: "Welcome to your Siyakha client portal." });
-    navigate("/portal", { replace: true });
+    toast({ title: "Password set", description: "Welcome to your Siyakha portal." });
+    const { data } = await supabase.auth.getUser();
+    if (data.user) await routeAfterAuth(data.user.id);
   };
 
 
