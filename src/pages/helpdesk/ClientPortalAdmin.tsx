@@ -170,14 +170,14 @@ const ClientPortalAdmin: React.FC = () => {
 
   /** Controlled, audited state transition. No email is ever sent from here. */
   const changeUserState = async (
-    cu: { id: string; email: string },
+    cu: { id?: unknown; email?: unknown },
     status: "active" | "invited" | "suspended" | "revoked",
     portalRole?: PortalRole,
   ) => {
     setBusy(true);
     try {
-      await setClientUserState(cu.id, status, portalRole);
-      toast({ title: `Account ${status}`, description: cu.email });
+      await setClientUserState(String(cu.id), status, portalRole);
+      toast({ title: `Account ${status}`, description: String(cu.email ?? "") });
       loadBase();
     } catch (e) {
       toast({
