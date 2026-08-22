@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Lock, Maximize2, Minus, Plus, Server, Video } from "lucide-react";
+import { Lock, Maximize2, Minus, Plus, Server } from "lucide-react";
 import { kindShort, type FloorMarker } from "@/lib/floorPlans";
 import {
   AIM_DEADZONE_PX,
@@ -20,6 +20,7 @@ import {
   type Rect,
 } from "@/lib/planGeometry";
 import { routeColor } from "@/lib/cableRoutes";
+import CameraMarkerIcon from "@/components/portal/CameraMarkerIcon";
 
 const ROUTE_WIFI = routeColor("wifi_ap");
 const ROUTE_CAM = routeColor("camera");
@@ -907,14 +908,10 @@ const FloorPlanCanvas: React.FC<Props> = ({
                           touchAction: "none",
                         }}
                       >
-                        <Video
-                          aria-hidden
-                          style={{
-                            width: "62%",
-                            height: "62%",
-                            transform: `rotate(${bearingToRotation(dir - 90)}deg)`,
-                          }}
-                          strokeWidth={2.5}
+                        <CameraMarkerIcon
+                          directionDeg={dir}
+                          style={{ width: "74%", height: "74%" }}
+                          strokeWidth={2}
                         />
                       </span>
                     )}
