@@ -18,6 +18,7 @@ import {
   type Proposal,
 } from "@/lib/proposals";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
+import { assertClientSafe, assertExplicitAction, scopeToProject } from "@/lib/reporting";
 import { useAuth } from "@/contexts/AuthContext";
 import { adminDisplayName } from "@/lib/adminIdentity";
 import { Chip, Field, Panel, selectCls } from "./ui";
@@ -79,7 +80,12 @@ const nextRevision = (label: string) => {
   return `${label} (2)`;
 };
 
-const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = ({ ws, initialProjectId }) => {
+const ProposalsTab: React.FC<{
+  ws: PmWorkspace;
+  initialProjectId?: string;
+  /** Locks the tab to the URL project and hides the project filter. */
+  locked?: boolean;
+}> = ({ ws, initialProjectId, locked }) => {
   const { toast } = useToast();
   const { projects, clients, sites, boqs, proposals, reload } = ws;
   const [dialog, setDialog] = useState(false);
@@ -210,7 +216,9 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
     prepared_by_email: f.prepared_by_email.trim() || null,
   });
 
-  const saveDraft = async () => {
+  /** Draft creation is user-triggered only; rendering never writes a record. */
+  const saveDraft = async (trigger: "user" | "effect" = "user") => {
+    assertExplicitAction(trigger, "Saving a proposal draft");
     if (!form.project_id) return toast({ title: "Select a project", variant: "destructive" as never });
     if (!form.title.trim()) return toast({ title: "A title is required", variant: "destructive" as never });
     setBusy(true);
@@ -238,12 +246,14 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
   };
 
   /** Freezes the client-facing snapshot and issues the document. */
-  const generate = async (p: Proposal, variant: "full" | "costing") => {
+  const generate = async (p: Proposal, variant: "full" | "costing", trigger: "user" | "effect" = "user") => {
     setBusy(true);
     try {
+      assertExplicitAction(trigger, "Generating a proposal");
       let record = p;
       if (!isLocked(p)) {
         const snapshot = await buildSnapshot(p.project_id, p.boq_id);
+        assertClientSafe(snapshot, "The client proposal");
         const { data, error } = await proposalsDb
           .from("portal_proposals")
           .update({ snapshot, status: "issued", issued_at: new Date().toISOString() })
@@ -297,9 +307,13 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
     }
   };
 
+  // When locked, only the URL project's proposals are ever listed.
   const rows = useMemo(
-    () => proposals.filter((p) => !filterProject || p.project_id === filterProject),
-    [proposals, filterProject],
+    () =>
+      locked
+        ? scopeToProject(proposals, initialProjectId ?? "")
+        : proposals.filter((p) => !filterProject || p.project_id === filterProject),
+    [proposals, filterProject, locked, initialProjectId],
   );
 
   const projectBoqs = boqs.filter((b) => b.project_id === form.project_id);
@@ -309,21 +323,23 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
       <Panel
         title={`Proposals & official costings (${proposals.length})`}
         actions={
-          <Button size="sm" onClick={() => openNew()}>
+          <Button size="sm" onClick={() => openNew(locked ? initialProjectId : undefined)}>
             <Plus className="mr-2 h-4 w-4" strokeWidth={1.5} /> New proposal
           </Button>
         }
       >
-        <Field label="Filter by project">
-          <select className={selectCls} value={filterProject} onChange={(e) => setFilterProject(e.target.value)}>
-            <option value="">All projects</option>
-            {projects.map((p) => (
-              <option key={p.id} value={p.id}>
-                {projectLabel(p.id)}
-              </option>
-            ))}
-          </select>
-        </Field>
+        {!locked && (
+          <Field label="Filter by project">
+            <select className={selectCls} value={filterProject} onChange={(e) => setFilterProject(e.target.value)}>
+              <option value="">All projects</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {projectLabel(p.id)}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
         <p className="mt-3 text-xs text-muted-foreground">
           Generating a document freezes an immutable snapshot of the client, site, project and BOQ lines. Later BOQ edits
           never change an issued document — create a new revision instead. Nothing is emailed automatically.
