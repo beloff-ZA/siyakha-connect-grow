@@ -322,34 +322,16 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const saveMarker = async (patch: Partial<FloorMarker>) => {
     if (!selected) return;
-    // Catalogue linkage is quantity-bearing: it is only ever written through the
-    // transactional API so the design bill is reconciled in the same transaction.
-    const linkProduct = Object.prototype.hasOwnProperty.call(patch, "product_id");
-    const rest = { ...patch };
-    delete (rest as { product_id?: string | null }).product_id;
-
-    setBusy(true);
-    if (Object.keys(rest).length > 0) {
-      const { error } = await supabase.from("portal_floor_markers").update(rest).eq("id", selected.id);
-      if (error) {
-        setBusy(false);
-        return fail(error.message);
-      }
-      await logHistory("marker_update", `${selected.label} updated`, selected.id);
-    }
-    setBusy(false);
-
-    if (linkProduct) {
-      await runTransaction(
-        "save",
-        { id: selected.id, floor_id: selected.floor_id, product_id: patch.product_id ?? null },
-        "Device and bill updated",
-      );
-      return;
-    }
-    toast({ title: "Marker saved" });
-    load();
+    // Every field, catalogue linkage included, goes through the one server
+    // transaction so the design bill is reconciled in the same statement and no
+    // client-side write can bypass the commercial gate.
+    await runTransaction(
+      "save",
+      { ...patch, id: selected.id, floor_id: selected.floor_id },
+      "Device saved",
+    );
   };
+
 
   const archiveMarker = async () => {
     if (!selected) return;
