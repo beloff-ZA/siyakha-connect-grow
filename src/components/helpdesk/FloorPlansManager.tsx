@@ -23,8 +23,13 @@ import {
   type MarkerState,
   type PortalFloor,
 } from "@/lib/floorPlans";
-import { bearingText, normalizeBearing } from "@/lib/planGeometry";
-import { parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
+import {
+  bearingText,
+  coverageHelpText,
+  normalizeBearing,
+  selectedCoverageMode,
+} from "@/lib/planGeometry";
+import { activeRoutes, parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
 import {
   bulkCreateMarkers,
   copyFloorLayout,
@@ -124,9 +129,11 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     [markers, floorId],
   );
   const stats = useMemo(() => markerStats(floorMarkers), [floorMarkers]);
+  // Archived cable routes stay on record but are never counted or drawn.
+  const liveRoutes = useMemo(() => activeRoutes(routes), [routes]);
   const floorRouteStats = useMemo(
-    () => routeStats(routes.filter((r) => r.floor_id === floorId)),
-    [routes, floorId],
+    () => routeStats(liveRoutes.filter((r) => r.floor_id === floorId)),
+    [liveRoutes, floorId],
   );
   const buildingStats = useMemo(() => markerStats(activeMarkers), [activeMarkers]);
 
@@ -371,7 +378,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const deleteMarker = async () => {
     if (!selected) return;
-    const attached = routes.filter(
+    const attached = liveRoutes.filter(
       (r) => r.rack_marker_id === selected.id || r.device_marker_id === selected.id,
     ).length;
     const routeWarning = attached
@@ -609,9 +616,28 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
               onAim={(id, deg) => aimMarker(id, deg)}
               onAimEnd={(id, deg) => persistAim(id, deg)}
               placing={placing}
+              coverage={selectedCoverageMode(selected?.marker_type)}
               height="h-[55vh]"
               emptyLabel="Upload a plan image for this level to start placing devices."
             />
+            {coverageHelpText(selected?.marker_type) && (
+              <p className="flex flex-wrap items-center gap-2 text-xs">
+                <span
+                  aria-hidden
+                  className="inline-block h-2.5 w-2.5 rounded-full"
+                  style={{
+                    background:
+                      selected?.marker_type === "camera"
+                        ? "hsl(32 100% 50% / 0.75)"
+                        : "hsl(190 100% 45% / 0.75)",
+                  }}
+                />
+                <span className="font-medium">{coverageHelpText(selected?.marker_type)}</span>
+                <span className="text-muted-foreground">
+                  Indicative coverage only — confirm with a site survey.
+                </span>
+              </p>
+            )}
             <p className="text-xs text-muted-foreground">
               Dragged positions save automatically when you release the marker. Select a camera and
               drag its orange aim handle to set the direction — it saves on release.
