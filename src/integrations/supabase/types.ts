@@ -4193,6 +4193,16 @@ export type Database = {
         Args: { _floor_id?: string; _project_id: string }
         Returns: number
       }
+      portal_log_client_activity: {
+        Args: {
+          _action: string
+          _detail: string
+          _entity_id: string
+          _entity_type: string
+          _project_id: string
+        }
+        Returns: string
+      }
       portal_move_floor_markers: { Args: { _moves: Json }; Returns: number }
       portal_next_pack_revision: {
         Args: { _pack_kind: string; _project_id: string }
