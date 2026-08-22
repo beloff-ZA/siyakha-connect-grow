@@ -27,7 +27,14 @@ export type CableRoute = {
   waypoints: Waypoint[];
   client_visible: boolean;
   notes: string | null;
+  /** Archived routes stay on record but are never counted or drawn. */
+  archived_at?: string | null;
+  archived_by?: string | null;
 };
+
+/** Archived routes stay on record but never appear on the plan or in counters. */
+export const activeRoutes = <T extends { archived_at?: string | null }>(routes: T[]): T[] =>
+  routes.filter((r) => !r.archived_at);
 
 /** How much of the routing layer is drawn on the selected level. */
 export type RouteDisplayMode = "off" | "selected" | "all";
