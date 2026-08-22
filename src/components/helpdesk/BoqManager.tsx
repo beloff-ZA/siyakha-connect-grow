@@ -644,22 +644,49 @@ const BoqManager: React.FC<{ projectId: string; onPrintCustomerBoq?: (boqId: str
             </dl>
           </Section>
 
-          <Section title="Private costing — internal only (never visible to clients)">
-            <dl className="grid grid-cols-3 gap-4">
-              <div>
-                <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Supplier cost</dt>
-                <dd className="text-sm">{formatZar(internalTotals.cost)}</dd>
+          <div className="internal-only">
+            <Section title="Private costing — internal only (never visible to clients)">
+              <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Supplier total</dt>
+                  <dd className="text-sm">{formatZar(internalTotals.cost)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Customer subtotal</dt>
+                  <dd className="text-sm">{formatZar(totals.subtotal)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Gross profit</dt>
+                  <dd className="text-sm">{formatZar(internalTotals.gross)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Margin</dt>
+                  <dd className="text-sm">{internalTotals.margin.toFixed(2)}%</dd>
+                </div>
+              </dl>
+
+              <div className="mt-5 flex flex-wrap items-end gap-3 border-t border-border pt-5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="bulk-markup">Whole-BOQ markup %</Label>
+                  <Input
+                    id="bulk-markup"
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    className="w-32"
+                    value={bulkMarkup}
+                    onChange={(e) => setBulkMarkup(e.target.value)}
+                  />
+                </div>
+                <Button size="sm" variant="outline" onClick={applyMarkupToBoq} disabled={busy || locked || !bulkMarkup}>
+                  Apply markup to all costed lines
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Customer rates are recalculated from supplier costs and remain manually editable afterwards.
+                </p>
               </div>
-              <div>
-                <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Gross profit</dt>
-                <dd className="text-sm">{formatZar(internalTotals.gross)}</dd>
-              </div>
-              <div>
-                <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Margin</dt>
-                <dd className="text-sm">{internalTotals.margin.toFixed(2)}%</dd>
-              </div>
-            </dl>
-          </Section>
+            </Section>
+          </div>
 
           <Section title="Sections & lines">
             <div className="flex gap-2">
