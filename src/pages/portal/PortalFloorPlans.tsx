@@ -51,6 +51,7 @@ import {
   ErrorNote,
   NoProject,
 } from "@/components/portal/ui";
+import CameraMarkerIcon from "@/components/portal/CameraMarkerIcon";
 import FloorPlanCanvas, {
   type CanvasRoute,
   type CoverageMode,
@@ -1504,9 +1505,20 @@ const PortalFloorPlans: React.FC = () => {
                           : "border-foreground/70"
                       }`}
                     >
-                      {k.value === "rack" ? "6U" : k.short}
+                      {k.value === "rack" ? (
+                        "6U"
+                      ) : k.value === "camera" ? (
+                        <CameraMarkerIcon
+                          directionDeg={0}
+                          title="CCTV camera"
+                          style={{ width: "86%", height: "86%" }}
+                          strokeWidth={1.8}
+                        />
+                      ) : (
+                        k.short
+                      )}
                     </span>
-                    {k.value === "rack" ? "6U network racks" : k.label}
+                    {k.value === "rack" ? "6U network racks" : k.value === "camera" ? "CCTV camera" : k.label}
                   </span>
                 ))}
 

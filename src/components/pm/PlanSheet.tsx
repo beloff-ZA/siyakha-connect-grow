@@ -5,6 +5,7 @@ import { kindLabel, type FloorMarker, type PortalFloor } from "@/lib/floorPlans"
 import { selectedCoverageMode, coverageHelpText } from "@/lib/planGeometry";
 import FloorPlanCanvas from "@/components/portal/FloorPlanCanvas";
 import { RackContents } from "@/components/portal/RackEquipment";
+import CameraMarkerIcon from "@/components/portal/CameraMarkerIcon";
 import { rackItemsFor, type RackEquipment } from "@/lib/rackEquipment";
 import type { PackFloor, PackMarker, PackRackItem, PackCable } from "@/lib/projectPack";
 
@@ -128,7 +129,16 @@ const PlanSheet: React.FC<{
               style={{ left: `${(m.x_norm as number) * 100}%`, top: `${(m.y_norm as number) * 100}%` }}
             >
               <span className="flex items-center gap-[2px]">
-                <span className="flex h-[9px] w-[9px] items-center justify-center border border-black bg-white" />
+                {m.marker_type === "camera" ? (
+                  <CameraMarkerIcon
+                    directionDeg={m.direction_deg as number | null | undefined}
+                    title={`CCTV camera ${m.label}`}
+                    style={{ width: "13px", height: "13px", color: "#000" }}
+                    strokeWidth={1.9}
+                  />
+                ) : (
+                  <span className="flex h-[9px] w-[9px] items-center justify-center border border-black bg-white" />
+                )}
                 <span className="whitespace-nowrap border border-neutral-400 bg-white/90 px-[2px] text-[4.5pt] leading-tight">
                   {markerShort(m.marker_type)} {m.label}
                 </span>
