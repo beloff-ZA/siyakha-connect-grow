@@ -11,8 +11,10 @@ import {
   previewLineTotal,
   toClientSafeLines,
   validateQuickLine,
-  validateItemTitle,
-  itemEditPatch,
+  unifiedItemPatch,
+  UNIFIED_EDIT_KEYS,
+  isPlanQuantityLocked,
+  PLAN_QUANTITY_NOTE,
 } from "@/lib/quickBoq";
 
 vi.mock("@/integrations/supabase/client", () => ({ supabase: {} }));
@@ -213,61 +215,95 @@ describe("safe price updating", () => {
   });
 });
 
-describe("editing item title and price together", () => {
-  const cur = mkItem();
+describe("unified BOQ item editor", () => {
+  const cur = {
+    ...mkItem(),
+    quantity_source: "manual" as string | null,
+  };
+  const baseInput = {
+    title: cur.description,
+    category: "Networking",
+    section_id: cur.section_id,
+    quantity: cur.quantity,
+    unit: cur.unit,
+    selling_price: cur.customer_unit_rate,
+    vat_applicable: true,
+    is_included: true,
+    item_code: cur.item_code ?? "",
+    specification: cur.specification ?? "",
+    reference: cur.reference ?? "",
+    notes: cur.notes ?? "",
+  };
 
-  it("requires a non-empty trimmed item title", () => {
-    expect(validateItemTitle("   ").ok).toBe(false);
-    expect(validateItemTitle("  Cat6 point ")).toEqual({ ok: true, value: "Cat6 point" });
-    const res = itemEditPatch(cur, { title: "  ", selling_price: "abc" }) as any;
-    expect(res.ok).toBe(false);
-    expect(Object.keys(res.errors).sort()).toEqual(["description", "selling_price"]);
-  });
-
-  it("patches only the two editable fields and leaves everything else untouched", () => {
-    const res = itemEditPatch(cur, { title: " Cat6 data point ", selling_price: "1600.004" });
+  it("returns no changes when nothing was touched", () => {
+    const res = unifiedItemPatch(cur, baseInput);
     expect(res.ok).toBe(true);
     if (!res.ok) return;
-    expect(Object.keys(res.patch).sort()).toEqual(["customer_unit_rate", "description"]);
-    const after = { ...cur, ...res.patch };
-    expect(after.description).toBe("Cat6 data point");
-    expect(after.customer_unit_rate).toBe(1600);
-    expect(after.quantity).toBe(cur.quantity);
-    expect(after.unit).toBe(cur.unit);
-    expect(after.section_id).toBe(cur.section_id);
-    expect(after.item_code).toBe(cur.item_code);
-    expect(after.specification).toBe(cur.specification);
-    expect(after.reference).toBe(cur.reference);
-    expect(after.vat_applicable).toBe(cur.vat_applicable);
-    expect(after.is_included).toBe(cur.is_included);
+    expect(res.changed).toBe(false);
+    expect(res.patch).toEqual({});
+  });
+
+  it("only ever patches allowlisted fields and never linkage columns", () => {
+    const res = unifiedItemPatch(cur, {
+      ...baseInput,
+      title: "Cat6A point",
+      quantity: 6,
+      unit: "each",
+      selling_price: "1600.004",
+      vat_applicable: false,
+      is_included: false,
+      item_code: "NET-02",
+      specification: "New spec",
+      reference: "",
+      notes: "revised",
+    });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    for (const k of Object.keys(res.patch)) expect(UNIFIED_EDIT_KEYS as readonly string[]).toContain(k);
+    expect(res.patch.customer_unit_rate).toBe(1600);
+    expect(res.patch.reference).toBeNull();
+    const after = { ...cur, ...res.patch } as any;
+    expect(after.boq_id).toBe(cur.boq_id);
     expect(after.sort_order).toBe(cur.sort_order);
+    expect(after.quantity_source).toBe("manual");
+    expect(after.line_total).toBe(cur.line_total);
+    expect(JSON.stringify(res.patch)).not.toMatch(/cost|markup|margin|supplier/i);
   });
 
-  it("does not rewrite unchanged fields", () => {
-    const titleOnly = itemEditPatch(cur, { title: "Renamed point", selling_price: 1475 });
-    expect(titleOnly.ok && Object.keys(titleOnly.patch)).toEqual(["description"]);
-    const priceOnly = itemEditPatch(cur, { title: cur.description, selling_price: 1500 });
-    expect(priceOnly.ok && Object.keys(priceOnly.patch)).toEqual(["customer_unit_rate"]);
-    const none = itemEditPatch(cur, { title: ` ${cur.description} `, selling_price: 1475 });
-    expect(none.ok && none.changed).toBe(false);
+  it("protects plan-derived quantities without blocking other edits", () => {
+    const planned = { ...cur, quantity_source: "plan" };
+    expect(isPlanQuantityLocked(planned)).toBe(true);
+    expect(isPlanQuantityLocked(cur)).toBe(false);
+    const res = unifiedItemPatch(planned, { ...baseInput, quantity: 999, selling_price: 1500 });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.patch.quantity).toBeUndefined();
+    expect(res.patch.customer_unit_rate).toBe(1500);
+    expect(PLAN_QUANTITY_NOTE).toMatch(/Review items from plans/);
   });
 
-  it("summarises changes without exposing supplier cost or margin", () => {
-    const res = itemEditPatch(cur, { title: "Renamed point", selling_price: 1500 });
-    expect(res.ok && res.summary).toMatch(/Renamed point/);
-    expect(res.ok && res.summary).not.toMatch(/cost|margin|markup|supplier/i);
+  it("validates title, category, unit, quantity and selling price", () => {
+    const res = unifiedItemPatch(cur, {
+      ...baseInput,
+      title: "  ",
+      category: "",
+      section_id: "",
+      unit: " ",
+      quantity: -1,
+      selling_price: "abc",
+    });
+    expect(res.ok).toBe(false);
+    if (res.ok) return;
+    expect(Object.keys(res.errors).sort()).toEqual(["category", "description", "quantity", "selling_price", "unit"]);
+    expect(unifiedItemPatch(cur, { ...baseInput, quantity: 0 }).ok).toBe(true);
   });
 
-  it("keeps the renamed item searchable immediately", () => {
-    const res = itemEditPatch(cur, { title: "Fibre patch lead", selling_price: 1475 });
-    if (!res.ok) throw new Error("expected ok");
-    const renamed = [{ ...cur, ...res.patch }] as any;
-    expect(searchBoqItems(renamed, secs, "fibre patch", "b1")).toHaveLength(1);
-    expect(searchBoqItems(renamed, secs, "cat6", "b1")).toHaveLength(0);
-  });
-
-  it("treats locked revisions as non-editable", () => {
-    expect(isRevisionLocked("approved")).toBe(true);
+  it("keeps the same editor usable from search results and respects locked revisions", () => {
+    const hit = searchBoqItems([cur] as any, secs, "cat6", "b1")[0];
+    expect(hit).toBeTruthy();
+    const res = unifiedItemPatch({ ...cur, ...hit.item }, { ...baseInput, title: "Renamed from search" });
+    expect(res.ok && res.patch.description).toBe("Renamed from search");
+    expect(isRevisionLocked("superseded")).toBe(true);
     expect(isRevisionLocked("draft")).toBe(false);
   });
 });

@@ -223,60 +223,167 @@ export const priceUpdatePatch = (value: number): { customer_unit_rate: number } 
 });
 
 /* -------------------------------------------------------------------------- */
-/* Editing item title + selling price together                                */
+/* Unified "Edit BOQ item" form                                               */
 /* -------------------------------------------------------------------------- */
 
-export type TitleValidation = { ok: true; value: string } | { ok: false; error: string };
+/** Fields the unified editor is ever allowed to write. Nothing else may leak in. */
+export const UNIFIED_EDIT_KEYS = [
+  "description",
+  "section_id",
+  "quantity",
+  "unit",
+  "customer_unit_rate",
+  "vat_applicable",
+  "is_included",
+  "item_code",
+  "specification",
+  "reference",
+  "notes",
+] as const;
 
-/** Validates the "Item title" field: a non-empty trimmed description. */
-export const validateItemTitle = (input: string): TitleValidation => {
-  const value = String(input ?? "").trim();
-  if (!value) return { ok: false, error: "Enter an item title." };
-  return { ok: true, value };
+export type UnifiedEditKey = (typeof UNIFIED_EDIT_KEYS)[number];
+
+export type UnifiedItemPatch = Partial<{
+  description: string;
+  section_id: string;
+  quantity: number;
+  unit: string;
+  customer_unit_rate: number;
+  vat_applicable: boolean;
+  is_included: boolean;
+  item_code: string | null;
+  specification: string | null;
+  reference: string | null;
+  notes: string | null;
+}>;
+
+/** A BOQ line whose quantity is owned by the plan/device mapping. */
+export const isPlanQuantityLocked = (item: { quantity_source?: string | null }) =>
+  String(item?.quantity_source ?? "") === "plan";
+
+export const PLAN_QUANTITY_NOTE =
+  "This quantity is mapped from the plans. Change it through “Review items from plans”.";
+
+export type UnifiedItemCurrent = Pick<
+  BoqItem,
+  | "description"
+  | "section_id"
+  | "quantity"
+  | "unit"
+  | "customer_unit_rate"
+  | "vat_applicable"
+  | "is_included"
+  | "item_code"
+  | "specification"
+  | "reference"
+  | "notes"
+> & { quantity_source?: string | null };
+
+export type UnifiedItemInput = {
+  title: string;
+  /** Category title chosen in the form (used only for validation here). */
+  category: string;
+  /** Section id the caller resolved for that category. */
+  section_id: string;
+  quantity: string | number;
+  unit: string;
+  selling_price: string | number;
+  vat_applicable: boolean;
+  is_included: boolean;
+  item_code?: string;
+  specification?: string;
+  reference?: string;
+  notes?: string;
 };
 
-export type ItemEditPatch = { description?: string; customer_unit_rate?: number };
+export type UnifiedItemErrors = Partial<
+  Record<"description" | "category" | "quantity" | "unit" | "selling_price", string>
+>;
 
-export type ItemEditResult =
-  | { ok: true; patch: ItemEditPatch; changed: boolean; summary: string }
-  | { ok: false; errors: { description?: string; selling_price?: string } };
+export type UnifiedItemResult =
+  | { ok: true; patch: UnifiedItemPatch; changed: boolean; summary: string }
+  | { ok: false; errors: UnifiedItemErrors };
+
+const nullableText = (value: string | undefined) => {
+  const trimmed = String(value ?? "").trim();
+  return trimmed ? trimmed : null;
+};
 
 /**
- * Builds the only patch a quick item edit may send: the item title and/or the
- * customer selling rate. Unchanged fields are omitted so nothing is rewritten
- * unnecessarily; every other column is untouched by construction.
+ * The single allowlisted patch builder for the unified editor.
+ * Only changed fields are returned, plan-derived quantities are never touched,
+ * and every field outside UNIFIED_EDIT_KEYS (boq_id, product_id, quantity_source,
+ * floor_id, sort_order, costing) is untouched by construction.
  */
-export const itemEditPatch = (
-  current: Pick<BoqItem, "description" | "customer_unit_rate">,
-  input: { title: string; selling_price: string | number },
-): ItemEditResult => {
-  const title = validateItemTitle(input.title);
-  const price = validateNewPrice(input.selling_price);
-  if (title.ok !== true || price.ok !== true) {
-    return {
-      ok: false,
-      errors: {
-        ...(title.ok !== true ? { description: title.error } : {}),
-        ...(price.ok !== true ? { selling_price: price.error } : {}),
-      },
-    };
+export const unifiedItemPatch = (current: UnifiedItemCurrent, input: UnifiedItemInput): UnifiedItemResult => {
+  const errors: UnifiedItemErrors = {};
+  const description = String(input.title ?? "").trim();
+  if (!description) errors.description = "Enter an item title.";
+  if (!String(input.category ?? "").trim() || !String(input.section_id ?? "").trim())
+    errors.category = "Choose a category.";
+
+  const unit = String(input.unit ?? "").trim();
+  if (!unit) errors.unit = "Pick a unit.";
+
+  const planLocked = isPlanQuantityLocked(current);
+  const qty = Number(input.quantity);
+  if (!planLocked && (!Number.isFinite(qty) || qty < 0)) errors.quantity = "Quantity must be zero or more.";
+
+  const rate = Number(input.selling_price);
+  if (!Number.isFinite(rate) || rate < 0) errors.selling_price = "Selling price must be zero or more.";
+
+  if (Object.keys(errors).length) return { ok: false, errors };
+
+  const patch: UnifiedItemPatch = {};
+  const parts: string[] = [];
+
+  if (description !== current.description) {
+    patch.description = description;
+    parts.push(`title "${current.description}" → "${description}"`);
+  }
+  if (input.section_id !== current.section_id) {
+    patch.section_id = input.section_id;
+    parts.push("category changed");
+  }
+  if (!planLocked && round2(qty) !== round2(Number(current.quantity))) {
+    patch.quantity = round2(qty);
+    parts.push(`quantity ${Number(current.quantity)} → ${round2(qty)}`);
+  }
+  if (unit !== current.unit) {
+    patch.unit = unit;
+    parts.push(`unit ${current.unit} → ${unit}`);
+  }
+  if (round2(rate) !== round2(Number(current.customer_unit_rate))) {
+    patch.customer_unit_rate = round2(rate);
+    parts.push(`selling price ${formatZar(Number(current.customer_unit_rate))} → ${formatZar(round2(rate))}`);
+  }
+  if (!!input.vat_applicable !== !!current.vat_applicable) {
+    patch.vat_applicable = !!input.vat_applicable;
+    parts.push(`VAT ${input.vat_applicable ? "applied" : "removed"}`);
+  }
+  if (!!input.is_included !== !!current.is_included) {
+    patch.is_included = !!input.is_included;
+    parts.push(input.is_included ? "included in BOQ" : "excluded from BOQ");
   }
 
-  const patch: ItemEditPatch = {};
-  const parts: string[] = [];
-  if (title.value !== current.description) {
-    patch.description = title.value;
-    parts.push(`title "${current.description}" → "${title.value}"`);
-  }
-  if (round2(Number(current.customer_unit_rate)) !== price.value) {
-    patch.customer_unit_rate = price.value;
-    parts.push(`selling price ${formatZar(Number(current.customer_unit_rate))} → ${formatZar(price.value)}`);
+  const optional: [UnifiedEditKey & ("item_code" | "specification" | "reference" | "notes"), string | undefined, string][] = [
+    ["item_code", input.item_code, "item code"],
+    ["specification", input.specification, "specification"],
+    ["reference", input.reference, "reference"],
+    ["notes", input.notes, "notes"],
+  ];
+  for (const [key, raw, label] of optional) {
+    const next = nullableText(raw);
+    if (next !== (current[key] ?? null)) {
+      patch[key] = next;
+      parts.push(`${label} updated`);
+    }
   }
 
   return {
     ok: true,
     patch,
     changed: parts.length > 0,
-    summary: parts.length ? `${title.value}: ${parts.join("; ")}` : `${title.value}: no changes`,
+    summary: parts.length ? `${description}: ${parts.join("; ")}` : `${description}: no changes`,
   };
 };

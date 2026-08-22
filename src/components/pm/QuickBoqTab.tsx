@@ -33,11 +33,13 @@ import { Panel, Stat, Field, selectCls } from "./ui";
 import { BOQ_UNITS, computeTotals, formatQty, formatZar, lineTotal, type Boq, type BoqItem, type BoqSection } from "@/lib/boq";
 import {
   DEFAULT_CATEGORY,
+  isPlanQuantityLocked,
   isRevisionLocked,
-  itemEditPatch,
+  PLAN_QUANTITY_NOTE,
   pickDefaultBoq,
   previewLineTotal,
   searchBoqItems,
+  unifiedItemPatch,
   validateQuickLine,
 } from "@/lib/quickBoq";
 import { buildSnapshot, type ProposalSnapshot } from "@/lib/proposals";
@@ -49,6 +51,9 @@ const todayPlus = (days: number) => {
   return d.toISOString().slice(0, 10);
 };
 
+/** BOQ item plus the plan-linkage column the unified editor must respect. */
+type QuickItem = BoqItem & { quantity_source?: string | null };
+
 type QuickForm = {
   id?: string;
   category: string;
@@ -58,7 +63,12 @@ type QuickForm = {
   unit: string;
   selling_price: string;
   vat_applicable: boolean;
+  is_included: boolean;
+  item_code: string;
   specification: string;
+  reference: string;
+  notes: string;
+  planLocked: boolean;
 };
 
 const emptyForm = (category: string): QuickForm => ({
@@ -69,7 +79,12 @@ const emptyForm = (category: string): QuickForm => ({
   unit: "each",
   selling_price: "0",
   vat_applicable: true,
+  is_included: true,
+  item_code: "",
   specification: "",
+  reference: "",
+  notes: "",
+  planLocked: false,
 });
 
 /**
@@ -82,7 +97,7 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   const [boqs, setBoqs] = useState<Boq[]>([]);
   const [boqId, setBoqId] = useState("");
   const [sections, setSections] = useState<BoqSection[]>([]);
-  const [items, setItems] = useState<BoqItem[]>([]);
+  const [items, setItems] = useState<QuickItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [snapshot, setSnapshot] = useState<ProposalSnapshot | null>(null);
@@ -92,13 +107,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   const [form, setForm] = useState<QuickForm | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [edit, setEdit] = useState<{ id: string; quantity: string; rate: string } | null>(null);
   const [query, setQuery] = useState("");
   const [appliedQuery, setAppliedQuery] = useState("");
-  const [priceTarget, setPriceTarget] = useState<BoqItem | null>(null);
-  const [priceValue, setPriceValue] = useState("0");
-  const [titleValue, setTitleValue] = useState("");
-  const [editErrors, setEditErrors] = useState<{ description?: string; selling_price?: string }>({});
   const [creating, setCreating] = useState({ title: "Bill of quantities", revision_label: "Draft v1", vat_enabled: true, valid_until: todayPlus(30) });
 
   const fail = (e: unknown) =>
@@ -212,36 +222,88 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     return data.id as string;
   };
 
+  /** Reuses the existing portal_boq_activity log — no new logging system. */
+  const logActivity = async (action: string, detail: string) => {
+    try {
+      const { data } = await supabase.auth.getUser();
+      await supabase.from("portal_boq_activity").insert({
+        boq_id: boqId,
+        actor_user_id: data.user?.id ?? null,
+        actor_type: "admin",
+        action,
+        detail,
+      });
+    } catch {
+      /* logging must never block the save */
+    }
+  };
+
+  /** The one save path for both adding and editing a BOQ line. */
   const submitForm = async () => {
     if (!form || !boqId) return;
-    const category = form.category === "__new" ? form.newCategory : form.category;
-    const result = validateQuickLine({ ...form, category, selling_price: form.selling_price });
-    if (!result.ok) {
-      setErrors(result.errors);
-      return;
-    }
-    setErrors({});
-    setBusy(true);
-    try {
-      const sectionId = await resolveSection(form);
-      const values = result.values;
-      if (form.id) {
-        const { error } = await supabase
-          .from("portal_boq_items")
-          .update({ ...values, section_id: sectionId })
-          .eq("id", form.id);
-        if (error) throw error;
-        toast({ title: "Item updated" });
-      } else {
+    const category = (form.category === "__new" ? form.newCategory : form.category).trim();
+    const current = form.id ? items.find((i) => i.id === form.id) ?? null : null;
+
+    if (!form.id) {
+      const result = validateQuickLine({ ...form, category, selling_price: form.selling_price });
+      if (!result.ok) return setErrors(result.errors);
+      setErrors({});
+      setBusy(true);
+      try {
+        const sectionId = await resolveSection(form);
         const { error } = await supabase.from("portal_boq_items").insert({
           boq_id: boqId,
           section_id: sectionId,
-          ...values,
+          ...result.values,
+          is_included: form.is_included,
+          item_code: form.item_code.trim() || null,
+          reference: form.reference.trim() || null,
+          notes: form.notes.trim() || null,
           sort_order: items.length + 1,
         });
         if (error) throw error;
         toast({ title: "Item added" });
+        setForm(null);
+        await refresh();
+      } catch (e) {
+        fail(e);
+      } finally {
+        setBusy(false);
       }
+      return;
+    }
+
+    if (!current) return;
+    setBusy(true);
+    try {
+      const sectionId = category ? await resolveSection(form) : current.section_id;
+      const result = unifiedItemPatch(current, {
+        title: form.description,
+        category,
+        section_id: sectionId,
+        quantity: form.quantity,
+        unit: form.unit,
+        selling_price: form.selling_price,
+        vat_applicable: form.vat_applicable,
+        is_included: form.is_included,
+        item_code: form.item_code,
+        specification: form.specification,
+        reference: form.reference,
+        notes: form.notes,
+      });
+      if (result.ok !== true) {
+        setErrors(result.errors as Record<string, string>);
+        return;
+      }
+      setErrors({});
+      if (!result.changed) {
+        setForm(null);
+        return;
+      }
+      const { error } = await supabase.from("portal_boq_items").update(result.patch).eq("id", form.id);
+      if (error) throw error;
+      await logActivity("item_updated", result.summary);
+      toast({ title: "Changes saved", description: form.description.trim() });
       setForm(null);
       await refresh();
     } catch (e) {
@@ -249,27 +311,6 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     } finally {
       setBusy(false);
     }
-  };
-
-  const saveInline = async () => {
-    if (!edit) return;
-    const item = items.find((i) => i.id === edit.id);
-    if (!item) return;
-    const qty = Number(edit.quantity);
-    const rate = Number(edit.rate);
-    if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(rate) || rate < 0) {
-      return toast({ title: "Check the quantity and selling price", description: "Quantity must be above zero and the price zero or more.", variant: "destructive" as never });
-    }
-    setBusy(true);
-    const { error } = await supabase
-      .from("portal_boq_items")
-      .update({ quantity: qty, customer_unit_rate: rate })
-      .eq("id", edit.id);
-    setBusy(false);
-    if (error) return fail(error);
-    setEdit(null);
-    toast({ title: "Line saved" });
-    await refresh();
   };
 
   const toggleIncluded = async (item: BoqItem, value: boolean) => {
@@ -289,52 +330,6 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     await refresh();
   };
 
-  /** Reuses the existing portal_boq_activity log — no new logging system. */
-  const logActivity = async (action: string, detail: string) => {
-    try {
-      const { data } = await supabase.auth.getUser();
-      await supabase.from("portal_boq_activity").insert({
-        boq_id: boqId,
-        actor_user_id: data.user?.id ?? null,
-        actor_type: "admin",
-        action,
-        detail,
-      });
-    } catch {
-      /* logging must never block the price update */
-    }
-  };
-
-  const openPriceDialog = (it: BoqItem) => {
-    setEditErrors({});
-    setTitleValue(it.description);
-    setPriceValue(String(Number(it.customer_unit_rate)));
-    setPriceTarget(it);
-  };
-
-  const saveItemEdit = async () => {
-    if (!priceTarget) return;
-    const result = itemEditPatch(priceTarget, { title: titleValue, selling_price: priceValue });
-    if (result.ok !== true) {
-      setEditErrors(result.errors);
-      return;
-    }
-
-    setEditErrors({});
-    if (!result.changed) {
-      setPriceTarget(null);
-      return;
-    }
-
-    setBusy(true);
-    const { error } = await supabase.from("portal_boq_items").update(result.patch).eq("id", priceTarget.id);
-    setBusy(false);
-    if (error) return fail(error);
-    await logActivity("item_updated", result.summary);
-    toast({ title: "Changes saved", description: titleValue.trim() });
-    setPriceTarget(null);
-    await refresh();
-  };
 
 
   const openCustomerDocument = async () => {
@@ -354,7 +349,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     setForm(emptyForm(sections[0]?.title ?? DEFAULT_CATEGORY));
   };
 
-  const openEditItem = (it: BoqItem) => {
+  /** The single unified editor entry point, used by the list and by search results. */
+  const openEditItem = (it: QuickItem) => {
     setErrors({});
     setForm({
       id: it.id,
@@ -365,7 +361,12 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
       unit: it.unit,
       selling_price: String(Number(it.customer_unit_rate)),
       vat_applicable: !!it.vat_applicable,
+      is_included: !!it.is_included,
+      item_code: it.item_code ?? "",
       specification: it.specification ?? "",
+      reference: it.reference ?? "",
+      notes: it.notes ?? "",
+      planLocked: isPlanQuantityLocked(it),
     });
   };
 
@@ -538,8 +539,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                       <p className="text-sm font-semibold tabular-nums">
                         {formatZar(Number(item.line_total ?? lineTotal(item.quantity, item.customer_unit_rate)))}
                       </p>
-                      <Button size="sm" disabled={readOnly} onClick={() => openPriceDialog(item)}>
-                        Edit title &amp; price
+                      <Button size="sm" disabled={readOnly} onClick={() => openEditItem(item)}>
+                        Edit
                       </Button>
                     </div>
                   </li>
@@ -548,8 +549,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
             )}
             {readOnly && results.length > 0 && (
               <p className="mt-3 text-xs text-muted-foreground">
-                This revision is {boq?.status} and locked. Items can be searched but titles and prices cannot be
-                changed — start a new revision under Advanced costing to update them.
+                This revision is {boq?.status} and locked. Items can be searched but not changed — start a new revision
+                under Advanced costing to update them.
               </p>
             )}
           </div>
@@ -577,102 +578,43 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                   </tr>
                 </thead>
                 <tbody>
-                  {items.map((it) => {
-                    const editing = edit?.id === it.id;
-                    return (
-                      <tr key={it.id} className="border-b border-border/60 align-top">
-                        <td className="py-2 pr-3 text-muted-foreground">{sectionTitle(it.section_id)}</td>
-                        <td className="py-2 pr-3">{it.description}</td>
-                        <td className="py-2 pr-3">
-                          {editing ? (
-                            <Input
-                              aria-label="Quantity"
-                              className="h-8 w-20"
-                              value={edit!.quantity}
-                              onChange={(e) => setEdit({ ...edit!, quantity: e.target.value })}
-                            />
-                          ) : (
-                            formatQty(it.quantity)
-                          )}
-                        </td>
-                        <td className="py-2 pr-3 text-muted-foreground">{it.unit}</td>
-                        <td className="py-2 pr-3">
-                          {editing ? (
-                            <Input
-                              aria-label="Selling price"
-                              className="h-8 w-28"
-                              value={edit!.rate}
-                              onChange={(e) => setEdit({ ...edit!, rate: e.target.value })}
-                            />
-                          ) : (
-                            formatZar(Number(it.customer_unit_rate))
-                          )}
-                        </td>
-                        <td className="py-2 pr-3 tabular-nums">
-                          {formatZar(
-                            editing
-                              ? previewLineTotal(edit!.quantity, edit!.rate)
-                              : Number(it.line_total ?? lineTotal(it.quantity, it.customer_unit_rate)),
-                          )}
-                        </td>
-                        <td className="py-2 pr-3">
-                          <input
-                            type="checkbox"
-                            aria-label={`Include ${it.description}`}
-                            checked={it.is_included}
+                  {items.map((it) => (
+                    <tr key={it.id} className="border-b border-border/60 align-top">
+                      <td className="py-2 pr-3 text-muted-foreground">{sectionTitle(it.section_id)}</td>
+                      <td className="py-2 pr-3">{it.description}</td>
+                      <td className="py-2 pr-3">{formatQty(it.quantity)}</td>
+                      <td className="py-2 pr-3 text-muted-foreground">{it.unit}</td>
+                      <td className="py-2 pr-3">{formatZar(Number(it.customer_unit_rate))}</td>
+                      <td className="py-2 pr-3 tabular-nums">
+                        {formatZar(Number(it.line_total ?? lineTotal(it.quantity, it.customer_unit_rate)))}
+                      </td>
+                      <td className="py-2 pr-3">
+                        <input
+                          type="checkbox"
+                          aria-label={`Include ${it.description}`}
+                          checked={it.is_included}
+                          disabled={readOnly}
+                          onChange={(e) => toggleIncluded(it, e.target.checked)}
+                        />
+                      </td>
+                      <td className="py-2">
+                        <div className="flex justify-end gap-1">
+                          <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
+                            Edit
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            aria-label={`Delete ${it.description}`}
                             disabled={readOnly}
-                            onChange={(e) => toggleIncluded(it, e.target.checked)}
-                          />
-                        </td>
-                        <td className="py-2">
-                          <div className="flex justify-end gap-1">
-                            {editing ? (
-                              <>
-                                <Button size="sm" onClick={saveInline} disabled={busy}>
-                                  Save
-                                </Button>
-                                <Button size="sm" variant="ghost" onClick={() => setEdit(null)}>
-                                  Cancel
-                                </Button>
-                              </>
-                            ) : (
-                              <>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  disabled={readOnly}
-                                  onClick={() =>
-                                    setEdit({
-                                      id: it.id,
-                                      quantity: String(Number(it.quantity)),
-                                      rate: String(Number(it.customer_unit_rate)),
-                                    })
-                                  }
-                                >
-                                  Edit
-                                </Button>
-                                <Button size="sm" variant="ghost" onClick={() => openPriceDialog(it)} disabled={readOnly}>
-                                  Title &amp; price
-                                </Button>
-                                <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
-                                  Details
-                                </Button>
-                                <Button
-                                  size="icon"
-                                  variant="ghost"
-                                  aria-label={`Delete ${it.description}`}
-                                  disabled={readOnly}
-                                  onClick={() => setDeleteId(it.id)}
-                                >
-                                  <Trash2 className="h-4 w-4" strokeWidth={1.5} />
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                            onClick={() => setDeleteId(it.id)}
+                          >
+                            <Trash2 className="h-4 w-4" strokeWidth={1.5} />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -699,11 +641,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                       />
                       Included
                     </label>
-                    <Button size="sm" variant="outline" onClick={() => openPriceDialog(it)} disabled={readOnly}>
-                      Edit title &amp; price
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
-                      Details
+                    <Button size="sm" variant="outline" onClick={() => openEditItem(it)} disabled={readOnly}>
+                      Edit
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setDeleteId(it.id)} disabled={readOnly}>
                       Delete
@@ -741,11 +680,19 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
       <Dialog open={!!form} onOpenChange={(v) => !v && setForm(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{form?.id ? "Edit item" : "Add item"}</DialogTitle>
-            <DialogDescription>Only the essentials — everything else stays under Advanced costing.</DialogDescription>
+            <DialogTitle>{form?.id ? "Edit BOQ item" : "Add item"}</DialogTitle>
+            <DialogDescription>
+              Supplier costs, markup and margin stay under Advanced costing and are never edited here.
+            </DialogDescription>
           </DialogHeader>
           {form && (
             <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="q-desc">Item title</Label>
+                <Input id="q-desc" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                {errors.description && <p className="text-xs text-destructive">{errors.description}</p>}
+              </div>
+
               <div className="space-y-1.5">
                 <Label htmlFor="q-cat">Category</Label>
                 <select
@@ -772,16 +719,20 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                 {errors.category && <p className="text-xs text-destructive">{errors.category}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="q-desc">Description</Label>
-                <Input id="q-desc" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-                {errors.description && <p className="text-xs text-destructive">{errors.description}</p>}
-              </div>
-
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="q-qty">Quantity</Label>
-                  <Input id="q-qty" type="number" min={0} step="0.001" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
+                  <Input
+                    id="q-qty"
+                    type="number"
+                    min={0}
+                    step="0.001"
+                    readOnly={form.planLocked}
+                    disabled={form.planLocked}
+                    value={form.quantity}
+                    onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+                  />
+                  {form.planLocked && <p className="text-xs text-muted-foreground">{PLAN_QUANTITY_NOTE}</p>}
                   {errors.quantity && <p className="text-xs text-destructive">{errors.quantity}</p>}
                 </div>
                 <div className="space-y-1.5">
@@ -793,6 +744,7 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                       </option>
                     ))}
                   </select>
+                  {errors.unit && <p className="text-xs text-destructive">{errors.unit}</p>}
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="q-rate">Selling price</Label>
@@ -801,16 +753,38 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                 </div>
               </div>
 
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={form.vat_applicable} onChange={(e) => setForm({ ...form, vat_applicable: e.target.checked })} />
-                VAT applicable
-              </label>
+              <div className="flex flex-wrap gap-5">
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={form.vat_applicable} onChange={(e) => setForm({ ...form, vat_applicable: e.target.checked })} />
+                  VAT applicable
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={form.is_included} onChange={(e) => setForm({ ...form, is_included: e.target.checked })} />
+                  Included in BOQ
+                </label>
+              </div>
 
               <details>
                 <summary className="cursor-pointer text-xs uppercase tracking-[0.18em] text-muted-foreground">More details</summary>
-                <div className="mt-2 space-y-1.5">
-                  <Label htmlFor="q-spec">Short specification</Label>
-                  <Textarea id="q-spec" rows={3} value={form.specification} onChange={(e) => setForm({ ...form, specification: e.target.value })} />
+                <div className="mt-3 space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="q-code">Item code</Label>
+                      <Input id="q-code" value={form.item_code} onChange={(e) => setForm({ ...form, item_code: e.target.value })} />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="q-ref">Reference</Label>
+                      <Input id="q-ref" value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="q-spec">Specification</Label>
+                    <Textarea id="q-spec" rows={3} value={form.specification} onChange={(e) => setForm({ ...form, specification: e.target.value })} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="q-notes">Notes</Label>
+                    <Textarea id="q-notes" rows={3} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+                  </div>
                 </div>
               </details>
 
@@ -824,57 +798,12 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
               Cancel
             </Button>
             <Button onClick={submitForm} disabled={busy}>
-              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} {form?.id ? "Save item" : "Add item"}
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} {form?.id ? "Save changes" : "Add item"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Edit title & price */}
-      <Dialog open={!!priceTarget} onOpenChange={(v) => !v && setPriceTarget(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit title &amp; price</DialogTitle>
-            <DialogDescription>Only the item title and selling price of this one item change.</DialogDescription>
-          </DialogHeader>
-          {priceTarget && (
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="edit-title">Item title</Label>
-                <Input id="edit-title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} />
-                {editErrors.description && <p className="text-xs text-destructive">{editErrors.description}</p>}
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="new-price">Selling price</Label>
-                <Input
-                  id="new-price"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  value={priceValue}
-                  onChange={(e) => setPriceValue(e.target.value)}
-                />
-                {editErrors.selling_price && <p className="text-xs text-destructive">{editErrors.selling_price}</p>}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Quantity {formatQty(priceTarget.quantity)} · Unit {priceTarget.unit} (unchanged)
-              </p>
-              <p className="border-t border-border pt-3 text-sm">
-                Revised line total{" "}
-                <span className="font-semibold tabular-nums">{formatZar(previewLineTotal(priceTarget.quantity, priceValue))}</span>
-              </p>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setPriceTarget(null)}>
-              Cancel
-            </Button>
-            <Button onClick={saveItemEdit} disabled={busy}>
-              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <AlertDialog open={!!deleteId} onOpenChange={(v) => !v && setDeleteId(null)}>
         <AlertDialogContent>
