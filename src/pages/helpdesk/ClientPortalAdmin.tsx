@@ -28,7 +28,7 @@ import TestAccountDialog, { type TestAccountTarget } from "@/components/helpdesk
 type Row = Record<string, any>;
 
 /** Production client-login callback used for first-time account setup links. */
-const PRODUCTION_LOGIN_URL = "https://siyakhatechnology.co.za/client-login";
+const PRODUCTION_LOGIN_URL = "https://siyakhatechnology.co.za/sign-in";
 
 const PROJECT_STATUSES = ["planning", "in_progress", "on_hold", "complete"];
 const ITEM_STATUSES = ["not_started", "in_progress", "blocked", "complete"];
@@ -200,7 +200,7 @@ const ClientPortalAdmin: React.FC = () => {
     const { data, error } = await supabase.functions.invoke("invite-client-user", {
       body: {
         client_user_id: clientUserId,
-        redirect_to: redirectTo ?? `${window.location.origin}/client-login`,
+        redirect_to: redirectTo ?? `${window.location.origin}/sign-in`,
       },
     });
     setBusy(false);

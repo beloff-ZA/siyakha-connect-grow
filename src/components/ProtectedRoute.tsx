@@ -7,7 +7,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }
   const location = useLocation();
 
   if (loading) return <div className="p-6 text-center text-muted-foreground">Loading…</div>;
-  if (!user) return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
+  if (!user) return <Navigate to="/sign-in" replace state={{ from: location.pathname }} />;
 
   return children;
 };

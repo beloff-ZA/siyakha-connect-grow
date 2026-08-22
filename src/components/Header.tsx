@@ -115,7 +115,7 @@ const Header = () => {
             </Link>
 
             <Link
-              to="/client-login"
+              to="/sign-in"
               className="text-[11px] uppercase tracking-[0.22em] border border-border px-4 py-2 text-foreground/85 hover:bg-muted transition-colors"
             >
               Client Sign In
@@ -193,7 +193,7 @@ const Header = () => {
                     Shop
                   </Link>
                   <Link
-                    to="/client-login"
+                    to="/sign-in"
                     onClick={() => setMenuOpen(false)}
                     className="block border border-border px-4 py-3 text-sm uppercase tracking-[0.18em] text-foreground hover:bg-muted transition-colors"
                   >

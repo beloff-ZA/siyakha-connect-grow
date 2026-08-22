@@ -64,7 +64,7 @@ const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/client-login", { replace: true });
+    navigate("/sign-in", { replace: true });
   };
 
   const linkCls = ({ isActive }: { isActive: boolean }) =>
