@@ -8,6 +8,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DOCUMENTS_BUCKET, PHOTOS_BUCKET, formatDate } from "@/lib/portalFiles";
 import { statusLabel } from "@/hooks/usePortal";
+import { setClientUserState } from "@/lib/designApi";
+
+type PortalRole = "client_admin" | "client_editor" | "client_viewer";
+const PORTAL_ROLES: { value: PortalRole; label: string }[] = [
+  { value: "client_viewer", label: "Viewer — read only" },
+  { value: "client_editor", label: "Editor — may design on assigned projects" },
+  { value: "client_admin", label: "Client admin — full client access" },
+];
 import BoqManager from "@/components/helpdesk/BoqManager";
 import FloorPlansManager from "@/components/helpdesk/FloorPlansManager";
 import SiteImagesManager from "@/components/helpdesk/SiteImagesManager";
@@ -128,7 +136,17 @@ const ClientPortalAdmin: React.FC = () => {
     loadBase();
   };
 
-  const [newUser, setNewUser] = useState({ client_id: "", email: "", full_name: "" });
+  // Portal role and status are submitted explicitly: the table's CHECKs only
+  // accept client_admin/client_editor/client_viewer and
+  // active/invited/suspended/revoked. A new record starts as an invited viewer,
+  // which grants no portal read or edit access until it is activated.
+  const [newUser, setNewUser] = useState<{
+    client_id: string;
+    email: string;
+    full_name: string;
+    portal_role: PortalRole;
+  }>({ client_id: "", email: "", full_name: "", portal_role: "client_viewer" });
+
   const createClientUser = async () => {
     if (!newUser.client_id || !newUser.email.trim()) return;
     setBusy(true);
@@ -136,12 +154,40 @@ const ClientPortalAdmin: React.FC = () => {
       client_id: newUser.client_id,
       email: newUser.email.trim().toLowerCase(),
       full_name: newUser.full_name.trim() || null,
+      portal_role: newUser.portal_role,
+      status: "invited",
+      invited_at: new Date().toISOString(),
     });
     setBusy(false);
     if (error) return fail(error);
-    setNewUser({ client_id: "", email: "", full_name: "" });
-    toast({ title: "Client user added", description: "Send the invitation to activate the account." });
+    setNewUser({ client_id: "", email: "", full_name: "", portal_role: "client_viewer" });
+    toast({
+      title: "Client user added",
+      description: "The account is invited only. Activate it to grant portal access.",
+    });
     loadBase();
+  };
+
+  /** Controlled, audited state transition. No email is ever sent from here. */
+  const changeUserState = async (
+    cu: { id: string; email: string },
+    status: "active" | "invited" | "suspended" | "revoked",
+    portalRole?: PortalRole,
+  ) => {
+    setBusy(true);
+    try {
+      await setClientUserState(cu.id, status, portalRole);
+      toast({ title: `Account ${status}`, description: cu.email });
+      loadBase();
+    } catch (e) {
+      toast({
+        title: "Could not change the account",
+        description: e instanceof Error ? e.message : String(e),
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(false);
+    }
   };
 
   /** TESTING-ONLY: no-email account activation / password reset. */
@@ -489,7 +535,24 @@ const ClientPortalAdmin: React.FC = () => {
                 <Label htmlFor="u-name">Full name</Label>
                 <Input id="u-name" value={newUser.full_name} onChange={(e) => setNewUser({ ...newUser, full_name: e.target.value })} />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="u-role">Portal role</Label>
+                <select
+                  id="u-role"
+                  className="h-10 w-full border border-input bg-background px-3 text-sm"
+                  value={newUser.portal_role}
+                  onChange={(e) => setNewUser({ ...newUser, portal_role: e.target.value as PortalRole })}
+                >
+                  {PORTAL_ROLES.map((r) => (
+                    <option key={r.value} value={r.value}>{r.label}</option>
+                  ))}
+                </select>
+              </div>
             </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              New accounts are created as <strong>invited</strong>. Only an activated account can read or
+              edit anything in the portal.
+            </p>
             <Button className="mt-4" onClick={createClientUser} disabled={busy}>Add client user</Button>
           </Section>
 
@@ -503,11 +566,36 @@ const ClientPortalAdmin: React.FC = () => {
                     <div>
                       <p className="text-sm">{cu.full_name ?? cu.email}</p>
                       <p className="text-xs text-muted-foreground break-all">
-                        {cu.email} · {statusLabel(cu.status)} ·{" "}
+                        {cu.email} · {statusLabel(cu.status)} · {cu.portal_role} ·{" "}
                         {clients.find((c) => c.id === cu.client_id)?.display_name ?? "—"}
                       </p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 items-center">
+                      <select
+                        className="h-9 border border-input bg-background px-2 text-xs"
+                        value={cu.portal_role}
+                        onChange={(e) => changeUserState(cu, cu.status as "active", e.target.value as PortalRole)}
+                        disabled={busy}
+                        aria-label={`Portal role for ${cu.email}`}
+                      >
+                        {PORTAL_ROLES.map((r) => (
+                          <option key={r.value} value={r.value}>{r.label}</option>
+                        ))}
+                      </select>
+                      {cu.status !== "active" ? (
+                        <Button size="sm" variant="outline" onClick={() => changeUserState(cu, "active")} disabled={busy}>
+                          Activate access
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="outline" onClick={() => changeUserState(cu, "suspended")} disabled={busy}>
+                          Suspend access
+                        </Button>
+                      )}
+                      {cu.status !== "revoked" && (
+                        <Button size="sm" variant="outline" onClick={() => changeUserState(cu, "revoked")} disabled={busy}>
+                          Revoke
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         onClick={() =>
