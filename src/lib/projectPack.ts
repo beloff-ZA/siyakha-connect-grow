@@ -182,9 +182,9 @@ export type ProjectPack = {
   };
   narrative: PackNarrative;
   floors: PackFloor[];
-  nvrs: any[];
-  cables: any[];
-  rackEquipment: any[];
+  nvrs: PackNvr[];
+  cables: PackCable[];
+  rackEquipment: PackRackItem[];
   boq: {
     id: string;
     title: string;
@@ -197,20 +197,126 @@ export type ProjectPack = {
   } | null;
   boqLines: PackBoqLine[];
   totals: BoqTotals;
-  variations: any[];
-  tasks: any[];
-  milestones: any[];
-  queries: any[];
-  planRevisions: any[];
-  proposals: any[];
-  stageHistory: any[];
-  activity: any[];
+  variations: PackVariation[];
+  tasks: PackTask[];
+  milestones: PackMilestone[];
+  /** Internal-only registers. Always empty in a client-facing pack. */
+  queries: PackInternalRow[];
+  planRevisions: PackPlanRevision[];
+  proposals: PackProposalRow[];
+  stageHistory: PackInternalRow[];
+  activity: PackInternalRow[];
   assets: PackAsset[];
   /** Site gallery selected for client sharing. */
   gallery: PackPhoto[];
   /** Document register metadata (no private paths are exposed). */
   documents: PackDocument[];
 };
+
+export type PackNvr = {
+  id: string;
+  label: string;
+  manufacturer: string | null;
+  model: string | null;
+  channel_count: number | null;
+  channel_from: number | null;
+  channel_to: number | null;
+  status: string | null;
+  rack_marker_id: string | null;
+};
+
+export type PackCable = {
+  id: string;
+  route_label: string | null;
+  cable_type: string | null;
+  service_type: string | null;
+  route_kind: string | null;
+  status: string | null;
+  source_label: string | null;
+  destination_label: string | null;
+  estimated_length_m: number | null;
+  measured_length_m: number | null;
+  floor_id: string | null;
+  waypoints: unknown;
+  patch_panel: string | null;
+  patch_panel_port: number | null;
+  switch_port: number | null;
+  fibre_strands: number | null;
+};
+
+export type PackRackItem = {
+  id: string;
+  rack_marker_id: string | null;
+  floor_id: string | null;
+  equipment_name: string | null;
+  equipment_type: string | null;
+  manufacturer: string | null;
+  model: string | null;
+  description: string | null;
+  rack_units: number | null;
+  rack_position: number | null;
+  quantity: number | null;
+  role: string | null;
+  copper_ports: number | null;
+  sfp_ports: number | null;
+  sfp_plus_ports: number | null;
+  port_type: string | null;
+  poe_capable: boolean | null;
+  network_layer: string | null;
+  status: string | null;
+};
+
+export type PackVariation = {
+  id: string;
+  reference: string | null;
+  title: string;
+  description: string | null;
+  discipline: string | null;
+  status: string;
+  customer_amount: number | null;
+  raised_on: string | null;
+  decided_on: string | null;
+};
+
+export type PackTask = {
+  id: string;
+  title: string;
+  owner: string | null;
+  priority: string | null;
+  due_date: string | null;
+  status: string | null;
+};
+
+export type PackMilestone = {
+  id: string;
+  title: string;
+  detail: string | null;
+  due_date: string | null;
+  status: string | null;
+};
+
+export type PackPlanRevision = {
+  id: string;
+  floor_id: string | null;
+  revision_label: string | null;
+  page_number: number | null;
+  page_count: number | null;
+  is_current: boolean;
+  created_at: string | null;
+};
+
+export type PackProposalRow = {
+  id: string;
+  proposal_number: string | null;
+  revision_label: string | null;
+  status: string;
+  issued_at: string | null;
+  created_at: string | null;
+};
+
+/** Placeholder shape for registers that are never included client-side. */
+export type PackInternalRow = Record<string, never>;
+
 
 const MARKER_COLUMNS =
   "id, floor_id, marker_type, label, status, equipment, model, area, x_norm, y_norm, is_placed, direction_deg, fov_deg, coverage_range, mounting_height_m, environment, lens_model, radio_band, ssid, vlan, switch_port, nvr_id, nvr_channel, serial_number, mac_address, client_visible, sort_order";
