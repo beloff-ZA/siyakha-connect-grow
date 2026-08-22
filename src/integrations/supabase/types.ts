@@ -3500,6 +3500,7 @@ export type Database = {
           id: string
           ip_hash: string | null
           outcome: string
+          rate_key: string | null
           share_link_id: string | null
           user_agent: string | null
         }
@@ -3510,6 +3511,7 @@ export type Database = {
           id?: string
           ip_hash?: string | null
           outcome?: string
+          rate_key?: string | null
           share_link_id?: string | null
           user_agent?: string | null
         }
@@ -3520,6 +3522,7 @@ export type Database = {
           id?: string
           ip_hash?: string | null
           outcome?: string
+          rate_key?: string | null
           share_link_id?: string | null
           user_agent?: string | null
         }
