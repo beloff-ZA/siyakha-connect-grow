@@ -2657,6 +2657,41 @@ export type Database = {
           },
         ]
       }
+      portal_pm_assignments: {
+        Row: {
+          can_view_commercial: boolean
+          created_at: string
+          created_by: string | null
+          id: string
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          can_view_commercial?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          can_view_commercial?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_pm_assignments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_product_catalog: {
         Row: {
           archived_at: string | null
@@ -4231,6 +4266,21 @@ export type Database = {
           unit: string
         }[]
       }
+      portal_client_sites: {
+        Args: never
+        Returns: {
+          address: string
+          city: string
+          client_id: string
+          id: string
+          name: string
+          postal_code: string
+          province: string
+          sort_order: number
+          status: string
+          venue_type: string
+        }[]
+      }
       portal_copy_floor_layout: { Args: { _payload: Json }; Returns: Json }
       portal_delete_floor_marker: {
         Args: { _marker_id: string }
@@ -4244,12 +4294,31 @@ export type Database = {
         Args: { _floor_id?: string; _project_id: string }
         Returns: number
       }
+      portal_history_feed: {
+        Args: { _id: string; _scope: string }
+        Returns: {
+          action: string
+          actor: string
+          created_at: string
+          detail: string
+          id: string
+        }[]
+      }
       portal_log_client_activity: {
         Args: {
           _action: string
           _detail: string
           _entity_id: string
           _entity_type: string
+          _project_id: string
+        }
+        Returns: string
+      }
+      portal_log_client_event: {
+        Args: {
+          _detail: string
+          _entity_id?: string
+          _kind: string
           _project_id: string
         }
         Returns: string
@@ -4264,6 +4333,7 @@ export type Database = {
         Returns: number
       }
       portal_next_proposal_number: { Args: never; Returns: string }
+      portal_place_cameras: { Args: { _payload: Json }; Returns: Json }
       portal_plan_revision_transaction: {
         Args: { _action: string; _payload: Json }
         Returns: Json
