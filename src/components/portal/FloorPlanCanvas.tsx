@@ -580,8 +580,9 @@ const FloorPlanCanvas: React.FC<Props> = ({
                             transform: `rotate(${dir}deg)`,
                             transformOrigin: "50% 50%",
                             background:
-                              "radial-gradient(circle, hsl(32 100% 50% / 0.38) 0%, hsl(32 100% 50% / 0.16) 60%, hsl(32 100% 50% / 0) 100%)",
+                              "radial-gradient(circle, hsl(45 100% 60% / 0.55) 0%, hsl(38 100% 52% / 0.32) 45%, hsl(32 100% 50% / 0.12) 80%, hsl(32 100% 50% / 0) 100%)",
                             clipPath: sectorClipPath(fov),
+                            filter: "drop-shadow(0 0 6px hsl(38 100% 55% / 0.55))",
                           }}
                         />
                         {/* Lens centreline, so the aim is unambiguous at any zoom. */}
@@ -593,7 +594,7 @@ const FloorPlanCanvas: React.FC<Props> = ({
                             top: cy,
                             width: 0,
                             height: r,
-                            borderLeft: "1px dashed hsl(32 100% 45% / 0.85)",
+                            borderLeft: "1px dashed hsl(32 100% 45% / 0.9)",
                             transform: `rotate(${dir}deg) translateY(${-r}px)`,
                             transformOrigin: "0 0",
                           }}
