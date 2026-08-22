@@ -57,7 +57,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/auth");
+    navigate("/sign-in");
   };
 
   return (

@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import AuthPage from "./pages/Auth";
+import SignIn from "./pages/SignIn";
 import RegionalServices from "./pages/RegionalServices";
 import PartnerEngineers from "./pages/PartnerEngineers";
 import ManagedIT from "./pages/ManagedIT";
@@ -49,7 +49,6 @@ import ClientPortalAdmin from "./pages/helpdesk/ClientPortalAdmin";
 // Client Portal
 import SharePage from "./pages/SharePage";
 import ProjectDeckPage from "./pages/ProjectDeckPage";
-import ClientLogin from "./pages/ClientLogin";
 import ClientRoute from "./components/portal/ClientRoute";
 import PortalDashboard from "./pages/portal/PortalDashboard";
 import PortalProject from "./pages/portal/PortalProject";
@@ -89,11 +88,15 @@ function App() {
               {/* Single public page */}
               <Route path="/" element={<Index />} />
 
-              {/* Auth (required for backend access) */}
-              <Route path="/auth" element={<AuthPage />} />
+              {/* Single unified secure access screen. /auth and /client-login are
+                  legacy aliases that render the same component so old bookmarks and
+                  recovery links keep working with one set of redirect rules. */}
+              <Route path="/sign-in" element={<SignIn />} />
+              <Route path="/auth" element={<SignIn />} />
+              <Route path="/client-login" element={<SignIn />} />
 
               {/* Client portal */}
-              <Route path="/client-login" element={<ClientLogin />} />
+
               <Route path="/share/:token" element={<SharePage />} />
               <Route path="/project-deck/:token" element={<ProjectDeckPage />} />
               <Route path="/portal" element={<ClientRoute><PortalDashboard /></ClientRoute>} />

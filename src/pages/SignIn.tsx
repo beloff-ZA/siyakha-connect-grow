@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,12 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { resolveLandingPath } from "@/lib/authRouting";
+import {
+  decideSignInRedirect,
+  isRecoveryRequest,
+  resolveAccessProfile,
+  PATH_SIGN_IN,
+} from "@/lib/authRouting";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 
 type Mode = "signin" | "forgot" | "setup";
 
-const ClientLogin: React.FC = () => {
+/**
+ * The single secure access screen for the whole platform.
+ *
+ * /sign-in is canonical; /auth and /client-login render this exact component so
+ * existing bookmarks and password-recovery links keep working with one set of
+ * redirect rules. There is no public self-signup and no automatic mail: password
+ * reset and first-time setup are always started by the person signing in.
+ */
+const SignIn: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("signin");
@@ -22,43 +35,56 @@ const ClientLogin: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  /** Set when the access lookup itself failed, so the person can retry safely. */
+  const [retryable, setRetryable] = useState(false);
 
   useEffect(() => {
-    document.title = "Client Sign In | Siyakha Interlink";
-    const meta =
-      document.querySelector('meta[name="description"]') ?? document.createElement("meta");
+    document.title = "Secure Sign In | Siyakha Interlink";
+    const meta = document.querySelector('meta[name="description"]') ?? document.createElement("meta");
     meta.setAttribute("name", "description");
     meta.setAttribute(
       "content",
-      "Secure sign in for Siyakha Interlink clients to track project progress, plans and site documentation.",
+      "Secure sign in for Siyakha Interlink clients and staff to access project portals and the management workspace.",
     );
     if (!meta.parentNode) document.head.appendChild(meta);
   }, []);
 
-  // Role-aware landing. A confirmed global Siyakha admin goes to /helpdesk, an
-  // exactly-active client user goes to /portal, anyone else is told access is
-  // unavailable rather than being dropped on a page they cannot read.
-  const routeAfterAuth = React.useCallback(
+  // One access decision, one redirect. Never fall back to a portal on failure.
+  const routeAfterAuth = useCallback(
     async (userId: string) => {
-      const path = await resolveLandingPath(userId);
-      if (path === "/") {
-        setFormError(
-          "This account is not currently active for portal access. Contact Siyakha to have your access enabled.",
-        );
-        await supabase.auth.signOut();
+      const profile = await resolveAccessProfile(userId);
+      const decision = decideSignInRedirect(profile);
+      if (decision.state === "redirect") {
+        setRetryable(false);
+        setFormError(null);
+        navigate(decision.to, { replace: true });
         return;
       }
-      navigate(path, { replace: true });
+      setFormError(decision.state === "error" ? decision.reason : null);
+      if (profile.access === "error") {
+        // A lookup failure keeps the session so the person can simply retry.
+        setRetryable(true);
+        return;
+      }
+      setRetryable(false);
+      await supabase.auth.signOut();
     },
     [navigate],
   );
 
+  const retryAccessCheck = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase.auth.getUser();
+    setLoading(false);
+    if (data.user) await routeAfterAuth(data.user.id);
+    else {
+      setRetryable(false);
+      setFormError("Your session ended. Please sign in again.");
+    }
+  }, [routeAfterAuth]);
+
   useEffect(() => {
-    const hash = window.location.hash;
-    const isRecovery =
-      hash.includes("type=recovery") ||
-      hash.includes("type=invite") ||
-      new URLSearchParams(window.location.search).get("type") === "recovery";
+    const isRecovery = isRecoveryRequest(window.location.search, window.location.hash);
     if (isRecovery) setMode("setup");
 
     const mustChange = (u: { user_metadata?: Record<string, unknown> } | undefined | null) =>
@@ -97,36 +123,30 @@ const ClientLogin: React.FC = () => {
     return () => subscription.unsubscribe();
   }, [routeAfterAuth]);
 
-
   const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
+    setRetryable(false);
     if (!validEmail(email)) return setFormError("Enter a valid email address.");
     if (!password) return setFormError("Enter your password.");
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setLoading(false);
     if (error) {
       setFormError(
         error.message === "Invalid login credentials"
-          ? "Those details don't match an active client account. Check your email and password, or use the password reset below."
+          ? "Those details don't match an active account. Check your email and password, or use the reset option below."
           : error.message,
       );
       return;
     }
-    // Admin-provisioned test accounts may require a password change before access.
+    // Provisioned accounts may require a password change before access.
     if (data.user?.user_metadata?.must_change_password === true) {
       setMode("setup");
       setPassword("");
-      toast({
-        title: "Set a new password",
-        description: "Choose your own password to continue to the portal.",
-      });
+      toast({ title: "Set a new password", description: "Choose your own password to continue." });
       return;
     }
     if (data.user) await routeAfterAuth(data.user.id);
@@ -138,13 +158,13 @@ const ClientLogin: React.FC = () => {
     if (!validEmail(email)) return setFormError("Enter a valid email address.");
     setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/client-login`,
+      redirectTo: `${window.location.origin}${PATH_SIGN_IN}`,
     });
     setLoading(false);
     if (error) return setFormError(error.message);
     toast({
       title: "Check your inbox",
-      description: "If this email is registered as a Siyakha client, a reset link is on its way.",
+      description: "If this email belongs to a Siyakha account, a reset link is on its way.",
     });
     setMode("signin");
   };
@@ -161,16 +181,14 @@ const ClientLogin: React.FC = () => {
     });
     setLoading(false);
     if (error) return setFormError(error.message);
-    // No outbound notification is sent from the portal in this environment.
-
-    toast({ title: "Password set", description: "Welcome to your Siyakha portal." });
+    // No outbound notification is sent from this screen.
+    toast({ title: "Password set", description: "Your password has been updated." });
     const { data } = await supabase.auth.getUser();
     if (data.user) await routeAfterAuth(data.user.id);
   };
 
-
   const heading =
-    mode === "signin" ? "Client Sign In" : mode === "forgot" ? "Reset your password" : "Set your password";
+    mode === "signin" ? "Secure Sign In" : mode === "forgot" ? "Reset your password" : "Set your password";
 
   return (
     <main className="min-h-screen bg-background flex flex-col">
@@ -189,13 +207,13 @@ const ClientLogin: React.FC = () => {
           <img src={siyakhaWordmark} alt="Siyakha Interlink" className="h-8 w-auto mb-10" />
 
           <p className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground mb-3">
-            Siyakha Client Portal
+            Siyakha Secure Access
           </p>
           <h1 className="font-display text-3xl md:text-4xl font-light tracking-tight mb-3">{heading}</h1>
           <p className="text-sm text-muted-foreground leading-relaxed mb-8">
             {mode === "setup"
-              ? "Choose a password for your client account to continue."
-              : "Access is by invitation only. Use the email address Siyakha registered for your projects."}
+              ? "Choose a password for your account to continue."
+              : "Access is by invitation only. Use the email address Siyakha registered for you — you are taken to the right workspace automatically."}
           </p>
 
           <div className="border border-border p-6 md:p-8">
@@ -205,6 +223,18 @@ const ClientLogin: React.FC = () => {
                 className="mb-6 border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive"
               >
                 {formError}
+                {retryable && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                    disabled={loading}
+                    onClick={retryAccessCheck}
+                  >
+                    {loading ? "Checking…" : "Try again"}
+                  </Button>
+                )}
               </div>
             )}
 
@@ -318,7 +348,7 @@ const ClientLogin: React.FC = () => {
           <p className="mt-8 flex items-start gap-2 text-xs text-muted-foreground leading-relaxed">
             <Lock className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
             <span>
-              Client accounts are created by Siyakha. If you need access, email{" "}
+              Accounts are created by Siyakha. If you need access, email{" "}
               <a className="underline" href="mailto:nikita@siyakhatechnology.co.za">
                 nikita@siyakhatechnology.co.za
               </a>
@@ -331,4 +361,4 @@ const ClientLogin: React.FC = () => {
   );
 };
 
-export default ClientLogin;
+export default SignIn;

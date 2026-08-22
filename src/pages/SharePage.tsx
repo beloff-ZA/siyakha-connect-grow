@@ -99,7 +99,7 @@ const SharePage: React.FC = () => {
         <p className="mt-2 text-sm text-muted-foreground">
           Sign in to your client portal with the same device, then reopen this link.
         </p>
-        <Button className="mt-4" onClick={() => (window.location.href = "/client-login")}>
+        <Button className="mt-4" onClick={() => (window.location.href = "/sign-in")}>
           Go to client login
         </Button>
       </Shell>

@@ -39,7 +39,7 @@ const PortalProfile: React.FC = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/client-login", { replace: true });
+    navigate("/sign-in", { replace: true });
   };
 
   if (loading) return <Loading />;
