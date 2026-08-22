@@ -1,4 +1,22 @@
-export type MarkerKind = "wifi_ap" | "camera" | "rack" | "cable_route" | "other";
+export type MarkerKind =
+  | "wifi_ap"
+  | "camera"
+  | "rack"
+  | "cable_route"
+  | "switch"
+  | "nvr"
+  | "router_firewall"
+  | "data_point"
+  | "fibre_agg_switch"
+  | "fibre_liu"
+  | "fibre_splice"
+  | "patch_panel"
+  | "access_control"
+  | "fire_device"
+  | "power_saving_device"
+  | "automation_device"
+  | "note_marker"
+  | "other";
 export type MarkerState = "planned" | "installed" | "tested" | "active";
 
 export type PortalFloor = {
@@ -39,7 +57,7 @@ export type FloorMarker = {
   sort_order: number;
   /** Camera aim — 0 = up/north on the plan image. */
   direction_deg?: number;
-  /** Camera field of view in degrees (60 | 90 | 110). */
+  /** Camera field of view in degrees (any value from 10 to 360). */
   fov_deg?: number;
   /** Indicative camera range band. */
   coverage_range?: CameraRange;
@@ -57,6 +75,8 @@ export type FloorMarker = {
   product_id?: string | null;
   /** Design discipline layer, e.g. cctv_security. */
   discipline?: string | null;
+  /** Set when the device is archived: kept for the record, excluded from quantities. */
+  archived_at?: string | null;
 };
 
 /** Fields the plan-side device manager may write through portal_save_floor_marker. */
@@ -95,6 +115,8 @@ export const FOV_PRESETS: { value: number; label: string }[] = [
   { value: 60, label: "60° Narrow" },
   { value: 90, label: "90° Standard" },
   { value: 110, label: "110° Wide" },
+  { value: 180, label: "180° Panoramic" },
+  { value: 360, label: "360° Fisheye" },
 ];
 
 export const CAMERA_RANGES: { value: CameraRange; label: string }[] = [
@@ -109,6 +131,19 @@ export const MARKER_KINDS: { value: MarkerKind; label: string; short: string; la
   { value: "camera", label: "CCTV camera", short: "CAM", layer: "CCTV Cameras" },
   { value: "rack", label: "Rack / cabinet", short: "RK", layer: "Racks" },
   { value: "cable_route", label: "Cable route", short: "CR", layer: "Cable Routes" },
+  { value: "switch", label: "Network switch", short: "SW", layer: "Active Network" },
+  { value: "nvr", label: "NVR / recorder", short: "NVR", layer: "CCTV Cameras" },
+  { value: "router_firewall", label: "Router / firewall", short: "FW", layer: "Active Network" },
+  { value: "data_point", label: "Data point / outlet", short: "DP", layer: "Structured Cabling" },
+  { value: "fibre_agg_switch", label: "Fibre aggregation switch", short: "AGG", layer: "Fibre" },
+  { value: "fibre_liu", label: "Fibre LIU / breakout", short: "LIU", layer: "Fibre" },
+  { value: "fibre_splice", label: "Fibre splice / joint", short: "SPL", layer: "Fibre" },
+  { value: "patch_panel", label: "Patch panel", short: "PP", layer: "Structured Cabling" },
+  { value: "access_control", label: "Access control device", short: "ACS", layer: "Access Control" },
+  { value: "fire_device", label: "Fire detection device", short: "FD", layer: "Fire Detection" },
+  { value: "power_saving_device", label: "Power / energy device", short: "PWR", layer: "Power & Energy" },
+  { value: "automation_device", label: "Automation / IoT device", short: "IOT", layer: "Automation & IoT" },
+  { value: "note_marker", label: "Design note", short: "NOTE", layer: "Notes" },
   { value: "other", label: "Other device", short: "DEV", layer: "Other" },
 ];
 
