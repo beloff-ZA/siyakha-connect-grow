@@ -18,6 +18,7 @@ import {
   type Proposal,
 } from "@/lib/proposals";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
+import { assertClientSafe, assertExplicitAction, scopeToProject } from "@/lib/reporting";
 import { useAuth } from "@/contexts/AuthContext";
 import { adminDisplayName } from "@/lib/adminIdentity";
 import { Chip, Field, Panel, selectCls } from "./ui";
@@ -33,6 +34,7 @@ type Form = {
   revision_label: string;
   executive_summary: string;
   project_understanding: string;
+  objectives: string;
   scope_of_work: string;
   methodology: string;
   deliverables: string;
@@ -55,6 +57,7 @@ const blankForm = (preparedByName?: string | null): Form => ({
   revision_label: "Rev A",
   executive_summary: "",
   project_understanding: "",
+  objectives: "",
   scope_of_work: "",
   methodology: PROPOSAL_DEFAULTS.methodology,
   deliverables: PROPOSAL_DEFAULTS.deliverables,
@@ -77,7 +80,12 @@ const nextRevision = (label: string) => {
   return `${label} (2)`;
 };
 
-const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = ({ ws, initialProjectId }) => {
+const ProposalsTab: React.FC<{
+  ws: PmWorkspace;
+  initialProjectId?: string;
+  /** Locks the tab to the URL project and hides the project filter. */
+  locked?: boolean;
+}> = ({ ws, initialProjectId, locked }) => {
   const { toast } = useToast();
   const { projects, clients, sites, boqs, proposals, reload } = ws;
   const [dialog, setDialog] = useState(false);
@@ -117,6 +125,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
         revision_label: nextRevision(reviseFrom.revision_label),
         executive_summary: reviseFrom.executive_summary ?? "",
         project_understanding: reviseFrom.project_understanding ?? "",
+        objectives: reviseFrom.objectives ?? "",
         scope_of_work: reviseFrom.scope_of_work ?? "",
         methodology: reviseFrom.methodology ?? base.methodology,
         deliverables: reviseFrom.deliverables ?? base.deliverables,
@@ -151,6 +160,8 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
       title: `${p.title} — Technology infrastructure proposal`,
       executive_summary: `${SIYAKHA.company} is pleased to submit this proposal to ${client || "the client"} for the technology infrastructure scope at ${site || p.title}. Our approach delivers a smart, scalable and secure environment, installed and certified to standard, with clear documentation and ongoing support.`,
       project_understanding: `${client || "The client"} requires a reliable, well-documented technology infrastructure at ${site || p.title}. ${p.description ?? "The scope covers design confirmation, supply, installation, testing, certification and handover."}`,
+      objectives:
+        "A resilient, standards-compliant infrastructure sized for current and future demand.\nFull coverage across every level and area identified in the design.\nCentralised, secure management with clear labelling and documentation.\nMinimal disruption to occupants and existing operations during installation.\nA certified, fully documented handover with measurable test results.",
       scope_of_work: p.description ?? "Supply, installation, termination, testing, certification, commissioning and handover of the infrastructure detailed in the attached pricing schedule.",
       planned_start_date: p.start_date ?? "",
       planned_completion_date: p.target_date ?? "",
@@ -166,6 +177,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
       revision_label: p.revision_label,
       executive_summary: p.executive_summary ?? "",
       project_understanding: p.project_understanding ?? "",
+      objectives: p.objectives ?? "",
       scope_of_work: p.scope_of_work ?? "",
       methodology: p.methodology ?? "",
       deliverables: p.deliverables ?? "",
@@ -189,6 +201,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
     revision_label: f.revision_label.trim() || "Rev A",
     executive_summary: f.executive_summary.trim() || null,
     project_understanding: f.project_understanding.trim() || null,
+    objectives: f.objectives.trim() || null,
     scope_of_work: f.scope_of_work.trim() || null,
     methodology: f.methodology.trim() || null,
     deliverables: f.deliverables.trim() || null,
@@ -203,7 +216,9 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
     prepared_by_email: f.prepared_by_email.trim() || null,
   });
 
-  const saveDraft = async () => {
+  /** Draft creation is user-triggered only; rendering never writes a record. */
+  const saveDraft = async (trigger: "user" | "effect" = "user") => {
+    assertExplicitAction(trigger, "Saving a proposal draft");
     if (!form.project_id) return toast({ title: "Select a project", variant: "destructive" as never });
     if (!form.title.trim()) return toast({ title: "A title is required", variant: "destructive" as never });
     setBusy(true);
@@ -231,12 +246,14 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
   };
 
   /** Freezes the client-facing snapshot and issues the document. */
-  const generate = async (p: Proposal, variant: "full" | "costing") => {
+  const generate = async (p: Proposal, variant: "full" | "costing", trigger: "user" | "effect" = "user") => {
     setBusy(true);
     try {
+      assertExplicitAction(trigger, "Generating a proposal");
       let record = p;
       if (!isLocked(p)) {
         const snapshot = await buildSnapshot(p.project_id, p.boq_id);
+        assertClientSafe(snapshot, "The client proposal");
         const { data, error } = await proposalsDb
           .from("portal_proposals")
           .update({ snapshot, status: "issued", issued_at: new Date().toISOString() })
@@ -290,9 +307,13 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
     }
   };
 
+  // When locked, only the URL project's proposals are ever listed.
   const rows = useMemo(
-    () => proposals.filter((p) => !filterProject || p.project_id === filterProject),
-    [proposals, filterProject],
+    () =>
+      locked
+        ? scopeToProject(proposals, initialProjectId ?? "")
+        : proposals.filter((p) => !filterProject || p.project_id === filterProject),
+    [proposals, filterProject, locked, initialProjectId],
   );
 
   const projectBoqs = boqs.filter((b) => b.project_id === form.project_id);
@@ -302,21 +323,23 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
       <Panel
         title={`Proposals & official costings (${proposals.length})`}
         actions={
-          <Button size="sm" onClick={() => openNew()}>
+          <Button size="sm" onClick={() => openNew(locked ? initialProjectId : undefined)}>
             <Plus className="mr-2 h-4 w-4" strokeWidth={1.5} /> New proposal
           </Button>
         }
       >
-        <Field label="Filter by project">
-          <select className={selectCls} value={filterProject} onChange={(e) => setFilterProject(e.target.value)}>
-            <option value="">All projects</option>
-            {projects.map((p) => (
-              <option key={p.id} value={p.id}>
-                {projectLabel(p.id)}
-              </option>
-            ))}
-          </select>
-        </Field>
+        {!locked && (
+          <Field label="Filter by project">
+            <select className={selectCls} value={filterProject} onChange={(e) => setFilterProject(e.target.value)}>
+              <option value="">All projects</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {projectLabel(p.id)}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
         <p className="mt-3 text-xs text-muted-foreground">
           Generating a document freezes an immutable snapshot of the client, site, project and BOQ lines. Later BOQ edits
           never change an issued document — create a new revision instead. Nothing is emailed automatically.
@@ -448,6 +471,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
               [
                 ["Executive summary", "executive_summary", 4],
                 ["Project understanding", "project_understanding", 4],
+                ["Objectives", "objectives", 4],
                 ["Scope of work", "scope_of_work", 5],
                 ["Methodology / implementation approach", "methodology", 6],
                 ["Deliverables", "deliverables", 5],
@@ -466,7 +490,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
             <Button variant="outline" onClick={() => setDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={saveDraft} disabled={busy}>
+            <Button onClick={() => saveDraft("user")} disabled={busy}>
               Save draft
             </Button>
           </div>

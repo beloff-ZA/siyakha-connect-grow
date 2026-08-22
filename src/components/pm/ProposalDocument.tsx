@@ -2,6 +2,7 @@ import React from "react";
 import { formatQty, formatZar } from "@/lib/boq";
 import { formatDate } from "@/lib/portalFiles";
 import { SIYAKHA, validUntil, type Proposal } from "@/lib/proposals";
+import { deviceTypeLabel } from "@/lib/lifecycle";
 
 /**
  * Client-facing A4 document. It renders exclusively from the immutable snapshot,
@@ -40,6 +41,23 @@ const ProposalDocument: React.FC<{ proposal: Proposal; variant: "full" | "costin
   const docLabel = variant === "full" ? "Proposal" : "Official Costing";
   let idx = 0;
   const n = () => String(++idx);
+
+  const floors = s?.floors ?? [];
+  const devices = s?.devices ?? null;
+  const b = s?.building ?? null;
+  const buildingRows: [string, string][] = [];
+  const push = (label: string, value: string | number | null | undefined, suffix = "") => {
+    if (value === null || value === undefined || value === "") return;
+    buildingRows.push([label, `${value}${suffix}`]);
+  };
+  push("Building type", b?.building_type);
+  push("Levels", b?.levels_note);
+  push("Gross floor area", b?.gfa_sqm, " m²");
+  push("Building length", b?.length_m, " m");
+  push("Building width", b?.width_m, " m");
+  push("Rooms / units", b?.rooms_units);
+  push("Occupancy", b?.occupancy);
+  push("Notes", b?.notes);
 
   return (
     <article className="boq-print-root doc-root bg-white text-black">
@@ -134,8 +152,114 @@ const ProposalDocument: React.FC<{ proposal: Proposal; variant: "full" | "costin
               </p>
             </div>
           </Block>
+
+          {/* Building schedule — rendered only from what was actually captured. */}
+          <Block>
+            <H n={n()}>Building schedule</H>
+            {buildingRows.length ? (
+              <table className="w-full border-collapse text-[9.5pt]">
+                <tbody>
+                  {buildingRows.map(([label, value]) => (
+                    <tr key={label} className="border-b border-neutral-300">
+                      <td className="w-[55mm] py-1 pr-2 text-neutral-600">{label}</td>
+                      <td className="py-1">{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-[10pt] italic text-neutral-500">No building schedule captured for this project.</p>
+            )}
+          </Block>
+
+          {/* Floor / plan schedule */}
+          <Block>
+            <H n={n()}>Floor and plan schedule</H>
+            {floors.length ? (
+              <table className="w-full border-collapse text-[9pt]">
+                <thead>
+                  <tr className="border-y border-black text-left">
+                    <th className="w-[14mm] py-1 pr-2 font-semibold">Level</th>
+                    <th className="py-1 pr-2 font-semibold">Floor / area</th>
+                    <th className="w-[28mm] py-1 pr-2 font-semibold">Use</th>
+                    <th className="w-[30mm] py-1 pr-2 font-semibold">Drawing</th>
+                    <th className="w-[18mm] py-1 pr-2 font-semibold">Rev</th>
+                    <th className="w-[20mm] py-1 text-right font-semibold">Devices</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {floors.map((f) => (
+                    <tr key={f.id} className="border-b border-neutral-300 align-top">
+                      <td className="py-1 pr-2 tabular-nums">{f.level_number}</td>
+                      <td className="py-1 pr-2">
+                        {f.display_name}
+                        {f.notes && <span className="block text-[8pt] text-neutral-600">{f.notes}</span>}
+                      </td>
+                      <td className="py-1 pr-2">{f.floor_use ?? "—"}</td>
+                      <td className="py-1 pr-2">
+                        {f.drawing_number ?? "—"}
+                        {f.drawing_title && <span className="block text-[8pt] text-neutral-600">{f.drawing_title}</span>}
+                        {f.drawing_scale && <span className="block text-[8pt] text-neutral-600">Scale {f.drawing_scale}</span>}
+                      </td>
+                      <td className="py-1 pr-2">{f.revision_label ?? "—"}</td>
+                      <td className="py-1 text-right tabular-nums">{f.device_count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-[10pt] italic text-neutral-500">No client-visible floors or plans recorded yet.</p>
+            )}
+          </Block>
+
+          {/* Device quantities */}
+          <Block>
+            <H n={n()}>Device quantities</H>
+            {devices && devices.total > 0 ? (
+              <>
+                <div className="grid grid-cols-4 gap-3 text-[9.5pt]">
+                  {[
+                    ["Total devices", devices.total],
+                    ["Access points", devices.access_points],
+                    ["Cameras", devices.cameras],
+                    ["Racks", devices.racks],
+                    ["Switches", devices.switches],
+                    ["Recorders (NVR)", devices.nvrs],
+                    ["Data points", devices.data_points],
+                    ["Cable routes", devices.cable_routes],
+                  ].map(([label, value]) => (
+                    <div key={String(label)} className="border border-black p-2">
+                      <p className="text-[7.5pt] uppercase tracking-[0.16em] text-neutral-500">{label}</p>
+                      <p className="text-[12pt] font-semibold tabular-nums">{value}</p>
+                    </div>
+                  ))}
+                </div>
+                <table className="mt-3 w-full border-collapse text-[9pt]">
+                  <thead>
+                    <tr className="border-y border-black text-left">
+                      <th className="py-1 pr-2 font-semibold">Device type</th>
+                      <th className="w-[24mm] py-1 text-right font-semibold">Quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {devices.byType.map((row) => (
+                      <tr key={row.type} className="border-b border-neutral-300">
+                        <td className="py-1 pr-2">{deviceTypeLabel(row.type)}</td>
+                        <td className="py-1 text-right tabular-nums">{row.count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            ) : (
+              <p className="text-[10pt] italic text-neutral-500">
+                No devices captured on the client-visible design at the time this revision was issued.
+              </p>
+            )}
+          </Block>
         </>
       )}
+
 
       {/* Pricing schedule */}
       <Block>

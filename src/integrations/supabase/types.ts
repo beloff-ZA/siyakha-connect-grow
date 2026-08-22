@@ -3043,6 +3043,7 @@ export type Database = {
           id: string
           issued_at: string | null
           methodology: string | null
+          objectives: string | null
           payment_terms: string | null
           planned_completion_date: string | null
           planned_start_date: string | null
@@ -3072,6 +3073,7 @@ export type Database = {
           id?: string
           issued_at?: string | null
           methodology?: string | null
+          objectives?: string | null
           payment_terms?: string | null
           planned_completion_date?: string | null
           planned_start_date?: string | null
@@ -3101,6 +3103,7 @@ export type Database = {
           id?: string
           issued_at?: string | null
           methodology?: string | null
+          objectives?: string | null
           payment_terms?: string | null
           planned_completion_date?: string | null
           planned_start_date?: string | null

@@ -211,6 +211,17 @@ export type ProjectPack = {
   gallery: PackPhoto[];
   /** Document register metadata (no private paths are exposed). */
   documents: PackDocument[];
+  /** Client-visible site photography metadata (never private images). */
+  siteImages: PackSiteImage[];
+};
+
+export type PackSiteImage = {
+  id: string;
+  title: string;
+  caption: string | null;
+  area: string | null;
+  category: string | null;
+  captured_on: string | null;
 };
 
 export type PackNvr = {
@@ -393,6 +404,7 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
     assetsRes,
     photosRes,
     docsRes,
+    siteImagesRes,
   ] = await Promise.all([
     project.client_id
       ? db.from("portal_clients").select("id, display_name, contact_name, contact_email, phone").eq("id", project.client_id).maybeSingle()
@@ -483,6 +495,15 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
       .eq("project_id", projectId)
       .order("document_date", { ascending: false })
       .limit(80),
+    // Only client-visible site images are indexed; storage paths stay internal.
+    visibleOnly(
+      db
+        .from("portal_site_images")
+        .select("id, title, caption, area, category, captured_on, client_visible, sort_order")
+        .eq("project_id", projectId)
+        .order("sort_order")
+        .limit(200),
+    ),
   ]);
 
   const clientRow = need("the client", clientRes);
@@ -687,6 +708,14 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
     assets: assetsRaw.map(stripInternal),
     gallery: (need("site gallery", photosRes) ?? []) as PackPhoto[],
     documents: (need("document register", docsRes) ?? []) as PackDocument[],
+    siteImages: ((need("site images", siteImagesRes) ?? []) as any[]).map((i) => ({
+      id: i.id,
+      title: i.title,
+      caption: i.caption ?? null,
+      area: i.area ?? null,
+      category: i.category ?? null,
+      captured_on: i.captured_on ?? null,
+    })),
   };
 }
 

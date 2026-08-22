@@ -602,6 +602,27 @@ const ProjectPackDocument: React.FC<{ pack: ProjectPack }> = ({ pack }) => {
         </div>
       </Page>
 
+      {/* Documents index and client-visible site images */}
+      <Page title="Documents index and site images">
+        <div className="print-block mb-4">
+          <p className="mb-1 text-[9.5pt] font-semibold">Document register</p>
+          <Table
+            head={["Title", "Category", "Version", "Reference", "Date"]}
+            rows={pack.documents.map((d) => [d.title, d.category, d.version, d.reference, formatDate(d.document_date)])}
+            empty="No documents registered for this project."
+          />
+        </div>
+        <div className="print-block">
+          <p className="mb-1 text-[9.5pt] font-semibold">Client-visible site images</p>
+          <Table
+            head={["Title", "Area", "Category", "Caption", "Captured"]}
+            rows={(pack.siteImages ?? []).map((i) => [i.title, i.area, i.category, i.caption, formatDate(i.captured_on)])}
+            empty="No client-visible site images published."
+          />
+        </div>
+      </Page>
+
+
       {/* Terms and acceptance */}
       <Page title="Terms and acceptance">
         <Block title="Warranty">

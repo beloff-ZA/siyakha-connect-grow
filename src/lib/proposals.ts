@@ -1,5 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import { computeTotals, lineTotal, round2, type BoqTotals } from "@/lib/boq";
+import { deviceTotals, type DeviceTotals } from "@/lib/reporting";
+import type { BuildingDetails } from "@/lib/projectWizard";
+
 
 /** Untyped access for tables added after the generated types were produced. */
 const db = supabase as unknown as {
@@ -28,6 +31,7 @@ export type Proposal = {
   status: ProposalStatus;
   executive_summary: string | null;
   project_understanding: string | null;
+  objectives: string | null;
   scope_of_work: string | null;
   methodology: string | null;
   deliverables: string | null;
@@ -61,11 +65,31 @@ export type SnapshotLine = {
 
 export type SnapshotSection = { title: string; description: string | null; lines: SnapshotLine[] };
 
+/** Client-safe floor / plan schedule row frozen into a proposal. */
+export type SnapshotFloor = {
+  id: string;
+  level_number: number;
+  display_name: string;
+  floor_use: string | null;
+  notes: string | null;
+  drawing_number: string | null;
+  drawing_title: string | null;
+  drawing_scale: string | null;
+  revision_label: string | null;
+  device_count: number;
+};
+
 export type ProposalSnapshot = {
   generated_at: string;
   client: { id: string; display_name: string; contact_name: string | null; contact_email: string | null; phone: string | null } | null;
   site: { id: string; name: string; address: string | null; city: string | null; province: string | null } | null;
   project: { id: string; title: string; reference: string | null; address: string | null; status: string | null } | null;
+  /** QS building schedule captured on the project (never invented). */
+  building?: BuildingDetails | null;
+  /** Floor / plan schedule with per-floor device counts. */
+  floors?: SnapshotFloor[];
+  /** Device quantity roll-up (client-safe counts only). */
+  devices?: DeviceTotals | null;
   boq: {
     id: string;
     title: string;
@@ -80,6 +104,7 @@ export type ProposalSnapshot = {
   sections: SnapshotSection[];
   totals: BoqTotals;
 };
+
 
 export const PROPOSAL_DEFAULTS = {
   payment_terms:
@@ -127,20 +152,61 @@ export const nextProposalNumber = async () => {
 export const buildSnapshot = async (projectId: string, boqId: string | null): Promise<ProposalSnapshot> => {
   const { data: project, error: pErr } = await db
     .from("portal_projects")
-    .select("id, title, reference, address, status, client_id, site_id")
+    .select("id, title, reference, address, status, client_id, site_id, building_details")
     .eq("id", projectId)
     .maybeSingle();
   if (pErr) throw pErr;
   if (!project) throw new Error("Project not found");
 
-  const [{ data: client }, { data: site }] = await Promise.all([
-    project.client_id
-      ? db.from("portal_clients").select("id, display_name, contact_name, contact_email, phone").eq("id", project.client_id).maybeSingle()
-      : Promise.resolve({ data: null }),
-    project.site_id
-      ? db.from("portal_sites").select("id, name, address, city, province").eq("id", project.site_id).maybeSingle()
-      : Promise.resolve({ data: null }),
-  ]);
+
+  const [{ data: client }, { data: site }, { data: floorRows }, { data: markerRows }, { data: revisionRows }] =
+    await Promise.all([
+      project.client_id
+        ? db.from("portal_clients").select("id, display_name, contact_name, contact_email, phone").eq("id", project.client_id).maybeSingle()
+        : Promise.resolve({ data: null }),
+      project.site_id
+        ? db.from("portal_sites").select("id, name, address, city, province").eq("id", project.site_id).maybeSingle()
+        : Promise.resolve({ data: null }),
+      // Client-facing schedules only: hidden floors and hidden devices stay internal.
+      db
+        .from("portal_floors")
+        .select("id, level_number, display_name, floor_use, notes, client_visible, sort_order")
+        .eq("project_id", projectId)
+        .eq("client_visible", true)
+        .order("sort_order"),
+      db
+        .from("portal_floor_markers")
+        .select("id, floor_id, marker_type, is_placed, client_visible")
+        .eq("project_id", projectId)
+        .eq("client_visible", true),
+      db
+        .from("portal_plan_revisions")
+        .select("floor_id, revision_label, drawing_number, drawing_title, drawing_scale, is_current, client_visible")
+        .eq("project_id", projectId)
+        .eq("client_visible", true)
+        .eq("is_current", true),
+    ]);
+
+  const markers = (markerRows ?? []) as { floor_id: string; marker_type: string; is_placed: boolean | null }[];
+  const currentByFloor = new Map<string, any>(((revisionRows ?? []) as any[]).map((r) => [r.floor_id, r]));
+  const floors: SnapshotFloor[] = ((floorRows ?? []) as any[]).map((f) => {
+    const rev = currentByFloor.get(f.id);
+    return {
+      id: f.id,
+      level_number: Number(f.level_number),
+      display_name: f.display_name,
+      floor_use: f.floor_use ?? null,
+      notes: f.notes ?? null,
+      drawing_number: rev?.drawing_number ?? null,
+      drawing_title: rev?.drawing_title ?? null,
+      drawing_scale: rev?.drawing_scale ?? null,
+      revision_label: rev?.revision_label ?? null,
+      device_count: markers.filter((m) => m.floor_id === f.id).length,
+    };
+  });
+  const devices = deviceTotals(markers);
+  const building = (project.building_details ?? null) as BuildingDetails | null;
+
 
   let boq: ProposalSnapshot["boq"] = null;
   let sections: SnapshotSection[] = [];
@@ -191,10 +257,14 @@ export const buildSnapshot = async (projectId: string, boqId: string | null): Pr
     client: client ?? null,
     site: site ?? null,
     project: { id: project.id, title: project.title, reference: project.reference, address: project.address, status: project.status },
+    building,
+    floors,
+    devices,
     boq,
     sections,
     totals,
   };
 };
+
 
 export const proposalsDb = db;
