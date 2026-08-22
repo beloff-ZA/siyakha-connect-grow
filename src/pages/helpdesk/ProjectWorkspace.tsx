@@ -5,7 +5,7 @@ import { usePmWorkspace } from "@/hooks/usePmWorkspace";
 import ProjectOverviewPanel from "@/components/pm/ProjectOverviewPanel";
 import BuildingSiteTab from "@/components/pm/BuildingSiteTab";
 import PlansDesignTab from "@/components/pm/PlansDesignTab";
-import BoqCostingTab from "@/components/pm/BoqCostingTab";
+import QuickBoqTab from "@/components/pm/QuickBoqTab";
 import ProjectFilesTab from "@/components/pm/ProjectFilesTab";
 import ReportsShareTab from "@/components/pm/ReportsShareTab";
 import { Chip } from "@/components/pm/ui";
@@ -102,7 +102,7 @@ const ProjectWorkspace: React.FC = () => {
               <PlansDesignTab {...fixed} />
             </TabsContent>
             <TabsContent value="boq">
-              <BoqCostingTab {...fixed} />
+              <QuickBoqTab ws={ws} projectId={projectId} />
             </TabsContent>
             <TabsContent value="files">
               <ProjectFilesTab {...fixed} />
