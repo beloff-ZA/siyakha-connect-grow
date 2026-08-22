@@ -269,9 +269,15 @@ const ProjectDeckPage: React.FC = () => {
                         {f.floor_use ? ` · ${f.floor_use}` : ""}
                       </span>
                     </figcaption>
-                    <div className="border border-border bg-white p-2">
-                      <PlanSheet floor={f} />
+                    <div className="border border-border p-2">
+                      <PlanSheet
+                        floor={f}
+                        interactive
+                        rackEquipment={pack.rackEquipment}
+                        cables={pack.cables}
+                      />
                     </div>
+
                   </figure>
                 ))}
               </div>

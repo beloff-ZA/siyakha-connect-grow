@@ -122,3 +122,11 @@ export function equipmentTotals(items: RackEquipment[]) {
     totalUnits: items.reduce((s, e) => s + e.quantity, 0),
   };
 }
+
+/** Equipment rows installed inside one rack marker. */
+export function rackItemsFor<T extends { rack_marker_id?: string | null }>(
+  equipment: T[] | undefined,
+  rackMarkerId: string,
+): T[] {
+  return (equipment ?? []).filter((e) => e.rack_marker_id === rackMarkerId);
+}

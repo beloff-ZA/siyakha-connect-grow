@@ -95,21 +95,45 @@ export const CAMERA_RANGE_RADIUS: Record<string, number> = {
   large: 0.24,
 };
 
+/** Marker types that are never coverage/highlight targets. */
+export const NON_COVERAGE_MARKER_TYPES = ["rack", "cable_route", "note_marker"] as const;
+
 /**
- * Coverage overlay mode for the currently selected device: only Wi-Fi APs and
- * cameras have a meaningful coverage preview, every other marker type is off.
+ * Which highlight a selected marker gets:
+ *  - `camera`    → amber directional field-of-view cone
+ *  - `wifi`      → blue/cyan concentric coverage rings
+ *  - `spotlight` → neutral/electric halo for every other real device
+ *  - `null`      → racks, cable routes and note markers get no coverage light
+ */
+export function coverageKind(
+  markerType?: string | null,
+): "camera" | "wifi" | "spotlight" | null {
+  if (!markerType) return null;
+  if (markerType === "camera") return "camera";
+  if (markerType === "wifi_ap") return "wifi";
+  return (NON_COVERAGE_MARKER_TYPES as readonly string[]).includes(markerType)
+    ? null
+    : "spotlight";
+}
+
+/**
+ * Coverage overlay mode for the currently selected device: every real device
+ * type is highlighted; racks, cable routes and note markers stay off.
  */
 export function selectedCoverageMode(markerType?: string | null): "off" | "selected" {
-  return markerType === "wifi_ap" || markerType === "camera" ? "selected" : "off";
+  return coverageKind(markerType) ? "selected" : "off";
 }
 
 /** Short helper line shown under the plan for the selected device's coverage preview. */
 export function coverageHelpText(markerType?: string | null): string | null {
-  if (markerType === "wifi_ap") return "Wi-Fi coverage preview — strong, good and edge signal bands.";
-  if (markerType === "camera")
+  const kind = coverageKind(markerType);
+  if (kind === "wifi") return "Wi-Fi coverage preview — strong, good and edge signal bands.";
+  if (kind === "camera")
     return "Camera view preview — drag the orange handle to aim the light cone.";
+  if (kind === "spotlight") return "Selected device highlighted on the plan.";
   return null;
 }
+
 
 /** True when a viewport pointer lies inside the (transformed) image content rect. */
 export function pointerInContent(args: {

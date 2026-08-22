@@ -15,10 +15,12 @@ import {
   normDistancePx,
   CARDINAL_LABELS,
   selectedCoverageMode,
+  coverageKind,
   coverageHelpText,
   AIM_DEADZONE_PX,
   type Size,
 } from "./planGeometry";
+import { rackItemsFor } from "./rackEquipment";
 
 describe("containRect", () => {
   it("letterboxes a wide image in a square container", () => {
@@ -242,22 +244,50 @@ describe("camera aim persistence contract", () => {
 });
 
 describe("selected coverage mode", () => {
-  it("turns coverage on only for APs and cameras", () => {
-    expect(selectedCoverageMode("wifi_ap")).toBe("selected");
-    expect(selectedCoverageMode("camera")).toBe("selected");
-    for (const k of ["rack", "switch", "note", "data_point", undefined, null]) {
+  it("highlights every real device but never racks, routes or notes", () => {
+    for (const k of ["wifi_ap", "camera", "switch", "nvr", "fibre_liu", "data_point", "other"]) {
+      expect(selectedCoverageMode(k)).toBe("selected");
+    }
+    for (const k of ["rack", "cable_route", "note_marker", undefined, null]) {
       expect(selectedCoverageMode(k as string | null | undefined)).toBe("off");
     }
   });
 
-  it("supplies the AP and camera helper lines only", () => {
+  it("classifies the highlight kind per marker type", () => {
+    expect(coverageKind("camera")).toBe("camera");
+    expect(coverageKind("wifi_ap")).toBe("wifi");
+    expect(coverageKind("switch")).toBe("spotlight");
+    expect(coverageKind("fibre_agg_switch")).toBe("spotlight");
+    expect(coverageKind("rack")).toBeNull();
+    expect(coverageKind("cable_route")).toBeNull();
+    expect(coverageKind("note_marker")).toBeNull();
+    expect(coverageKind(null)).toBeNull();
+  });
+
+  it("supplies helper lines for highlighted devices only", () => {
     expect(coverageHelpText("wifi_ap")).toBe(
       "Wi-Fi coverage preview — strong, good and edge signal bands.",
     );
     expect(coverageHelpText("camera")).toBe(
       "Camera view preview — drag the orange handle to aim the light cone.",
     );
+    expect(coverageHelpText("switch")).toBe("Selected device highlighted on the plan.");
     expect(coverageHelpText("rack")).toBeNull();
+    expect(coverageHelpText("note_marker")).toBeNull();
     expect(coverageHelpText(null)).toBeNull();
   });
 });
+
+describe("rack contents filtering", () => {
+  it("returns only equipment installed in the selected rack", () => {
+    const items: { id: string; rack_marker_id: string | null }[] = [
+      { id: "a", rack_marker_id: "r1" },
+      { id: "b", rack_marker_id: "r2" },
+      { id: "c", rack_marker_id: null },
+    ];
+    expect(rackItemsFor(items, "r1").map((i) => i.id)).toEqual(["a"]);
+    expect(rackItemsFor(items, "r2").map((i) => i.id)).toEqual(["b"]);
+    expect(rackItemsFor(undefined, "r1")).toEqual([]);
+  });
+});
+
