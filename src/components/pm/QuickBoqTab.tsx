@@ -479,6 +479,81 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
         </div>
       )}
 
+      <Panel title="Search BOQ">
+        <form
+          className="flex flex-col gap-2 sm:flex-row sm:items-center"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setAppliedQuery(query);
+          }}
+        >
+          <div className="flex-1">
+            <label htmlFor="boq-search" className="mb-1.5 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Search this BOQ
+            </label>
+            <Input
+              id="boq-search"
+              value={query}
+              placeholder="Description, item code, specification, reference or category"
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-2 sm:pt-6">
+            <Button type="submit" size="sm">
+              <Search className="mr-2 h-4 w-4" strokeWidth={1.5} /> Search BOQ
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setQuery("");
+                setAppliedQuery("");
+              }}
+            >
+              <X className="mr-2 h-4 w-4" strokeWidth={1.5} /> Clear
+            </Button>
+          </div>
+        </form>
+
+        {appliedQuery.trim() && (
+          <div className="mt-5">
+            <p className="text-xs text-muted-foreground">
+              {results.length} {results.length === 1 ? "item" : "items"} matching “{appliedQuery.trim()}” in this BOQ
+            </p>
+            {results.length === 0 ? (
+              <p className="mt-3 text-sm text-muted-foreground">No BOQ items found</p>
+            ) : (
+              <ul className="mt-3 space-y-3">
+                {results.map(({ item, category }) => (
+                  <li key={item.id} className="border border-border p-3">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{category}</p>
+                    <p className="mt-1 text-sm">{item.description}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {formatQty(item.quantity)} {item.unit} × {formatZar(Number(item.customer_unit_rate))}
+                    </p>
+                    <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+                      <p className="text-sm font-semibold tabular-nums">
+                        {formatZar(Number(item.line_total ?? lineTotal(item.quantity, item.customer_unit_rate)))}
+                      </p>
+                      <Button size="sm" disabled={readOnly} onClick={() => openPriceDialog(item)}>
+                        Update price
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {readOnly && results.length > 0 && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                This revision is {boq?.status} and locked. Prices can be searched but not changed — start a new revision
+                under Advanced costing to update pricing.
+              </p>
+            )}
+          </div>
+        )}
+      </Panel>
+
       <Panel title="Items">
         {items.length === 0 ? (
           <p className="text-sm text-muted-foreground">No items yet. Use “Add item” to build the quote.</p>
@@ -742,6 +817,51 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
             </Button>
             <Button onClick={submitForm} disabled={busy}>
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} {form?.id ? "Save item" : "Add item"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Quick price update */}
+      <Dialog open={!!priceTarget} onOpenChange={(v) => !v && setPriceTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update price</DialogTitle>
+            <DialogDescription>Only the selling price of this one item changes.</DialogDescription>
+          </DialogHeader>
+          {priceTarget && (
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm">{priceTarget.description}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Current selling price {formatZar(Number(priceTarget.customer_unit_rate))} · {formatQty(priceTarget.quantity)}{" "}
+                  {priceTarget.unit}
+                </p>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="new-price">New selling price</Label>
+                <Input
+                  id="new-price"
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  value={priceValue}
+                  onChange={(e) => setPriceValue(e.target.value)}
+                />
+                {priceError && <p className="text-xs text-destructive">{priceError}</p>}
+              </div>
+              <p className="border-t border-border pt-3 text-sm">
+                Revised line total{" "}
+                <span className="font-semibold tabular-nums">{formatZar(previewLineTotal(priceTarget.quantity, priceValue))}</span>
+              </p>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setPriceTarget(null)}>
+              Cancel
+            </Button>
+            <Button onClick={saveNewPrice} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save new price
             </Button>
           </DialogFooter>
         </DialogContent>
