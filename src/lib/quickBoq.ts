@@ -223,65 +223,6 @@ export const priceUpdatePatch = (value: number): { customer_unit_rate: number } 
 });
 
 /* -------------------------------------------------------------------------- */
-/* Editing item title + selling price together                                */
-/* -------------------------------------------------------------------------- */
-
-export type TitleValidation = { ok: true; value: string } | { ok: false; error: string };
-
-/** Validates the "Item title" field: a non-empty trimmed description. */
-export const validateItemTitle = (input: string): TitleValidation => {
-  const value = String(input ?? "").trim();
-  if (!value) return { ok: false, error: "Enter an item title." };
-  return { ok: true, value };
-};
-
-export type ItemEditPatch = { description?: string; customer_unit_rate?: number };
-
-export type ItemEditResult =
-  | { ok: true; patch: ItemEditPatch; changed: boolean; summary: string }
-  | { ok: false; errors: { description?: string; selling_price?: string } };
-
-/**
- * Builds the only patch a quick item edit may send: the item title and/or the
- * customer selling rate. Unchanged fields are omitted so nothing is rewritten
- * unnecessarily; every other column is untouched by construction.
- */
-export const itemEditPatch = (
-  current: Pick<BoqItem, "description" | "customer_unit_rate">,
-  input: { title: string; selling_price: string | number },
-): ItemEditResult => {
-  const title = validateItemTitle(input.title);
-  const price = validateNewPrice(input.selling_price);
-  if (title.ok !== true || price.ok !== true) {
-    return {
-      ok: false,
-      errors: {
-        ...(title.ok !== true ? { description: title.error } : {}),
-        ...(price.ok !== true ? { selling_price: price.error } : {}),
-      },
-    };
-  }
-
-  const patch: ItemEditPatch = {};
-  const parts: string[] = [];
-  if (title.value !== current.description) {
-    patch.description = title.value;
-    parts.push(`title "${current.description}" → "${title.value}"`);
-  }
-  if (round2(Number(current.customer_unit_rate)) !== price.value) {
-    patch.customer_unit_rate = price.value;
-    parts.push(`selling price ${formatZar(Number(current.customer_unit_rate))} → ${formatZar(price.value)}`);
-  }
-
-  return {
-    ok: true,
-    patch,
-    changed: parts.length > 0,
-    summary: parts.length ? `${title.value}: ${parts.join("; ")}` : `${title.value}: no changes`,
-  };
-};
-
-/* -------------------------------------------------------------------------- */
 /* Unified "Edit BOQ item" form                                               */
 /* -------------------------------------------------------------------------- */
 
