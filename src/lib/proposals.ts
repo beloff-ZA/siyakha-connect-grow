@@ -158,14 +158,54 @@ export const buildSnapshot = async (projectId: string, boqId: string | null): Pr
   if (!project) throw new Error("Project not found");
 
 
-  const [{ data: client }, { data: site }] = await Promise.all([
-    project.client_id
-      ? db.from("portal_clients").select("id, display_name, contact_name, contact_email, phone").eq("id", project.client_id).maybeSingle()
-      : Promise.resolve({ data: null }),
-    project.site_id
-      ? db.from("portal_sites").select("id, name, address, city, province").eq("id", project.site_id).maybeSingle()
-      : Promise.resolve({ data: null }),
-  ]);
+  const [{ data: client }, { data: site }, { data: floorRows }, { data: markerRows }, { data: revisionRows }] =
+    await Promise.all([
+      project.client_id
+        ? db.from("portal_clients").select("id, display_name, contact_name, contact_email, phone").eq("id", project.client_id).maybeSingle()
+        : Promise.resolve({ data: null }),
+      project.site_id
+        ? db.from("portal_sites").select("id, name, address, city, province").eq("id", project.site_id).maybeSingle()
+        : Promise.resolve({ data: null }),
+      // Client-facing schedules only: hidden floors and hidden devices stay internal.
+      db
+        .from("portal_floors")
+        .select("id, level_number, display_name, floor_use, notes, client_visible, sort_order")
+        .eq("project_id", projectId)
+        .eq("client_visible", true)
+        .order("sort_order"),
+      db
+        .from("portal_floor_markers")
+        .select("id, floor_id, marker_type, is_placed, client_visible")
+        .eq("project_id", projectId)
+        .eq("client_visible", true),
+      db
+        .from("portal_plan_revisions")
+        .select("floor_id, revision_label, drawing_number, drawing_title, drawing_scale, is_current, client_visible")
+        .eq("project_id", projectId)
+        .eq("client_visible", true)
+        .eq("is_current", true),
+    ]);
+
+  const markers = (markerRows ?? []) as { floor_id: string; marker_type: string; is_placed: boolean | null }[];
+  const currentByFloor = new Map<string, any>(((revisionRows ?? []) as any[]).map((r) => [r.floor_id, r]));
+  const floors: SnapshotFloor[] = ((floorRows ?? []) as any[]).map((f) => {
+    const rev = currentByFloor.get(f.id);
+    return {
+      id: f.id,
+      level_number: Number(f.level_number),
+      display_name: f.display_name,
+      floor_use: f.floor_use ?? null,
+      notes: f.notes ?? null,
+      drawing_number: rev?.drawing_number ?? null,
+      drawing_title: rev?.drawing_title ?? null,
+      drawing_scale: rev?.drawing_scale ?? null,
+      revision_label: rev?.revision_label ?? null,
+      device_count: markers.filter((m) => m.floor_id === f.id).length,
+    };
+  });
+  const devices = deviceTotals(markers);
+  const building = (project.building_details ?? null) as BuildingDetails | null;
+
 
   let boq: ProposalSnapshot["boq"] = null;
   let sections: SnapshotSection[] = [];
