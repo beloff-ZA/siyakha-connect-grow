@@ -25,7 +25,9 @@ const ProjectFilesTab: React.FC<{
   ws: PmWorkspace;
   projectId: string;
   setProjectId: (id: string) => void;
-}> = ({ ws, projectId, setProjectId }) => {
+  /** Hides the project picker when the project comes from the URL. */
+  locked?: boolean;
+}> = ({ ws, projectId, setProjectId, locked }) => {
   const { toast } = useToast();
   const { projects, clients, sites } = ws;
   const [docs, setDocs] = useState<Doc[]>([]);
@@ -93,16 +95,18 @@ const ProjectFilesTab: React.FC<{
   return (
     <div>
       <Panel title="Documents &amp; site images">
-        <Field label="Client → site → project">
-          <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
-            <option value="">Select a project…</option>
-            {options.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </Field>
+        {!locked && (
+          <Field label="Client → site → project">
+            <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              <option value="">Select a project…</option>
+              {options.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
       </Panel>
 
       {!projectId ? (

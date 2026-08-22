@@ -14,7 +14,9 @@ const PlansDesignTab: React.FC<{
   ws: PmWorkspace;
   projectId: string;
   setProjectId: (id: string) => void;
-}> = ({ ws, projectId, setProjectId }) => {
+  /** Hides the project picker when the project comes from the URL. */
+  locked?: boolean;
+}> = ({ ws, projectId, setProjectId, locked }) => {
   const { projects, clients, sites } = ws;
   const { toast } = useToast();
   const [draftBoqs, setDraftBoqs] = useState<{ id: string; revision_label: string; title: string | null }[]>([]);
@@ -74,16 +76,18 @@ const PlansDesignTab: React.FC<{
   return (
     <div>
       <Panel title="Plans & concept design">
-        <Field label="Client → site → project">
-          <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
-            <option value="">Select a project…</option>
-            {options.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </Field>
+        {!locked && (
+          <Field label="Client → site → project">
+            <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              <option value="">Select a project…</option>
+              {options.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
         {projectId && (
           <Field label="Design bill of quantities (draft revisions only)">
             <select className={selectCls} value={designBoqId} onChange={(e) => linkDesignBoq(e.target.value)}>

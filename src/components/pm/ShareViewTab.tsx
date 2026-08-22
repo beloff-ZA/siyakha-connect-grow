@@ -24,7 +24,9 @@ const ShareViewTab: React.FC<{
   ws: PmWorkspace;
   projectId: string;
   setProjectId: (id: string) => void;
-}> = ({ ws, projectId, setProjectId }) => {
+  /** Hides the project picker when the project comes from the URL. */
+  locked?: boolean;
+}> = ({ ws, projectId, setProjectId, locked }) => {
   const { toast } = useToast();
   const { projects, clients, sites } = ws;
   const [links, setLinks] = useState<ShareLink[]>([]);
@@ -115,16 +117,18 @@ const ShareViewTab: React.FC<{
   return (
     <div>
       <Panel title="Share view link">
-        <Field label="Client → site → project">
-          <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
-            <option value="">Select a project…</option>
-            {options.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </Field>
+        {!locked && (
+          <Field label="Client → site → project">
+            <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              <option value="">Select a project…</option>
+              {options.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Expires in (days)">
             <Input type="number" min={1} value={days} onChange={(e) => setDays(e.target.value)} />
