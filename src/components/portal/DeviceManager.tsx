@@ -375,14 +375,19 @@ const DeviceManager: React.FC<Props> = ({
   const remove = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
-    const { error } = await supabase.rpc("portal_delete_floor_marker", {
-      _marker_id: deleteTarget.id,
-    });
-    setDeleting(false);
-    if (error) {
-      toast({ title: "Device not deleted", description: error.message, variant: "destructive" });
+    try {
+      await markerTransaction("archive", { id: deleteTarget.id });
+    } catch (e) {
+      setDeleting(false);
+      toast({
+        title: "Device not archived",
+        description: e instanceof Error ? e.message : "Unknown error",
+        variant: "destructive",
+      });
       return;
     }
+    setDeleting(false);
+
     toast({
       title: "Device deleted",
       description: `${deleteTarget.label} and its cable routes were removed.`,
