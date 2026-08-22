@@ -4408,6 +4408,15 @@ export type Database = {
         }
         Returns: Json
       }
+      portal_share_accept: {
+        Args: {
+          _note?: string
+          _share_link_id: string
+          _snapshot_hash: string
+          _user_id?: string
+        }
+        Returns: Json
+      }
       portal_sync_boq_from_plan: { Args: { _boq_id: string }; Returns: Json }
       portal_update_cable_route_waypoints: {
         Args: { _route_id: string; _waypoints: Json }
