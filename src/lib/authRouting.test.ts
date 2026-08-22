@@ -1,4 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+// The routing rules are pure; the Supabase client is only stubbed so importing
+// the module under test does not touch browser storage.
+vi.mock("@/integrations/supabase/client", () => ({ supabase: { from: () => ({}) } }));
+
 import {
   classifyAccess,
   decideAdminRoute,
