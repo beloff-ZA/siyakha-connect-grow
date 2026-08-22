@@ -30,6 +30,8 @@ import {
   selectedCoverageMode,
 } from "@/lib/planGeometry";
 import { activeRoutes, parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
+import { RackContents } from "@/components/portal/RackEquipment";
+import type { RackEquipment } from "@/lib/rackEquipment";
 import {
   bulkCreateMarkers,
   copyFloorLayout,
@@ -74,6 +76,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [floors, setFloors] = useState<PortalFloor[]>([]);
   const [markers, setMarkers] = useState<FloorMarker[]>([]);
   const [routes, setRoutes] = useState<CableRoute[]>([]);
+  const [equipment, setEquipment] = useState<RackEquipment[]>([]);
   const [floorId, setFloorId] = useState("");
   const [planUrl, setPlanUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -89,7 +92,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const load = useCallback(async () => {
     if (!projectId) return;
-    const [{ data: f }, { data: m }, { data: r }, { data: pc }] = await Promise.all([
+    const [{ data: f }, { data: m }, { data: r }, { data: pc }, { data: eq }] = await Promise.all([
       supabase.from("portal_floors").select("*").eq("project_id", projectId).order("sort_order"),
       supabase.from("portal_floor_markers").select("*").eq("project_id", projectId).order("sort_order"),
       supabase.from("portal_cable_routes").select("*").eq("project_id", projectId).order("route_label"),
@@ -99,7 +102,13 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
         .eq("is_active", true)
         .is("archived_at", null)
         .order("name"),
+      supabase
+        .from("portal_rack_equipment")
+        .select("*")
+        .eq("project_id", projectId)
+        .order("sort_order"),
     ]);
+    setEquipment((eq ?? []) as unknown as RackEquipment[]);
     setProducts((pc ?? []) as unknown as CatalogProduct[]);
     const list = (f ?? []) as unknown as PortalFloor[];
     setFloors(list);
@@ -829,6 +838,18 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                 Current status: {stateLabel(selected.status)} · client visible:{" "}
                 {selected.client_visible ? "yes" : "no"}
               </p>
+
+              {/* Selecting a rack opens that rack's 6U build for this level. */}
+              {selected.marker_type === "rack" && (
+                <RackContents
+                  rack={selected}
+                  floor={floor}
+                  items={equipment.filter((e) => e.rack_marker_id === selected.id)}
+                  routes={liveRoutes}
+                  canManage
+                  onSaved={() => void load()}
+                />
+              )}
             </Section>
           )}
 
