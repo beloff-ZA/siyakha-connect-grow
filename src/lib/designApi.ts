@@ -116,7 +116,48 @@ export async function copyFloorLayout(input: CopyLayoutInput): Promise<CopyLayou
   return call<CopyLayoutResult>("portal_copy_floor_layout", { _payload: input });
 }
 
+export type PlaceCamerasInput = {
+  floor_id: string;
+  cameras: { x: number; y: number; direction_deg: number; fov_deg: number; coverage_range: string }[];
+  allow_unbilled?: boolean;
+};
+
+/** Transactional camera placement: authorised, audited and settled server-side. */
+export async function placeCameras(input: PlaceCamerasInput) {
+  return call<{ created: number; project_id: string; reconciliation: Reconciliation }>(
+    "portal_place_cameras",
+    { _payload: input },
+  );
+}
+
+/** Allowlisted change history for one visible device, route or rack unit. */
+export type HistoryEntry = { id: string; action: string; detail: string | null; created_at: string; actor: string };
+
+export async function historyFeed(
+  scope: "marker" | "route" | "rack_equipment",
+  id: string,
+): Promise<HistoryEntry[]> {
+  const data = await call<HistoryEntry[] | null>("portal_history_feed", { _scope: scope, _id: id });
+  return data ?? [];
+}
+
+/** Narrow, typed client events. The server derives actor, action and entity. */
+export async function logClientEvent(
+  projectId: string,
+  kind: "comment" | "query" | "placement_saved",
+  detail: string,
+  entityId?: string,
+) {
+  return call<string>("portal_log_client_event", {
+    _project_id: projectId,
+    _kind: kind,
+    _detail: detail,
+    _entity_id: entityId ?? null,
+  });
+}
+
 /** Catalogue product state changes. Referenced products can only be archived. */
+
 export async function productLifecycle(action: "archive" | "restore" | "delete", productId: string) {
   return call<{ action: string; product_id: string; linked_markers: number; linked_boq_items: number }>(
     "portal_product_lifecycle",
