@@ -490,7 +490,7 @@ const ProposalsTab: React.FC<{
             <Button variant="outline" onClick={() => setDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={saveDraft} disabled={busy}>
+            <Button onClick={() => saveDraft("user")} disabled={busy}>
               Save draft
             </Button>
           </div>
