@@ -18,6 +18,8 @@ import {
   type Proposal,
 } from "@/lib/proposals";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
+import { useAuth } from "@/contexts/AuthContext";
+import { adminDisplayName } from "@/lib/adminIdentity";
 import { Chip, Field, Panel, selectCls } from "./ui";
 import PrintSurface from "./PrintSurface";
 import ProposalDocument from "./ProposalDocument";
@@ -45,7 +47,8 @@ type Form = {
   prepared_by_email: string;
 };
 
-const blankForm = (): Form => ({
+/** Prepared-by defaults come from the signed-in admin's auth metadata. */
+const blankForm = (preparedByName?: string | null): Form => ({
   project_id: "",
   boq_id: "",
   title: "",
@@ -62,7 +65,7 @@ const blankForm = (): Form => ({
   validity_days: "30",
   planned_start_date: "",
   planned_completion_date: "",
-  prepared_by_name: "Nikita Jacobs",
+  prepared_by_name: preparedByName?.trim() || "Nikita Jacobs",
   prepared_by_email: SIYAKHA.email,
 });
 
@@ -79,7 +82,9 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
   const { projects, clients, sites, boqs, proposals, reload } = ws;
   const [dialog, setDialog] = useState(false);
   const [editing, setEditing] = useState<Proposal | null>(null);
-  const [form, setForm] = useState<Form>(blankForm());
+  const { user } = useAuth();
+  const preparedByName = adminDisplayName(user);
+  const [form, setForm] = useState<Form>(blankForm(preparedByName));
   const [busy, setBusy] = useState(false);
   const [view, setView] = useState<{ proposal: Proposal; variant: "full" | "costing" } | null>(null);
   const [filterProject, setFilterProject] = useState(initialProjectId ?? "");
@@ -102,7 +107,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
   };
 
   const openNew = (projectId?: string, reviseFrom?: Proposal) => {
-    const base = blankForm();
+    const base = blankForm(preparedByName);
     if (reviseFrom) {
       setForm({
         ...base,
