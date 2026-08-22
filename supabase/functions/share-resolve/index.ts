@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
       await admin.from("portal_queries").insert({
         project_id: link.project_id,
         subject: `Shared document query — ${link.title}`,
-        body: `${message}\n\n(Submitted from share link${link.recipient_label ? ` for ${link.recipient_label}` : ""}.)`,
+        message: `${message}\n\n(Submitted from share link${link.recipient_label ? ` for ${link.recipient_label}` : ""}.)`,
         status: "open",
       });
       await log("granted", "comment submitted");
