@@ -43,9 +43,14 @@ export const RackContents: React.FC<{
   floor: PortalFloor | null;
   items: RackEquipmentRow[];
   routes: { floor_id: string; service_type: string }[];
-}> = ({ rack, floor, items, routes }) => {
-  const ordered = [...items].sort((a, b) => a.sort_order - b.sort_order);
+  canManage?: boolean;
+  onSaved?: () => void;
+}> = ({ rack, floor, items, routes, canManage = false, onSaved }) => {
+  const ordered = [...items].sort(
+    (a, b) => (a.rack_position ?? a.sort_order) - (b.rack_position ?? b.sort_order),
+  );
   const util = rackUtilisation(ordered);
+
 
   return (
     <div className="mt-6 border border-border p-4 space-y-5">
