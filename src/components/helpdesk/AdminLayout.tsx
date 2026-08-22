@@ -3,49 +3,22 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { adminDisplayName, adminIdentityLabel } from "@/lib/adminIdentity";
 import { Button } from "@/components/ui/button";
-import {
-  LayoutDashboard, LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays,
-  Briefcase, Sparkles, DollarSign, FolderKanban, Users, Inbox,
-  StickyNote, Rocket, Activity, Building2, Truck, Wifi, Phone, Package
-} from "lucide-react";
+import { LogOut, Menu, X, ChevronRight, Briefcase, FolderKanban } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 
+// Primary navigation is deliberately a single workflow. The other protected
+// helpdesk modules still exist and remain reachable by direct URL — they are
+// only hidden from this nav.
 const navSections = [
   {
-    label: "Operations",
+    label: "Workspace",
     items: [
-      { label: "Command Centre", icon: LayoutDashboard, path: "/helpdesk" },
-      { label: "Inbox", icon: Inbox, path: "/helpdesk/inbox" },
-      { label: "AI PA", icon: Sparkles, path: "/helpdesk/ai-pa" },
-      { label: "Calendar", icon: CalendarDays, path: "/helpdesk/calendar" },
-      { label: "Notes", icon: StickyNote, path: "/helpdesk/notes" },
-      { label: "Diary", icon: BookOpen, path: "/helpdesk/diary" },
-    ],
-  },
-  {
-    label: "Planning",
-    items: [
-      { label: "Project Management", icon: Briefcase, path: "/helpdesk/project-management" },
-      { label: "Projects", icon: FolderKanban, path: "/helpdesk/projects" },
-      { label: "Future Projects", icon: Rocket, path: "/helpdesk/future-projects" },
-      { label: "Site Performance", icon: Activity, path: "/helpdesk/site-performance" },
-      { label: "Costs", icon: DollarSign, path: "/helpdesk/costs" },
-      { label: "Leads", icon: Users, path: "/helpdesk/leads" },
-    ],
-  },
-  {
-    label: "CRM",
-    items: [
-      { label: "Customers", icon: Building2, path: "/helpdesk/customers" },
-      { label: "Client Portal", icon: Users, path: "/helpdesk/client-portal" },
-      { label: "Suppliers", icon: Truck, path: "/helpdesk/suppliers" },
-      { label: "Internet Providers", icon: Wifi, path: "/helpdesk/internet-providers" },
-      { label: "VoIP Providers", icon: Phone, path: "/helpdesk/voip-providers" },
-      { label: "Packages", icon: Package, path: "/helpdesk/packages" },
+      { label: "Clients & Projects", icon: FolderKanban, path: "/helpdesk/project-management" },
     ],
   },
 ];
+
 
 const allNavItems = navSections.flatMap((s) => s.items);
 
@@ -71,10 +44,11 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
-          <Link to="/helpdesk" className="font-bold text-lg tracking-tight flex items-center gap-2">
+          <Link to="/helpdesk/project-management" className="font-bold text-lg tracking-tight flex items-center gap-2">
             <Briefcase className="h-5 w-5" />
-            Director
+            Siyakha Projects
           </Link>
+
           <button className="md:hidden" onClick={() => setSidebarOpen(false)}><X className="h-5 w-5" /></button>
         </div>
 
@@ -133,8 +107,9 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Menu className="h-5 w-5 text-foreground" />
           </button>
           <h2 className="text-lg font-semibold text-foreground truncate">
-            {allNavItems.find(n => pathname === n.path || (n.path !== "/helpdesk" && pathname.startsWith(n.path)))?.label || "Director PA"}
+            {allNavItems.find(n => pathname === n.path || (n.path !== "/helpdesk" && pathname.startsWith(n.path)))?.label || "Siyakha Projects"}
           </h2>
+
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {children}

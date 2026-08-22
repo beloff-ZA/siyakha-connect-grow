@@ -149,7 +149,10 @@ function App() {
               <Route path="/case-studies/:slug" element={<CaseStudy />} />
 
               {/* Director PA / Helpdesk — protected backend */}
-              <Route path="/helpdesk" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />
+              {/* One simple project workspace is the admin entry point. The legacy
+                  Command Centre and other modules stay reachable by direct URL. */}
+              <Route path="/helpdesk" element={<Navigate to="/helpdesk/project-management" replace />} />
+              <Route path="/helpdesk/command-centre" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />
               <Route path="/helpdesk/diary" element={<AdminRoute><HelpdeskDiary /></AdminRoute>} />
               <Route path="/helpdesk/calendar" element={<AdminRoute><HelpdeskCalendar /></AdminRoute>} />
               <Route path="/helpdesk/project-management" element={<AdminRoute><ProjectManagement /></AdminRoute>} />
