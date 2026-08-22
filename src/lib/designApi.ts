@@ -37,9 +37,11 @@ export async function markerTransaction(
 /** Human summary of what the design change did to the bill, for toasts. */
 export function reconciliationNote(r: Reconciliation | undefined): string | undefined {
   if (!r) return undefined;
-  if (!r.reconciled) {
-    if (r.reason === "no_design_boq") return "No design bill is linked to this project yet.";
-    if (r.reason === "boq_not_draft") return `The linked bill is ${r.status} — quantities were left untouched.`;
+  if (r.reconciled !== true) {
+    const reason = (r as { reason?: string }).reason;
+    const status = (r as { status?: string }).status;
+    if (reason === "no_design_boq") return "No design bill is linked to this project yet.";
+    if (reason === "boq_not_draft") return `The linked bill is ${status} — quantities were left untouched.`;
     return undefined;
   }
   const { added, updated, removed } = r;
