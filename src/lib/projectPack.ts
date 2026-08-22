@@ -349,12 +349,32 @@ const stripInternal = (a: any): PackAsset => ({
 
 /**
  * Builds the frozen, client-safe project record.
- * @param clientVisibleOnly restrict floors/markers to client-visible records.
+ *
+ * Every query is an explicit column allowlist (never SELECT *) and every domain
+ * is filtered for client visibility, archival state and issue state. Any failed
+ * query is fatal: a partial pack must never be frozen or issued.
+ *
+ * @param clientVisibleOnly restrict to client-visible, non-internal records.
  */
 export async function buildProjectPack(projectId: string, clientVisibleOnly = true): Promise<ProjectPack> {
-  const { data: project, error: pErr } = await db.from("portal_projects").select("*").eq("id", projectId).maybeSingle();
-  if (pErr) throw pErr;
+  /** Any query error aborts the whole build with an admin-readable reason. */
+  const need = <T,>(label: string, res: { data: T; error?: any }): T => {
+    if (res?.error) throw new Error(`Project pack build failed while loading ${label}: ${res.error.message ?? res.error}`);
+    return res.data;
+  };
+
+  const projectRes = await db
+    .from("portal_projects")
+    .select(
+      "id, client_id, site_id, title, reference, address, status, consultant, description, site_context, objectives, stakeholders, risks_notes, planning_narrative, design_concept, project_approach, start_date, target_date, lifecycle_stage",
+    )
+    .eq("id", projectId)
+    .maybeSingle();
+  const project = need("the project record", projectRes);
   if (!project) throw new Error("Project not found");
+
+  const visibleOnly = (q: any) => (clientVisibleOnly ? q.eq("client_visible", true) : q);
+  const liveOnly = (q: any) => (clientVisibleOnly ? q.is("archived_at", null) : q);
 
   const [
     clientRes,
@@ -368,11 +388,8 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
     varRes,
     tasksRes,
     milesRes,
-    queriesRes,
     revRes,
     propRes,
-    histRes,
-    actRes,
     assetsRes,
     photosRes,
     docsRes,
@@ -387,21 +404,73 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
           .eq("id", project.site_id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
-    db.from("portal_floors").select("*").eq("project_id", projectId).order("sort_order"),
-    db.from("portal_floor_markers").select(MARKER_COLUMNS).eq("project_id", projectId).order("sort_order"),
-    db.from("portal_nvrs").select("*").eq("project_id", projectId).order("sort_order"),
-    db.from("portal_cable_routes").select("*").eq("project_id", projectId).order("route_label"),
-    db.from("portal_rack_equipment").select("*").eq("project_id", projectId).order("sort_order"),
-    db.from("portal_boqs").select("*").eq("project_id", projectId).order("version_no", { ascending: false }),
-    db.from("portal_variations").select("*").eq("project_id", projectId).order("raised_on", { ascending: false }),
-    db.from("portal_tasks").select("*").eq("project_id", projectId).order("sort_order"),
-    db.from("portal_milestones").select("*").eq("project_id", projectId).order("sort_order"),
-    db.from("portal_queries").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
-    db.from("portal_plan_revisions").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
-    db.from("portal_proposals").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
-    db.from("portal_project_stage_history").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
-    db.from("portal_activity").select("*").eq("project_id", projectId).order("created_at", { ascending: false }).limit(60),
-    db.from("portal_assets").select("*").eq("project_id", projectId),
+    visibleOnly(
+      db
+        .from("portal_floors")
+        .select("id, level_number, display_name, floor_use, notes, plan_image_path, client_visible, sort_order")
+        .eq("project_id", projectId),
+    ).order("sort_order"),
+    liveOnly(visibleOnly(db.from("portal_floor_markers").select(MARKER_COLUMNS).eq("project_id", projectId))).order("sort_order"),
+    visibleOnly(
+      db
+        .from("portal_nvrs")
+        .select("id, label, manufacturer, model, channel_count, channel_from, channel_to, status, rack_marker_id")
+        .eq("project_id", projectId),
+    ).order("sort_order"),
+    liveOnly(
+      visibleOnly(
+        db
+          .from("portal_cable_routes")
+          .select(
+            "id, route_label, cable_type, service_type, route_kind, status, source_label, destination_label, estimated_length_m, measured_length_m, floor_id, waypoints, patch_panel, patch_panel_port, switch_port, fibre_strands",
+          )
+          .eq("project_id", projectId),
+      ),
+    ).order("route_label"),
+    liveOnly(
+      visibleOnly(
+        db
+          .from("portal_rack_equipment")
+          .select(
+            "id, rack_marker_id, floor_id, equipment_name, equipment_type, manufacturer, model, description, rack_units, rack_position, quantity, role, copper_ports, sfp_ports, sfp_plus_ports, port_type, poe_capable, network_layer, status",
+          )
+          .eq("project_id", projectId),
+      ),
+    ).order("sort_order"),
+    db
+      .from("portal_boqs")
+      .select("id, title, revision_label, version_no, status, vat_enabled, vat_rate, valid_until, notes")
+      .eq("project_id", projectId)
+      .order("version_no", { ascending: false }),
+    visibleOnly(
+      db
+        .from("portal_variations")
+        .select("id, reference, title, description, discipline, status, customer_amount, raised_on, decided_on, client_visible")
+        .eq("project_id", projectId),
+    ).order("raised_on", { ascending: false }),
+    db.from("portal_tasks").select("id, title, owner, priority, due_date, status").eq("project_id", projectId).order("sort_order"),
+    db.from("portal_milestones").select("id, title, detail, due_date, status").eq("project_id", projectId).order("sort_order"),
+    visibleOnly(
+      db
+        .from("portal_plan_revisions")
+        .select("id, floor_id, revision_label, page_number, page_count, is_current, created_at, client_visible, archived_at")
+        .eq("project_id", projectId)
+        .is("archived_at", null)
+        .eq("is_current", true),
+    ).order("created_at", { ascending: false }),
+    db
+      .from("portal_proposals")
+      .select(
+        "id, proposal_number, revision_label, status, issued_at, created_at, executive_summary, project_understanding, scope_of_work, methodology, deliverables, assumptions, exclusions, warranty_terms, payment_terms, validity_days, planned_start_date, planned_completion_date",
+      )
+      .eq("project_id", projectId)
+      .order("created_at", { ascending: false }),
+    db
+      .from("portal_assets")
+      .select(
+        "id, marker_id, lifecycle_status, asset_tag, serial_number, mac_address, ip_address, manufacturer, model, warranty_expiry, installer, installed_on, test_result, tested_on, commissioned_on, rack_label, switch_label, switch_port, patch_panel, patch_panel_port, nvr_label, nvr_channel, area",
+      )
+      .eq("project_id", projectId),
     db
       .from("portal_photos")
       .select("id, caption, taken_at, storage_path")
@@ -416,15 +485,16 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
       .limit(80),
   ]);
 
-  const assetsRaw: any[] = assetsRes.data ?? [];
+  const clientRow = need("the client", clientRes);
+  const siteRow = need("the site", siteRes);
+  const assetsRaw: any[] = need("assets", assetsRes) ?? [];
   const assetByMarker = new Map<string, any>();
   for (const a of assetsRaw) if (a.marker_id) assetByMarker.set(a.marker_id, a);
 
-  const allMarkers: any[] = markersRes.data ?? [];
-  const markers = clientVisibleOnly ? allMarkers.filter((m) => m.client_visible !== false) : allMarkers;
+  const markers: any[] = need("plan markers", markersRes) ?? [];
+  const floorsRaw: any[] = need("floors", floorsRes) ?? [];
 
-  const floorsRaw: any[] = floorsRes.data ?? [];
-  const floors: PackFloor[] = (clientVisibleOnly ? floorsRaw.filter((f) => f.client_visible !== false) : floorsRaw).map((f) => ({
+  const floors: PackFloor[] = floorsRaw.map((f) => ({
     id: f.id,
     level_number: f.level_number,
     display_name: f.display_name,
@@ -464,19 +534,29 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
       })),
   }));
 
-  // Latest current BOQ drives pricing; sections and lines are read client-safe.
-  const boqs: any[] = boqsRes.data ?? [];
-  const activeBoq = boqs.find((b) => b.status === "approved") ?? boqs[0] ?? null;
+  // Client packs price the approved BOQ only; internal packs may use the latest.
+  const boqs: any[] = need("bills of quantities", boqsRes) ?? [];
+  const activeBoq = clientVisibleOnly
+    ? boqs.find((b) => b.status === "approved") ?? null
+    : boqs.find((b) => b.status === "approved") ?? boqs[0] ?? null;
   let boqLines: PackBoqLine[] = [];
   let totals: BoqTotals = { subtotal: 0, vat: 0, total: 0 };
 
   if (activeBoq) {
-    const [{ data: secs }, { data: lines }] = await Promise.all([
-      db.from("portal_boq_sections").select("*").eq("boq_id", activeBoq.id).order("sort_order"),
-      db.from("portal_boq_items").select("*").eq("boq_id", activeBoq.id).order("sort_order"),
+    const [secsRes, linesRes] = await Promise.all([
+      db.from("portal_boq_sections").select("id, title, sort_order").eq("boq_id", activeBoq.id).order("sort_order"),
+      db
+        .from("portal_boq_items")
+        .select(
+          "id, section_id, item_code, description, specification, quantity, unit, customer_unit_rate, line_total, vat_applicable, line_kind, discipline, work_package, is_included, qty_procured, qty_received, qty_installed, qty_tested, qty_commissioned",
+        )
+        .eq("boq_id", activeBoq.id)
+        .order("sort_order"),
     ]);
-    const sectionTitle = new Map<string, string>((secs ?? []).map((s: any) => [s.id, s.title]));
-    boqLines = (lines ?? []).map((l: any) => ({
+    const secs = need("BOQ sections", secsRes) ?? [];
+    const lines = need("BOQ lines", linesRes) ?? [];
+    const sectionTitle = new Map<string, string>(secs.map((s: any) => [s.id, s.title]));
+    boqLines = lines.map((l: any) => ({
       item_code: l.item_code,
       description: l.description,
       specification: l.specification,
@@ -495,19 +575,38 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
       qty_tested: Number(l.qty_tested ?? 0),
       qty_commissioned: Number(l.qty_commissioned ?? 0),
     }));
-    const priced = (lines ?? []).filter((l: any) => l.is_included && (l.line_kind ?? "base") !== "alternative" && (l.line_kind ?? "base") !== "exclusion");
+    const priced = lines.filter(
+      (l: any) => l.is_included && (l.line_kind ?? "base") !== "alternative" && (l.line_kind ?? "base") !== "exclusion",
+    );
     totals = computeTotals(priced as any, { vat_enabled: !!activeBoq.vat_enabled, vat_rate: Number(activeBoq.vat_rate) });
   }
 
-  const proposals: any[] = propRes.data ?? [];
-  const latest = proposals.find((p) => p.status === "accepted") ?? proposals.find((p) => p.status === "issued") ?? proposals[0] ?? null;
+  // Only an issued or accepted proposal may carry the client narrative.
+  const proposalsRaw: any[] = need("proposals", propRes) ?? [];
+  const issuedProposals = clientVisibleOnly
+    ? proposalsRaw.filter((p) => p.status === "issued" || p.status === "accepted")
+    : proposalsRaw;
+  const latest = issuedProposals.find((p) => p.status === "accepted") ?? issuedProposals.find((p) => p.status === "issued") ?? null;
+
+  const variationsRaw: any[] = need("variations", varRes) ?? [];
+  const variations: PackVariation[] = (clientVisibleOnly ? variationsRaw.filter((v) => v.status === "approved") : variationsRaw).map((v) => ({
+    id: v.id,
+    reference: v.reference,
+    title: v.title,
+    description: v.description,
+    discipline: v.discipline,
+    status: v.status,
+    customer_amount: v.customer_amount === null || v.customer_amount === undefined ? null : Number(v.customer_amount),
+    raised_on: v.raised_on,
+    decided_on: v.decided_on,
+  }));
 
   return {
     generated_at: new Date().toISOString(),
     revision_no: 0,
     lifecycle_stage: project.lifecycle_stage ?? null,
-    client: clientRes.data ?? null,
-    site: siteRes.data ?? null,
+    client: clientRow ?? null,
+    site: siteRow ?? null,
     project: {
       id: project.id,
       title: project.title,
@@ -519,7 +618,8 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
       site_context: project.site_context,
       objectives: project.objectives,
       stakeholders: project.stakeholders,
-      risks_notes: project.risks_notes,
+      // Internal risk notes never travel in a client-facing pack.
+      risks_notes: clientVisibleOnly ? null : project.risks_notes,
       planning_narrative: project.planning_narrative,
       design_concept: project.design_concept ?? null,
       project_approach: project.project_approach ?? null,
@@ -543,9 +643,9 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
       proposal_revision: latest?.revision_label ?? null,
     },
     floors,
-    nvrs: nvrsRes.data ?? [],
-    cables: cablesRes.data ?? [],
-    rackEquipment: equipRes.data ?? [],
+    nvrs: (need("NVRs", nvrsRes) ?? []) as PackNvr[],
+    cables: (need("cable routes", cablesRes) ?? []) as PackCable[],
+    rackEquipment: (need("rack equipment", equipRes) ?? []) as PackRackItem[],
     boq: activeBoq
       ? {
           id: activeBoq.id,
@@ -560,17 +660,33 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
       : null,
     boqLines,
     totals,
-    variations: varRes.data ?? [],
-    tasks: tasksRes.data ?? [],
-    milestones: milesRes.data ?? [],
-    queries: queriesRes.data ?? [],
-    planRevisions: revRes.data ?? [],
-    proposals,
-    stageHistory: histRes.data ?? [],
-    activity: actRes.data ?? [],
+    variations,
+    tasks: (need("programme tasks", tasksRes) ?? []) as PackTask[],
+    milestones: (need("milestones", milesRes) ?? []) as PackMilestone[],
+    // Queries, stage history and activity are internal registers: never packed.
+    queries: [],
+    planRevisions: ((need("plan revisions", revRes) ?? []) as any[]).map((r) => ({
+      id: r.id,
+      floor_id: r.floor_id,
+      revision_label: r.revision_label,
+      page_number: r.page_number,
+      page_count: r.page_count,
+      is_current: !!r.is_current,
+      created_at: r.created_at,
+    })),
+    proposals: issuedProposals.map((p) => ({
+      id: p.id,
+      proposal_number: p.proposal_number,
+      revision_label: p.revision_label,
+      status: p.status,
+      issued_at: p.issued_at,
+      created_at: p.created_at,
+    })),
+    stageHistory: [],
+    activity: [],
     assets: assetsRaw.map(stripInternal),
-    gallery: (photosRes.data ?? []) as PackPhoto[],
-    documents: (docsRes.data ?? []) as PackDocument[],
+    gallery: (need("site gallery", photosRes) ?? []) as PackPhoto[],
+    documents: (need("document register", docsRes) ?? []) as PackDocument[],
   };
 }
 
