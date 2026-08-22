@@ -128,6 +128,24 @@ export type PackNarrative = {
   proposal_revision: string | null;
 };
 
+export type PackPhoto = {
+  id: string;
+  caption: string | null;
+  taken_at: string | null;
+  /** Private storage path; replaced by a short-lived signed URL for guests. */
+  storage_path: string | null;
+  photo_url?: string | null;
+};
+
+export type PackDocument = {
+  id: string;
+  title: string;
+  category: string;
+  version: string | null;
+  document_date: string | null;
+  reference: string | null;
+};
+
 export type ProjectPack = {
   generated_at: string;
   revision_no: number;
@@ -188,6 +206,10 @@ export type ProjectPack = {
   stageHistory: any[];
   activity: any[];
   assets: PackAsset[];
+  /** Site gallery selected for client sharing. */
+  gallery: PackPhoto[];
+  /** Document register metadata (no private paths are exposed). */
+  documents: PackDocument[];
 };
 
 const MARKER_COLUMNS =
@@ -246,6 +268,8 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
     histRes,
     actRes,
     assetsRes,
+    photosRes,
+    docsRes,
   ] = await Promise.all([
     project.client_id
       ? db.from("portal_clients").select("id, display_name, contact_name, contact_email, phone").eq("id", project.client_id).maybeSingle()
@@ -272,6 +296,18 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
     db.from("portal_project_stage_history").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
     db.from("portal_activity").select("*").eq("project_id", projectId).order("created_at", { ascending: false }).limit(60),
     db.from("portal_assets").select("*").eq("project_id", projectId),
+    db
+      .from("portal_photos")
+      .select("id, caption, taken_at, storage_path")
+      .eq("project_id", projectId)
+      .order("taken_at", { ascending: false })
+      .limit(60),
+    db
+      .from("portal_documents")
+      .select("id, title, category, version, document_date, reference")
+      .eq("project_id", projectId)
+      .order("document_date", { ascending: false })
+      .limit(80),
   ]);
 
   const assetsRaw: any[] = assetsRes.data ?? [];
@@ -427,6 +463,8 @@ export async function buildProjectPack(projectId: string, clientVisibleOnly = tr
     stageHistory: histRes.data ?? [],
     activity: actRes.data ?? [],
     assets: assetsRaw.map(stripInternal),
+    gallery: (photosRes.data ?? []) as PackPhoto[],
+    documents: (docsRes.data ?? []) as PackDocument[],
   };
 }
 
