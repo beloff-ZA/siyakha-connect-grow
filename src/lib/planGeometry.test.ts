@@ -291,3 +291,29 @@ describe("rack contents filtering", () => {
   });
 });
 
+
+describe("cameraPictogramRotation", () => {
+  it("is identity with the plan bearing (pictogram drawn pointing up)", () => {
+    for (const deg of [0, 45, 90, 180, 270, 359]) {
+      expect(cameraPictogramRotation(deg)).toBe(deg);
+      expect(cameraPictogramRotation(deg)).toBe(bearingToRotation(deg));
+    }
+  });
+
+  it("normalises out-of-range and negative bearings", () => {
+    expect(cameraPictogramRotation(360)).toBe(0);
+    expect(cameraPictogramRotation(-90)).toBe(270);
+    expect(cameraPictogramRotation(725)).toBe(5);
+  });
+
+  it("falls back to 0 for missing or invalid directions", () => {
+    expect(cameraPictogramRotation(null)).toBe(0);
+    expect(cameraPictogramRotation(undefined)).toBe(0);
+    expect(cameraPictogramRotation(Number.NaN)).toBe(0);
+  });
+
+  it("matches the amber cone rotation so barrel and FOV agree", () => {
+    const deg = 123;
+    expect(cameraPictogramRotation(deg)).toBe(bearingToRotation(normalizeBearing(deg)));
+  });
+});
