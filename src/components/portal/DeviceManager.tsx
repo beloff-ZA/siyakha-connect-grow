@@ -389,9 +389,10 @@ const DeviceManager: React.FC<Props> = ({
     setDeleting(false);
 
     toast({
-      title: "Device deleted",
-      description: `${deleteTarget.label} and its cable routes were removed.`,
+      title: "Device archived",
+      description: `${deleteTarget.label} and its cable routes were archived. The record and its history are retained.`,
     });
+
     setDeleteTarget(null);
     setForm(null);
     onSelect(null);
