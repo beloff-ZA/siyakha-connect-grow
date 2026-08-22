@@ -360,6 +360,12 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
                 <Button size="sm" variant="outline" onClick={() => openNew(p.project_id, p)}>
                   New revision
                 </Button>
+                <Button size="sm" variant="outline" onClick={() => openShare(p, "full")} disabled={busy}>
+                  <Share2 className="mr-2 h-4 w-4" strokeWidth={1.5} /> Share proposal
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => openShare(p, "costing")} disabled={busy}>
+                  <Share2 className="mr-2 h-4 w-4" strokeWidth={1.5} /> Share costing
+                </Button>
                 {p.status === "issued" && (
                   <>
                     <Button size="sm" variant="outline" onClick={() => setStatus(p, "accepted")} disabled={busy}>
