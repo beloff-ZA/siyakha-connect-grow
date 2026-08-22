@@ -16,7 +16,9 @@ const BoqCostingTab: React.FC<{
   ws: PmWorkspace;
   projectId: string;
   setProjectId: (id: string) => void;
-}> = ({ ws, projectId, setProjectId }) => {
+  /** Hides the project picker when the project comes from the URL. */
+  locked?: boolean;
+}> = ({ ws, projectId, setProjectId, locked }) => {
   const { toast } = useToast();
   const { projects, clients, sites, boqs } = ws;
   const [snapshot, setSnapshot] = useState<ProposalSnapshot | null>(null);
@@ -74,16 +76,18 @@ const BoqCostingTab: React.FC<{
   return (
     <div>
       <Panel title="BOQ & costing">
-        <Field label="Project">
-          <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
-            <option value="">Select a project…</option>
-            {options.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </Field>
+        {!locked && (
+          <Field label="Project">
+            <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              <option value="">Select a project…</option>
+              {options.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
 
         {projectId && projectBoqs.length > 0 && (
           <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
