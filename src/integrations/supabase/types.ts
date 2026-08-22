@@ -4197,13 +4197,36 @@ export type Database = {
         Args: { _cameras: Json; _floor_id: string }
         Returns: number
       }
+      portal_bulk_create_markers: { Args: { _payload: Json }; Returns: Json }
       portal_can_manage_project: {
         Args: { _project_id: string }
         Returns: boolean
       }
+      portal_client_catalogue: {
+        Args: { _project_id: string }
+        Returns: {
+          default_coverage_radius_m: number
+          default_coverage_range: string
+          default_fov_deg: number
+          default_marker_type: Database["public"]["Enums"]["portal_marker_kind"]
+          discipline: string
+          id: string
+          manufacturer: string
+          model: string
+          name: string
+          sku: string
+          specification: string
+          unit: string
+        }[]
+      }
+      portal_copy_floor_layout: { Args: { _payload: Json }; Returns: Json }
       portal_delete_floor_marker: {
         Args: { _marker_id: string }
         Returns: boolean
+      }
+      portal_duplicate_marker: {
+        Args: { _marker_id: string; _payload?: Json }
+        Returns: Json
       }
       portal_generate_missing_cable_routes: {
         Args: { _floor_id?: string; _project_id: string }
@@ -4229,7 +4252,23 @@ export type Database = {
         Returns: number
       }
       portal_next_proposal_number: { Args: never; Returns: string }
+      portal_plan_revision_transaction: {
+        Args: { _action: string; _payload: Json }
+        Returns: Json
+      }
+      portal_product_lifecycle: {
+        Args: { _action: string; _product_id: string }
+        Returns: Json
+      }
       portal_save_floor_marker: { Args: { _payload: Json }; Returns: string }
+      portal_set_client_user_state: {
+        Args: {
+          _client_user_id: string
+          _portal_role?: string
+          _status: string
+        }
+        Returns: Json
+      }
       portal_sync_boq_from_plan: { Args: { _boq_id: string }; Returns: Json }
       portal_update_cable_route_waypoints: {
         Args: { _route_id: string; _waypoints: Json }

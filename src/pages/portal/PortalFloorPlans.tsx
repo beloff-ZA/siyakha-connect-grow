@@ -149,13 +149,12 @@ const PortalFloorPlans: React.FC = () => {
   const [floorId, setFloorId] = useState("");
   const [params, setParams] = useSearchParams();
   const [planUrl, setPlanUrl] = useState<string | null>(null);
-  const [visible, setVisible] = useState<Record<MarkerKind, boolean>>({
-    wifi_ap: true,
-    camera: true,
-    rack: true,
-    cable_route: true,
-    other: true,
-  });
+  // Every device kind is visible by default; the list grows with MARKER_KINDS.
+  const [visible, setVisible] = useState<Record<MarkerKind, boolean>>(
+    () =>
+      Object.fromEntries(MARKER_KINDS.map((k) => [k.value, true])) as Record<MarkerKind, boolean>,
+  );
+
   /** Discipline layer filter — "all" shows every design layer. */
   const [disciplineLayer, setDisciplineLayer] = useState<"all" | Discipline>("all");
   const [selected, setSelected] = useState<FloorMarker | null>(null);
