@@ -578,102 +578,43 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                   </tr>
                 </thead>
                 <tbody>
-                  {items.map((it) => {
-                    const editing = edit?.id === it.id;
-                    return (
-                      <tr key={it.id} className="border-b border-border/60 align-top">
-                        <td className="py-2 pr-3 text-muted-foreground">{sectionTitle(it.section_id)}</td>
-                        <td className="py-2 pr-3">{it.description}</td>
-                        <td className="py-2 pr-3">
-                          {editing ? (
-                            <Input
-                              aria-label="Quantity"
-                              className="h-8 w-20"
-                              value={edit!.quantity}
-                              onChange={(e) => setEdit({ ...edit!, quantity: e.target.value })}
-                            />
-                          ) : (
-                            formatQty(it.quantity)
-                          )}
-                        </td>
-                        <td className="py-2 pr-3 text-muted-foreground">{it.unit}</td>
-                        <td className="py-2 pr-3">
-                          {editing ? (
-                            <Input
-                              aria-label="Selling price"
-                              className="h-8 w-28"
-                              value={edit!.rate}
-                              onChange={(e) => setEdit({ ...edit!, rate: e.target.value })}
-                            />
-                          ) : (
-                            formatZar(Number(it.customer_unit_rate))
-                          )}
-                        </td>
-                        <td className="py-2 pr-3 tabular-nums">
-                          {formatZar(
-                            editing
-                              ? previewLineTotal(edit!.quantity, edit!.rate)
-                              : Number(it.line_total ?? lineTotal(it.quantity, it.customer_unit_rate)),
-                          )}
-                        </td>
-                        <td className="py-2 pr-3">
-                          <input
-                            type="checkbox"
-                            aria-label={`Include ${it.description}`}
-                            checked={it.is_included}
+                  {items.map((it) => (
+                    <tr key={it.id} className="border-b border-border/60 align-top">
+                      <td className="py-2 pr-3 text-muted-foreground">{sectionTitle(it.section_id)}</td>
+                      <td className="py-2 pr-3">{it.description}</td>
+                      <td className="py-2 pr-3">{formatQty(it.quantity)}</td>
+                      <td className="py-2 pr-3 text-muted-foreground">{it.unit}</td>
+                      <td className="py-2 pr-3">{formatZar(Number(it.customer_unit_rate))}</td>
+                      <td className="py-2 pr-3 tabular-nums">
+                        {formatZar(Number(it.line_total ?? lineTotal(it.quantity, it.customer_unit_rate)))}
+                      </td>
+                      <td className="py-2 pr-3">
+                        <input
+                          type="checkbox"
+                          aria-label={`Include ${it.description}`}
+                          checked={it.is_included}
+                          disabled={readOnly}
+                          onChange={(e) => toggleIncluded(it, e.target.checked)}
+                        />
+                      </td>
+                      <td className="py-2">
+                        <div className="flex justify-end gap-1">
+                          <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
+                            Edit
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            aria-label={`Delete ${it.description}`}
                             disabled={readOnly}
-                            onChange={(e) => toggleIncluded(it, e.target.checked)}
-                          />
-                        </td>
-                        <td className="py-2">
-                          <div className="flex justify-end gap-1">
-                            {editing ? (
-                              <>
-                                <Button size="sm" onClick={saveInline} disabled={busy}>
-                                  Save
-                                </Button>
-                                <Button size="sm" variant="ghost" onClick={() => setEdit(null)}>
-                                  Cancel
-                                </Button>
-                              </>
-                            ) : (
-                              <>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  disabled={readOnly}
-                                  onClick={() =>
-                                    setEdit({
-                                      id: it.id,
-                                      quantity: String(Number(it.quantity)),
-                                      rate: String(Number(it.customer_unit_rate)),
-                                    })
-                                  }
-                                >
-                                  Edit
-                                </Button>
-                                <Button size="sm" variant="ghost" onClick={() => openPriceDialog(it)} disabled={readOnly}>
-                                  Title &amp; price
-                                </Button>
-                                <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
-                                  Details
-                                </Button>
-                                <Button
-                                  size="icon"
-                                  variant="ghost"
-                                  aria-label={`Delete ${it.description}`}
-                                  disabled={readOnly}
-                                  onClick={() => setDeleteId(it.id)}
-                                >
-                                  <Trash2 className="h-4 w-4" strokeWidth={1.5} />
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                            onClick={() => setDeleteId(it.id)}
+                          >
+                            <Trash2 className="h-4 w-4" strokeWidth={1.5} />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
