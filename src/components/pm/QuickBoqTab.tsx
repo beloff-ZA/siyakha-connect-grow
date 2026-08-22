@@ -539,7 +539,7 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                         {formatZar(Number(item.line_total ?? lineTotal(item.quantity, item.customer_unit_rate)))}
                       </p>
                       <Button size="sm" disabled={readOnly} onClick={() => openPriceDialog(item)}>
-                        Update price
+                        Edit title &amp; price
                       </Button>
                     </div>
                   </li>
@@ -548,8 +548,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
             )}
             {readOnly && results.length > 0 && (
               <p className="mt-3 text-xs text-muted-foreground">
-                This revision is {boq?.status} and locked. Prices can be searched but not changed — start a new revision
-                under Advanced costing to update pricing.
+                This revision is {boq?.status} and locked. Items can be searched but titles and prices cannot be
+                changed — start a new revision under Advanced costing to update them.
               </p>
             )}
           </div>
@@ -651,6 +651,9 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                                 >
                                   Edit
                                 </Button>
+                                <Button size="sm" variant="ghost" onClick={() => openPriceDialog(it)} disabled={readOnly}>
+                                  Title &amp; price
+                                </Button>
                                 <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
                                   Details
                                 </Button>
@@ -696,8 +699,11 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                       />
                       Included
                     </label>
-                    <Button size="sm" variant="outline" onClick={() => openEditItem(it)} disabled={readOnly}>
-                      Edit
+                    <Button size="sm" variant="outline" onClick={() => openPriceDialog(it)} disabled={readOnly}>
+                      Edit title &amp; price
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
+                      Details
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setDeleteId(it.id)} disabled={readOnly}>
                       Delete
