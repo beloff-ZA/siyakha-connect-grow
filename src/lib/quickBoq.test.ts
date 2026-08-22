@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  DEFAULT_CATEGORY,
+  isRevisionLocked,
+  priceUpdatePatch,
+  searchBoqItems,
+  validateNewPrice,
   assertSyncConfirmed,
   clientSafeLineKeys,
   pickDefaultBoq,
@@ -118,5 +123,90 @@ describe("plan sync confirmation", () => {
   it("requires explicit confirmation", () => {
     expect(() => assertSyncConfirmed(false)).toThrow(/confirm/i);
     expect(assertSyncConfirmed(true)).toBe(true);
+  });
+});
+
+const mkItem = (over: Partial<any> = {}) => ({
+  id: "i1",
+  boq_id: "b1",
+  section_id: "s1",
+  item_code: "NET-01",
+  description: "Cat6 network point",
+  specification: "Certified channel test",
+  quantity: 4,
+  unit: "point",
+  customer_unit_rate: 1475,
+  line_total: 5900,
+  vat_applicable: true,
+  is_included: true,
+  notes: "internal",
+  reference: "PO-9",
+  sort_order: 1,
+  ...over,
+});
+const secs = [
+  { id: "s1", title: "Networking" },
+  { id: "s2", title: "Surveillance" },
+];
+
+describe("BOQ item search", () => {
+  it("only searches within the selected BOQ revision", () => {
+    const items = [mkItem(), mkItem({ id: "i2", boq_id: "b2", description: "Cat6 network point" })] as any;
+    const res = searchBoqItems(items, secs, "cat6", "b1");
+    expect(res.map((r) => r.item.id)).toEqual(["i1"]);
+  });
+
+  it("returns every scoped item for an empty query", () => {
+    const items = [mkItem(), mkItem({ id: "i2", section_id: "s2", description: "Camera" })] as any;
+    expect(searchBoqItems(items, secs, "   ", "b1")).toHaveLength(2);
+    expect(searchBoqItems(items, secs, "", "b2")).toHaveLength(0);
+  });
+
+  it("matches case-insensitively across description, code, specification, reference and category", () => {
+    const items = [mkItem()] as any;
+    for (const q of ["NETWORK point", "net-01", "CERTIFIED", "po-9", "networking"]) {
+      expect(searchBoqItems(items, secs, q, "b1")).toHaveLength(1);
+    }
+    expect(searchBoqItems(items, secs, "surveillance", "b1")).toHaveLength(0);
+  });
+
+  it("falls back to the default category when a section is missing", () => {
+    const items = [mkItem({ section_id: "gone" })] as any;
+    expect(searchBoqItems(items, [], "", "b1")[0].category).toBe(DEFAULT_CATEGORY);
+  });
+});
+
+describe("safe price updating", () => {
+  it("accepts zero and positive numbers and rounds to cents", () => {
+    expect(validateNewPrice("0")).toEqual({ ok: true, value: 0 });
+    expect(validateNewPrice(" 1499.005 ")).toEqual({ ok: true, value: 1499.01 });
+  });
+
+  it("rejects blank, non-numeric and negative prices", () => {
+    expect(validateNewPrice("").ok).toBe(false);
+    expect(validateNewPrice("abc").ok).toBe(false);
+    expect(validateNewPrice(-1).ok).toBe(false);
+  });
+
+  it("patches the selling price only, leaving every other field untouched", () => {
+    const patch = priceUpdatePatch(1600.004);
+    expect(Object.keys(patch)).toEqual(["customer_unit_rate"]);
+    expect(patch.customer_unit_rate).toBe(1600);
+    const item = mkItem();
+    const after = { ...item, ...patch };
+    expect(after.quantity).toBe(item.quantity);
+    expect(after.section_id).toBe(item.section_id);
+    expect(after.description).toBe(item.description);
+    expect(after.vat_applicable).toBe(item.vat_applicable);
+    expect(after.is_included).toBe(item.is_included);
+    expect(after.reference).toBe(item.reference);
+  });
+
+  it("treats approved and superseded revisions as locked", () => {
+    expect(isRevisionLocked("approved")).toBe(true);
+    expect(isRevisionLocked("superseded")).toBe(true);
+    expect(isRevisionLocked("draft")).toBe(false);
+    expect(isRevisionLocked("shared")).toBe(false);
+    expect(isRevisionLocked(undefined)).toBe(false);
   });
 });

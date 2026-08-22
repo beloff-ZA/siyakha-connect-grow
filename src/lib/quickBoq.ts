@@ -163,3 +163,61 @@ export const assertSyncConfirmed = (confirmed: boolean) => {
 };
 
 export const DEFAULT_CATEGORY = "General";
+
+/* -------------------------------------------------------------------------- */
+/* Searchable BOQ items with safe price updating                              */
+/* -------------------------------------------------------------------------- */
+
+/** A revision that may be searched but never edited in place. */
+export const isRevisionLocked = (status: string | null | undefined) =>
+  status === "approved" || status === "superseded";
+
+export type BoqSearchResult = {
+  item: BoqItem;
+  category: string;
+};
+
+/**
+ * Case-insensitive search restricted to a single BOQ revision.
+ * Matching fields: description, item code, specification, reference and
+ * category/section title. An empty query returns every scoped item.
+ */
+export const searchBoqItems = (
+  items: BoqItem[],
+  sections: Pick<BoqSection, "id" | "title">[],
+  query: string,
+  boqId: string,
+): BoqSearchResult[] => {
+  const scoped = items.filter((it) => it.boq_id === boqId);
+  const rows = scoped.map((item) => ({
+    item,
+    category: sections.find((s) => s.id === item.section_id)?.title ?? DEFAULT_CATEGORY,
+  }));
+  const q = String(query ?? "").trim().toLowerCase();
+  if (!q) return rows;
+  return rows.filter(({ item, category }) =>
+    [item.description, item.item_code, item.specification, item.reference, category]
+      .some((field) => String(field ?? "").toLowerCase().includes(q)),
+  );
+};
+
+export type PriceValidation = { ok: true; value: number } | { ok: false; error: string };
+
+/** Validates the "New selling price" field: a number greater than or equal to zero. */
+export const validateNewPrice = (input: string | number): PriceValidation => {
+  const raw = String(input ?? "").trim();
+  if (!raw) return { ok: false, error: "Enter a new selling price." };
+  const value = Number(raw);
+  if (!Number.isFinite(value)) return { ok: false, error: "Enter a valid number." };
+  if (value < 0) return { ok: false, error: "The selling price must be zero or more." };
+  return { ok: true, value: round2(value) };
+};
+
+/**
+ * The only patch a quick price update may send: the customer selling rate.
+ * Quantity, section, description, product/plan linkage, VAT and every other
+ * field are untouched by construction.
+ */
+export const priceUpdatePatch = (value: number): { customer_unit_rate: number } => ({
+  customer_unit_rate: round2(value),
+});
