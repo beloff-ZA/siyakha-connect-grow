@@ -48,6 +48,7 @@ import ClientPortalAdmin from "./pages/helpdesk/ClientPortalAdmin";
 
 // Client Portal
 import SharePage from "./pages/SharePage";
+import ProjectDeckPage from "./pages/ProjectDeckPage";
 import ClientLogin from "./pages/ClientLogin";
 import ClientRoute from "./components/portal/ClientRoute";
 import PortalDashboard from "./pages/portal/PortalDashboard";
@@ -94,6 +95,7 @@ function App() {
               {/* Client portal */}
               <Route path="/client-login" element={<ClientLogin />} />
               <Route path="/share/:token" element={<SharePage />} />
+              <Route path="/project-deck/:token" element={<ProjectDeckPage />} />
               <Route path="/portal" element={<ClientRoute><PortalDashboard /></ClientRoute>} />
               <Route path="/portal/project" element={<ClientRoute><PortalProject /></ClientRoute>} />
               <Route path="/portal/tracker" element={<ClientRoute><PortalTracker /></ClientRoute>} />

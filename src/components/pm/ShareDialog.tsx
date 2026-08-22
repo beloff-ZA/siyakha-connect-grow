@@ -14,6 +14,8 @@ import {
   RESOURCE_LABELS,
   regenerateShareLink,
   revokeShareLink,
+  updateShareCapabilities,
+  isDeckResource,
   setShareExpiry,
   shareState,
   type ShareLink,
@@ -53,10 +55,16 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
   const [form, setForm] = useState({
     permission_scope: "view" as SharePermission,
     days: "30",
+    // Default delivery is a secure guest deck link — never a client login.
     require_client_login: false,
+    download_allowed: false,
+    comments_allowed: true,
+    approval_allowed: false,
     recipient_label: "",
     recipient_email: "",
   });
+
+  const isDeck = !!target && isDeckResource(target.resource_type);
 
   const refresh = async () => {
     if (!target) return;
@@ -107,6 +115,9 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
         client_id: target.client_id ?? null,
         snapshot: target.snapshot,
         permission_scope: form.permission_scope,
+        download_allowed: form.download_allowed,
+        comments_allowed: form.comments_allowed,
+        approval_allowed: form.approval_allowed,
         require_client_login: form.require_client_login,
         recipient_label: form.recipient_label,
         recipient_email: form.recipient_email,
@@ -151,15 +162,18 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Share with client</DialogTitle>
+          <DialogTitle>Send to client</DialogTitle>
         </DialogHeader>
 
         {target && (
           <>
             <p className="text-xs text-muted-foreground">
               {RESOURCE_LABELS[target.resource_type]} · {target.title}
-              {target.revision_label ? ` · ${target.revision_label}` : ""}. The link opens a branded Siyakha page showing
-              this exact frozen revision. Supplier costs, markup, margin and internal notes are never included.
+              {target.revision_label ? ` · ${target.revision_label}` : ""}.{" "}
+              {isDeck
+                ? "The default delivery is a secure, read-only Project Portfolio Deck — the client just opens the link, no portal login needed."
+                : "The link opens a branded Siyakha page showing this exact frozen revision."}{" "}
+              Supplier costs, markup, margin and internal notes are never included.
             </p>
 
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -185,19 +199,47 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
               <Field label="Recipient email (admin reference only)">
                 <Input value={form.recipient_email} onChange={(e) => setForm({ ...form, recipient_email: e.target.value })} />
               </Field>
-              <label className="flex items-center gap-2 text-sm sm:col-span-2">
-                <input
-                  type="checkbox"
-                  checked={form.require_client_login}
-                  onChange={(e) => setForm({ ...form, require_client_login: e.target.checked })}
-                />
-                Client portal login required (otherwise a secure guest link)
-              </label>
+              <div className="sm:col-span-2 space-y-2 border border-border p-3">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">What the client may do</p>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={form.download_allowed}
+                    onChange={(e) => setForm({ ...form, download_allowed: e.target.checked })}
+                  />
+                  Allow PDF download / print of the full pack
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={form.comments_allowed}
+                    onChange={(e) => setForm({ ...form, comments_allowed: e.target.checked })}
+                  />
+                  Allow comments and queries
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={form.approval_allowed}
+                    onChange={(e) => setForm({ ...form, approval_allowed: e.target.checked })}
+                  />
+                  Allow acceptance / approval
+                </label>
+                <label className="flex items-center gap-2 text-sm border-t border-border pt-2">
+                  <input
+                    type="checkbox"
+                    checked={form.require_client_login}
+                    onChange={(e) => setForm({ ...form, require_client_login: e.target.checked })}
+                  />
+                  Require a client portal login as well (optional — off by default)
+                </label>
+              </div>
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
               <Button size="sm" onClick={create} disabled={busy}>
-                <Link2 className="mr-2 h-4 w-4" strokeWidth={1.5} /> Create link
+                <Link2 className="mr-2 h-4 w-4" strokeWidth={1.5} />{" "}
+                {isDeck ? "Create portfolio deck link" : "Create link"}
               </Button>
               {issued && (
                 <Button size="sm" variant="outline" onClick={() => copy(issued)}>
@@ -236,6 +278,7 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
                         {RESOURCE_LABELS[l.resource_type]}
                         {l.revision_label ? ` · ${l.revision_label}` : ""}
                       </span>
+                      {isDeckResource(l.resource_type) && <Chip>Portfolio deck</Chip>}
                       {l.require_client_login && <Chip>Login required</Chip>}
                     </div>
                     <p className="mt-1 text-sm">{l.title}</p>
@@ -253,11 +296,50 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
                       >
                         Extend 30 days
                       </Button>
-                      <Button size="sm" variant="outline" disabled={busy} onClick={() => act(() => regenerateShareLink(l.id), "New link issued")}>
+                      <Button size="sm" variant="outline" disabled={busy} onClick={() => act(() => regenerateShareLink(l.id, l.resource_type), "New link issued")}>
                         <RefreshCw className="mr-2 h-4 w-4" strokeWidth={1.5} /> Regenerate
                       </Button>
                       <Button size="sm" variant="ghost" disabled={busy || st === "revoked"} onClick={() => act(() => revokeShareLink(l.id), "Link revoked")}>
                         <ShieldOff className="mr-2 h-4 w-4" strokeWidth={1.5} /> Revoke
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={busy}
+                        onClick={() =>
+                          act(
+                            () => updateShareCapabilities(l.id, { download_allowed: !l.download_allowed }),
+                            l.download_allowed ? "Download disabled" : "Download enabled",
+                          )
+                        }
+                      >
+                        {l.download_allowed ? "Disable download" : "Allow download"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={busy}
+                        onClick={() =>
+                          act(
+                            () => updateShareCapabilities(l.id, { comments_allowed: !l.comments_allowed }),
+                            l.comments_allowed ? "Comments disabled" : "Comments enabled",
+                          )
+                        }
+                      >
+                        {l.comments_allowed ? "Disable comments" : "Allow comments"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={busy}
+                        onClick={() =>
+                          act(
+                            () => updateShareCapabilities(l.id, { approval_allowed: !l.approval_allowed }),
+                            l.approval_allowed ? "Acceptance disabled" : "Acceptance enabled",
+                          )
+                        }
+                      >
+                        {l.approval_allowed ? "Disable acceptance" : "Allow acceptance"}
                       </Button>
                       <Button size="sm" variant="ghost" onClick={() => openHistory(l.id)}>
                         <History className="mr-2 h-4 w-4" strokeWidth={1.5} /> Access history
