@@ -24,24 +24,16 @@ import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePortal } from "@/hooks/usePortal";
 
+// Primary navigation only. Tracker, building view, registers, gallery, updates,
+// support, onboarding and profile routes remain intact and reachable by URL.
 const nav = [
-  { to: "/portal", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/portal/project", label: "Project overview", icon: Building2 },
-  { to: "/portal/tracker", label: "Planning tracker", icon: ListChecks },
+  { to: "/portal", label: "Overview", icon: LayoutDashboard, end: true },
+  { to: "/portal/floor-plans", label: "Plans", icon: Layers },
   { to: "/portal/boq", label: "BOQ", icon: Calculator },
-  { to: "/portal/floor-plans", label: "Floor plans", icon: Layers },
-  { to: "/portal/building-view", label: "Building view", icon: Building2 },
-  { to: "/portal/registers", label: "Device registers", icon: ClipboardList },
-
   { to: "/portal/documents", label: "Documents", icon: FileText },
   { to: "/portal/site-images", label: "Site images", icon: Camera },
-  { to: "/portal/gallery", label: "Site gallery", icon: Images },
-
-  { to: "/portal/updates", label: "Updates", icon: Bell },
-  { to: "/portal/support", label: "Support", icon: MessageSquare },
-  { to: "/portal/onboarding", label: "Add a site", icon: PlusCircle },
-  { to: "/portal/profile", label: "Profile & security", icon: UserRound },
 ];
+
 
 
 const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
