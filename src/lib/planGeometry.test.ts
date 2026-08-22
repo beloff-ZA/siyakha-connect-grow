@@ -14,6 +14,8 @@ import {
   aimOffsetPx,
   normDistancePx,
   CARDINAL_LABELS,
+  selectedCoverageMode,
+  coverageHelpText,
   AIM_DEADZONE_PX,
   type Size,
 } from "./planGeometry";
@@ -236,5 +238,26 @@ describe("camera aim persistence contract", () => {
   it("reports a compass label alongside the degrees for the editor", () => {
     expect(bearingText(0)).toBe("0° N");
     expect(bearingText(270)).toBe("270° W");
+  });
+});
+
+describe("selected coverage mode", () => {
+  it("turns coverage on only for APs and cameras", () => {
+    expect(selectedCoverageMode("wifi_ap")).toBe("selected");
+    expect(selectedCoverageMode("camera")).toBe("selected");
+    for (const k of ["rack", "switch", "note", "data_point", undefined, null]) {
+      expect(selectedCoverageMode(k as string | null | undefined)).toBe("off");
+    }
+  });
+
+  it("supplies the AP and camera helper lines only", () => {
+    expect(coverageHelpText("wifi_ap")).toBe(
+      "Wi-Fi coverage preview — strong, good and edge signal bands.",
+    );
+    expect(coverageHelpText("camera")).toBe(
+      "Camera view preview — drag the orange handle to aim the light cone.",
+    );
+    expect(coverageHelpText("rack")).toBeNull();
+    expect(coverageHelpText(null)).toBeNull();
   });
 });
