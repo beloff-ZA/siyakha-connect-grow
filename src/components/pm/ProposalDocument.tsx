@@ -2,6 +2,7 @@ import React from "react";
 import { formatQty, formatZar } from "@/lib/boq";
 import { formatDate } from "@/lib/portalFiles";
 import { SIYAKHA, validUntil, type Proposal } from "@/lib/proposals";
+import { deviceTypeLabel } from "@/lib/lifecycle";
 
 /**
  * Client-facing A4 document. It renders exclusively from the immutable snapshot,
@@ -40,6 +41,23 @@ const ProposalDocument: React.FC<{ proposal: Proposal; variant: "full" | "costin
   const docLabel = variant === "full" ? "Proposal" : "Official Costing";
   let idx = 0;
   const n = () => String(++idx);
+
+  const floors = s?.floors ?? [];
+  const devices = s?.devices ?? null;
+  const b = s?.building ?? null;
+  const buildingRows: [string, string][] = [];
+  const push = (label: string, value: string | number | null | undefined, suffix = "") => {
+    if (value === null || value === undefined || value === "") return;
+    buildingRows.push([label, `${value}${suffix}`]);
+  };
+  push("Building type", b?.building_type);
+  push("Levels", b?.levels_note);
+  push("Gross floor area", b?.gfa_sqm, " m²");
+  push("Building length", b?.length_m, " m");
+  push("Building width", b?.width_m, " m");
+  push("Rooms / units", b?.rooms_units);
+  push("Occupancy", b?.occupancy);
+  push("Notes", b?.notes);
 
   return (
     <article className="boq-print-root doc-root bg-white text-black">
