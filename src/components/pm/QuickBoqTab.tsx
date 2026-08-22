@@ -825,24 +825,22 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
         </DialogContent>
       </Dialog>
 
-      {/* Quick price update */}
+      {/* Edit title & price */}
       <Dialog open={!!priceTarget} onOpenChange={(v) => !v && setPriceTarget(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Update price</DialogTitle>
-            <DialogDescription>Only the selling price of this one item changes.</DialogDescription>
+            <DialogTitle>Edit title &amp; price</DialogTitle>
+            <DialogDescription>Only the item title and selling price of this one item change.</DialogDescription>
           </DialogHeader>
           {priceTarget && (
             <div className="space-y-4">
-              <div>
-                <p className="text-sm">{priceTarget.description}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Current selling price {formatZar(Number(priceTarget.customer_unit_rate))} · {formatQty(priceTarget.quantity)}{" "}
-                  {priceTarget.unit}
-                </p>
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-title">Item title</Label>
+                <Input id="edit-title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} />
+                {editErrors.description && <p className="text-xs text-destructive">{editErrors.description}</p>}
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="new-price">New selling price</Label>
+                <Label htmlFor="new-price">Selling price</Label>
                 <Input
                   id="new-price"
                   type="number"
@@ -851,8 +849,11 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                   value={priceValue}
                   onChange={(e) => setPriceValue(e.target.value)}
                 />
-                {priceError && <p className="text-xs text-destructive">{priceError}</p>}
+                {editErrors.selling_price && <p className="text-xs text-destructive">{editErrors.selling_price}</p>}
               </div>
+              <p className="text-xs text-muted-foreground">
+                Quantity {formatQty(priceTarget.quantity)} · Unit {priceTarget.unit} (unchanged)
+              </p>
               <p className="border-t border-border pt-3 text-sm">
                 Revised line total{" "}
                 <span className="font-semibold tabular-nums">{formatZar(previewLineTotal(priceTarget.quantity, priceValue))}</span>
@@ -863,8 +864,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
             <Button variant="ghost" onClick={() => setPriceTarget(null)}>
               Cancel
             </Button>
-            <Button onClick={saveNewPrice} disabled={busy}>
-              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save new price
+            <Button onClick={saveItemEdit} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save changes
             </Button>
           </DialogFooter>
         </DialogContent>
