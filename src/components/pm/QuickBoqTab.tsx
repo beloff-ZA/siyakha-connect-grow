@@ -314,10 +314,11 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   const saveNewPrice = async () => {
     if (!priceTarget) return;
     const result = validateNewPrice(priceValue);
-    if (!result.ok) {
+    if (result.ok !== true) {
       setPriceError(result.error);
       return;
     }
+
     setPriceError(null);
     setBusy(true);
     const { error } = await supabase
