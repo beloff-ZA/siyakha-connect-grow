@@ -139,7 +139,7 @@ const ShareViewTab: React.FC<{
           Creates a secure, read-only link to a frozen client-safe view of the project. Supplier costs, markup, margin
           and internal notes are never included, and no email is sent — you copy and share the link yourself.
         </p>
-        <Button className="mt-3" size="sm" disabled={!projectId || busy} onClick={create}>
+        <Button className="mt-3" size="sm" disabled={!projectId || busy} onClick={() => create("user")}>
           <Link2 className="mr-1 h-3.5 w-3.5" /> Create view link
         </Button>
         {issued && (

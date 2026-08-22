@@ -244,7 +244,7 @@ const ReportsTab: React.FC<{
               <Button size="sm" onClick={openPack} disabled={busy || !pack}>
                 Download Full Project Pack
               </Button>
-              <Button size="sm" variant="outline" onClick={issue} disabled={busy || !pack}>
+              <Button size="sm" variant="outline" onClick={() => issue("user")} disabled={busy || !pack}>
                 Issue snapshot
               </Button>
               <Button size="sm" variant="outline" onClick={openInternal} disabled={busy}>
