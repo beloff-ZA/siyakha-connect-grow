@@ -157,6 +157,7 @@ function App() {
               <Route path="/helpdesk/diary" element={<AdminRoute><HelpdeskDiary /></AdminRoute>} />
               <Route path="/helpdesk/calendar" element={<AdminRoute><HelpdeskCalendar /></AdminRoute>} />
               <Route path="/helpdesk/project-management" element={<AdminRoute><ProjectManagement /></AdminRoute>} />
+              <Route path="/helpdesk/project-management/:projectId" element={<AdminRoute><ProjectWorkspace /></AdminRoute>} />
               <Route path="/helpdesk/projects" element={<AdminRoute><DirectorProjects /></AdminRoute>} />
               <Route path="/helpdesk/costs" element={<AdminRoute><DirectorCosts /></AdminRoute>} />
               <Route path="/helpdesk/ai-pa" element={<AdminRoute><DirectorPA /></AdminRoute>} />
