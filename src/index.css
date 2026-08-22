@@ -332,3 +332,50 @@
     overflow: visible !important;
   }
 }
+
+/* ---------- Dedicated A4 document surface (proposals & customer costings) ---------- */
+.screen-only {
+  display: block;
+}
+
+@media print {
+  body.doc-printing > *:not(.print-surface) {
+    display: none !important;
+  }
+
+  .print-surface {
+    position: static !important;
+    inset: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .screen-only {
+    display: none !important;
+  }
+
+  /* Internal supplier costs, markup and margin must never print. */
+  .internal-only {
+    display: none !important;
+  }
+
+  .doc-root {
+    font-size: 10pt;
+  }
+
+  .doc-root section,
+  .doc-root .print-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .doc-root table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .doc-root thead {
+    display: table-header-group;
+  }
+}
