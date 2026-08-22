@@ -95,6 +95,22 @@ export const CAMERA_RANGE_RADIUS: Record<string, number> = {
   large: 0.24,
 };
 
+/**
+ * Coverage overlay mode for the currently selected device: only Wi-Fi APs and
+ * cameras have a meaningful coverage preview, every other marker type is off.
+ */
+export function selectedCoverageMode(markerType?: string | null): "off" | "selected" {
+  return markerType === "wifi_ap" || markerType === "camera" ? "selected" : "off";
+}
+
+/** Short helper line shown under the plan for the selected device's coverage preview. */
+export function coverageHelpText(markerType?: string | null): string | null {
+  if (markerType === "wifi_ap") return "Wi-Fi coverage preview — strong, good and edge signal bands.";
+  if (markerType === "camera")
+    return "Camera view preview — drag the orange handle to aim the light cone.";
+  return null;
+}
+
 /** True when a viewport pointer lies inside the (transformed) image content rect. */
 export function pointerInContent(args: {
   clientX: number;
