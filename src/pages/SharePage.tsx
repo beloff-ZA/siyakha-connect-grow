@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { resolveShare, RESOURCE_LABELS, type ShareResourceType } from "@/lib/shareLinks";
+import { applyGuestPrivacyMeta, canApprove, resolveShare, RESOURCE_LABELS, type ShareResourceType } from "@/lib/shareLinks";
 import { SIYAKHA } from "@/lib/proposals";
 import { formatDate } from "@/lib/portalFiles";
 import ProposalDocument from "@/components/pm/ProposalDocument";
@@ -46,6 +46,7 @@ const SharePage: React.FC = () => {
 
   useEffect(() => {
     document.title = "Shared document — Siyakha Technology Solutions";
+    applyGuestPrivacyMeta();
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
@@ -107,6 +108,7 @@ const SharePage: React.FC = () => {
   const link = data?.link;
   const snap = data?.snapshot ?? {};
   const type = (link?.resource_type ?? "report") as ShareResourceType;
+  const approvable = canApprove(link ? { ...link, resource_type: type } : null);
 
   const body = () => {
     if (type === "proposal" || type === "costing")
@@ -139,7 +141,7 @@ const SharePage: React.FC = () => {
           </div>
           {link?.download_allowed && (
             <Button size="sm" onClick={() => window.print()}>
-              <Printer className="mr-2 h-4 w-4" strokeWidth={1.5} /> Download / print
+              <Printer className="mr-2 h-4 w-4" strokeWidth={1.5} /> Print / save
             </Button>
           )}
         </div>
@@ -147,24 +149,24 @@ const SharePage: React.FC = () => {
 
       <div className="mx-auto max-w-[210mm] bg-white px-6 py-8 print:px-0 print:py-0">{body()}</div>
 
-      {(link?.comments_allowed || link?.approval_allowed) && (
+      {(link?.comments_allowed || approvable) && (
         <section className="screen-only mx-auto max-w-[210mm] border-t border-neutral-300 bg-white px-6 py-6">
           <p className="text-[10px] uppercase tracking-[0.22em] text-neutral-500">
-            {link?.approval_allowed ? "Accept this document" : "Send a query"}
+            {approvable ? "Accept this document" : "Send a query"}
           </p>
           <Textarea
             rows={4}
             className="mt-2"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder={link?.approval_allowed ? "Optional note with your acceptance" : "Your question or comment"}
+            placeholder={approvable ? "Optional note with your acceptance" : "Your question or comment"}
           />
           <Button
             className="mt-3"
-            disabled={busy || (!link?.approval_allowed && !message.trim())}
-            onClick={() => submit(link?.approval_allowed ? "approve" : "comment")}
+            disabled={busy || (!approvable && !message.trim())}
+            onClick={() => submit(approvable ? "approve" : "comment")}
           >
-            {link?.approval_allowed ? "Accept document" : "Send to Siyakha"}
+            {approvable ? "Accept document" : "Send to Siyakha"}
           </Button>
         </section>
       )}

@@ -75,6 +75,7 @@ const ProjectDeckPage: React.FC = () => {
 
   useEffect(() => {
     document.title = "Project portfolio — Siyakha Technology Solutions";
+    applyGuestPrivacyMeta();
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
@@ -388,7 +389,7 @@ const ProjectDeckPage: React.FC = () => {
                 </p>
               </div>
 
-              {(link?.comments_allowed || link?.approval_allowed) && (
+              {(link?.comments_allowed || approvable) && (
                 <div className="border border-border p-5">
                   {done ? (
                     <p className="flex items-center gap-2 text-sm">
@@ -398,7 +399,7 @@ const ProjectDeckPage: React.FC = () => {
                   ) : (
                     <>
                       <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                        {link?.approval_allowed ? "Accept this project pack" : "Send a query"}
+                        {approvable ? "Accept this project pack" : "Send a query"}
                       </p>
                       <Textarea
                         rows={4}
@@ -406,11 +407,11 @@ const ProjectDeckPage: React.FC = () => {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder={
-                          link?.approval_allowed ? "Optional note with your acceptance" : "Your question or comment"
+                          approvable ? "Optional note with your acceptance" : "Your question or comment"
                         }
                       />
                       <div className="mt-3 flex flex-wrap gap-2">
-                        {link?.approval_allowed && (
+                        {approvable && (
                           <Button disabled={busy} onClick={() => submit("approve")}>
                             <Check className="mr-2 h-4 w-4" strokeWidth={1.5} /> Accept
                           </Button>
