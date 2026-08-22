@@ -862,16 +862,11 @@ const FloorPlanCanvas: React.FC<Props> = ({
                       {locked ? (
                         <Lock style={{ width: "60%", height: "60%" }} strokeWidth={2} />
                       ) : isCamera ? (
-                        // Only the lens glyph rotates; the marker box stays upright.
-                        <Video
-                          aria-hidden
-                          style={{
-                            width: "72%",
-                            height: "72%",
-                            transform: `rotate(${bearingToRotation(dir - 90)}deg)`,
-                            transformOrigin: "50% 50%",
-                          }}
-                          strokeWidth={2}
+                        // Only the camera pictogram rotates; the marker box stays upright.
+                        <CameraMarkerIcon
+                          directionDeg={dir}
+                          style={{ width: "88%", height: "88%" }}
+                          strokeWidth={1.7}
                         />
                       ) : isRack ? (
                         <>
