@@ -83,6 +83,8 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
   const [busy, setBusy] = useState(false);
   const [view, setView] = useState<{ proposal: Proposal; variant: "full" | "costing" } | null>(null);
   const [filterProject, setFilterProject] = useState(initialProjectId ?? "");
+  const [share, setShare] = useState<ShareTarget | null>(null);
+
 
   useEffect(() => {
     if (initialProjectId) setFilterProject(initialProjectId);
