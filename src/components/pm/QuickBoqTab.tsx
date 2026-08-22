@@ -98,7 +98,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   const [appliedQuery, setAppliedQuery] = useState("");
   const [priceTarget, setPriceTarget] = useState<BoqItem | null>(null);
   const [priceValue, setPriceValue] = useState("0");
-  const [priceError, setPriceError] = useState<string | null>(null);
+  const [titleValue, setTitleValue] = useState("");
+  const [editErrors, setEditErrors] = useState<{ description?: string; selling_price?: string }>({});
   const [creating, setCreating] = useState({ title: "Bill of quantities", revision_label: "Draft v1", vat_enabled: true, valid_until: todayPlus(30) });
 
   const fail = (e: unknown) =>
