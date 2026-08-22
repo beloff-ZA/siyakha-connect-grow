@@ -2566,15 +2566,20 @@ export type Database = {
       }
       portal_plan_revisions: {
         Row: {
+          approval_status: string | null
           archived_at: string | null
           checksum: string | null
           client_visible: boolean
           created_at: string
+          drawing_number: string | null
+          drawing_scale: string | null
+          drawing_title: string | null
           file_size: number | null
           floor_id: string | null
           id: string
           image_path: string | null
           is_current: boolean
+          issue_date: string | null
           mime_type: string | null
           notes: string | null
           original_filename: string | null
@@ -2591,15 +2596,20 @@ export type Database = {
           uploaded_by: string | null
         }
         Insert: {
+          approval_status?: string | null
           archived_at?: string | null
           checksum?: string | null
           client_visible?: boolean
           created_at?: string
+          drawing_number?: string | null
+          drawing_scale?: string | null
+          drawing_title?: string | null
           file_size?: number | null
           floor_id?: string | null
           id?: string
           image_path?: string | null
           is_current?: boolean
+          issue_date?: string | null
           mime_type?: string | null
           notes?: string | null
           original_filename?: string | null
@@ -2616,15 +2626,20 @@ export type Database = {
           uploaded_by?: string | null
         }
         Update: {
+          approval_status?: string | null
           archived_at?: string | null
           checksum?: string | null
           client_visible?: boolean
           created_at?: string
+          drawing_number?: string | null
+          drawing_scale?: string | null
+          drawing_title?: string | null
           file_size?: number | null
           floor_id?: string | null
           id?: string
           image_path?: string | null
           is_current?: boolean
+          issue_date?: string | null
           mime_type?: string | null
           notes?: string | null
           original_filename?: string | null
@@ -2915,6 +2930,7 @@ export type Database = {
       portal_projects: {
         Row: {
           address: string | null
+          building_details: Json | null
           client_id: string
           consultant: string | null
           created_at: string
@@ -2940,6 +2956,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          building_details?: Json | null
           client_id: string
           consultant?: string | null
           created_at?: string
@@ -2965,6 +2982,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          building_details?: Json | null
           client_id?: string
           consultant?: string | null
           created_at?: string
