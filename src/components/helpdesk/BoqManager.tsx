@@ -608,20 +608,11 @@ const BoqManager: React.FC<{ projectId: string; onPrintCustomerBoq?: (boqId: str
               names, supplier costs, markup, margin and internal notes are excluded.
             </p>
 
-            {syncSummary.length > 0 && (
-              <div className="mt-4 border border-border p-4">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                  Last quantity sync — changed lines
-                </p>
-                <ul className="mt-2 space-y-1">
-                  {syncSummary.map((line) => (
-                    <li key={line} className="text-sm">
-                      {line}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <p className="mt-3 text-xs text-muted-foreground">
+              Plan-derived quantities are reconciled by the catalogue-driven design engine in the Project Management
+              workspace (Design ↔ BOQ reconciliation). Manual lines are never touched by a sync.
+            </p>
+
 
 
             <dl className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-border pt-5">
