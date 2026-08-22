@@ -205,3 +205,24 @@ export async function resolveShare(token: string, body: { action?: string; messa
     snapshot?: any;
   };
 }
+
+/** Acceptance is only meaningful for these document types. */
+export const APPROVABLE_RESOURCES: ShareResourceType[] = ["proposal", "costing", "boq", "project_pack"];
+
+export const canApprove = (l?: { resource_type: ShareResourceType; approval_allowed: boolean } | null) =>
+  !!l?.approval_allowed && APPROVABLE_RESOURCES.includes(l.resource_type);
+
+/** Keeps guest document pages out of search engines and referrer headers. */
+export const applyGuestPrivacyMeta = () => {
+  const set = (name: string, content: string) => {
+    let el = document.head.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
+    if (!el) {
+      el = document.createElement("meta");
+      el.name = name;
+      document.head.appendChild(el);
+    }
+    el.content = content;
+  };
+  set("robots", "noindex, nofollow, noarchive");
+  set("referrer", "no-referrer");
+};
