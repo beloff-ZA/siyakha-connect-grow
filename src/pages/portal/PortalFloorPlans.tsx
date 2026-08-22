@@ -591,33 +591,43 @@ const PortalFloorPlans: React.FC = () => {
   const saveCameras = useCallback(async () => {
     if (!floor || camDrafts.length === 0) return;
     setSavingCams(true);
-    const { data, error: rpcErr } = await supabase.rpc("portal_add_floor_cameras", {
-      _floor_id: floor.id,
-      _cameras: camDrafts.map((c) => ({
-        x: c.x,
-        y: c.y,
-        direction_deg: c.direction_deg,
-        fov_deg: c.fov_deg,
-        coverage_range: c.coverage_range,
-      })) as unknown as never,
-    });
-    setSavingCams(false);
-    setCamConfirmOpen(false);
-    if (rpcErr) {
-      toast({ title: "Cameras not saved", description: rpcErr.message, variant: "destructive" });
+    let created = 0;
+    try {
+      const res = await placeCameras({
+        floor_id: floor.id,
+        cameras: camDrafts.map((c) => ({
+          x: c.x,
+          y: c.y,
+          direction_deg: c.direction_deg,
+          fov_deg: c.fov_deg,
+          coverage_range: c.coverage_range,
+        })),
+      });
+      created = res.created ?? 0;
+    } catch (e) {
+      setSavingCams(false);
+      setCamConfirmOpen(false);
+      toast({
+        title: "Cameras not saved",
+        description: e instanceof Error ? e.message : "Unknown error",
+        variant: "destructive",
+      });
       return;
     }
+    setSavingCams(false);
+    setCamConfirmOpen(false);
     setCamDrafts([]);
     setPlacingCams(false);
     setSelected(null);
     await load();
     toast({
       title: "Cameras added",
-      description: `${data ?? 0} planned camera${data === 1 ? "" : "s"} created on ${floor.display_name} and recorded in the audit trail.`,
+      description: `${created} planned camera${created === 1 ? "" : "s"} created on ${floor.display_name} and recorded in the audit trail.`,
     });
     // Newly saved cameras have no cabling yet — offer to add only the missing routes.
-    if ((data ?? 0) > 0) setGenOpen(true);
+    if (created > 0) setGenOpen(true);
   }, [camDrafts, floor, load, toast]);
+
 
   const cancelChanges = useCallback(() => {
     setDraft({});
