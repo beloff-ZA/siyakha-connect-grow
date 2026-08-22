@@ -4252,6 +4252,10 @@ export type Database = {
         Returns: number
       }
       portal_next_proposal_number: { Args: never; Returns: string }
+      portal_plan_revision_transaction: {
+        Args: { _action: string; _payload: Json }
+        Returns: Json
+      }
       portal_product_lifecycle: {
         Args: { _action: string; _product_id: string }
         Returns: Json
