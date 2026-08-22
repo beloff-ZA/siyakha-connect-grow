@@ -680,11 +680,19 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
       <Dialog open={!!form} onOpenChange={(v) => !v && setForm(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{form?.id ? "Edit item" : "Add item"}</DialogTitle>
-            <DialogDescription>Only the essentials — everything else stays under Advanced costing.</DialogDescription>
+            <DialogTitle>{form?.id ? "Edit BOQ item" : "Add item"}</DialogTitle>
+            <DialogDescription>
+              Supplier costs, markup and margin stay under Advanced costing and are never edited here.
+            </DialogDescription>
           </DialogHeader>
           {form && (
             <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="q-desc">Item title</Label>
+                <Input id="q-desc" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                {errors.description && <p className="text-xs text-destructive">{errors.description}</p>}
+              </div>
+
               <div className="space-y-1.5">
                 <Label htmlFor="q-cat">Category</Label>
                 <select
@@ -711,16 +719,20 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                 {errors.category && <p className="text-xs text-destructive">{errors.category}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="q-desc">Description</Label>
-                <Input id="q-desc" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-                {errors.description && <p className="text-xs text-destructive">{errors.description}</p>}
-              </div>
-
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="q-qty">Quantity</Label>
-                  <Input id="q-qty" type="number" min={0} step="0.001" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
+                  <Input
+                    id="q-qty"
+                    type="number"
+                    min={0}
+                    step="0.001"
+                    readOnly={form.planLocked}
+                    disabled={form.planLocked}
+                    value={form.quantity}
+                    onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+                  />
+                  {form.planLocked && <p className="text-xs text-muted-foreground">{PLAN_QUANTITY_NOTE}</p>}
                   {errors.quantity && <p className="text-xs text-destructive">{errors.quantity}</p>}
                 </div>
                 <div className="space-y-1.5">
@@ -732,6 +744,7 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                       </option>
                     ))}
                   </select>
+                  {errors.unit && <p className="text-xs text-destructive">{errors.unit}</p>}
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="q-rate">Selling price</Label>
@@ -740,16 +753,38 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                 </div>
               </div>
 
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={form.vat_applicable} onChange={(e) => setForm({ ...form, vat_applicable: e.target.checked })} />
-                VAT applicable
-              </label>
+              <div className="flex flex-wrap gap-5">
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={form.vat_applicable} onChange={(e) => setForm({ ...form, vat_applicable: e.target.checked })} />
+                  VAT applicable
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={form.is_included} onChange={(e) => setForm({ ...form, is_included: e.target.checked })} />
+                  Included in BOQ
+                </label>
+              </div>
 
               <details>
                 <summary className="cursor-pointer text-xs uppercase tracking-[0.18em] text-muted-foreground">More details</summary>
-                <div className="mt-2 space-y-1.5">
-                  <Label htmlFor="q-spec">Short specification</Label>
-                  <Textarea id="q-spec" rows={3} value={form.specification} onChange={(e) => setForm({ ...form, specification: e.target.value })} />
+                <div className="mt-3 space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="q-code">Item code</Label>
+                      <Input id="q-code" value={form.item_code} onChange={(e) => setForm({ ...form, item_code: e.target.value })} />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="q-ref">Reference</Label>
+                      <Input id="q-ref" value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="q-spec">Specification</Label>
+                    <Textarea id="q-spec" rows={3} value={form.specification} onChange={(e) => setForm({ ...form, specification: e.target.value })} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="q-notes">Notes</Label>
+                    <Textarea id="q-notes" rows={3} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+                  </div>
                 </div>
               </details>
 
@@ -763,57 +798,12 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
               Cancel
             </Button>
             <Button onClick={submitForm} disabled={busy}>
-              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} {form?.id ? "Save item" : "Add item"}
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} {form?.id ? "Save changes" : "Add item"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Edit title & price */}
-      <Dialog open={!!priceTarget} onOpenChange={(v) => !v && setPriceTarget(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit title &amp; price</DialogTitle>
-            <DialogDescription>Only the item title and selling price of this one item change.</DialogDescription>
-          </DialogHeader>
-          {priceTarget && (
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="edit-title">Item title</Label>
-                <Input id="edit-title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} />
-                {editErrors.description && <p className="text-xs text-destructive">{editErrors.description}</p>}
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="new-price">Selling price</Label>
-                <Input
-                  id="new-price"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  value={priceValue}
-                  onChange={(e) => setPriceValue(e.target.value)}
-                />
-                {editErrors.selling_price && <p className="text-xs text-destructive">{editErrors.selling_price}</p>}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Quantity {formatQty(priceTarget.quantity)} · Unit {priceTarget.unit} (unchanged)
-              </p>
-              <p className="border-t border-border pt-3 text-sm">
-                Revised line total{" "}
-                <span className="font-semibold tabular-nums">{formatZar(previewLineTotal(priceTarget.quantity, priceValue))}</span>
-              </p>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setPriceTarget(null)}>
-              Cancel
-            </Button>
-            <Button onClick={saveItemEdit} disabled={busy}>
-              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <AlertDialog open={!!deleteId} onOpenChange={(v) => !v && setDeleteId(null)}>
         <AlertDialogContent>
