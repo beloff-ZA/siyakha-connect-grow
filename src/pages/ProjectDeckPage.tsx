@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { resolveShare } from "@/lib/shareLinks";
+import { applyGuestPrivacyMeta, canApprove, resolveShare } from "@/lib/shareLinks";
 import { SIYAKHA } from "@/lib/proposals";
 import { formatDate } from "@/lib/portalFiles";
 import { formatQty, formatZar } from "@/lib/boq";
@@ -102,6 +102,7 @@ const ProjectDeckPage: React.FC = () => {
 
   const pack = (data?.snapshot ?? {}) as ProjectPack;
   const link = data?.link;
+  const approvable = canApprove(link ?? null);
 
   const counts = useMemo(() => {
     const map = new Map<string, number>();
