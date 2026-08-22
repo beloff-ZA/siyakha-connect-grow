@@ -80,6 +80,16 @@ const ProjectManagement: React.FC = () => {
             <TabsContent value="proposals">
               <ProposalsTab ws={ws} initialProjectId={projectId} />
             </TabsContent>
+            <TabsContent value="lifecycle">
+              <LifecycleTab ws={ws} projectId={projectId} setProjectId={setProjectId} />
+            </TabsContent>
+            <TabsContent value="assets">
+              <AssetsTab ws={ws} projectId={projectId} setProjectId={setProjectId} />
+            </TabsContent>
+            <TabsContent value="reports">
+              <ReportsTab ws={ws} projectId={projectId} setProjectId={setProjectId} />
+            </TabsContent>
+
           </>
         )}
       </Tabs>
