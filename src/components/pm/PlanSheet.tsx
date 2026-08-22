@@ -11,10 +11,17 @@ const PlanSheet: React.FC<{ floor: PackFloor; compact?: boolean }> = ({ floor, c
   const [url, setUrl] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
 
+  // Guest share pages receive a pre-signed URL from the resolver, so no auth is needed.
+  const presigned = (floor as PackFloor & { plan_image_url?: string | null }).plan_image_url ?? null;
+
   useEffect(() => {
     let cancelled = false;
     setUrl(null);
     setFailed(false);
+    if (presigned) {
+      setUrl(presigned);
+      return;
+    }
     if (!floor.plan_image_path) {
       setFailed(true);
       return;
@@ -29,7 +36,7 @@ const PlanSheet: React.FC<{ floor: PackFloor; compact?: boolean }> = ({ floor, c
     return () => {
       cancelled = true;
     };
-  }, [floor.plan_image_path]);
+  }, [floor.plan_image_path, presigned]);
 
   const placed = floor.markers.filter((m) => m.is_placed && m.x_norm !== null && m.y_norm !== null);
 
