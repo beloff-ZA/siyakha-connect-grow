@@ -21,7 +21,7 @@ import { deviceTypeLabel, disciplineFor, NOT_PROCURED, packSectionFlags, stageLa
 import { formatZar } from "@/lib/boq";
 import { formatDate } from "@/lib/portalFiles";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
-import { assertClientSafe, assertExplicitAction } from "@/lib/reporting";
+import { assertClientSafe, assertExplicitAction, floorCountLabel } from "@/lib/reporting";
 
 const ReportsTab: React.FC<{
   ws: PmWorkspace;
@@ -283,7 +283,7 @@ const ReportsTab: React.FC<{
       {pack && (
         <>
           <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat label="Floors / areas" value={pack.floors.length} />
+            <Stat label="Floors" value={floorCountLabel(pack.floors)} />
             <Stat label="Planned devices" value={markers.length} />
             <Stat label="BOQ lines" value={pack.boqLines.length} />
             <Stat label="Client total (incl. VAT)" value={formatZar(pack.totals.total)} />
