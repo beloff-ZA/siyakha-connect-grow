@@ -383,8 +383,9 @@ const FloorPlanCanvas: React.FC<Props> = ({
       onMoveWaypoint(d.id, d.index, x, y);
     } else if (d.mode === "seg") {
       // nothing to preview; the waypoint is inserted on release
-    } else if (onMove && d.moved && d.draggable) {
+    } else if (d.mode === "marker" && onMove && d.moved && d.draggable) {
       const { x, y } = toNorm(e.clientX, e.clientY);
+      d.last = { x, y };
       onMove(d.id, x, y);
     }
   };
@@ -395,7 +396,11 @@ const FloorPlanCanvas: React.FC<Props> = ({
     if (!d) return;
     if (d.mode === "aim") return;
     if (d.mode === "marker") {
-      if (d.moved && d.draggable) onMoveEnd?.(d.id);
+      // Persist the exact position previewed on screen, never a stale render value.
+      if (d.moved && d.draggable) {
+        const p = d.last ?? toNorm(e.clientX, e.clientY);
+        onMoveEnd?.(d.id, p.x, p.y);
+      }
       else if (!d.moved) {
         const m = markers.find((x) => x.id === d.id);
         if (m) onSelect?.(m);
