@@ -18,8 +18,8 @@ describe("live share mode detection", () => {
 });
 
 describe("background refresh resilience", () => {
-  const ok = { state: "ok", snapshot: { a: 1 } };
-  const fresh = { state: "ok", snapshot: { a: 2 } };
+  const ok: { state: string; snapshot?: unknown } = { state: "ok", snapshot: { a: 1 } };
+  const fresh: { state: string; snapshot?: unknown } = { state: "ok", snapshot: { a: 2 } };
 
   it("adopts a successful refresh", () => {
     expect(nextLiveState(ok, fresh)).toEqual({ data: fresh, stale: false });
