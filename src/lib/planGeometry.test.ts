@@ -8,6 +8,7 @@ import {
   bearingBetween,
   bearingFromDelta,
   bearingToRotation,
+  cameraPictogramRotation,
   normalizeBearing,
   cardinalLabel,
   bearingText,
