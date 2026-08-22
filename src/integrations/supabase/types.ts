@@ -4229,7 +4229,19 @@ export type Database = {
         Returns: number
       }
       portal_next_proposal_number: { Args: never; Returns: string }
+      portal_product_lifecycle: {
+        Args: { _action: string; _product_id: string }
+        Returns: Json
+      }
       portal_save_floor_marker: { Args: { _payload: Json }; Returns: string }
+      portal_set_client_user_state: {
+        Args: {
+          _client_user_id: string
+          _portal_role?: string
+          _status: string
+        }
+        Returns: Json
+      }
       portal_sync_boq_from_plan: { Args: { _boq_id: string }; Returns: Json }
       portal_update_cable_route_waypoints: {
         Args: { _route_id: string; _waypoints: Json }
