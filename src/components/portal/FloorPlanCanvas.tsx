@@ -161,7 +161,16 @@ const FloorPlanCanvas: React.FC<Props> = ({
 
   const dragRef = useRef<
     | { mode: "pan"; startX: number; startY: number; ox: number; oy: number; moved: boolean }
-    | { mode: "marker"; id: string; startX: number; startY: number; moved: boolean; draggable: boolean }
+    | {
+        mode: "marker";
+        id: string;
+        startX: number;
+        startY: number;
+        moved: boolean;
+        draggable: boolean;
+        /** Last normalised position previewed during the drag — persisted verbatim on release. */
+        last?: { x: number; y: number };
+      }
     | { mode: "aim"; id: string; startX: number; startY: number; moved: boolean }
     | {
         mode: "place";
