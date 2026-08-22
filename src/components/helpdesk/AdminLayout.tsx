@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { adminDisplayName, adminIdentityLabel } from "@/lib/adminIdentity";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays,
@@ -107,7 +108,12 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </nav>
 
         <div className="p-4 border-t border-sidebar-border space-y-2">
-          <p className="text-xs text-sidebar-foreground/50 truncate">{user?.email}</p>
+          <div className="min-w-0">
+            <p className="text-sm text-sidebar-foreground truncate">{adminIdentityLabel(user)}</p>
+            {adminDisplayName(user) && (
+              <p className="text-xs text-sidebar-foreground/50 truncate">{user?.email}</p>
+            )}
+          </div>
           <div className="flex gap-2">
             <Link to="/" className="flex-1">
               <Button variant="ghost" size="sm" className="w-full justify-start text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50">
