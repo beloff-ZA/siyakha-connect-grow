@@ -101,6 +101,7 @@ import {
 } from "@/components/portal/RackEquipment";
 import { type RackEquipment } from "@/lib/rackEquipment";
 import DeviceManager from "@/components/portal/DeviceManager";
+import { DISCIPLINES, type Discipline } from "@/lib/productCatalog";
 
 
 type CameraDraft = {
@@ -155,6 +156,8 @@ const PortalFloorPlans: React.FC = () => {
     cable_route: true,
     other: true,
   });
+  /** Discipline layer filter — "all" shows every design layer. */
+  const [disciplineLayer, setDisciplineLayer] = useState<"all" | Discipline>("all");
   const [selected, setSelected] = useState<FloorMarker | null>(null);
   const [query, setQuery] = useState("");
   const [comment, setComment] = useState("");
@@ -340,14 +343,17 @@ const PortalFloorPlans: React.FC = () => {
   );
 
   const shown = useMemo(() => {
-    const base = floorMarkers.filter((m) => visible[m.marker_type]).map((m) => {
+    const base = floorMarkers
+      .filter((m) => visible[m.marker_type])
+      .filter((m) => (disciplineLayer === "all" ? true : (m as any).discipline === disciplineLayer))
+      .map((m) => {
       const o = optics[m.id];
       const p = draft[m.id];
       if (!o && !p) return m;
       return { ...m, ...(p ? { x_norm: p.x, y_norm: p.y } : {}), ...(o ?? {}) };
     });
     return visible.camera ? [...base, ...draftCameras] : base;
-  }, [floorMarkers, visible, draft, optics, draftCameras]);
+  }, [floorMarkers, visible, disciplineLayer, draft, optics, draftCameras]);
 
   const canDrag = useCallback(
     (m: FloorMarker) => m.status === "planned" && (editing || m.id.startsWith("draft-")),
@@ -1038,6 +1044,19 @@ const PortalFloorPlans: React.FC = () => {
                     </button>
                   );
                 })}
+                <select
+                  value={disciplineLayer}
+                  onChange={(e) => setDisciplineLayer(e.target.value as "all" | Discipline)}
+                  aria-label="Filter the plan by design discipline"
+                  className="h-9 border border-border bg-background px-2 text-[10px] uppercase tracking-[0.18em]"
+                >
+                  <option value="all">Show all disciplines</option>
+                  {DISCIPLINES.map((d) => (
+                    <option key={d.value} value={d.value}>
+                      {d.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Reposition controls */}

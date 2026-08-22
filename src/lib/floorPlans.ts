@@ -53,6 +53,10 @@ export type FloorMarker = {
   nvr_id?: string | null;
   nvr_channel?: number | null;
   design_hold?: string | null;
+  /** Catalogue product this instance represents (drives BOQ quantities). */
+  product_id?: string | null;
+  /** Design discipline layer, e.g. cctv_security. */
+  discipline?: string | null;
 };
 
 /** Fields the plan-side device manager may write through portal_save_floor_marker. */
@@ -76,6 +80,8 @@ export type FloorMarkerInput = {
   direction_deg?: number;
   fov_deg?: number;
   coverage_range?: CameraRange;
+  product_id?: string | null;
+  discipline?: string | null;
 };
 
 export const MARKER_ENVIRONMENTS = [
