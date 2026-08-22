@@ -57,7 +57,8 @@ type Props = {
   /** Drag a marker to new normalised coords. */
   onMove?: (markerId: string, x: number, y: number) => void;
   /** Called once when a marker drag finishes, to persist the position. */
-  onMoveEnd?: (markerId: string) => void;
+  /** Fired once on pointer release with the exact normalised position to persist. */
+  onMoveEnd?: (markerId: string, x: number, y: number) => void;
   /** Drag the aim handle of a selected camera to change its bearing (0–359). */
   onAim?: (markerId: string, deg: number) => void;
 
