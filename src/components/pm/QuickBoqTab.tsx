@@ -641,11 +641,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                       />
                       Included
                     </label>
-                    <Button size="sm" variant="outline" onClick={() => openPriceDialog(it)} disabled={readOnly}>
-                      Edit title &amp; price
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
-                      Details
+                    <Button size="sm" variant="outline" onClick={() => openEditItem(it)} disabled={readOnly}>
+                      Edit
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setDeleteId(it.id)} disabled={readOnly}>
                       Delete
