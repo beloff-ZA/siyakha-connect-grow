@@ -89,11 +89,15 @@ function App() {
               {/* Single public page */}
               <Route path="/" element={<Index />} />
 
-              {/* Auth (required for backend access) */}
-              <Route path="/auth" element={<AuthPage />} />
+              {/* Single unified secure access screen. /auth and /client-login are
+                  legacy aliases that render the same component so old bookmarks and
+                  recovery links keep working with one set of redirect rules. */}
+              <Route path="/sign-in" element={<SignIn />} />
+              <Route path="/auth" element={<SignIn />} />
+              <Route path="/client-login" element={<SignIn />} />
 
               {/* Client portal */}
-              <Route path="/client-login" element={<ClientLogin />} />
+
               <Route path="/share/:token" element={<SharePage />} />
               <Route path="/project-deck/:token" element={<ProjectDeckPage />} />
               <Route path="/portal" element={<ClientRoute><PortalDashboard /></ClientRoute>} />
