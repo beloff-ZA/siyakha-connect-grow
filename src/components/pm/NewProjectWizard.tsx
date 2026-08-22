@@ -236,7 +236,8 @@ const NewProjectWizard: React.FC<{
           if (!isPdf && !isImage) throw new Error("Only PDF or image plans are supported.");
           const level = Number(floors.find((f) => f.key === row.floorKey)?.level_number ?? 0);
           const ext = row.file.name.split(".").pop()?.toLowerCase() ?? (isPdf ? "pdf" : "png");
-          const path = `${projectId}/floor-plans/level-${String(level).padStart(2, "0")}-${Date.now()}.${ext}`;
+          // 'projects/<uuid>/...' is the prefix the plan-revision transaction and storage policies expect.
+          const path = `projects/${projectId}/floor-plans/level-${String(level).padStart(2, "0")}-${Date.now()}.${ext}`;
           // upsert:false — an original or earlier revision can never be overwritten.
           const { error: upErr } = await supabase.storage
             .from(DOCUMENTS_BUCKET)
