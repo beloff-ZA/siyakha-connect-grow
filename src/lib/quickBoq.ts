@@ -39,29 +39,37 @@ export type QuickLineInput = {
   specification?: string;
 };
 
-export type QuickLineValid = {
-  ok: boolean;
-  values: {
-    description: string;
-    quantity: number;
-    unit: string;
-    customer_unit_rate: number;
-    vat_applicable: boolean;
-    specification: string | null;
-  };
-  line_total: number;
-  errors?: Record<string, string>;
+export type QuickLineValues = {
+  description: string;
+  quantity: number;
+  unit: string;
+  customer_unit_rate: number;
+  vat_applicable: boolean;
+  specification: string | null;
 };
 
-export type QuickLineInvalid = {
+export type QuickLineResult = {
   ok: boolean;
+  values: QuickLineValues;
+  line_total: number;
   errors: Record<string, string>;
-  values?: QuickLineValid["values"];
-  line_total?: number;
+};
+
+/** @deprecated kept for readability of call sites */
+export type QuickLineValid = QuickLineResult;
+export type QuickLineInvalid = QuickLineResult;
+
+const EMPTY_VALUES: QuickLineValues = {
+  description: "",
+  quantity: 0,
+  unit: "each",
+  customer_unit_rate: 0,
+  vat_applicable: true,
+  specification: null,
 };
 
 /** Validates a quick add/edit line. Invalid input is reported, never silently dropped. */
-export const validateQuickLine = (input: QuickLineInput): QuickLineValid | QuickLineInvalid => {
+export const validateQuickLine = (input: QuickLineInput): QuickLineResult => {
   const errors: Record<string, string> = {};
   const description = String(input.description ?? "").trim();
   if (!description) errors.description = "Add a short item description.";
@@ -76,11 +84,12 @@ export const validateQuickLine = (input: QuickLineInput): QuickLineValid | Quick
   const unit = String(input.unit ?? "").trim();
   if (!unit) errors.unit = "Pick a unit.";
 
-  if (Object.keys(errors).length) return { ok: false, errors };
+  if (Object.keys(errors).length) return { ok: false, errors, values: EMPTY_VALUES, line_total: 0 };
 
   const spec = String(input.specification ?? "").trim();
   return {
     ok: true,
+    errors: {},
     values: {
       description,
       quantity: round2(qty),
