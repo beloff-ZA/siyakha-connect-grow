@@ -358,7 +358,7 @@ const stripInternal = (a: any): PackAsset => ({
  */
 export async function buildProjectPack(projectId: string, clientVisibleOnly = true): Promise<ProjectPack> {
   /** Any query error aborts the whole build with an admin-readable reason. */
-  const need = <T,>(label: string, res: { data: T; error?: any }): T => {
+  const need = (label: string, res: any): any => {
     if (res?.error) throw new Error(`Project pack build failed while loading ${label}: ${res.error.message ?? res.error}`);
     return res.data;
   };
