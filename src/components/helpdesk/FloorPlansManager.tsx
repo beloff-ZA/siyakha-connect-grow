@@ -24,7 +24,14 @@ import {
   type PortalFloor,
 } from "@/lib/floorPlans";
 import { parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
-import { markerTransaction, reconciliationNote } from "@/lib/designApi";
+import {
+  bulkCreateMarkers,
+  copyFloorLayout,
+  duplicateMarker as duplicateMarkerRpc,
+  markerTransaction,
+  planRevisionTransaction,
+  reconciliationNote,
+} from "@/lib/designApi";
 
 type CatalogProduct = {
   id: string;
@@ -203,40 +210,26 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
       return fail(upErr.message);
     }
 
-    const { count } = await supabase
-      .from("portal_plan_revisions")
-      .select("id", { count: "exact", head: true })
-      .eq("floor_id", floor.id);
-    const revisionLabel = `Rev ${String((count ?? 0) + 1).padStart(2, "0")}`;
-
-    // Only one revision per floor stays current.
-    await supabase.from("portal_plan_revisions").update({ is_current: false }).eq("floor_id", floor.id);
-    const { error: revErr } = await supabase.from("portal_plan_revisions").insert({
-      project_id: projectId,
-      floor_id: floor.id,
-      revision_label: revisionLabel,
-      source_path: path,
-      image_path: isImage ? path : null,
-      original_filename: file.name,
-      mime_type: file.type,
-      file_size: file.size,
-      is_current: true,
-      uploaded_by: user?.id ?? null,
-      notes: isPdf
-        ? "PDF source retained. Upload an interactive preview image to make this revision the design workspace."
-        : null,
-    });
-    if (revErr) {
+    // One server transaction numbers the revision, validates the storage path and
+    // MIME type, and flips "current" atomically so two uploads cannot both win.
+    let revisionLabel = "";
+    try {
+      const res = await planRevisionTransaction("create", {
+        floor_id: floor.id,
+        source_path: path,
+        image_path: isImage ? path : null,
+        original_filename: file.name,
+        mime_type: file.type,
+        file_size: file.size,
+        make_current: true,
+        notes: isPdf
+          ? "PDF source retained. Upload an interactive preview image to make this revision the design workspace."
+          : null,
+      });
+      revisionLabel = res.revision_label ?? "New revision";
+    } catch (e) {
       setBusy(false);
-      return fail(revErr.message);
-    }
-
-    if (isImage) {
-      const { error } = await supabase.from("portal_floors").update({ plan_image_path: path }).eq("id", floor.id);
-      if (error) {
-        setBusy(false);
-        return fail(error.message);
-      }
+      return fail(e instanceof Error ? e.message : "Could not record the plan revision.");
     }
 
     setBusy(false);
@@ -392,106 +385,77 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const duplicateMarker = async () => {
     if (!selected || !floor) return;
-    const same = floorMarkers.filter((m) => m.marker_type === selected.marker_type).length;
-    const base = selected.label.replace(/-\d+$/, "");
-    const { error } = await supabase.from("portal_floor_markers").insert({
-      floor_id: selected.floor_id,
-      project_id: projectId,
-      marker_type: selected.marker_type,
-      x_norm: Math.min(1, Number(selected.x_norm) + 0.03),
-      y_norm: Math.min(1, Number(selected.y_norm) + 0.03),
-      label: `${base}-${String(same + 1).padStart(2, "0")}`,
-      equipment: selected.equipment,
-      model: selected.model,
-      status: selected.status,
-      client_visible: selected.client_visible,
-      description: selected.description,
-      sort_order: same + 1,
-      created_by: user?.id ?? null,
-    });
-    if (error) return fail(error.message);
-    toast({ title: "Marker duplicated" });
-    load();
+    setBusy(true);
+    try {
+      const res = await duplicateMarkerRpc(selected.id);
+      toast({ title: "Device duplicated", description: reconciliationNote(res.reconciliation) });
+      await load();
+    } catch (e) {
+      fail(e instanceof Error ? e.message : "Could not duplicate this device.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const bulkCreate = async () => {
     if (!floor) return;
     const count = Number(bulk.count);
     if (!Number.isInteger(count) || count < 1 || count > 60) return fail("Count must be between 1 and 60.");
-    const prefix = (bulk.prefix.trim() || (bulk.kind === "camera" ? "CAM" : "AP")).toUpperCase();
-    const existing = floorMarkers.filter((m) => m.marker_type === bulk.kind).length;
-    const rows = Array.from({ length: count }, (_, i) => {
-      const n = existing + i + 1;
-      const col = i % 5;
-      const row = Math.floor(i / 5);
-      return {
-        floor_id: floor.id,
-        project_id: projectId,
-        marker_type: bulk.kind,
-        x_norm: Number((0.18 + 0.16 * col).toFixed(4)),
-        y_norm: Number((0.22 + 0.18 * row).toFixed(4)),
-        label: `${prefix}-L${String(floor.level_number).padStart(2, "0")}-${String(n).padStart(2, "0")}`,
-        status: "planned" as MarkerState,
-        description: SURVEY_DISCLAIMER,
-        sort_order: n,
-        created_by: user?.id ?? null,
-      };
-    });
+    const prefix = (bulk.prefix.trim() || kindShort(bulk.kind)).toUpperCase();
     setBusy(true);
-    const { error } = await supabase.from("portal_floor_markers").insert(rows);
-    setBusy(false);
-    if (error) return fail(error.message);
-    await logHistory("marker_bulk_create", `${count} ${kindLabel(bulk.kind)} markers created on ${floor.display_name}`);
-    toast({ title: `${count} markers created` });
-    load();
+    try {
+      const res = await bulkCreateMarkers({
+        floor_id: floor.id,
+        count,
+        label_prefix: prefix,
+        marker_type: bulk.kind,
+        product_id: placeProductId || null,
+        notes: SURVEY_DISCLAIMER,
+        // Unpriced devices are allowed, but the server records them as unbilled.
+        allow_unbilled: !placeProductId,
+      });
+      toast({
+        title: `${res.created} device(s) created`,
+        description: reconciliationNote(res.reconciliation),
+      });
+      await load();
+    } catch (e) {
+      fail(e instanceof Error ? e.message : "Could not create the devices.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const copyLayout = async () => {
     if (!floor || copyTargets.length === 0) return fail("Select at least one target level.");
     const clash = copyTargets.filter((id) => markers.some((m) => m.floor_id === id));
-    if (
+    const replace =
       clash.length > 0 &&
-      !window.confirm(
-        `${clash.length} selected level(s) already have markers. Existing markers on those levels — and any preliminary cable routes attached to them — will be deleted and replaced. Continue?`,
-      )
-    )
-      return;
+      window.confirm(
+        `${clash.length} selected level(s) already have devices. Choose OK to replace the replaceable planned devices on those levels, or Cancel to add this layout alongside what is already there. Installed, tested, active and asset-linked devices are always protected.`,
+      );
     setBusy(true);
-    const { error: delErr } = await supabase
-      .from("portal_floor_markers")
-      .delete()
-      .in("floor_id", copyTargets);
-    if (delErr) {
+    try {
+      const res = await copyFloorLayout({
+        source_floor_id: floor.id,
+        target_floor_ids: copyTargets,
+        mode: replace ? "replace" : "merge",
+        include_routes: true,
+        allow_unbilled: true,
+      });
+      const parts = [`${res.copied} device(s) copied`];
+      if (res.removed > 0) parts.push(`${res.removed} replaced`);
+      if (res.protected > 0) parts.push(`${res.protected} protected`);
+      if (res.routes_created > 0) parts.push(`${res.routes_created} route(s) generated`);
+      const note = reconciliationNote(res.reconciliation);
+      toast({ title: "Layout copied", description: [parts.join(" · "), note].filter(Boolean).join(" — ") });
+      setCopyTargets([]);
+      await load();
+    } catch (e) {
+      fail(e instanceof Error ? e.message : "Could not copy this layout.");
+    } finally {
       setBusy(false);
-      return fail(delErr.message);
     }
-    const rows = copyTargets.flatMap((targetId) => {
-      const target = floors.find((f) => f.id === targetId);
-      return floorMarkers.map((m) => ({
-        floor_id: targetId,
-        project_id: projectId,
-        marker_type: m.marker_type,
-        x_norm: m.x_norm,
-        y_norm: m.y_norm,
-        label: target
-          ? m.label.replace(/L\d{2}/, `L${String(target.level_number).padStart(2, "0")}`)
-          : m.label,
-        equipment: m.equipment,
-        model: m.model,
-        status: "planned" as MarkerState,
-        client_visible: m.client_visible,
-        description: m.description,
-        sort_order: m.sort_order,
-        created_by: user?.id ?? null,
-      }));
-    });
-    const { error } = await supabase.from("portal_floor_markers").insert(rows);
-    setBusy(false);
-    if (error) return fail(error.message);
-    await logHistory("layout_copy", `Layout copied from ${floor.display_name} to ${copyTargets.length} level(s)`);
-    toast({ title: "Layout copied" });
-    setCopyTargets([]);
-    load();
   };
 
   if (!projectId) return <p className="text-sm text-muted-foreground">Select a project above.</p>;
