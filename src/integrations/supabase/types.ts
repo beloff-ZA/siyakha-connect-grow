@@ -1591,6 +1591,8 @@ export type Database = {
       }
       portal_cable_routes: {
         Row: {
+          archived_at: string | null
+          archived_by: string | null
           cable_type: string
           client_visible: boolean
           created_at: string
@@ -1620,6 +1622,8 @@ export type Database = {
           waypoints: Json
         }
         Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
           cable_type?: string
           client_visible?: boolean
           created_at?: string
@@ -1649,6 +1653,8 @@ export type Database = {
           waypoints?: Json
         }
         Update: {
+          archived_at?: string | null
+          archived_by?: string | null
           cable_type?: string
           client_visible?: boolean
           created_at?: string
@@ -2651,6 +2657,41 @@ export type Database = {
           },
         ]
       }
+      portal_pm_assignments: {
+        Row: {
+          can_view_commercial: boolean
+          created_at: string
+          created_by: string | null
+          id: string
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          can_view_commercial?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          can_view_commercial?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_pm_assignments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_product_catalog: {
         Row: {
           archived_at: string | null
@@ -3135,6 +3176,8 @@ export type Database = {
       }
       portal_rack_equipment: {
         Row: {
+          archived_at: string | null
+          archived_by: string | null
           client_visible: boolean
           copper_ports: number | null
           created_at: string
@@ -3168,6 +3211,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
           client_visible?: boolean
           copper_ports?: number | null
           created_at?: string
@@ -3201,6 +3246,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          archived_at?: string | null
+          archived_by?: string | null
           client_visible?: boolean
           copper_ports?: number | null
           created_at?: string
@@ -3388,6 +3435,63 @@ export type Database = {
           },
         ]
       }
+      portal_share_acceptances: {
+        Row: {
+          accepted_at: string
+          accepted_by_user_id: string | null
+          client_id: string | null
+          id: string
+          note: string | null
+          project_id: string
+          resource_id: string | null
+          resource_type: string
+          revision_label: string | null
+          share_link_id: string
+          snapshot_hash: string
+        }
+        Insert: {
+          accepted_at?: string
+          accepted_by_user_id?: string | null
+          client_id?: string | null
+          id?: string
+          note?: string | null
+          project_id: string
+          resource_id?: string | null
+          resource_type: string
+          revision_label?: string | null
+          share_link_id: string
+          snapshot_hash: string
+        }
+        Update: {
+          accepted_at?: string
+          accepted_by_user_id?: string | null
+          client_id?: string | null
+          id?: string
+          note?: string | null
+          project_id?: string
+          resource_id?: string | null
+          resource_type?: string
+          revision_label?: string | null
+          share_link_id?: string
+          snapshot_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_share_acceptances_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_share_acceptances_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: true
+            referencedRelation: "portal_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_share_access_log: {
         Row: {
           accessed_at: string
@@ -3396,6 +3500,7 @@ export type Database = {
           id: string
           ip_hash: string | null
           outcome: string
+          rate_key: string | null
           share_link_id: string | null
           user_agent: string | null
         }
@@ -3406,6 +3511,7 @@ export type Database = {
           id?: string
           ip_hash?: string | null
           outcome?: string
+          rate_key?: string | null
           share_link_id?: string | null
           user_agent?: string | null
         }
@@ -3416,6 +3522,7 @@ export type Database = {
           id?: string
           ip_hash?: string | null
           outcome?: string
+          rate_key?: string | null
           share_link_id?: string | null
           user_agent?: string | null
         }
@@ -4219,6 +4326,21 @@ export type Database = {
           unit: string
         }[]
       }
+      portal_client_sites: {
+        Args: never
+        Returns: {
+          address: string
+          city: string
+          client_id: string
+          id: string
+          name: string
+          postal_code: string
+          province: string
+          sort_order: number
+          status: string
+          venue_type: string
+        }[]
+      }
       portal_copy_floor_layout: { Args: { _payload: Json }; Returns: Json }
       portal_delete_floor_marker: {
         Args: { _marker_id: string }
@@ -4232,12 +4354,31 @@ export type Database = {
         Args: { _floor_id?: string; _project_id: string }
         Returns: number
       }
+      portal_history_feed: {
+        Args: { _id: string; _scope: string }
+        Returns: {
+          action: string
+          actor: string
+          created_at: string
+          detail: string
+          id: string
+        }[]
+      }
       portal_log_client_activity: {
         Args: {
           _action: string
           _detail: string
           _entity_id: string
           _entity_type: string
+          _project_id: string
+        }
+        Returns: string
+      }
+      portal_log_client_event: {
+        Args: {
+          _detail: string
+          _entity_id?: string
+          _kind: string
           _project_id: string
         }
         Returns: string
@@ -4252,6 +4393,7 @@ export type Database = {
         Returns: number
       }
       portal_next_proposal_number: { Args: never; Returns: string }
+      portal_place_cameras: { Args: { _payload: Json }; Returns: Json }
       portal_plan_revision_transaction: {
         Args: { _action: string; _payload: Json }
         Returns: Json
@@ -4268,6 +4410,23 @@ export type Database = {
           _status: string
         }
         Returns: Json
+      }
+      portal_share_accept: {
+        Args: {
+          _note?: string
+          _share_link_id: string
+          _snapshot_hash: string
+          _user_id?: string
+        }
+        Returns: Json
+      }
+      portal_share_path_allowed: {
+        Args: { _path: string; _project_id: string }
+        Returns: boolean
+      }
+      portal_share_register_view: {
+        Args: { _share_link_id: string }
+        Returns: undefined
       }
       portal_sync_boq_from_plan: { Args: { _boq_id: string }; Returns: Json }
       portal_update_cable_route_waypoints: {

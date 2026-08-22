@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/sheet";
 
 import { supabase } from "@/integrations/supabase/client";
+import { markerTransaction, placeCameras } from "@/lib/designApi";
+
 import { usePortal } from "@/hooks/usePortal";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -406,19 +408,20 @@ const PortalFloorPlans: React.FC = () => {
       const p = pos ?? dragPositions.current[id] ?? draft[id];
       if (!marker || !p) return;
       setAutoSave({ state: "saving", label: marker.label });
-      const { error: rpcErr } = await supabase.rpc("portal_save_floor_marker", {
-        _payload: {
+      try {
+        await markerTransaction("save", {
           id,
           floor_id: marker.floor_id,
           is_placed: true,
           x_norm: p.x,
           y_norm: p.y,
-        } as unknown as never,
-      });
-      if (rpcErr) {
-        setAutoSave({ state: "error", id, label: marker.label, message: rpcErr.message });
+        });
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "Unknown error";
+        setAutoSave({ state: "error", id, label: marker.label, message });
         return;
       }
+
       setMarkers((list) =>
         list.map((m) => (m.id === id ? { ...m, x_norm: p.x, y_norm: p.y, is_placed: true } : m)),
       );
@@ -469,20 +472,21 @@ const PortalFloorPlans: React.FC = () => {
       const target = placeTarget;
       setPlaceTarget(null);
       setAutoSave({ state: "saving", label: target.label });
-      const { error: rpcErr } = await supabase.rpc("portal_save_floor_marker", {
-        _payload: {
+      try {
+        await markerTransaction("save", {
           id: target.id,
           floor_id: floor.id,
           is_placed: true,
           x_norm: x,
           y_norm: y,
-        } as unknown as never,
-      });
-      if (rpcErr) {
-        setAutoSave({ state: "error", id: target.id, label: target.label, message: rpcErr.message });
-        toast({ title: "Device not placed", description: rpcErr.message, variant: "destructive" });
+        });
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "Unknown error";
+        setAutoSave({ state: "error", id: target.id, label: target.label, message });
+        toast({ title: "Device not placed", description: message, variant: "destructive" });
         return;
       }
+
       await load();
       setAutoSave({
         state: "saved",
@@ -587,33 +591,43 @@ const PortalFloorPlans: React.FC = () => {
   const saveCameras = useCallback(async () => {
     if (!floor || camDrafts.length === 0) return;
     setSavingCams(true);
-    const { data, error: rpcErr } = await supabase.rpc("portal_add_floor_cameras", {
-      _floor_id: floor.id,
-      _cameras: camDrafts.map((c) => ({
-        x: c.x,
-        y: c.y,
-        direction_deg: c.direction_deg,
-        fov_deg: c.fov_deg,
-        coverage_range: c.coverage_range,
-      })) as unknown as never,
-    });
-    setSavingCams(false);
-    setCamConfirmOpen(false);
-    if (rpcErr) {
-      toast({ title: "Cameras not saved", description: rpcErr.message, variant: "destructive" });
+    let created = 0;
+    try {
+      const res = await placeCameras({
+        floor_id: floor.id,
+        cameras: camDrafts.map((c) => ({
+          x: c.x,
+          y: c.y,
+          direction_deg: c.direction_deg,
+          fov_deg: c.fov_deg,
+          coverage_range: c.coverage_range,
+        })),
+      });
+      created = res.created ?? 0;
+    } catch (e) {
+      setSavingCams(false);
+      setCamConfirmOpen(false);
+      toast({
+        title: "Cameras not saved",
+        description: e instanceof Error ? e.message : "Unknown error",
+        variant: "destructive",
+      });
       return;
     }
+    setSavingCams(false);
+    setCamConfirmOpen(false);
     setCamDrafts([]);
     setPlacingCams(false);
     setSelected(null);
     await load();
     toast({
       title: "Cameras added",
-      description: `${data ?? 0} planned camera${data === 1 ? "" : "s"} created on ${floor.display_name} and recorded in the audit trail.`,
+      description: `${created} planned camera${created === 1 ? "" : "s"} created on ${floor.display_name} and recorded in the audit trail.`,
     });
     // Newly saved cameras have no cabling yet — offer to add only the missing routes.
-    if ((data ?? 0) > 0) setGenOpen(true);
+    if (created > 0) setGenOpen(true);
   }, [camDrafts, floor, load, toast]);
+
 
   const cancelChanges = useCallback(() => {
     setDraft({});
@@ -623,36 +637,44 @@ const PortalFloorPlans: React.FC = () => {
 
   const savePositions = useCallback(async () => {
     setSaving(true);
-    const moves = Object.entries(draft).map(([id, p]) => ({ id, x: p.x, y: p.y }));
-    const opticUpdates = Object.entries(optics).map(([id, o]) => ({ id, ...o }));
-    const { data, error: rpcErr } = moves.length
-      ? await supabase.rpc("portal_move_floor_markers", { _moves: moves as unknown as never })
-      : { data: 0, error: null };
-    const { error: oErr } = opticUpdates.length
-      ? await supabase.rpc("portal_update_camera_optics", {
-          _updates: opticUpdates as unknown as never,
-        })
-      : { error: null };
-    setSaving(false);
-    setConfirmOpen(false);
-    if (rpcErr || oErr) {
+    // Positions and camera optics are written through the single transactional
+    // marker API, so every change is authorised, audited and settled.
+    const ids = Array.from(new Set([...Object.keys(draft), ...Object.keys(optics)]));
+    const moved = Object.keys(draft).length;
+    const opticCount = Object.keys(optics).length;
+    try {
+      for (const id of ids) {
+        const marker = markers.find((m) => m.id === id);
+        const p = draft[id];
+        await markerTransaction("save", {
+          id,
+          ...(marker?.floor_id ? { floor_id: marker.floor_id } : {}),
+          ...(p ? { is_placed: true, x_norm: p.x, y_norm: p.y } : {}),
+          ...(optics[id] ?? {}),
+        });
+      }
+    } catch (e) {
+      setSaving(false);
+      setConfirmOpen(false);
       toast({
         title: "Changes not saved",
-        description: (rpcErr ?? oErr)?.message ?? "Unknown error",
+        description: e instanceof Error ? e.message : "Unknown error",
         variant: "destructive",
       });
       return;
     }
+    setSaving(false);
+    setConfirmOpen(false);
     setDraft({});
     setOptics({});
     setEditing(false);
     await load();
     toast({
       title: "Changes saved",
-      description: `${data ?? 0} position${data === 1 ? "" : "s"} and ${opticUpdates.length} camera setting${opticUpdates.length === 1 ? "" : "s"} updated and recorded in the audit trail.`,
+      description: `${moved} position${moved === 1 ? "" : "s"} and ${opticCount} camera setting${opticCount === 1 ? "" : "s"} updated and recorded in the audit trail.`,
     });
+  }, [draft, optics, markers, load, toast]);
 
-  }, [draft, optics, load, toast]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

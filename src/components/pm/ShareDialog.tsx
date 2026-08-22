@@ -12,7 +12,6 @@ import {
   PERMISSIONS,
   permissionLabel,
   RESOURCE_LABELS,
-  regenerateShareLink,
   revokeShareLink,
   updateShareCapabilities,
   isDeckResource,
@@ -22,7 +21,7 @@ import {
   type ShareResourceType,
   type SharePermission,
 } from "@/lib/shareLinks";
-import { Copy, History, Link2, RefreshCw, ShieldOff } from "lucide-react";
+import { Copy, History, Link2, ShieldOff } from "lucide-react";
 
 export type ShareTarget = {
   resource_type: ShareResourceType;
@@ -207,7 +206,7 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
                     checked={form.download_allowed}
                     onChange={(e) => setForm({ ...form, download_allowed: e.target.checked })}
                   />
-                  Allow PDF download / print of the full pack
+                  Show print / save controls (anything shown can still be saved)
                 </label>
                 <label className="flex items-center gap-2 text-sm">
                   <input
@@ -253,7 +252,7 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
                 {issued}
                 <br />
                 <span className="text-muted-foreground">
-                  Shown once — only a hash is stored. Regenerate the link if it is lost.
+                  Shown once — only a hash is stored. The token and snapshot are immutable: if the link is lost, revoke it and create a new one.
                 </span>
               </p>
             )}
@@ -296,9 +295,6 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
                       >
                         Extend 30 days
                       </Button>
-                      <Button size="sm" variant="outline" disabled={busy} onClick={() => act(() => regenerateShareLink(l.id, l.resource_type), "New link issued")}>
-                        <RefreshCw className="mr-2 h-4 w-4" strokeWidth={1.5} /> Regenerate
-                      </Button>
                       <Button size="sm" variant="ghost" disabled={busy || st === "revoked"} onClick={() => act(() => revokeShareLink(l.id), "Link revoked")}>
                         <ShieldOff className="mr-2 h-4 w-4" strokeWidth={1.5} /> Revoke
                       </Button>
@@ -309,11 +305,11 @@ const ShareDialog: React.FC<{ open: boolean; onOpenChange: (v: boolean) => void;
                         onClick={() =>
                           act(
                             () => updateShareCapabilities(l.id, { download_allowed: !l.download_allowed }),
-                            l.download_allowed ? "Download disabled" : "Download enabled",
+                            l.download_allowed ? "Print controls hidden" : "Print controls shown",
                           )
                         }
                       >
-                        {l.download_allowed ? "Disable download" : "Allow download"}
+                        {l.download_allowed ? "Hide print controls" : "Show print controls"}
                       </Button>
                       <Button
                         size="sm"

@@ -124,10 +124,12 @@ export const PortalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         if (!cancelled) setClient((clientRow as PortalClient | null) ?? null);
       }
 
+      // Sites come from the safe projection: no budget, internal notes or private contacts.
       const [{ data: siteRows }, { data: projectRows, error: pErr }] = await Promise.all([
-        supabase.from("portal_sites").select("*").order("sort_order").order("name"),
+        (supabase.rpc as unknown as (n: string) => Promise<{ data: unknown }>)("portal_client_sites"),
         supabase.from("portal_projects").select("*").order("created_at", { ascending: true }),
       ]);
+
 
       if (cancelled) return;
       if (pErr) setError(pErr.message);

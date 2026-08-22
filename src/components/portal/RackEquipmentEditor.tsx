@@ -1,6 +1,8 @@
 import React from "react";
 import { History, Loader2, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { historyFeed } from "@/lib/designApi";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,14 +59,11 @@ export const RackEquipmentEditor: React.FC<{
     setMac(item.mac_address ?? "");
     setPosition(String(item.rack_position ?? item.sort_order ?? 1));
     void (async () => {
-      const { data } = await supabase
-        .from("portal_rack_equipment_history")
-        .select("id, action, detail, created_at")
-        .eq("equipment_id", item.id)
-        .order("created_at", { ascending: false })
-        .limit(8);
-      setHistory((data ?? []) as HistoryRow[]);
+      // Allowlisted history feed: plain action, description and time only.
+      const rows = await historyFeed("rack_equipment", item.id).catch(() => []);
+      setHistory(rows.slice(0, 8) as unknown as HistoryRow[]);
     })();
+
   }, [open, item]);
 
   const save = async () => {
