@@ -2003,6 +2003,8 @@ export type Database = {
       }
       portal_floor_markers: {
         Row: {
+          archived_at: string | null
+          archived_by: string | null
           area: string | null
           capacity_u: number | null
           client_visible: boolean
@@ -2050,6 +2052,8 @@ export type Database = {
           y_norm: number | null
         }
         Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
           area?: string | null
           capacity_u?: number | null
           client_visible?: boolean
@@ -2097,6 +2101,8 @@ export type Database = {
           y_norm?: number | null
         }
         Update: {
+          archived_at?: string | null
+          archived_by?: string | null
           area?: string | null
           capacity_u?: number | null
           client_visible?: boolean
@@ -2872,6 +2878,7 @@ export type Database = {
           consultant: string | null
           created_at: string
           description: string | null
+          design_boq_id: string | null
           design_concept: string | null
           id: string
           lifecycle_note: string | null
@@ -2896,6 +2903,7 @@ export type Database = {
           consultant?: string | null
           created_at?: string
           description?: string | null
+          design_boq_id?: string | null
           design_concept?: string | null
           id?: string
           lifecycle_note?: string | null
@@ -2920,6 +2928,7 @@ export type Database = {
           consultant?: string | null
           created_at?: string
           description?: string | null
+          design_boq_id?: string | null
           design_concept?: string | null
           id?: string
           lifecycle_note?: string | null
@@ -2944,6 +2953,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "portal_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_projects_design_boq_id_fkey"
+            columns: ["design_boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
             referencedColumns: ["id"]
           },
           {
@@ -4203,6 +4219,10 @@ export type Database = {
         }
         Returns: string
       }
+      portal_marker_transaction: {
+        Args: { _action: string; _payload: Json }
+        Returns: Json
+      }
       portal_move_floor_markers: { Args: { _moves: Json }; Returns: number }
       portal_next_pack_revision: {
         Args: { _pack_kind: string; _project_id: string }
@@ -4246,6 +4266,9 @@ export type Database = {
         | "patch_panel"
         | "access_control"
         | "note_marker"
+        | "fire_device"
+        | "power_saving_device"
+        | "automation_device"
       portal_marker_state: "planned" | "installed" | "tested" | "active"
     }
     CompositeTypes: {
@@ -4403,6 +4426,9 @@ export const Constants = {
         "patch_panel",
         "access_control",
         "note_marker",
+        "fire_device",
+        "power_saving_device",
+        "automation_device",
       ],
       portal_marker_state: ["planned", "installed", "tested", "active"],
     },
