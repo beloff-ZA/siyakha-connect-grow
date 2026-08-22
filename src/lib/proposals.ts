@@ -61,11 +61,31 @@ export type SnapshotLine = {
 
 export type SnapshotSection = { title: string; description: string | null; lines: SnapshotLine[] };
 
+/** Client-safe floor / plan schedule row frozen into a proposal. */
+export type SnapshotFloor = {
+  id: string;
+  level_number: number;
+  display_name: string;
+  floor_use: string | null;
+  notes: string | null;
+  drawing_number: string | null;
+  drawing_title: string | null;
+  drawing_scale: string | null;
+  revision_label: string | null;
+  device_count: number;
+};
+
 export type ProposalSnapshot = {
   generated_at: string;
   client: { id: string; display_name: string; contact_name: string | null; contact_email: string | null; phone: string | null } | null;
   site: { id: string; name: string; address: string | null; city: string | null; province: string | null } | null;
   project: { id: string; title: string; reference: string | null; address: string | null; status: string | null } | null;
+  /** QS building schedule captured on the project (never invented). */
+  building?: BuildingDetails | null;
+  /** Floor / plan schedule with per-floor device counts. */
+  floors?: SnapshotFloor[];
+  /** Device quantity roll-up (client-safe counts only). */
+  devices?: DeviceTotals | null;
   boq: {
     id: string;
     title: string;
@@ -80,6 +100,7 @@ export type ProposalSnapshot = {
   sections: SnapshotSection[];
   totals: BoqTotals;
 };
+
 
 export const PROPOSAL_DEFAULTS = {
   payment_terms:
