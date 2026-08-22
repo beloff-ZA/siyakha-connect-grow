@@ -451,10 +451,12 @@ const FloorPlanCanvas: React.FC<Props> = ({
     if (coverage === "off") return [];
     if (coverage === "selected") {
       const m = markers.find((x) => x.id === selectedId);
-      return m ? [m] : [];
+      // Racks, cable routes and note markers never get a coverage light.
+      return m && coverageKind(m.marker_type) ? [m] : [];
     }
     return markers.filter((m) => m.marker_type === "wifi_ap" || m.marker_type === "camera");
   }, [coverage, markers, selectedId]);
+
 
   const coverageBase = Math.min(content.width, content.height) || 0;
   const markerPx = Math.max(14, 22 / zoom);
