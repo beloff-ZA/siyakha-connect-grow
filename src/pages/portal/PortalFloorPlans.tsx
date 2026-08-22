@@ -472,20 +472,21 @@ const PortalFloorPlans: React.FC = () => {
       const target = placeTarget;
       setPlaceTarget(null);
       setAutoSave({ state: "saving", label: target.label });
-      const { error: rpcErr } = await supabase.rpc("portal_save_floor_marker", {
-        _payload: {
+      try {
+        await markerTransaction("save", {
           id: target.id,
           floor_id: floor.id,
           is_placed: true,
           x_norm: x,
           y_norm: y,
-        } as unknown as never,
-      });
-      if (rpcErr) {
-        setAutoSave({ state: "error", id: target.id, label: target.label, message: rpcErr.message });
-        toast({ title: "Device not placed", description: rpcErr.message, variant: "destructive" });
+        });
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "Unknown error";
+        setAutoSave({ state: "error", id: target.id, label: target.label, message });
+        toast({ title: "Device not placed", description: message, variant: "destructive" });
         return;
       }
+
       await load();
       setAutoSave({
         state: "saved",
