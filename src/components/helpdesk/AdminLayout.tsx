@@ -25,6 +25,7 @@ const navSections = [
   {
     label: "Planning",
     items: [
+      { label: "Project Management", icon: Briefcase, path: "/helpdesk/project-management" },
       { label: "Projects", icon: FolderKanban, path: "/helpdesk/projects" },
       { label: "Future Projects", icon: Rocket, path: "/helpdesk/future-projects" },
       { label: "Site Performance", icon: Activity, path: "/helpdesk/site-performance" },

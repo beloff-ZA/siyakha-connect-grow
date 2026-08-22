@@ -30,7 +30,10 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
 
 const selectCls = "h-10 border border-input bg-background px-3 text-sm w-full";
 
-const BoqManager: React.FC<{ projectId: string }> = ({ projectId }) => {
+const BoqManager: React.FC<{ projectId: string; onPrintCustomerBoq?: (boqId: string) => void }> = ({
+  projectId,
+  onPrintCustomerBoq,
+}) => {
   const { toast } = useToast();
   const [boqs, setBoqs] = useState<Boq[]>([]);
   const [boqId, setBoqId] = useState("");
@@ -410,6 +413,64 @@ const BoqManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     loadDetail();
   };
 
+  /** Customer rate = supplier cost x (1 + markup%). The rate stays manually editable afterwards. */
+  const applyMarkupToItem = async (item: BoqItem, silent = false) => {
+    const cost = costs.find((c) => c.item_id === item.id);
+    const supplierCost = Number(cost?.supplier_unit_cost ?? 0);
+    const markup = Number(cost?.markup_percent ?? 0);
+    if (!supplierCost) {
+      if (!silent) toast({ title: "Capture a supplier unit cost first", variant: "destructive" as never });
+      return false;
+    }
+    const rate = Math.round(supplierCost * (1 + markup / 100) * 100) / 100;
+    const { error } = await supabase.from("portal_boq_items").update({ customer_unit_rate: rate }).eq("id", item.id);
+    if (error) {
+      fail(error);
+      return false;
+    }
+    if (!silent) {
+      await logActivity("markup_applied", `${item.description} → ${formatZar(rate)} (${markup}% markup)`);
+      toast({ title: `Rate set to ${formatZar(rate)}` });
+      loadDetail();
+    }
+    return true;
+  };
+
+  const [bulkMarkup, setBulkMarkup] = useState("");
+  const applyMarkupToBoq = async () => {
+    const pct = Number(bulkMarkup);
+    if (!Number.isFinite(pct) || pct < 0) return toast({ title: "Enter a valid markup %", variant: "destructive" as never });
+    setBusy(true);
+    try {
+      let changed = 0;
+      for (const it of items) {
+        const cost = costs.find((c) => c.item_id === it.id);
+        const supplierCost = Number(cost?.supplier_unit_cost ?? 0);
+        if (!supplierCost) continue;
+        await saveCostQuiet(it.id, { markup_percent: pct });
+        const rate = Math.round(supplierCost * (1 + pct / 100) * 100) / 100;
+        const { error } = await supabase.from("portal_boq_items").update({ customer_unit_rate: rate }).eq("id", it.id);
+        if (error) throw error;
+        changed += 1;
+      }
+      await logActivity("markup_applied_bulk", `${pct}% markup applied to ${changed} line(s)`);
+      toast({ title: `Markup applied to ${changed} line(s)` });
+      loadDetail();
+    } catch (e) {
+      fail(e);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const saveCostQuiet = async (itemId: string, patch: Row) => {
+    const existing = costs.find((c) => c.item_id === itemId);
+    const { error } = existing
+      ? await supabase.from("portal_boq_item_costs").update(patch).eq("item_id", itemId)
+      : await supabase.from("portal_boq_item_costs").insert({ item_id: itemId, ...patch });
+    if (error) throw error;
+  };
+
   const respondToComment = async (id: string, response: string) => {
     const { error } = await supabase
       .from("portal_boq_comments")
@@ -533,13 +594,19 @@ const BoqManager: React.FC<{ projectId: string }> = ({ projectId }) => {
               <Button size="sm" variant="outline" onClick={duplicateBoq} disabled={busy}>
                 Duplicate as new revision
               </Button>
-              <Button size="sm" variant="outline" onClick={() => window.print()}>
-                <Printer className="h-4 w-4 mr-2" strokeWidth={1.5} /> Print customer BOQ
-              </Button>
+              {onPrintCustomerBoq && (
+                <Button size="sm" variant="outline" onClick={() => onPrintCustomerBoq(boq.id)}>
+                  <Printer className="h-4 w-4 mr-2" strokeWidth={1.5} /> Customer BOQ document
+                </Button>
+              )}
               <Button size="sm" variant="outline" onClick={syncPlanningQuantities} disabled={busy || locked}>
                 <RefreshCcw className="h-4 w-4 mr-2" strokeWidth={1.5} /> Sync planning quantities from floor plans
               </Button>
             </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              The customer document opens in a dedicated A4 print view built from a client-safe snapshot — supplier
+              names, supplier costs, markup, margin and internal notes are excluded.
+            </p>
 
             {syncSummary.length > 0 && (
               <div className="mt-4 border border-border p-4">
@@ -577,22 +644,49 @@ const BoqManager: React.FC<{ projectId: string }> = ({ projectId }) => {
             </dl>
           </Section>
 
-          <Section title="Private costing — internal only (never visible to clients)">
-            <dl className="grid grid-cols-3 gap-4">
-              <div>
-                <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Supplier cost</dt>
-                <dd className="text-sm">{formatZar(internalTotals.cost)}</dd>
+          <div className="internal-only">
+            <Section title="Private costing — internal only (never visible to clients)">
+              <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Supplier total</dt>
+                  <dd className="text-sm">{formatZar(internalTotals.cost)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Customer subtotal</dt>
+                  <dd className="text-sm">{formatZar(totals.subtotal)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Gross profit</dt>
+                  <dd className="text-sm">{formatZar(internalTotals.gross)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Margin</dt>
+                  <dd className="text-sm">{internalTotals.margin.toFixed(2)}%</dd>
+                </div>
+              </dl>
+
+              <div className="mt-5 flex flex-wrap items-end gap-3 border-t border-border pt-5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="bulk-markup">Whole-BOQ markup %</Label>
+                  <Input
+                    id="bulk-markup"
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    className="w-32"
+                    value={bulkMarkup}
+                    onChange={(e) => setBulkMarkup(e.target.value)}
+                  />
+                </div>
+                <Button size="sm" variant="outline" onClick={applyMarkupToBoq} disabled={busy || locked || !bulkMarkup}>
+                  Apply markup to all costed lines
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Customer rates are recalculated from supplier costs and remain manually editable afterwards.
+                </p>
               </div>
-              <div>
-                <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Gross profit</dt>
-                <dd className="text-sm">{formatZar(internalTotals.gross)}</dd>
-              </div>
-              <div>
-                <dt className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Margin</dt>
-                <dd className="text-sm">{internalTotals.margin.toFixed(2)}%</dd>
-              </div>
-            </dl>
-          </Section>
+            </Section>
+          </div>
 
           <Section title="Sections & lines">
             <div className="flex gap-2">
@@ -720,7 +814,7 @@ const BoqManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                                 </Button>
                               </div>
 
-                              <div className="mt-3 border-t border-dashed border-border pt-3">
+                              <div className="internal-only mt-3 border-t border-dashed border-border pt-3">
                                 <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">
                                   Private costing — internal only
                                 </p>
@@ -749,11 +843,15 @@ const BoqManager: React.FC<{ projectId: string }> = ({ projectId }) => {
                                     defaultValue={Number(cost.markup_percent ?? 0)}
                                     onBlur={(e) => saveCost(it.id, { markup_percent: Math.max(0, Number(e.target.value)) })}
                                   />
-                                  <p className="text-xs text-muted-foreground self-center">
-                                    Margin{" "}
-                                    {marginPercent(Number(it.customer_unit_rate), Number(cost.supplier_unit_cost ?? 0)).toFixed(2)}
-                                    %
-                                  </p>
+                                  <div className="flex flex-wrap items-center gap-2 self-center">
+                                    <span className="text-xs text-muted-foreground">
+                                      Margin{" "}
+                                      {marginPercent(Number(it.customer_unit_rate), Number(cost.supplier_unit_cost ?? 0)).toFixed(2)}%
+                                    </span>
+                                    <Button size="sm" variant="outline" onClick={() => applyMarkupToItem(it)} disabled={locked}>
+                                      Apply markup
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
                             </div>

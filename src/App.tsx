@@ -32,6 +32,7 @@ import HelpdeskDiary from "./pages/helpdesk/Diary";
 import HelpdeskCalendar from "./pages/helpdesk/DirectorCalendar";
 import DirectorPA from "./pages/helpdesk/DirectorPA";
 import DirectorProjects from "./pages/helpdesk/DirectorProjects";
+import ProjectManagement from "./pages/helpdesk/ProjectManagement";
 import DirectorCosts from "./pages/helpdesk/DirectorCosts";
 import HelpdeskLeads from "./pages/helpdesk/Leads";
 import DirectorInbox from "./pages/helpdesk/DirectorInbox";
@@ -144,6 +145,7 @@ function App() {
               <Route path="/helpdesk" element={<AdminRoute><HelpdeskDashboard /></AdminRoute>} />
               <Route path="/helpdesk/diary" element={<AdminRoute><HelpdeskDiary /></AdminRoute>} />
               <Route path="/helpdesk/calendar" element={<AdminRoute><HelpdeskCalendar /></AdminRoute>} />
+              <Route path="/helpdesk/project-management" element={<AdminRoute><ProjectManagement /></AdminRoute>} />
               <Route path="/helpdesk/projects" element={<AdminRoute><DirectorProjects /></AdminRoute>} />
               <Route path="/helpdesk/costs" element={<AdminRoute><DirectorCosts /></AdminRoute>} />
               <Route path="/helpdesk/ai-pa" element={<AdminRoute><DirectorPA /></AdminRoute>} />
