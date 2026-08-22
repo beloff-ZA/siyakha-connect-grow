@@ -539,8 +539,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                       <p className="text-sm font-semibold tabular-nums">
                         {formatZar(Number(item.line_total ?? lineTotal(item.quantity, item.customer_unit_rate)))}
                       </p>
-                      <Button size="sm" disabled={readOnly} onClick={() => openPriceDialog(item)}>
-                        Edit title &amp; price
+                      <Button size="sm" disabled={readOnly} onClick={() => openEditItem(item)}>
+                        Edit
                       </Button>
                     </div>
                   </li>
@@ -549,8 +549,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
             )}
             {readOnly && results.length > 0 && (
               <p className="mt-3 text-xs text-muted-foreground">
-                This revision is {boq?.status} and locked. Items can be searched but titles and prices cannot be
-                changed — start a new revision under Advanced costing to update them.
+                This revision is {boq?.status} and locked. Items can be searched but not changed — start a new revision
+                under Advanced costing to update them.
               </p>
             )}
           </div>
