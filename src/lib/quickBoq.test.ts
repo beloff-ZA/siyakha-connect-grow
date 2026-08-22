@@ -293,8 +293,8 @@ describe("unified BOQ item editor", () => {
       selling_price: "abc",
     });
     expect(res.ok).toBe(false);
-    if (res.ok) throw new Error("expected validation to fail");
-    expect(Object.keys(res.errors).sort()).toEqual(["category", "description", "quantity", "selling_price", "unit"]);
+    const errors = (res as { errors?: Record<string, string> }).errors ?? {};
+    expect(Object.keys(errors).sort()).toEqual(["category", "description", "quantity", "selling_price", "unit"]);
     expect(unifiedItemPatch(cur, { ...baseInput, quantity: 0 }).ok).toBe(true);
   });
 
