@@ -4417,6 +4417,14 @@ export type Database = {
         }
         Returns: Json
       }
+      portal_share_path_allowed: {
+        Args: { _path: string; _project_id: string }
+        Returns: boolean
+      }
+      portal_share_register_view: {
+        Args: { _share_link_id: string }
+        Returns: undefined
+      }
       portal_sync_boq_from_plan: { Args: { _boq_id: string }; Returns: Json }
       portal_update_cable_route_waypoints: {
         Args: { _route_id: string; _waypoints: Json }
