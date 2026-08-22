@@ -1,0 +1,1 @@
+ALTER TABLE public.portal_proposals ADD COLUMN IF NOT EXISTS objectives text;
