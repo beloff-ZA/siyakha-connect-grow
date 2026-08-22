@@ -4,7 +4,7 @@ import { Panel, Stat } from "./ui";
 import type { PmProject, PmWorkspace } from "@/hooks/usePmWorkspace";
 import { floorCountLabel } from "@/lib/reporting";
 
-type Counts = Record<string, number> & { floorLabel?: string };
+type Counts = Record<string, number | string>;
 
 // Untyped handle: the generated Database types make these head-count queries too
 // deep for the compiler, and no row data is read here.

@@ -173,3 +173,43 @@ describe("reports & share workspace behaviour", () => {
     });
   });
 });
+
+describe("floor vs rooftop/service counting", () => {
+  const anton = [
+    ...Array.from({ length: 11 }, (_, i) => ({
+      floor_use: i === 0 ? "entry_ground" : "accommodation",
+      level_number: i,
+    })),
+    { floor_use: "rooftop_service", level_number: 11 },
+  ];
+
+  it("counts 12 plan records as 11 floors plus one rooftop/service area", () => {
+    expect(floorCounts(anton)).toEqual({ floors: 11, rooftopAreas: 1, planRecords: 12 });
+    expect(floorCountLabel(anton)).toBe("11 floors + 1 rooftop/service area");
+  });
+
+  it("keeps the rooftop record available, separated from the floors", () => {
+    const { floors, rooftop } = splitFloorAreas(anton);
+    expect(floors).toHaveLength(11);
+    expect(rooftop).toHaveLength(1);
+    expect(rooftop[0].level_number).toBe(11);
+    expect(floors.some((f) => f.floor_use === "rooftop_service")).toBe(false);
+  });
+
+  it("derives rooftop generically, without hard-coding a level or count", () => {
+    const other = [
+      { floor_use: "entry_ground" },
+      { floor_use: "ROOFTOP_SERVICE" },
+      { floor_use: " rooftop_service " },
+      { floor_use: null },
+    ];
+    expect(floorCounts(other)).toEqual({ floors: 2, rooftopAreas: 2, planRecords: 4 });
+    expect(floorCountLabel(other)).toBe("2 floors + 2 rooftop/service areas");
+    expect(isRooftopArea({ floor_use: ROOFTOP_FLOOR_USE })).toBe(true);
+  });
+
+  it("omits the rooftop clause when there is no rooftop plan", () => {
+    expect(floorCountLabel([{ floor_use: "accommodation" }])).toBe("1 floor");
+    expect(floorCountLabel([])).toBe("0 floors");
+  });
+});
