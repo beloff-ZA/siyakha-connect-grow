@@ -256,10 +256,14 @@ export const buildSnapshot = async (projectId: string, boqId: string | null): Pr
     client: client ?? null,
     site: site ?? null,
     project: { id: project.id, title: project.title, reference: project.reference, address: project.address, status: project.status },
+    building,
+    floors,
+    devices,
     boq,
     sections,
     totals,
   };
 };
+
 
 export const proposalsDb = db;
