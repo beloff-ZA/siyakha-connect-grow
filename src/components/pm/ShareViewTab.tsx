@@ -90,6 +90,8 @@ const ShareViewTab: React.FC<{
         snapshot,
         ...VIEW_ONLY_SHARE_DEFAULTS,
         require_client_login: false,
+        // Plans/devices follow the latest saved client-visible design; commercials stay frozen.
+        live_project_view: true,
         expires_at: new Date(Date.now() + Math.max(1, Number(days) || 30) * 86400000).toISOString(),
       });
       setIssued(url);
@@ -136,9 +138,14 @@ const ShareViewTab: React.FC<{
           </Field>
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
-          Creates a secure, read-only link to a frozen client-safe view of the project. Supplier costs, markup, margin
-          and internal notes are never included, and no email is sent — you copy and share the link yourself.
+          Creates a secure, read-only <strong>live project view</strong> link. Proposal and commercial content
+          (BOQ, rates, totals, narrative) is frozen at issue, while plans and devices update from the latest saved
+          client-visible design. Supplier costs, markup, margin and internal notes are never included, and no email is
+          sent — you copy and share the link yourself.
         </p>
+        <Chip className="mt-2 border-foreground text-foreground">
+          Live project view · commercials frozen at issue
+        </Chip>
         <Button className="mt-3" size="sm" disabled={!projectId || busy} onClick={() => create("user")}>
           <Link2 className="mr-1 h-3.5 w-3.5" /> Create view link
         </Button>
