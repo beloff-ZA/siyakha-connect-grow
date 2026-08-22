@@ -24,7 +24,29 @@ export type RackEquipment = {
   status: string;
   client_visible: boolean;
   notes: string | null;
+  /* QS attributes — never fabricated; serials/MACs stay blank until commissioning. */
+  floor_id?: string | null;
+  role?: string | null;
+  equipment_name?: string | null;
+  rack_position?: number | null;
+  copper_ports?: number | null;
+  sfp_ports?: number | null;
+  sfp_plus_ports?: number | null;
+  network_layer?: string | null;
+  product_url?: string | null;
+  serial_number?: string | null;
+  mac_address?: string | null;
 };
+
+/** Plain-language purpose of each device, for the client-facing rack view. */
+export const equipmentPurpose = (model: string) =>
+  model === AGGREGATION_SWITCH_MODEL
+    ? "Terminates the building fibre backbone from the upper floors and links the network to the core."
+    : "Powers and connects the Wi-Fi access points and CCTV cameras on this level over a single Cat6 cable per device.";
+
+/** Serial numbers, MAC addresses and dates are only captured at commissioning. */
+export const TBC = "TBC";
+
 
 /** Every rack in this project is a 6U wall-mount enclosure. */
 export const RACK_CAPACITY_U = 6;
