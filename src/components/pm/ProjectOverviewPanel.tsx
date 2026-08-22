@@ -5,6 +5,10 @@ import type { PmProject, PmWorkspace } from "@/hooks/usePmWorkspace";
 
 type Counts = Record<string, number>;
 
+// Untyped handle: the generated Database types make these head-count queries too
+// deep for the compiler, and no row data is read here.
+const db = supabase as unknown as { from: (t: string) => any };
+
 /**
  * Live project summary. Every number is derived from the existing tables on each
  * load — no counters are stored or duplicated.
@@ -18,18 +22,18 @@ const ProjectOverviewPanel: React.FC<{ ws: PmWorkspace; project: PmProject }> = 
     let cancelled = false;
     (async () => {
       const [floors, revisions, markers, routes, racks, boqItems, docs, images] = await Promise.all([
-        supabase.from("portal_floors").select("id", { count: "exact", head: true }).eq("project_id", project.id),
+        db.from("portal_floors").select("id", { count: "exact", head: true }).eq("project_id", project.id),
         supabase
           .from("portal_plan_revisions")
           .select("id", { count: "exact", head: true })
           .eq("project_id", project.id)
           .is("archived_at", null),
-        supabase.from("portal_floor_markers").select("marker_type").eq("project_id", project.id).is("archived_at", null),
-        supabase.from("portal_cable_routes").select("id", { count: "exact", head: true }).eq("project_id", project.id),
-        supabase.from("portal_rack_equipment").select("id", { count: "exact", head: true }).eq("project_id", project.id),
-        supabase.from("portal_boq_items").select("id", { count: "exact", head: true }).eq("project_id", project.id),
-        supabase.from("portal_documents").select("id", { count: "exact", head: true }).eq("project_id", project.id),
-        supabase.from("portal_site_images").select("id", { count: "exact", head: true }).eq("project_id", project.id),
+        db.from("portal_floor_markers").select("marker_type").eq("project_id", project.id).is("archived_at", null),
+        db.from("portal_cable_routes").select("id", { count: "exact", head: true }).eq("project_id", project.id),
+        db.from("portal_rack_equipment").select("id", { count: "exact", head: true }).eq("project_id", project.id),
+        db.from("portal_boq_items").select("id", { count: "exact", head: true }).eq("project_id", project.id),
+        db.from("portal_documents").select("id", { count: "exact", head: true }).eq("project_id", project.id),
+        db.from("portal_site_images").select("id", { count: "exact", head: true }).eq("project_id", project.id),
       ]);
       if (cancelled) return;
       const types = ((markers.data ?? []) as { marker_type: string }[]).map((m) => m.marker_type);
