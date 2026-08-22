@@ -154,6 +154,8 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
       title: `${p.title} — Technology infrastructure proposal`,
       executive_summary: `${SIYAKHA.company} is pleased to submit this proposal to ${client || "the client"} for the technology infrastructure scope at ${site || p.title}. Our approach delivers a smart, scalable and secure environment, installed and certified to standard, with clear documentation and ongoing support.`,
       project_understanding: `${client || "The client"} requires a reliable, well-documented technology infrastructure at ${site || p.title}. ${p.description ?? "The scope covers design confirmation, supply, installation, testing, certification and handover."}`,
+      objectives:
+        "A resilient, standards-compliant infrastructure sized for current and future demand.\nFull coverage across every level and area identified in the design.\nCentralised, secure management with clear labelling and documentation.\nMinimal disruption to occupants and existing operations during installation.\nA certified, fully documented handover with measurable test results.",
       scope_of_work: p.description ?? "Supply, installation, termination, testing, certification, commissioning and handover of the infrastructure detailed in the attached pricing schedule.",
       planned_start_date: p.start_date ?? "",
       planned_completion_date: p.target_date ?? "",
@@ -169,6 +171,7 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
       revision_label: p.revision_label,
       executive_summary: p.executive_summary ?? "",
       project_understanding: p.project_understanding ?? "",
+      objectives: p.objectives ?? "",
       scope_of_work: p.scope_of_work ?? "",
       methodology: p.methodology ?? "",
       deliverables: p.deliverables ?? "",
