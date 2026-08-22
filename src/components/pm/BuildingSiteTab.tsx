@@ -287,7 +287,15 @@ const BuildingSiteTab: React.FC<{ ws: PmWorkspace; project: PmProject }> = ({ ws
               <tbody>
                 {floors.map((f) => (
                   <tr key={f.id} className="border-t border-border">
-                    <td className="py-2 pr-3 tabular-nums">{f.level_number}</td>
+                    <td className="py-2 pr-3 tabular-nums">
+                      {f.level_number}
+                      {isRooftopArea(f) && (
+                        <span className="mt-1 block text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+                          {ROOFTOP_EXCLUDED_NOTE}
+                        </span>
+                      )}
+                    </td>
+
                     <td className="py-2 pr-3">
                       <Input
                         value={f.display_name}
