@@ -599,10 +599,8 @@ const BoqManager: React.FC<{ projectId: string; onPrintCustomerBoq?: (boqId: str
                   <Printer className="h-4 w-4 mr-2" strokeWidth={1.5} /> Customer BOQ document
                 </Button>
               )}
-              <Button size="sm" variant="outline" onClick={syncPlanningQuantities} disabled={busy || locked}>
-                <RefreshCcw className="h-4 w-4 mr-2" strokeWidth={1.5} /> Sync planning quantities from floor plans
-              </Button>
             </div>
+
             <p className="mt-3 text-xs text-muted-foreground">
               The customer document opens in a dedicated A4 print view built from a client-safe snapshot — supplier
               names, supplier costs, markup, margin and internal notes are excluded.
