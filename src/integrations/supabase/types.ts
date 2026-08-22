@@ -1591,6 +1591,8 @@ export type Database = {
       }
       portal_cable_routes: {
         Row: {
+          archived_at: string | null
+          archived_by: string | null
           cable_type: string
           client_visible: boolean
           created_at: string
@@ -1620,6 +1622,8 @@ export type Database = {
           waypoints: Json
         }
         Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
           cable_type?: string
           client_visible?: boolean
           created_at?: string
@@ -1649,6 +1653,8 @@ export type Database = {
           waypoints?: Json
         }
         Update: {
+          archived_at?: string | null
+          archived_by?: string | null
           cable_type?: string
           client_visible?: boolean
           created_at?: string
@@ -3135,6 +3141,8 @@ export type Database = {
       }
       portal_rack_equipment: {
         Row: {
+          archived_at: string | null
+          archived_by: string | null
           client_visible: boolean
           copper_ports: number | null
           created_at: string
@@ -3168,6 +3176,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
           client_visible?: boolean
           copper_ports?: number | null
           created_at?: string
@@ -3201,6 +3211,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          archived_at?: string | null
+          archived_by?: string | null
           client_visible?: boolean
           copper_ports?: number | null
           created_at?: string
