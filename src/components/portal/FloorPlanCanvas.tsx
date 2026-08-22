@@ -10,6 +10,7 @@ import {
   bearingText,
   bearingToRotation,
   containRect,
+  coverageKind,
   normDistancePx,
   normalizeBearing,
   pointerInContent,
@@ -602,6 +603,29 @@ const FloorPlanCanvas: React.FC<Props> = ({
                           }}
                         />
                       </React.Fragment>
+                    );
+                  }
+
+                  if (coverageKind(m.marker_type) === "spotlight") {
+                    const r = coverageBase * 0.06;
+                    return (
+                      <div
+                        key={`cov-${m.id}`}
+                        aria-hidden
+                        className="absolute rounded-full pointer-events-none"
+                        style={{
+                          left: cx,
+                          top: cy,
+                          width: r * 2,
+                          height: r * 2,
+                          marginLeft: -r,
+                          marginTop: -r,
+                          background:
+                            "radial-gradient(circle, hsl(190 100% 60% / 0.45) 0%, hsl(190 100% 55% / 0.22) 55%, hsl(190 100% 50% / 0) 100%)",
+                          border: "1px solid hsl(190 100% 55% / 0.55)",
+                          filter: "drop-shadow(0 0 8px hsl(190 100% 55% / 0.5))",
+                        }}
+                      />
                     );
                   }
 
