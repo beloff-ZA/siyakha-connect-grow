@@ -1,6 +1,7 @@
 import React from "react";
 import { Cpu, Network, Server } from "lucide-react";
 import { RACK_HUE, type FloorMarker, type PortalFloor } from "@/lib/floorPlans";
+import { RackEquipmentEditor } from "@/components/portal/RackEquipmentEditor";
 import { routeColor } from "@/lib/cableRoutes";
 import {
   ACCESS_SWITCH_MODEL,
