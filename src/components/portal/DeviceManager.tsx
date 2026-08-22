@@ -272,14 +272,12 @@ const DeviceManager: React.FC<Props> = ({
 
   const savePayload = useCallback(
     async (payload: Record<string, unknown>) => {
-      const { data, error } = await supabase.rpc("portal_save_floor_marker", {
-        _payload: payload as never,
-      });
-      if (error) throw new Error(error.message);
-      return data as unknown as string;
+      const res = await markerTransaction("save", payload);
+      return res.marker_id ?? "";
     },
     [],
   );
+
 
   /** Remove a device from the drawing while keeping its register record. */
   const markUnplaced = useCallback(
