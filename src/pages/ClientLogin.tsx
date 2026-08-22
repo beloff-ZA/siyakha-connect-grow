@@ -34,6 +34,24 @@ const ClientLogin: React.FC = () => {
     if (!meta.parentNode) document.head.appendChild(meta);
   }, []);
 
+  // Role-aware landing. A confirmed global Siyakha admin goes to /helpdesk, an
+  // exactly-active client user goes to /portal, anyone else is told access is
+  // unavailable rather than being dropped on a page they cannot read.
+  const routeAfterAuth = React.useCallback(
+    async (userId: string) => {
+      const path = await resolveLandingPath(userId);
+      if (path === "/") {
+        setFormError(
+          "This account is not currently active for portal access. Contact Siyakha to have your access enabled.",
+        );
+        await supabase.auth.signOut();
+        return;
+      }
+      navigate(path, { replace: true });
+    },
+    [navigate],
+  );
+
   useEffect(() => {
     const hash = window.location.hash;
     const isRecovery =
@@ -45,6 +63,20 @@ const ClientLogin: React.FC = () => {
     const mustChange = (u: { user_metadata?: Record<string, unknown> } | undefined | null) =>
       u?.user_metadata?.must_change_password === true;
 
+    // Guard against the auth-event / getSession race: whichever resolves first
+    // performs the single redirect, the other becomes a no-op.
+    let handled = false;
+    const handle = (session: { user?: { id: string; user_metadata?: Record<string, unknown> } } | null) => {
+      if (!session?.user || isRecovery) return;
+      if (mustChange(session.user)) {
+        setMode("setup");
+        return;
+      }
+      if (handled) return;
+      handled = true;
+      void routeAfterAuth(session.user.id);
+    };
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -52,23 +84,18 @@ const ClientLogin: React.FC = () => {
         setMode("setup");
         return;
       }
-      if (mustChange(session?.user)) {
-        setMode("setup");
+      if (event === "SIGNED_OUT") {
+        handled = false;
         return;
       }
-      if (session?.user && !isRecovery) navigate("/portal", { replace: true });
+      handle(session);
     });
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (mustChange(data.session?.user)) {
-        setMode("setup");
-        return;
-      }
-      if (data.session?.user && !isRecovery) navigate("/portal", { replace: true });
-    });
+    supabase.auth.getSession().then(({ data }) => handle(data.session));
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [routeAfterAuth]);
+
 
   const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
