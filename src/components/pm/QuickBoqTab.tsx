@@ -24,14 +24,23 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronDown, Loader2, Plus, Printer, Settings2, Trash2 } from "lucide-react";
+import { ChevronDown, Loader2, Plus, Printer, Search, Settings2, Trash2, X } from "lucide-react";
 import BoqManager from "@/components/helpdesk/BoqManager";
 import PlanBoqSyncPanel from "./PlanBoqSyncPanel";
 import PrintSurface from "./PrintSurface";
 import BoqPrintView from "./BoqPrintView";
 import { Panel, Stat, Field, selectCls } from "./ui";
 import { BOQ_UNITS, computeTotals, formatQty, formatZar, lineTotal, type Boq, type BoqItem, type BoqSection } from "@/lib/boq";
-import { DEFAULT_CATEGORY, pickDefaultBoq, previewLineTotal, validateQuickLine } from "@/lib/quickBoq";
+import {
+  DEFAULT_CATEGORY,
+  isRevisionLocked,
+  pickDefaultBoq,
+  previewLineTotal,
+  priceUpdatePatch,
+  searchBoqItems,
+  validateNewPrice,
+  validateQuickLine,
+} from "@/lib/quickBoq";
 import { buildSnapshot, type ProposalSnapshot } from "@/lib/proposals";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
 
@@ -85,6 +94,11 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [edit, setEdit] = useState<{ id: string; quantity: string; rate: string } | null>(null);
+  const [query, setQuery] = useState("");
+  const [appliedQuery, setAppliedQuery] = useState("");
+  const [priceTarget, setPriceTarget] = useState<BoqItem | null>(null);
+  const [priceValue, setPriceValue] = useState("0");
+  const [priceError, setPriceError] = useState<string | null>(null);
   const [creating, setCreating] = useState({ title: "Bill of quantities", revision_label: "Draft v1", vat_enabled: true, valid_until: todayPlus(30) });
 
   const fail = (e: unknown) =>
@@ -129,14 +143,20 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   useEffect(() => {
     void loadDetail();
   }, [loadDetail]);
+  useEffect(() => {
+    setQuery("");
+    setAppliedQuery("");
+  }, [boqId]);
 
   const selection = useMemo(() => pickDefaultBoq(boqs, boqId), [boqs, boqId]);
   const boq = boqs.find((b) => b.id === boqId) ?? null;
-  const readOnly = boq?.status === "approved" || boq?.status === "superseded";
+  const readOnly = isRevisionLocked(boq?.status);
   const totals = useMemo(
     () => computeTotals(items, { vat_enabled: boq?.vat_enabled ?? true, vat_rate: Number(boq?.vat_rate ?? 15) }),
     [items, boq],
   );
+
+  const results = useMemo(() => searchBoqItems(items, sections, appliedQuery, boqId), [items, sections, appliedQuery, boqId]);
 
   const sectionTitle = (id: string) => sections.find((s) => s.id === id)?.title ?? DEFAULT_CATEGORY;
 
@@ -266,6 +286,52 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     setDeleteId(null);
     if (error) return fail(error);
     toast({ title: "Item removed" });
+    await refresh();
+  };
+
+  /** Reuses the existing portal_boq_activity log — no new logging system. */
+  const logActivity = async (action: string, detail: string) => {
+    try {
+      const { data } = await supabase.auth.getUser();
+      await supabase.from("portal_boq_activity").insert({
+        boq_id: boqId,
+        actor_user_id: data.user?.id ?? null,
+        actor_type: "admin",
+        action,
+        detail,
+      });
+    } catch {
+      /* logging must never block the price update */
+    }
+  };
+
+  const openPriceDialog = (it: BoqItem) => {
+    setPriceError(null);
+    setPriceValue(String(Number(it.customer_unit_rate)));
+    setPriceTarget(it);
+  };
+
+  const saveNewPrice = async () => {
+    if (!priceTarget) return;
+    const result = validateNewPrice(priceValue);
+    if (!result.ok) {
+      setPriceError(result.error);
+      return;
+    }
+    setPriceError(null);
+    setBusy(true);
+    const { error } = await supabase
+      .from("portal_boq_items")
+      .update(priceUpdatePatch(result.value))
+      .eq("id", priceTarget.id);
+    setBusy(false);
+    if (error) return fail(error);
+    await logActivity(
+      "item_price_updated",
+      `${priceTarget.description}: ${formatZar(Number(priceTarget.customer_unit_rate))} → ${formatZar(result.value)}`,
+    );
+    toast({ title: "New price saved", description: priceTarget.description });
+    setPriceTarget(null);
     await refresh();
   };
 
