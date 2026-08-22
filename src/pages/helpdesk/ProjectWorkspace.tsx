@@ -7,7 +7,7 @@ import BuildingSiteTab from "@/components/pm/BuildingSiteTab";
 import PlansDesignTab from "@/components/pm/PlansDesignTab";
 import BoqCostingTab from "@/components/pm/BoqCostingTab";
 import ProjectFilesTab from "@/components/pm/ProjectFilesTab";
-import ShareViewTab from "@/components/pm/ShareViewTab";
+import ReportsShareTab from "@/components/pm/ReportsShareTab";
 import { Chip } from "@/components/pm/ui";
 import { parseSection, WORKSPACE_SECTIONS, type WorkspaceSection } from "@/lib/projectWizard";
 import { ArrowLeft } from "lucide-react";
@@ -108,7 +108,7 @@ const ProjectWorkspace: React.FC = () => {
               <ProjectFilesTab {...fixed} />
             </TabsContent>
             <TabsContent value="share">
-              <ShareViewTab {...fixed} />
+              <ReportsShareTab {...fixed} />
             </TabsContent>
           </Tabs>
         </>
