@@ -21,12 +21,15 @@ import { deviceTypeLabel, disciplineFor, NOT_PROCURED, packSectionFlags, stageLa
 import { formatZar } from "@/lib/boq";
 import { formatDate } from "@/lib/portalFiles";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
+import { assertClientSafe, assertExplicitAction } from "@/lib/reporting";
 
-const ReportsTab: React.FC<{ ws: PmWorkspace; projectId: string; setProjectId: (id: string) => void }> = ({
-  ws,
-  projectId,
-  setProjectId,
-}) => {
+const ReportsTab: React.FC<{
+  ws: PmWorkspace;
+  projectId: string;
+  setProjectId: (id: string) => void;
+  /** Hides the project picker when the project comes from the URL. */
+  locked?: boolean;
+}> = ({ ws, projectId, setProjectId, locked }) => {
   const { toast } = useToast();
   const [pack, setPack] = useState<ProjectPack | null>(null);
   const [internal, setInternal] = useState<InternalCommercial | null>(null);
@@ -110,10 +113,13 @@ const ReportsTab: React.FC<{ ws: PmWorkspace; projectId: string; setProjectId: (
     }
   };
 
-  const issue = async () => {
+  /** Only ever called from an explicit Generate click — never from an effect. */
+  const issue = async (trigger: "user" | "effect" = "user") => {
     if (!pack || !projectId) return;
     setBusy(true);
     try {
+      assertExplicitAction(trigger, "Issuing a project report");
+      assertClientSafe(pack, "The client project report");
       const saved = await issuePack(
         projectId,
         "client",
@@ -251,16 +257,18 @@ const ReportsTab: React.FC<{ ws: PmWorkspace; projectId: string; setProjectId: (
           )
         }
       >
-        <Field label="Project">
-          <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
-            <option value="">Select a project…</option>
-            {options.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </Field>
+        {!locked && (
+          <Field label="Project">
+            <select className={selectCls} value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              <option value="">Select a project…</option>
+              {options.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
         {pack && (
           <p className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <Chip>{stageLabel(pack.lifecycle_stage)}</Chip>

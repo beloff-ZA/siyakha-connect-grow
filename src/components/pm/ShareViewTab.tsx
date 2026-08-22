@@ -14,6 +14,7 @@ import {
 } from "@/lib/shareLinks";
 import { Copy, Link2, ShieldOff } from "lucide-react";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
+import { assertClientSafe, assertExplicitAction, VIEW_ONLY_SHARE_DEFAULTS } from "@/lib/reporting";
 
 /**
  * Simple view-only share workflow. Creates a read-only, client-safe deck link
@@ -71,11 +72,14 @@ const ShareViewTab: React.FC<{
     }
   };
 
-  const create = async () => {
+  /** Explicit-click only: opening the tab never creates a link. */
+  const create = async (trigger: "user" | "effect" = "user") => {
     if (!projectId) return;
     setBusy(true);
     try {
+      assertExplicitAction(trigger, "Creating a view link");
       const snapshot = await buildProjectPack(projectId, true);
+      assertClientSafe(snapshot, "The shared project view");
       const { url } = await createShareLink({
         resource_type: "project_pack",
         resource_id: null,
@@ -84,10 +88,7 @@ const ShareViewTab: React.FC<{
         project_id: projectId,
         client_id: (snapshot.client as { id?: string } | null)?.id ?? null,
         snapshot,
-        permission_scope: "view",
-        download_allowed: false,
-        comments_allowed: false,
-        approval_allowed: false,
+        ...VIEW_ONLY_SHARE_DEFAULTS,
         require_client_login: false,
         expires_at: new Date(Date.now() + Math.max(1, Number(days) || 30) * 86400000).toISOString(),
       });
