@@ -3,11 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { adminDisplayName, adminIdentityLabel } from "@/lib/adminIdentity";
 import { Button } from "@/components/ui/button";
-import {
-  LayoutDashboard, LogOut, Menu, X, ChevronRight, BookOpen, CalendarDays,
-  Briefcase, Sparkles, DollarSign, FolderKanban, Users, Inbox,
-  StickyNote, Rocket, Activity, Building2, Truck, Wifi, Phone, Package
-} from "lucide-react";
+import { LogOut, Menu, X, ChevronRight, Briefcase, FolderKanban } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 

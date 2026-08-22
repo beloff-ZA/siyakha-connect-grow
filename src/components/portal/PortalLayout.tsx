@@ -1,25 +1,6 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Camera,
-
-  FileText,
-  Images,
-  ListChecks,
-  Calculator,
-  Layers,
-
-  MessageSquare,
-  Bell,
-  UserRound,
-  LogOut,
-  Menu,
-  X,
-  Building2,
-  ClipboardList,
-  PlusCircle,
-} from "lucide-react";
+import { LayoutDashboard, Camera, FileText, Calculator, Layers, LogOut, Menu, X } from "lucide-react";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePortal } from "@/hooks/usePortal";
