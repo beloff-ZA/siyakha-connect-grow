@@ -137,3 +137,39 @@ describe("device roll-up", () => {
     expect(t.byType).toEqual([]);
   });
 });
+
+describe("reports & share workspace behaviour", () => {
+  it("keeps proposals scoped to the URL project even when others exist", () => {
+    const proposals = [
+      { id: "p1", project_id: "A" },
+      { id: "p2", project_id: "B" },
+      { id: "p3", project_id: "A" },
+    ];
+    expect(scopeToProject(proposals, "A").map((p) => p.id)).toEqual(["p1", "p3"]);
+    expect(scopeToProject(proposals, "")).toEqual([]);
+  });
+
+  it("rejects a client report that still carries supplier or markup fields", () => {
+    const pack = {
+      project: { id: "A", title: "Tower" },
+      boqLines: [{ description: "AP", quantity: 4, unit_price: 100, supplier_cost: 60 }],
+    };
+    expect(() => assertClientSafe(pack, "The client project report")).toThrow(/supplier_cost/);
+    expect(() => assertClientSafe(stripSensitive(pack), "The client project report")).not.toThrow();
+  });
+
+  it("blocks record creation triggered by mount or effect, allows explicit clicks", () => {
+    expect(() => assertExplicitAction("mount", "Issuing a project report")).toThrow(/explicit Generate or Create/);
+    expect(() => assertExplicitAction("effect", "Creating a view link")).toThrow(/explicit Generate or Create/);
+    expect(() => assertExplicitAction("user", "Saving a proposal draft")).not.toThrow();
+  });
+
+  it("defaults secure view links to view-only with no download, comments or approval", () => {
+    expect(VIEW_ONLY_SHARE_DEFAULTS).toEqual({
+      permission_scope: "view",
+      download_allowed: false,
+      comments_allowed: false,
+      approval_allowed: false,
+    });
+  });
+});
