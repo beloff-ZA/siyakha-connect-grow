@@ -40,7 +40,7 @@ export type QuickLineInput = {
 };
 
 export type QuickLineValid = {
-  ok: true;
+  ok: boolean;
   values: {
     description: string;
     quantity: number;
@@ -50,9 +50,15 @@ export type QuickLineValid = {
     specification: string | null;
   };
   line_total: number;
+  errors?: Record<string, string>;
 };
 
-export type QuickLineInvalid = { ok: false; errors: Record<string, string> };
+export type QuickLineInvalid = {
+  ok: boolean;
+  errors: Record<string, string>;
+  values?: QuickLineValid["values"];
+  line_total?: number;
+};
 
 /** Validates a quick add/edit line. Invalid input is reported, never silently dropped. */
 export const validateQuickLine = (input: QuickLineInput): QuickLineValid | QuickLineInvalid => {
