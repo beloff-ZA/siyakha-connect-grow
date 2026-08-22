@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.send-enquiry]
 verify_jwt = false
+
+[functions.share-resolve]
+verify_jwt = false

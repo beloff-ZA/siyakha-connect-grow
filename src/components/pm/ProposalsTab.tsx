@@ -21,7 +21,8 @@ import type { PmWorkspace } from "@/hooks/usePmWorkspace";
 import { Chip, Field, Panel, selectCls } from "./ui";
 import PrintSurface from "./PrintSurface";
 import ProposalDocument from "./ProposalDocument";
-import { FileText, Plus, Receipt } from "lucide-react";
+import ShareDialog, { type ShareTarget } from "./ShareDialog";
+import { FileText, Plus, Receipt, Share2 } from "lucide-react";
 
 type Form = {
   project_id: string;
@@ -82,6 +83,8 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
   const [busy, setBusy] = useState(false);
   const [view, setView] = useState<{ proposal: Proposal; variant: "full" | "costing" } | null>(null);
   const [filterProject, setFilterProject] = useState(initialProjectId ?? "");
+  const [share, setShare] = useState<ShareTarget | null>(null);
+
 
   useEffect(() => {
     if (initialProjectId) setFilterProject(initialProjectId);
@@ -248,6 +251,24 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
     }
   };
 
+  /** Shares the exact issued revision; a draft must be generated first. */
+  const openShare = (p: Proposal, variant: "full" | "costing") => {
+    if (!p.snapshot) {
+      toast({ title: "Generate the document first", description: "A frozen revision is required before sharing.", variant: "destructive" as never });
+      return;
+    }
+    const project = projects.find((x) => x.id === p.project_id);
+    setShare({
+      resource_type: variant === "costing" ? "costing" : "proposal",
+      resource_id: p.id,
+      revision_label: `${p.proposal_number} · ${p.revision_label}`,
+      title: p.title,
+      project_id: p.project_id,
+      client_id: project?.client_id ?? null,
+      snapshot: { proposal: p },
+    });
+  };
+
   const setStatus = async (p: Proposal, status: Proposal["status"]) => {
     setBusy(true);
     try {
@@ -338,6 +359,12 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
                 )}
                 <Button size="sm" variant="outline" onClick={() => openNew(p.project_id, p)}>
                   New revision
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => openShare(p, "full")} disabled={busy}>
+                  <Share2 className="mr-2 h-4 w-4" strokeWidth={1.5} /> Share proposal
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => openShare(p, "costing")} disabled={busy}>
+                  <Share2 className="mr-2 h-4 w-4" strokeWidth={1.5} /> Share costing
                 </Button>
                 {p.status === "issued" && (
                   <>
@@ -448,6 +475,8 @@ const ProposalsTab: React.FC<{ ws: PmWorkspace; initialProjectId?: string }> = (
       >
         {view && <ProposalDocument proposal={view.proposal} variant={view.variant} />}
       </PrintSurface>
+
+      <ShareDialog open={!!share} onOpenChange={(v) => !v && setShare(null)} target={share} />
     </div>
   );
 };
