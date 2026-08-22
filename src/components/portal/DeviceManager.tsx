@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Copy, MapPin, MapPinOff, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { markerTransaction } from "@/lib/designApi";
+
 import {
   DISCIPLINES,
   disciplineLabel,
