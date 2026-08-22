@@ -133,8 +133,8 @@ const ClientLogin: React.FC = () => {
     });
     setLoading(false);
     if (error) return setFormError(error.message);
-    // First-time setup completes as a successful portal sign-in — notify once here.
-    void notifyAdminOfLogin();
+    // No outbound notification is sent from the portal in this environment.
+
     toast({ title: "Password set", description: "Welcome to your Siyakha client portal." });
     navigate("/portal", { replace: true });
   };
