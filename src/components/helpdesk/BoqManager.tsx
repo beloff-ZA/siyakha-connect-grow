@@ -594,13 +594,19 @@ const BoqManager: React.FC<{ projectId: string; onPrintCustomerBoq?: (boqId: str
               <Button size="sm" variant="outline" onClick={duplicateBoq} disabled={busy}>
                 Duplicate as new revision
               </Button>
-              <Button size="sm" variant="outline" onClick={() => window.print()}>
-                <Printer className="h-4 w-4 mr-2" strokeWidth={1.5} /> Print customer BOQ
-              </Button>
+              {onPrintCustomerBoq && (
+                <Button size="sm" variant="outline" onClick={() => onPrintCustomerBoq(boq.id)}>
+                  <Printer className="h-4 w-4 mr-2" strokeWidth={1.5} /> Customer BOQ document
+                </Button>
+              )}
               <Button size="sm" variant="outline" onClick={syncPlanningQuantities} disabled={busy || locked}>
                 <RefreshCcw className="h-4 w-4 mr-2" strokeWidth={1.5} /> Sync planning quantities from floor plans
               </Button>
             </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              The customer document opens in a dedicated A4 print view built from a client-safe snapshot — supplier
+              names, supplier costs, markup, margin and internal notes are excluded.
+            </p>
 
             {syncSummary.length > 0 && (
               <div className="mt-4 border border-border p-4">
