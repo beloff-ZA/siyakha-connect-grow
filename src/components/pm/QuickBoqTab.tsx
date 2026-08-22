@@ -34,11 +34,10 @@ import { BOQ_UNITS, computeTotals, formatQty, formatZar, lineTotal, type Boq, ty
 import {
   DEFAULT_CATEGORY,
   isRevisionLocked,
+  itemEditPatch,
   pickDefaultBoq,
   previewLineTotal,
-  priceUpdatePatch,
   searchBoqItems,
-  validateNewPrice,
   validateQuickLine,
 } from "@/lib/quickBoq";
 import { buildSnapshot, type ProposalSnapshot } from "@/lib/proposals";
@@ -98,7 +97,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   const [appliedQuery, setAppliedQuery] = useState("");
   const [priceTarget, setPriceTarget] = useState<BoqItem | null>(null);
   const [priceValue, setPriceValue] = useState("0");
-  const [priceError, setPriceError] = useState<string | null>(null);
+  const [titleValue, setTitleValue] = useState("");
+  const [editErrors, setEditErrors] = useState<{ description?: string; selling_price?: string }>({});
   const [creating, setCreating] = useState({ title: "Bill of quantities", revision_label: "Draft v1", vat_enabled: true, valid_until: todayPlus(30) });
 
   const fail = (e: unknown) =>
@@ -306,35 +306,36 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
   };
 
   const openPriceDialog = (it: BoqItem) => {
-    setPriceError(null);
+    setEditErrors({});
+    setTitleValue(it.description);
     setPriceValue(String(Number(it.customer_unit_rate)));
     setPriceTarget(it);
   };
 
-  const saveNewPrice = async () => {
+  const saveItemEdit = async () => {
     if (!priceTarget) return;
-    const result = validateNewPrice(priceValue);
+    const result = itemEditPatch(priceTarget, { title: titleValue, selling_price: priceValue });
     if (result.ok !== true) {
-      setPriceError(result.error);
+      setEditErrors(result.errors);
       return;
     }
 
-    setPriceError(null);
+    setEditErrors({});
+    if (!result.changed) {
+      setPriceTarget(null);
+      return;
+    }
+
     setBusy(true);
-    const { error } = await supabase
-      .from("portal_boq_items")
-      .update(priceUpdatePatch(result.value))
-      .eq("id", priceTarget.id);
+    const { error } = await supabase.from("portal_boq_items").update(result.patch).eq("id", priceTarget.id);
     setBusy(false);
     if (error) return fail(error);
-    await logActivity(
-      "item_price_updated",
-      `${priceTarget.description}: ${formatZar(Number(priceTarget.customer_unit_rate))} → ${formatZar(result.value)}`,
-    );
-    toast({ title: "New price saved", description: priceTarget.description });
+    await logActivity("item_updated", result.summary);
+    toast({ title: "Changes saved", description: titleValue.trim() });
     setPriceTarget(null);
     await refresh();
   };
+
 
   const openCustomerDocument = async () => {
     if (!boqId) return;
@@ -538,7 +539,7 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                         {formatZar(Number(item.line_total ?? lineTotal(item.quantity, item.customer_unit_rate)))}
                       </p>
                       <Button size="sm" disabled={readOnly} onClick={() => openPriceDialog(item)}>
-                        Update price
+                        Edit title &amp; price
                       </Button>
                     </div>
                   </li>
@@ -547,8 +548,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
             )}
             {readOnly && results.length > 0 && (
               <p className="mt-3 text-xs text-muted-foreground">
-                This revision is {boq?.status} and locked. Prices can be searched but not changed — start a new revision
-                under Advanced costing to update pricing.
+                This revision is {boq?.status} and locked. Items can be searched but titles and prices cannot be
+                changed — start a new revision under Advanced costing to update them.
               </p>
             )}
           </div>
@@ -650,6 +651,9 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                                 >
                                   Edit
                                 </Button>
+                                <Button size="sm" variant="ghost" onClick={() => openPriceDialog(it)} disabled={readOnly}>
+                                  Title &amp; price
+                                </Button>
                                 <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
                                   Details
                                 </Button>
@@ -695,8 +699,11 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                       />
                       Included
                     </label>
-                    <Button size="sm" variant="outline" onClick={() => openEditItem(it)} disabled={readOnly}>
-                      Edit
+                    <Button size="sm" variant="outline" onClick={() => openPriceDialog(it)} disabled={readOnly}>
+                      Edit title &amp; price
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => openEditItem(it)} disabled={readOnly}>
+                      Details
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setDeleteId(it.id)} disabled={readOnly}>
                       Delete
@@ -823,24 +830,22 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
         </DialogContent>
       </Dialog>
 
-      {/* Quick price update */}
+      {/* Edit title & price */}
       <Dialog open={!!priceTarget} onOpenChange={(v) => !v && setPriceTarget(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Update price</DialogTitle>
-            <DialogDescription>Only the selling price of this one item changes.</DialogDescription>
+            <DialogTitle>Edit title &amp; price</DialogTitle>
+            <DialogDescription>Only the item title and selling price of this one item change.</DialogDescription>
           </DialogHeader>
           {priceTarget && (
             <div className="space-y-4">
-              <div>
-                <p className="text-sm">{priceTarget.description}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Current selling price {formatZar(Number(priceTarget.customer_unit_rate))} · {formatQty(priceTarget.quantity)}{" "}
-                  {priceTarget.unit}
-                </p>
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-title">Item title</Label>
+                <Input id="edit-title" value={titleValue} onChange={(e) => setTitleValue(e.target.value)} />
+                {editErrors.description && <p className="text-xs text-destructive">{editErrors.description}</p>}
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="new-price">New selling price</Label>
+                <Label htmlFor="new-price">Selling price</Label>
                 <Input
                   id="new-price"
                   type="number"
@@ -849,8 +854,11 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                   value={priceValue}
                   onChange={(e) => setPriceValue(e.target.value)}
                 />
-                {priceError && <p className="text-xs text-destructive">{priceError}</p>}
+                {editErrors.selling_price && <p className="text-xs text-destructive">{editErrors.selling_price}</p>}
               </div>
+              <p className="text-xs text-muted-foreground">
+                Quantity {formatQty(priceTarget.quantity)} · Unit {priceTarget.unit} (unchanged)
+              </p>
               <p className="border-t border-border pt-3 text-sm">
                 Revised line total{" "}
                 <span className="font-semibold tabular-nums">{formatZar(previewLineTotal(priceTarget.quantity, priceValue))}</span>
@@ -861,8 +869,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
             <Button variant="ghost" onClick={() => setPriceTarget(null)}>
               Cancel
             </Button>
-            <Button onClick={saveNewPrice} disabled={busy}>
-              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save new price
+            <Button onClick={saveItemEdit} disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save changes
             </Button>
           </DialogFooter>
         </DialogContent>
