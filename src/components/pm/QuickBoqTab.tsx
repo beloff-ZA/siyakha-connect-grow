@@ -349,7 +349,8 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     setForm(emptyForm(sections[0]?.title ?? DEFAULT_CATEGORY));
   };
 
-  const openEditItem = (it: BoqItem) => {
+  /** The single unified editor entry point, used by the list and by search results. */
+  const openEditItem = (it: QuickItem) => {
     setErrors({});
     setForm({
       id: it.id,
@@ -360,7 +361,12 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
       unit: it.unit,
       selling_price: String(Number(it.customer_unit_rate)),
       vat_applicable: !!it.vat_applicable,
+      is_included: !!it.is_included,
+      item_code: it.item_code ?? "",
       specification: it.specification ?? "",
+      reference: it.reference ?? "",
+      notes: it.notes ?? "",
+      planLocked: isPlanQuantityLocked(it),
     });
   };
 
