@@ -1,6 +1,7 @@
 import React from "react";
 import { Cpu, Network, Server } from "lucide-react";
 import { RACK_HUE, type FloorMarker, type PortalFloor } from "@/lib/floorPlans";
+import { RackEquipmentEditor } from "@/components/portal/RackEquipmentEditor";
 import { routeColor } from "@/lib/cableRoutes";
 import {
   ACCESS_SWITCH_MODEL,
@@ -12,7 +13,9 @@ import {
   accessPortUtilisation,
   backbonePortUtilisation,
   equipmentTotals,
+  equipmentPurpose,
   equipmentTypeLabel,
+  TBC,
   rackUtilisation,
   type RackEquipment as RackEquipmentRow,
 } from "@/lib/rackEquipment";
@@ -43,9 +46,14 @@ export const RackContents: React.FC<{
   floor: PortalFloor | null;
   items: RackEquipmentRow[];
   routes: { floor_id: string; service_type: string }[];
-}> = ({ rack, floor, items, routes }) => {
-  const ordered = [...items].sort((a, b) => a.sort_order - b.sort_order);
+  canManage?: boolean;
+  onSaved?: () => void;
+}> = ({ rack, floor, items, routes, canManage = false, onSaved }) => {
+  const ordered = [...items].sort(
+    (a, b) => (a.rack_position ?? a.sort_order) - (b.rack_position ?? b.sort_order),
+  );
   const util = rackUtilisation(ordered);
+
 
   return (
     <div className="mt-6 border border-border p-4 space-y-5">
@@ -69,22 +77,34 @@ export const RackContents: React.FC<{
             {ordered.map((e, i) => {
               const isAgg = e.model === AGGREGATION_SWITCH_MODEL;
               const tone = isAgg ? routeColor("camera") : routeColor("wifi_ap");
-              const access = accessPortUtilisation(e.port_count ?? 24, routes, rack.floor_id);
-              const ports = isAgg ? backbonePortUtilisation(e.port_count ?? 12) : access;
+              const access = accessPortUtilisation(
+                e.copper_ports ?? e.port_count ?? 24,
+                routes,
+                rack.floor_id,
+              );
+              const ports = isAgg
+                ? backbonePortUtilisation(e.sfp_plus_ports ?? e.port_count ?? 12)
+                : access;
               return (
                 <li key={e.id} className="p-3 space-y-3">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
                       <span className="mt-0.5 border border-border px-2 py-1 text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                        U{i + 1}
+                        U{e.rack_position ?? i + 1}
                       </span>
                       <div>
                         <p className="text-sm">
-                          {e.manufacturer} {e.model}
+                          {e.equipment_name ?? `${e.manufacturer} ${e.model}`}
                           {e.quantity > 1 ? ` × ${e.quantity}` : ""}
                         </p>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          {e.description ?? equipmentTypeLabel(e.equipment_type)}
+                          {e.role ?? e.description ?? equipmentTypeLabel(e.equipment_type)}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                          {equipmentPurpose(e.model)}
+                        </p>
+                        <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mt-1.5">
+                          Serial {e.serial_number ?? TBC} · MAC {e.mac_address ?? TBC}
                         </p>
                       </div>
                     </div>
@@ -95,15 +115,15 @@ export const RackContents: React.FC<{
                         <Network className="h-3.5 w-3.5" strokeWidth={1.5} />
                       )}
                       <Badge>{e.rack_units}U</Badge>
-                      {e.port_count ? (
-                        <Badge>
-                          {e.port_count} × {e.port_type ?? "ports"}
-                        </Badge>
-                      ) : null}
+                      {e.copper_ports ? <Badge>{e.copper_ports} × Gigabit copper</Badge> : null}
+                      {e.sfp_plus_ports ? <Badge>{e.sfp_plus_ports} × SFP+</Badge> : null}
                       {e.poe_capable && <Badge tone={tone}>PoE</Badge>}
-                      {e.layer3_capable && <Badge tone={tone}>Layer 3</Badge>}
+                      <Badge tone={tone}>{e.network_layer ?? (e.layer3_capable ? "Layer 3" : "Layer 2")}</Badge>
+                      <Badge>{e.status}</Badge>
+                      {canManage && <RackEquipmentEditor item={e} onSaved={onSaved} />}
                     </div>
                   </div>
+
 
                   <div className="space-y-2">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">

@@ -1648,6 +1648,8 @@ const PortalFloorPlans: React.FC = () => {
                     floor={floor}
                     items={equipment.filter((e) => e.rack_marker_id === selected.id)}
                     routes={routes}
+                    canManage={canManage}
+                    onSaved={() => void load()}
                   />
                 )}
 

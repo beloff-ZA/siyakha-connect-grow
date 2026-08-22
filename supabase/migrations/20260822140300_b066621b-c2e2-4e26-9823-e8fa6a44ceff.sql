@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.portal_rack_equipment_audit() FROM anon, authenticated, public;
