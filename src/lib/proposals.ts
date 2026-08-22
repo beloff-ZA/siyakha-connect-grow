@@ -1,5 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import { computeTotals, lineTotal, round2, type BoqTotals } from "@/lib/boq";
+import { deviceTotals, type DeviceTotals } from "@/lib/reporting";
+import type { BuildingDetails } from "@/lib/projectWizard";
+
 
 /** Untyped access for tables added after the generated types were produced. */
 const db = supabase as unknown as {
