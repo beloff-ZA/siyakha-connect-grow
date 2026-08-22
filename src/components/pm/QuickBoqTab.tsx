@@ -313,12 +313,6 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
     }
   };
 
-  const toggleIncluded = async (item: BoqItem, value: boolean) => {
-    const { error } = await supabase.from("portal_boq_items").update({ is_included: value }).eq("id", item.id);
-    if (error) return fail(error);
-    await refresh();
-  };
-
   const confirmDelete = async () => {
     if (!deleteId) return;
     setBusy(true);
@@ -573,7 +567,7 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                     <th className="py-2 pr-3">Unit</th>
                     <th className="py-2 pr-3">Selling price</th>
                     <th className="py-2 pr-3">Line total</th>
-                    <th className="py-2 pr-3">Included</th>
+                    <th className="py-2 pr-3">Status</th>
                     <th className="py-2" />
                   </tr>
                 </thead>
@@ -589,13 +583,15 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                         {formatZar(Number(it.line_total ?? lineTotal(it.quantity, it.customer_unit_rate)))}
                       </td>
                       <td className="py-2 pr-3">
-                        <input
-                          type="checkbox"
-                          aria-label={`Include ${it.description}`}
-                          checked={it.is_included}
-                          disabled={readOnly}
-                          onChange={(e) => toggleIncluded(it, e.target.checked)}
-                        />
+                        <span
+                          className={`inline-flex items-center border px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] ${
+                            it.is_included
+                              ? "border-border text-muted-foreground"
+                              : "border-destructive/30 text-destructive"
+                          }`}
+                        >
+                          {it.is_included ? "Included" : "Excluded"}
+                        </span>
                       </td>
                       <td className="py-2">
                         <div className="flex justify-end gap-1">
@@ -632,15 +628,15 @@ const QuickBoqTab: React.FC<{ ws: PmWorkspace; projectId: string }> = ({ ws, pro
                     {formatZar(Number(it.line_total ?? lineTotal(it.quantity, it.customer_unit_rate)))}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-3">
-                    <label className="flex items-center gap-2 text-xs">
-                      <input
-                        type="checkbox"
-                        checked={it.is_included}
-                        disabled={readOnly}
-                        onChange={(e) => toggleIncluded(it, e.target.checked)}
-                      />
-                      Included
-                    </label>
+                    <span
+                      className={`inline-flex items-center border px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] ${
+                        it.is_included
+                          ? "border-border text-muted-foreground"
+                          : "border-destructive/30 text-destructive"
+                      }`}
+                    >
+                      {it.is_included ? "Included" : "Excluded"}
+                    </span>
                     <Button size="sm" variant="outline" onClick={() => openEditItem(it)} disabled={readOnly}>
                       Edit
                     </Button>
