@@ -209,7 +209,7 @@ const BuildingSiteTab: React.FC<{ ws: PmWorkspace; project: PmProject }> = ({ ws
             <Input
               value={building.levels_note}
               onChange={(e) => setBuilding({ ...building, levels_note: e.target.value })}
-              placeholder="e.g. 12 levels plus roof plant"
+              placeholder="e.g. 11 occupied floors plus a rooftop/service plan"
             />
           </Field>
           <Field label="Total / GFA floor area (m²)">
