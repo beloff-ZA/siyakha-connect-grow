@@ -485,7 +485,7 @@ const ProjectDeckPage: React.FC = () => {
                         {deckFloor.floor_use ? ` · ${deckFloor.floor_use}` : ""}
                       </span>
                     </figcaption>
-                    <div className="border border-border p-2">
+                    <div className={`${SCROLL_CONTAINER_CLASS} touch-pan-x touch-pan-y border border-border p-2`}>
                       <PlanSheet
                         floor={deckFloor}
                         interactive
