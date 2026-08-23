@@ -14,6 +14,25 @@ import { POWER_SECTION_NARRATIVE, POWER_SECTION_TITLE, hasPowerSolution } from "
 import type { ProjectPack } from "@/lib/projectPack";
 import ProjectPackDocument from "@/components/pm/ProjectPackDocument";
 import PlanSheet from "@/components/pm/PlanSheet";
+import ViewerGate from "@/components/deck/ViewerGate";
+import DeckBoqTab from "@/components/deck/DeckBoqTab";
+import DeckNotesTab from "@/components/deck/DeckNotesTab";
+import {
+  DeckBenefitCards,
+  DeckNextStepsTimeline,
+  DeckProjectSummary,
+  DeckRetentionPanel,
+} from "@/components/deck/DeckDeliverySummary";
+import {
+  deckAcceptBoq,
+  deckCreateNote,
+  deckNotes,
+  deckRegister,
+  deckReplyNote,
+  deckSession,
+  type DeckPayload,
+} from "@/lib/deckClient";
+import type { ViewerRegistration } from "@/lib/deckViewer";
 import FloorLevelRail from "@/components/portal/FloorLevelRail";
 import { Check, Download, MessageSquare, RefreshCw, ShieldCheck } from "lucide-react";
 
@@ -67,6 +86,8 @@ const ProjectDeckPage: React.FC = () => {
   const [stale, setStale] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [deckFloorId, setDeckFloorId] = useState("");
+  const [deck, setDeck] = useState<DeckPayload | null>(null);
+  const [gateError, setGateError] = useState<string | null>(null);
 
   /**
    * `refresh` marks a background/manual live poll: it still participates in rate
@@ -105,6 +126,59 @@ const ProjectDeckPage: React.FC = () => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  /**
+   * Engagement payload (viewer session, client BOQ, notes, delivery summary).
+   * It is only requested once the share token itself resolved, and it returns
+   * nothing about the project until the viewer has registered.
+   */
+  const loadDeck = async () => {
+    try {
+      setDeck(await deckSession(token));
+    } catch {
+      setDeck({ state: "unavailable" });
+    }
+  };
+
+  useEffect(() => {
+    if (state === "ok") void loadDeck();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, token]);
+
+  const register = async (input: ViewerRegistration) => {
+    setGateError(null);
+    const res = await deckRegister(token, input);
+    if (res.state === "ok") await loadDeck();
+    else setGateError(res.error ?? "We could not open this link. Please contact Siyakha.");
+  };
+
+  const acceptBoq = async (input: { revision_hash: string; po_reference: string | null }) => {
+    const res = await deckAcceptBoq(token, { ...input, confirmed: true });
+    if (res.state === "revision_changed") {
+      await loadDeck();
+      throw new Error("This BOQ has been revised. Please review the updated revision and accept again.");
+    }
+    if (res.state !== "ok") throw new Error(res.error ?? "Could not record the acceptance.");
+    await loadDeck();
+    toast({ title: res.repeat ? "Already accepted" : "Acceptance recorded" });
+  };
+
+  const createNote = async (input: { category: never; body: string }) => {
+    const res = await deckCreateNote(token, input as never);
+    if (res.state !== "ok") throw new Error(res.error ?? "Could not send the note.");
+    setDeck((d) => (d ? { ...d, threads: res.threads } : d));
+  };
+
+  const replyNote = async (input: { thread_id: string; body: string }) => {
+    const res = await deckReplyNote(token, input);
+    if (res.state !== "ok") throw new Error(res.error ?? "Could not send the reply.");
+    setDeck((d) => (d ? { ...d, threads: res.threads } : d));
+  };
+
+  const refreshNotes = async () => {
+    const res = await deckNotes(token);
+    if (res.state === "ok") setDeck((d) => (d ? { ...d, threads: res.threads } : d));
+  };
 
   const live = isLiveView(data as never);
 
@@ -202,11 +276,36 @@ const ProjectDeckPage: React.FC = () => {
       </Shell>
     );
 
+  // Registration gate: no project, client or commercial detail is rendered until
+  // the viewer has registered against this validated token.
+  if (!deck || deck.state === "registration_required")
+    return deck ? (
+      <ViewerGate onRegister={register} error={gateError} />
+    ) : (
+      <Shell>
+        <p className="mt-3 text-sm text-muted-foreground">Opening your secure project deck…</p>
+      </Shell>
+    );
+
+  const viewer = deck.viewer ?? null;
+  const delivery = deck.delivery ?? null;
+  const equipmentMarkers = deck.equipment?.markers ?? [];
+  const equipmentRack = deck.equipment?.rack ?? (pack.rackEquipment as never[]) ?? [];
+  const deliveryProps = {
+    settings: delivery,
+    markers: equipmentMarkers,
+    rack: equipmentRack,
+    boqLines: (deck.boq_lines ?? pack.boqLines ?? []) as never[],
+    floors: pack.floors ?? [],
+  };
+
   const nav = [
     ["overview", "Overview"],
     ["scope", "Scope"],
     ["design", "Design & plans"],
     ["schedule", "Schedule of works"],
+    ["boq", "BOQ & acceptance"],
+    ["notes", "Project notes"],
     ["programme", "Programme"],
     pack.gallery?.length ? ["gallery", "Site gallery"] : null,
     pack.documents?.length ? ["documents", "Documents"] : null,
