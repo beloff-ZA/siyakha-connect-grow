@@ -5,6 +5,8 @@ import {
   clientVisibleOnly,
   deviceTotals,
   findSensitiveKeys,
+  POWER_SECTION_NARRATIVE,
+  hasPowerSolution,
   floorCountLabel,
   floorCounts,
   isRooftopArea,
