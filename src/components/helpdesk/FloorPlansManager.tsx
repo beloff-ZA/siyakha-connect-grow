@@ -29,7 +29,21 @@ import {
   normalizeBearing,
   selectedCoverageMode,
 } from "@/lib/planGeometry";
-import { activeRoutes, parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
+import {
+  CABLE_ROUTE_DISCLAIMER,
+  ROUTE_LEGEND,
+  activeRoutes,
+  insertWaypoint,
+  parseWaypoints,
+  removeWaypoint,
+  resolveCanvasRoutes,
+  routeColor,
+  routeStats,
+  serviceLabel,
+  snapOrthogonal,
+  type CableRoute,
+  type Waypoint,
+} from "@/lib/cableRoutes";
 import { RackContents } from "@/components/portal/RackEquipment";
 import FloorLevelRail from "@/components/portal/FloorLevelRail";
 import PlanCommandBar from "@/components/pm/PlanCommandBar";
