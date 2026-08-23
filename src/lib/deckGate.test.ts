@@ -20,7 +20,7 @@ const freshModule = async () => {
   return await import("./deckClient");
 };
 
-const sentSession = () => (invoke.mock.calls.at(-1)?.[1] as { body: { session: string } }).body.session;
+const sentSession = () => (invoke.mock.calls[invoke.mock.calls.length - 1]?.[1] as { body: { session: string } }).body.session;
 
 beforeEach(() => {
   invoke.mockReset();
