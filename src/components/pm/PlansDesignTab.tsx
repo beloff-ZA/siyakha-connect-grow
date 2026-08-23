@@ -21,8 +21,20 @@ const PlansDesignTab: React.FC<{
 }> = ({ ws, projectId, setProjectId, locked }) => {
   const { projects, clients, sites } = ws;
   const { toast } = useToast();
+  const [params, setParams] = useSearchParams();
   const [draftBoqs, setDraftBoqs] = useState<{ id: string; revision_label: string; title: string | null }[]>([]);
   const [designBoqId, setDesignBoqId] = useState("");
+
+  /** Navigation only — never generates a report or creates a share link. */
+  const goToSection = (section: string, view?: string) => {
+    const draft = new URLSearchParams(params);
+    draft.set("section", section);
+    if (view) draft.set("view", view);
+    else draft.delete("view");
+    setParams(draft, { replace: false });
+  };
+
+
 
   const loadDesignLink = useCallback(async () => {
     if (!projectId) {
