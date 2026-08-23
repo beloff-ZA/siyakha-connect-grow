@@ -93,7 +93,7 @@ const ViewerGate: React.FC<{
           {errors.consent && <p className="text-xs text-destructive">{errors.consent}</p>}
           {error && <p className="text-xs text-destructive">{error}</p>}
 
-          <Button type="submit" className="w-full" disabled={busy}>
+          <Button type="submit" className="min-h-[44px] w-full" disabled={busy}>
             {busy ? "Opening…" : "Open project deck"}
           </Button>
         </form>
