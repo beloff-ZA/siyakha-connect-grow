@@ -441,15 +441,30 @@ Deno.serve(async (req) => {
 
   /* --------------------------------------------------------- client BOQ view */
   const loadBoq = async () => {
-    const { data: boqs } = await admin
-      .from("portal_boqs")
-      .select("id, title, revision_label, version_no, status, vat_enabled, vat_rate, valid_until, updated_at")
-      .eq("project_id", projectId)
-      .in("status", CLIENT_BOQ_STATUSES)
-      .order("version_no", { ascending: false })
-      .order("updated_at", { ascending: false });
-    const boq = (boqs ?? [])[0] ?? null;
-    if (!boq) return { boq: null, lines: [], totals: { subtotal: 0, vat: 0, total: 0 }, revision_hash: "" };
+    // All revisions for THIS project only; the resolver decides which one (if
+    // any) is client-visible, so the deck can report a truthful pending state.
+    const [{ data: boqs }, { data: projectRow }] = await Promise.all([
+      admin
+        .from("portal_boqs")
+        .select("id, project_id, title, revision_label, version_no, status, vat_enabled, vat_rate, valid_until, updated_at")
+        .eq("project_id", projectId),
+      admin.from("portal_projects").select("design_boq_id").eq("id", projectId).maybeSingle(),
+    ]);
+    const designated = [
+      link.resource_type === "boq" ? (link.resource_id as string | null) : null,
+      (projectRow?.design_boq_id as string | null) ?? null,
+    ];
+    const resolved = resolveClientBoq(boqs ?? [], designated);
+    const boq = resolved.boq;
+    if (!boq)
+      return {
+        boq: null,
+        lines: [],
+        totals: { subtotal: 0, vat: 0, total: 0 },
+        revision_hash: "",
+        pending_reason: resolved.reason,
+      };
+
 
     const [{ data: items }, { data: sections }] = await Promise.all([
       admin
