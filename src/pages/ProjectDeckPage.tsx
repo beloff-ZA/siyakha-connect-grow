@@ -10,6 +10,7 @@ import { SIYAKHA } from "@/lib/proposals";
 import { formatDate } from "@/lib/portalFiles";
 import { formatQty, formatZar } from "@/lib/boq";
 import { deviceTypeLabel, stageLabel } from "@/lib/lifecycle";
+import { POWER_SECTION_NARRATIVE, POWER_SECTION_TITLE, hasPowerSolution } from "@/lib/reporting";
 import type { ProjectPack } from "@/lib/projectPack";
 import ProjectPackDocument from "@/components/pm/ProjectPackDocument";
 import PlanSheet from "@/components/pm/PlanSheet";
@@ -361,6 +362,12 @@ const ProjectDeckPage: React.FC = () => {
 
 
           <Section id="schedule" eyebrow="04" title="Schedule of works">
+            {hasPowerSolution(pack.boqLines ?? []) && (
+              <div className="mb-6 border border-border p-5">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">{POWER_SECTION_TITLE}</p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{POWER_SECTION_NARRATIVE}</p>
+              </div>
+            )}
             {(pack.boqLines ?? []).length === 0 ? (
               <p className="text-sm text-muted-foreground">The priced schedule is not included on this link.</p>
             ) : (

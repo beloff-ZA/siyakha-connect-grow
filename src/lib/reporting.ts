@@ -231,3 +231,26 @@ export function floorCountLabel(rows: readonly FloorUseLike[]): string {
   return `${base} + rooftop service plan${rooftopAreas === 1 ? "" : "s"}`;
 }
 
+
+/* ----------------------------------------- Connectivity power solution copy */
+
+export const POWER_SECTION_TITLE = "Connectivity Power Solution";
+
+/**
+ * Client-safe narrative for the connectivity power solution. Supplier names,
+ * supplier costs, markup, margin and internal notes are deliberately absent so
+ * this string can be rendered on any client document or share link.
+ */
+export const POWER_SECTION_NARRATIVE =
+  "Designed to maintain the building's network switching and fibre backbone for up to 12 hours during a mains outage, subject to final measured connected load and commissioning. A dedicated true-online UPS bridges power changeover to maintain uninterrupted network continuity. The 8.8kW hybrid inverter and approximately 10kWh lithium battery bank are solar-ready and support future battery expansion. Dedicated protected rack outlets, electrical protection, testing and commissioning are included. Work will be completed by a registered electrical contractor, with supplementary COC documentation added to the site's existing electrical compliance records. Upstream internet availability remains dependent on the service provider.";
+
+export type SectionedLine = { section?: string | null; item_code?: string | null };
+
+/** True when a client document includes any connectivity power solution line. */
+export function hasPowerSolution(lines: readonly SectionedLine[]): boolean {
+  return lines.some(
+    (l) =>
+      (l.section ?? "").trim().toLowerCase() === POWER_SECTION_TITLE.toLowerCase() ||
+      /^PWR-/i.test(l.item_code ?? ""),
+  );
+}

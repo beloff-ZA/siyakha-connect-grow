@@ -5,6 +5,8 @@ import {
   clientVisibleOnly,
   deviceTotals,
   findSensitiveKeys,
+  POWER_SECTION_NARRATIVE,
+  hasPowerSolution,
   floorCountLabel,
   floorCounts,
   isRooftopArea,
@@ -216,5 +218,20 @@ describe("floor vs rooftop/service counting", () => {
   it("omits the rooftop clause when there is no rooftop plan", () => {
     expect(floorCountLabel([{ floor_use: "accommodation" }])).toBe("1 floor");
     expect(floorCountLabel([])).toBe("0 floors");
+  });
+});
+
+describe("connectivity power solution copy", () => {
+  it("detects power lines by section title or item code", () => {
+    expect(hasPowerSolution([{ section: "CCTV & Recording" }])).toBe(false);
+    expect(hasPowerSolution([{ section: "Connectivity Power Solution" }])).toBe(true);
+    expect(hasPowerSolution([{ item_code: "PWR-009" }])).toBe(true);
+  });
+
+  it("keeps the client narrative free of internal commercial terms", () => {
+    for (const term of ["Dunamis", "supplier", "markup", "margin", "cost", "QUO"]) {
+      expect(POWER_SECTION_NARRATIVE.toLowerCase()).not.toContain(term.toLowerCase());
+    }
+    expect(POWER_SECTION_NARRATIVE).toContain("up to 12 hours");
   });
 });
