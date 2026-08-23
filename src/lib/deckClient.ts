@@ -50,19 +50,39 @@ export type DeckPayload = {
   totals?: { subtotal: number; vat: number; total: number };
 };
 
-export const readSession = (token: string) => {
-  try {
-    return window.localStorage.getItem(viewerSessionKey(token)) ?? "";
-  } catch {
-    return "";
-  }
-};
+/**
+ * Viewer access lives ONLY in this module's memory, for the lifetime of the
+ * loaded page. A reload, a new tab or a later visit starts with an empty map,
+ * so the registration gate always appears again. Nothing is written to
+ * localStorage, sessionStorage, cookies or the URL.
+ */
+const memorySessions = new Map<string, string>();
+
+export const readSession = (token: string) => memorySessions.get(token) ?? "";
 
 export const writeSession = (token: string, session: string) => {
-  try {
-    window.localStorage.setItem(viewerSessionKey(token), session);
-  } catch {
-    /* private browsing — the viewer simply registers again */
+  memorySessions.set(token, session);
+};
+
+export const clearSession = (token: string) => {
+  memorySessions.delete(token);
+};
+
+/** Removes any viewer session written to browser storage by earlier builds. */
+export const purgePersistedSessions = () => {
+  for (const store of [globalThis.localStorage, globalThis.sessionStorage]) {
+    try {
+      if (!store) continue;
+      const prefix = viewerSessionKey("");
+      const keys: string[] = [];
+      for (let i = 0; i < store.length; i += 1) {
+        const key = store.key(i);
+        if (key && key.startsWith(prefix)) keys.push(key);
+      }
+      for (const key of keys) store.removeItem(key);
+    } catch {
+      /* storage unavailable — nothing to purge */
+    }
   }
 };
 

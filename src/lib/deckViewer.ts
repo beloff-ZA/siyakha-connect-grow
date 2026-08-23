@@ -78,7 +78,10 @@ export const viewerMatchesScope = (
   scope: { share_link_id: string; project_id: string },
 ) => viewer.share_link_id === scope.share_link_id && viewer.project_id === scope.project_id;
 
-/** Browser-side session key so the same browser is not asked to register twice. */
+/**
+ * Legacy storage key prefix. Viewer access is NEVER persisted: this exists only
+ * so older builds' stored sessions can be purged from browser storage.
+ */
 export const viewerSessionKey = (token: string) => `siyakha.deck.session.${token}`;
 
 /* ------------------------------------------------------- client-safe BOQ view */

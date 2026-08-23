@@ -24,12 +24,14 @@ import {
   DeckRetentionPanel,
 } from "@/components/deck/DeckDeliverySummary";
 import {
+  clearSession,
   deckAcceptBoq,
   deckCreateNote,
   deckNotes,
   deckRegister,
   deckReplyNote,
   deckSession,
+  purgePersistedSessions,
   type DeckPayload,
 } from "@/lib/deckClient";
 import type { ViewerRegistration } from "@/lib/deckViewer";
@@ -123,6 +125,11 @@ const ProjectDeckPage: React.FC = () => {
   useEffect(() => {
     document.title = "Project portfolio — Siyakha Technology Solutions";
     applyGuestPrivacyMeta();
+    // Every fresh navigation to a share URL starts unauthenticated: any legacy
+    // stored session is purged and in-memory access for this token is dropped.
+    purgePersistedSessions();
+    clearSession(token);
+    setDeck(null);
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
