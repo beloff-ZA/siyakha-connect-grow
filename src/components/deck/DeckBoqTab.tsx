@@ -107,7 +107,12 @@ const DeckBoqTab: React.FC<{
       {sections.map((section) => (
         <section key={section.title}>
           <h3 className="text-sm font-semibold uppercase tracking-[0.16em]">{section.title}</h3>
-          <div className="mt-3 overflow-x-auto border border-border">
+          <div
+            className="mt-3 w-full max-w-full overflow-x-auto border border-border"
+            role="region"
+            aria-label={`${section.title} — scroll to see all columns`}
+            tabIndex={0}
+          >
             <table className="w-full min-w-[720px] text-sm">
               <caption className="sr-only">{section.title} schedule of client rates</caption>
               <thead className="bg-muted text-left text-[10px] uppercase tracking-[0.18em] text-muted-foreground">

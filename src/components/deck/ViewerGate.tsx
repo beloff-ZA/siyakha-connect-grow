@@ -62,8 +62,8 @@ const ViewerGate: React.FC<{
   );
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-16">
-      <div className="w-full max-w-md border border-border p-8">
+    <main className="flex min-h-screen w-full max-w-full items-center justify-center overflow-x-hidden bg-background px-4 py-10 sm:py-16">
+      <div className="w-full max-w-md border border-border p-5 sm:p-8">
         <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">{SIYAKHA.company}</p>
         <h1 className="mt-3 text-xl font-semibold tracking-tight">Secure project deck</h1>
         <p className="mt-2 text-sm text-muted-foreground">
