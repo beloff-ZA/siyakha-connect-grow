@@ -5,6 +5,7 @@ import {
   boqStatus,
   contextActions,
   editToolEnabled,
+  placeToolAction,
   saveStateLabel,
 } from "./planWorkspace";
 
@@ -75,5 +76,17 @@ describe("save state", () => {
     expect(saveStateLabel("idle")).toBe("All changes saved");
     expect(saveStateLabel("saving")).toBe("Saving…");
     expect(saveStateLabel("error")).toContain("Not saved");
+  });
+});
+
+describe("placement tool behaviour", () => {
+  it("maps Cable route to route editing, never marker placement", () => {
+    expect(placeToolAction("cable_route")).toBe("edit_routes");
+  });
+
+  it("keeps every real device tool on marker placement", () => {
+    for (const t of PLACE_TOOLS.filter((t) => t.value !== "cable_route")) {
+      expect(placeToolAction(t.value)).toBe("place_marker");
+    }
   });
 });

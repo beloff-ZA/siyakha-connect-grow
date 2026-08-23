@@ -184,3 +184,51 @@ export function routeStats(routes: CableRoute[]) {
     testedActive: routes.filter((r) => r.status === "tested" || r.status === "active").length,
   };
 }
+
+/* ------------------------------------------------- Canvas route resolution */
+
+/**
+ * A route ready to draw. Endpoints are resolved from the CURRENT rack / device
+ * marker positions (live local positions included), so moving a device moves
+ * its route endpoint without rewriting any stored geometry.
+ */
+export type ResolvedRoute = {
+  id: string;
+  service_type: CableServiceType;
+  from: Waypoint;
+  to: Waypoint;
+  waypoints: Waypoint[];
+  /** Only planned routes may have their geometry reshaped. */
+  editable: boolean;
+};
+
+/**
+ * Derive the drawable routes for one level. Routes whose rack or device marker
+ * cannot be resolved (archived, deleted or on another level) are skipped
+ * safely rather than drawn to a wrong position.
+ */
+export function resolveCanvasRoutes(
+  routes: CableRoute[],
+  floorId: string,
+  positionOf: (markerId: string) => Waypoint | null | undefined,
+  waypointsOf: (route: CableRoute) => Waypoint[] = (r) => r.waypoints,
+): ResolvedRoute[] {
+  if (!floorId) return [];
+  return activeRoutes(routes)
+    .filter((r) => r.floor_id === floorId)
+    .flatMap((r) => {
+      const from = positionOf(r.rack_marker_id);
+      const to = positionOf(r.device_marker_id);
+      if (!from || !to) return [];
+      return [
+        {
+          id: r.id,
+          service_type: r.service_type,
+          from,
+          to,
+          waypoints: waypointsOf(r),
+          editable: r.status === "planned",
+        },
+      ];
+    });
+}
