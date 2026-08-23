@@ -73,10 +73,19 @@ const Section: React.FC<{ title: string; children: React.ReactNode; note?: strin
 const selectCls =
   "w-full border border-border bg-background text-foreground text-sm px-3 py-2";
 
-const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
+const FloorPlansManager: React.FC<{
+  projectId: string;
+  /** Real linked design bill, used for a truthful BOQ status. */
+  designBoqId?: string | null;
+  onOpenBoq?: () => void;
+  onGenerateReport?: () => void;
+  onShareLink?: () => void;
+}> = ({ projectId, designBoqId = null, onOpenBoq, onGenerateReport, onShareLink }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
+  const inspectorRef = useRef<HTMLDivElement>(null);
+  const rackRef = useRef<HTMLDivElement>(null);
 
   const [floors, setFloors] = useState<PortalFloor[]>([]);
   const [markers, setMarkers] = useState<FloorMarker[]>([]);
@@ -85,8 +94,11 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [floorId, setFloorId] = useState("");
   const [planUrl, setPlanUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [saveState, setSaveState] = useState<SaveState>("idle");
   const [placing, setPlacing] = useState(false);
   const [placeKind, setPlaceKind] = useState<MarkerKind>("wifi_ap");
+  const [editTool, setEditTool] = useState<EditTool>("select");
+  const [coverageOn, setCoverageOn] = useState(true);
   const [products, setProducts] = useState<CatalogProduct[]>([]);
   const [placeProductId, setPlaceProductId] = useState("");
   const [showArchived, setShowArchived] = useState(false);
@@ -94,6 +106,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [bulk, setBulk] = useState({ prefix: "", count: 10, kind: "wifi_ap" as MarkerKind });
   const [copyTargets, setCopyTargets] = useState<string[]>([]);
   const [newFloor, setNewFloor] = useState({ level_number: "", display_name: "", floor_use: "accommodation" });
+
 
   const load = useCallback(async () => {
     if (!projectId) return;
