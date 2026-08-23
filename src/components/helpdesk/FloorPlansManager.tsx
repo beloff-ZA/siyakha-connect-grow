@@ -946,18 +946,22 @@ const FloorPlansManager: React.FC<{
 
               {/* Selecting a rack opens that rack's 6U build for this level. */}
               {selected.marker_type === "rack" && (
-                <RackContents
-                  rack={selected}
-                  floor={floor}
-                  items={equipment.filter((e) => e.rack_marker_id === selected.id)}
-                  routes={liveRoutes}
-                  canManage
-                  onSaved={() => void load()}
-                />
+                <div ref={rackRef}>
+                  <RackContents
+                    rack={selected}
+                    floor={floor}
+                    items={equipment.filter((e) => e.rack_marker_id === selected.id)}
+                    routes={liveRoutes}
+                    canManage
+                    onSaved={() => void load()}
+                  />
+                </div>
               )}
             </Section>
+            </div>
           )}
-          </div>
+            </div>
+
 
             {/* Sticky level rail: display floors L1..Ln plus a separate rooftop plan. */}
             <FloorLevelRail
