@@ -162,7 +162,7 @@ Deno.serve(async (req) => {
   /* -------------------------------------------------------- token validation */
   const { data: link, error: linkErr } = await admin
     .from("portal_share_links")
-    .select("id, project_id, client_id, resource_type, title, expires_at, revoked_at, comments_allowed")
+    .select("id, project_id, client_id, resource_type, resource_id, title, expires_at, revoked_at, comments_allowed")
     .eq("token_hash", tokenHash)
     .maybeSingle();
   if (linkErr) return json(NOT_AVAILABLE, 200);
@@ -271,6 +271,25 @@ Deno.serve(async (req) => {
       row = data;
     }
     await log("granted", "viewer registered");
+
+    // Internal view notification. Never blocks deck access, never emails the
+    // viewer, and never carries the share token or commercial detail.
+    try {
+      await notifyInternalView({
+        admin,
+        project_id: String(link.project_id),
+        share_link_id: String(link.id),
+        viewer_id: String((row as Record<string, unknown>)?.id ?? ""),
+        session_hash: newHash,
+        first_name: first,
+        surname,
+        email,
+        origin: req.headers.get("origin"),
+      });
+    } catch (_e) {
+      // Deliberately swallowed: mail must never prevent access.
+    }
+
     return json({ state: "ok", viewer: row, session: newSession });
   }
 
