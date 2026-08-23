@@ -556,6 +556,7 @@ const ProjectDeckPage: React.FC = () => {
                 totals={deck.boq_totals ?? { subtotal: 0, vat: 0, total: 0 }}
                 revisionHash={deck.revision_hash ?? ""}
                 acceptances={deck.acceptances ?? []}
+                pendingReason={deck.boq_pending_reason ?? null}
                 onAccept={acceptBoq}
               />
             )}
