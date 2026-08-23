@@ -57,12 +57,17 @@ const DeckBoqTab: React.FC<{
 
   if (!boq || !lines.length)
     return (
-      <div className="border border-border p-6">
+      <div className="max-w-full border border-border p-5 sm:p-6">
         <p className="text-sm font-medium">{BOQ_NOT_ISSUED_MESSAGE}</p>
         <p className="mt-2 text-sm text-muted-foreground">
           Your bill of quantities will appear here as soon as a revision is issued for review. No pricing is shown until
           then.
         </p>
+        {pendingReason && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Your Siyakha project manager has been notified that the schedule is still being prepared.
+          </p>
+        )}
       </div>
     );
 
