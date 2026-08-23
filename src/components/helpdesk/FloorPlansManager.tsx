@@ -757,7 +757,9 @@ const FloorPlansManager: React.FC<{
 
 
           {selected && (
+            <div ref={inspectorRef}>
             <Section title={`Marker – ${selected.label}`}>
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Label</Label>
