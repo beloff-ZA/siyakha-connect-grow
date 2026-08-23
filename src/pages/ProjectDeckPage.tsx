@@ -442,17 +442,41 @@ const ProjectDeckPage: React.FC = () => {
             {placedFloors.length === 0 ? (
               <p className="text-sm text-muted-foreground">Plan sheets will appear here once the design drawings are issued.</p>
             ) : (
-              <div className="grid gap-6 lg:grid-cols-[200px,1fr]">
+              <div className="grid min-w-0 gap-6 lg:grid-cols-[200px,1fr]">
+                {/* Compact level selector on mobile; the desktop rail is unchanged. */}
+                <div className="lg:hidden">
+                  <label
+                    htmlFor="deck-floor-select"
+                    className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    Level
+                  </label>
+                  <select
+                    id="deck-floor-select"
+                    value={deckFloor?.id ?? ""}
+                    onChange={(e) => setDeckFloorId(e.target.value)}
+                    className={`${TOUCH_TARGET_CLASS} mt-1 w-full max-w-full border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring`}
+                  >
+                    {placedFloors.map((f: any) => (
+                      <option key={f.id} value={f.id}>
+                        {f.display_name}
+                        {f.markers?.length ? ` · ${f.markers.length} devices` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 {/* Read-only level rail — no editing controls on the client deck. */}
-                <FloorLevelRail
-                  floors={placedFloors}
-                  selectedId={deckFloor?.id ?? ""}
-                  onSelect={setDeckFloorId}
-                  deviceCounts={deckCounts}
-                  presignedFor={(f) => (f as any).plan_image_url ?? null}
-                />
+                <div className="hidden lg:block">
+                  <FloorLevelRail
+                    floors={placedFloors}
+                    selectedId={deckFloor?.id ?? ""}
+                    onSelect={setDeckFloorId}
+                    deviceCounts={deckCounts}
+                    presignedFor={(f) => (f as any).plan_image_url ?? null}
+                  />
+                </div>
                 {deckFloor && (
-                  <figure className="min-w-0">
+                  <figure className="min-w-0 max-w-full">
                     <figcaption className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
                       <span className="text-sm font-semibold">{deckFloor.display_name}</span>
                       <span className="text-xs text-muted-foreground">
