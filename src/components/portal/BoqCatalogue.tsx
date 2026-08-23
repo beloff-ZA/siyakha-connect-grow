@@ -103,7 +103,7 @@ const BoqCatalogue: React.FC<{
       key: "gwn7813p",
       brand: "Grandstream",
       model: "GWN7813P",
-      role: "Access switch — one in each rack, Levels 0–10",
+      role: "Access switch — one in each rack, Levels 0–10 plus rooftop / service plan",
       qty: `${num(qty("NET-001", racks))} units`,
       status: "confirmed",
       code: "NET-001",
