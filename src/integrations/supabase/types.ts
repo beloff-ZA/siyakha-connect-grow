@@ -1118,6 +1118,98 @@ export type Database = {
           },
         ]
       }
+      portal_boq_acceptances: {
+        Row: {
+          accepted_at: string
+          boq_id: string
+          email: string
+          full_name: string
+          id: string
+          po_reference: string | null
+          project_id: string
+          revision_hash: string
+          revision_label: string | null
+          share_link_id: string | null
+          status: string
+          subtotal: number
+          terms_text: string
+          terms_version: string
+          total: number
+          vat: number
+          vat_rate: number
+          viewer_id: string | null
+        }
+        Insert: {
+          accepted_at?: string
+          boq_id: string
+          email: string
+          full_name: string
+          id?: string
+          po_reference?: string | null
+          project_id: string
+          revision_hash: string
+          revision_label?: string | null
+          share_link_id?: string | null
+          status?: string
+          subtotal: number
+          terms_text: string
+          terms_version: string
+          total: number
+          vat: number
+          vat_rate?: number
+          viewer_id?: string | null
+        }
+        Update: {
+          accepted_at?: string
+          boq_id?: string
+          email?: string
+          full_name?: string
+          id?: string
+          po_reference?: string | null
+          project_id?: string
+          revision_hash?: string
+          revision_label?: string | null
+          share_link_id?: string | null
+          status?: string
+          subtotal?: number
+          terms_text?: string
+          terms_version?: string
+          total?: number
+          vat?: number
+          vat_rate?: number
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_boq_acceptances_boq_id_fkey"
+            columns: ["boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_boq_acceptances_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_boq_acceptances_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "portal_share_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_boq_acceptances_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
+            referencedRelation: "portal_deck_viewers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_boq_activity: {
         Row: {
           action: string
@@ -1714,6 +1806,125 @@ export type Database = {
           },
         ]
       }
+      portal_client_note_messages: {
+        Row: {
+          author_kind: string
+          author_name: string
+          author_user_id: string | null
+          body: string
+          created_at: string
+          id: string
+          project_id: string
+          thread_id: string
+          viewer_id: string | null
+        }
+        Insert: {
+          author_kind: string
+          author_name: string
+          author_user_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          project_id: string
+          thread_id: string
+          viewer_id?: string | null
+        }
+        Update: {
+          author_kind?: string
+          author_name?: string
+          author_user_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          project_id?: string
+          thread_id?: string
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_client_note_messages_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_client_note_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "portal_client_note_threads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_client_note_messages_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
+            referencedRelation: "portal_deck_viewers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_client_note_threads: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          last_message_at: string
+          project_id: string
+          share_link_id: string | null
+          status: string
+          subject: string | null
+          updated_at: string
+          viewer_id: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          project_id: string
+          share_link_id?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          viewer_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          project_id?: string
+          share_link_id?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_client_note_threads_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_client_note_threads_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "portal_share_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_client_note_threads_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
+            referencedRelation: "portal_deck_viewers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_client_users: {
         Row: {
           activated_at: string | null
@@ -1814,6 +2025,72 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      portal_deck_viewers: {
+        Row: {
+          consent_at: string
+          created_at: string
+          email: string
+          first_name: string
+          first_viewed_at: string
+          id: string
+          last_viewed_at: string
+          project_id: string
+          session_expires_at: string | null
+          session_token_hash: string
+          share_link_id: string
+          surname: string
+          user_agent: string | null
+          view_count: number
+        }
+        Insert: {
+          consent_at?: string
+          created_at?: string
+          email: string
+          first_name: string
+          first_viewed_at?: string
+          id?: string
+          last_viewed_at?: string
+          project_id: string
+          session_expires_at?: string | null
+          session_token_hash: string
+          share_link_id: string
+          surname: string
+          user_agent?: string | null
+          view_count?: number
+        }
+        Update: {
+          consent_at?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          first_viewed_at?: string
+          id?: string
+          last_viewed_at?: string
+          project_id?: string
+          session_expires_at?: string | null
+          session_token_hash?: string
+          share_link_id?: string
+          surname?: string
+          user_agent?: string | null
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_deck_viewers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_deck_viewers_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "portal_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       portal_documents: {
         Row: {
@@ -2834,6 +3111,101 @@ export type Database = {
             foreignKeyName: "portal_project_assignments_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_project_delivery_settings: {
+        Row: {
+          assumptions: string | null
+          benefits_narrative: string | null
+          cctv_average_bitrate_kbps: number | null
+          cctv_codec: string | null
+          cctv_duty_cycle: number | null
+          cctv_recording_mode: string | null
+          created_at: string
+          delivery_objectives: string | null
+          duration_weeks: number | null
+          exclusions: string | null
+          executive_summary: string | null
+          hdd_raw_tb: number | null
+          hdd_usable_factor: number | null
+          id: string
+          lead_engineer_count: number | null
+          lead_engineer_role: string | null
+          methodology: string | null
+          power_backup_hours: number | null
+          power_backup_qualification: string | null
+          project_id: string
+          stages: Json
+          team_size: number | null
+          temp_cctv_enabled: boolean
+          temp_cctv_notes: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          assumptions?: string | null
+          benefits_narrative?: string | null
+          cctv_average_bitrate_kbps?: number | null
+          cctv_codec?: string | null
+          cctv_duty_cycle?: number | null
+          cctv_recording_mode?: string | null
+          created_at?: string
+          delivery_objectives?: string | null
+          duration_weeks?: number | null
+          exclusions?: string | null
+          executive_summary?: string | null
+          hdd_raw_tb?: number | null
+          hdd_usable_factor?: number | null
+          id?: string
+          lead_engineer_count?: number | null
+          lead_engineer_role?: string | null
+          methodology?: string | null
+          power_backup_hours?: number | null
+          power_backup_qualification?: string | null
+          project_id: string
+          stages?: Json
+          team_size?: number | null
+          temp_cctv_enabled?: boolean
+          temp_cctv_notes?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          assumptions?: string | null
+          benefits_narrative?: string | null
+          cctv_average_bitrate_kbps?: number | null
+          cctv_codec?: string | null
+          cctv_duty_cycle?: number | null
+          cctv_recording_mode?: string | null
+          created_at?: string
+          delivery_objectives?: string | null
+          duration_weeks?: number | null
+          exclusions?: string | null
+          executive_summary?: string | null
+          hdd_raw_tb?: number | null
+          hdd_usable_factor?: number | null
+          id?: string
+          lead_engineer_count?: number | null
+          lead_engineer_role?: string | null
+          methodology?: string | null
+          power_backup_hours?: number | null
+          power_backup_qualification?: string | null
+          project_id?: string
+          stages?: Json
+          team_size?: number | null
+          temp_cctv_enabled?: boolean
+          temp_cctv_notes?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_project_delivery_settings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
             referencedRelation: "portal_projects"
             referencedColumns: ["id"]
           },
