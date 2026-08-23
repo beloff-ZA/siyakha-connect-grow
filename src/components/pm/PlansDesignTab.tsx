@@ -122,7 +122,14 @@ const PlansDesignTab: React.FC<{
       </Panel>
 
       {projectId ? (
-        <FloorPlansManager projectId={projectId} />
+        <FloorPlansManager
+          projectId={projectId}
+          designBoqId={designBoqId || null}
+          onOpenBoq={() => goToSection("boq")}
+          onGenerateReport={() => goToSection("share", "report")}
+          onShareLink={() => goToSection("share", "link")}
+        />
+
       ) : (
         <p className="text-sm text-muted-foreground">Select a project to open its plan workspace.</p>
       )}
