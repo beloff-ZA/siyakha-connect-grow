@@ -162,8 +162,10 @@ export function summariseBuilding(
 /** Aggregation switch fibre uplink picture, derived from live equipment + racks. */
 export function backboneSummary(summaries: FloorSummary[], equipment: RackEquipment[]) {
   const agg = equipment.find((e) => e.model === AGGREGATION_SWITCH_MODEL) ?? null;
+  // Every rack above the ground/entry aggregation level takes one fibre uplink,
+  // including the rooftop / service rack.
   const uplinkLevels = summaries
-    .filter((s) => s.level > 0 && !s.isRooftop && s.racks > 0)
+    .filter((s) => s.level > 0 && s.racks > 0)
     .map((s) => s.level);
   const ports = backbonePortUtilisation(agg?.port_count ?? 12, uplinkLevels.length);
   return { agg, uplinkLevels, ...ports };
