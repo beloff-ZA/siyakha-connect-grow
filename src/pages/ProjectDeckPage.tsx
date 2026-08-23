@@ -307,21 +307,11 @@ const ProjectDeckPage: React.FC = () => {
     floors: pack.floors ?? [],
   };
 
-  const nav = [
-    ["overview", "Overview"],
-    ["scope", "Scope"],
-    ["design", "Design & plans"],
-    ["schedule", "Schedule of works"],
-    ["boq", "BOQ & acceptance"],
-    ["notes", "Project notes"],
-    ["programme", "Programme"],
-    pack.gallery?.length ? ["gallery", "Site gallery"] : null,
-    pack.documents?.length ? ["documents", "Documents"] : null,
-    ["next", "Next steps"],
-  ].filter(Boolean) as [string, string][];
+  const nav = buildDeckNav({ gallery: pack.gallery?.length ?? 0, documents: pack.documents?.length ?? 0 });
+  const deckTitle = pack.project?.title ?? link?.title ?? null;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${NO_OVERFLOW_CLASS}`}>
       {/* Print surface: the full A4 pack, only when download is permitted. */}
       {link?.download_allowed && (
         <div className="hidden print:block">
@@ -332,18 +322,26 @@ const ProjectDeckPage: React.FC = () => {
       <div className="print:hidden">
         <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-            <div>
+            {/* Compact sticky mobile header with a labelled section selector. */}
+            <DeckMobileNav
+              company={SIYAKHA.company}
+              title={deckTitle}
+              nav={nav}
+              active={activeSection}
+              onSelect={setActiveSection}
+            />
+            <div className="hidden min-w-0 lg:block">
               <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">{SIYAKHA.company}</p>
-              <p className="text-sm font-semibold">{pack.project?.title ?? link?.title}</p>
+              <p className="truncate text-sm font-semibold">{deckTitle}</p>
             </div>
             <nav className="hidden items-center gap-4 text-xs uppercase tracking-[0.14em] text-muted-foreground lg:flex">
-              {nav.map(([id, label]) => (
-                <a key={id} href={`#${id}`} className="hover:text-foreground">
-                  {label}
+              {nav.map((item) => (
+                <a key={item.id} href={`#${item.id}`} className="hover:text-foreground">
+                  {item.label}
                 </a>
               ))}
             </nav>
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-wrap items-center gap-2 lg:w-auto">
               {live && (
                 <span className="flex items-center gap-2 border border-border px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
                   <span className="h-1.5 w-1.5 rounded-full bg-foreground" aria-hidden />
