@@ -134,7 +134,13 @@ const ProjectDeckPage: React.FC = () => {
    */
   const loadDeck = async () => {
     try {
-      setDeck(await deckSession(token));
+      const res = await deckSession(token);
+      if (res.state !== "ok") {
+        setDeck(res);
+        return;
+      }
+      const notes = await deckNotes(token);
+      setDeck({ ...res, threads: notes.state === "ok" ? notes.threads : [] });
     } catch {
       setDeck({ state: "unavailable" });
     }
@@ -173,11 +179,6 @@ const ProjectDeckPage: React.FC = () => {
     const res = await deckReplyNote(token, input);
     if (res.state !== "ok") throw new Error(res.error ?? "Could not send the reply.");
     setDeck((d) => (d ? { ...d, threads: res.threads } : d));
-  };
-
-  const refreshNotes = async () => {
-    const res = await deckNotes(token);
-    if (res.state === "ok") setDeck((d) => (d ? { ...d, threads: res.threads } : d));
   };
 
   const live = isLiveView(data as never);
