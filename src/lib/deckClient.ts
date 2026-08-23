@@ -39,6 +39,8 @@ export type DeckPayload = {
   boq_lines?: ClientBoqLine[];
   boq_totals?: { subtotal: number; vat: number; total: number };
   revision_hash?: string;
+  /** Truthful reason a client-safe BOQ is not shown (no pricing is invented). */
+  boq_pending_reason?: string | null;
   acceptances?: BoqAcceptance[];
   delivery?: DeliverySettings | null;
   equipment?: { markers: MarkerLike[]; rack: RackItemLike[] };

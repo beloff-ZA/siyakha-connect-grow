@@ -42,8 +42,9 @@ const DeckBoqTab: React.FC<{
   totals: { subtotal: number; vat: number; total: number };
   revisionHash: string;
   acceptances: BoqAcceptance[];
+  pendingReason?: string | null;
   onAccept: (input: { revision_hash: string; po_reference: string | null }) => Promise<void>;
-}> = ({ viewer, boq, lines, totals, revisionHash, acceptances, onAccept }) => {
+}> = ({ viewer, boq, lines, totals, revisionHash, acceptances, pendingReason, onAccept }) => {
   const [confirmed, setConfirmed] = useState(false);
   const [po, setPo] = useState("");
   const [dialog, setDialog] = useState(false);
