@@ -130,7 +130,9 @@ const FloorPlansManager: React.FC<{
     setProducts((pc ?? []) as unknown as CatalogProduct[]);
     const list = (f ?? []) as unknown as PortalFloor[];
     setFloors(list);
-    setFloorId((prev) => (prev && list.some((x) => x.id === prev) ? prev : list[0]?.id ?? ""));
+    // Selection survives a reload; otherwise the first occupiable floor (display L1).
+    setFloorId((prev) => resolveSelectedLevel(buildFloorLevels(list), prev));
+
     setMarkers((m ?? []) as unknown as FloorMarker[]);
     setRoutes(
       (r ?? []).map((row) => ({
