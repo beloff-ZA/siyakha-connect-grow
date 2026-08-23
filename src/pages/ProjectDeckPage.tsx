@@ -13,6 +13,7 @@ import { deviceTypeLabel, stageLabel } from "@/lib/lifecycle";
 import type { ProjectPack } from "@/lib/projectPack";
 import ProjectPackDocument from "@/components/pm/ProjectPackDocument";
 import PlanSheet from "@/components/pm/PlanSheet";
+import FloorLevelRail from "@/components/portal/FloorLevelRail";
 import { Check, Download, MessageSquare, RefreshCw, ShieldCheck } from "lucide-react";
 
 type Resolved = Awaited<ReturnType<typeof resolveShare>>;
@@ -64,6 +65,7 @@ const ProjectDeckPage: React.FC = () => {
   const [done, setDone] = useState<"comment" | "approve" | null>(null);
   const [stale, setStale] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [deckFloorId, setDeckFloorId] = useState("");
 
   /**
    * `refresh` marks a background/manual live poll: it still participates in rate
