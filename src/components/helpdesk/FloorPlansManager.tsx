@@ -343,19 +343,23 @@ const FloorPlansManager: React.FC<{
     successTitle: string,
   ) => {
     setBusy(true);
+    setSaveState("saving");
     try {
       const res = await markerTransaction(action, payload);
       const note = reconciliationNote(res.reconciliation);
       toast({ title: successTitle, description: note });
       await load();
+      setSaveState("idle");
       return res;
     } catch (e) {
       fail(e instanceof Error ? e.message : "Unexpected error");
+      setSaveState("error");
       await load();
       return null;
     } finally {
       setBusy(false);
     }
+
   };
 
   const addMarker = async (x: number, y: number, direction?: number) => {
