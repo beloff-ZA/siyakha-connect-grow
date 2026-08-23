@@ -310,6 +310,7 @@ export const NOTE_MAX = 2000;
 export function sanitizeNoteBody(value: string): string {
   return value
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "")
+    .replace(/[<>]/g, "")
     .replace(/\r\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim()
