@@ -73,9 +73,13 @@ export const purgePersistedSessions = () => {
   for (const store of [globalThis.localStorage, globalThis.sessionStorage]) {
     try {
       if (!store) continue;
-      for (const key of Object.keys(store)) {
-        if (key.startsWith(viewerSessionKey(""))) store.removeItem(key);
+      const prefix = viewerSessionKey("");
+      const keys: string[] = [];
+      for (let i = 0; i < store.length; i += 1) {
+        const key = store.key(i);
+        if (key && key.startsWith(prefix)) keys.push(key);
       }
+      for (const key of keys) store.removeItem(key);
     } catch {
       /* storage unavailable — nothing to purge */
     }
