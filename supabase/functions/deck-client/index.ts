@@ -512,7 +512,7 @@ Deno.serve(async (req) => {
       line_count: lines.length,
       ...totals,
     });
-    return { boq, lines, totals, revision_hash };
+    return { boq, lines, totals, revision_hash, pending_reason: lines.length ? null : "no_client_lines" };
   };
 
   const loadAcceptances = async () =>
