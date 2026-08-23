@@ -152,6 +152,11 @@ const ProjectDeckPage: React.FC = () => {
   }, [pack]);
 
   const placedFloors = (pack.floors ?? []).filter((f) => f.plan_image_path || (f as any).plan_image_url);
+  const deckFloor = placedFloors.find((f) => f.id === deckFloorId) ?? placedFloors[0] ?? null;
+  const deckCounts = Object.fromEntries(
+    placedFloors.map((f) => [f.id, (f.markers ?? []).length] as const),
+  );
+
 
   if (state === "loading")
     return (
