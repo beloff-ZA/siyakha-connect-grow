@@ -132,6 +132,13 @@ const ProposalDocument: React.FC<{ proposal: Proposal; variant: "full" | "costin
           </Block>
 
           <Block>
+            <H n={n()}>Objectives</H>
+            <Para text={proposal.objectives} />
+          </Block>
+
+
+
+          <Block>
             <H n={n()}>Scope of work</H>
             <Para text={proposal.scope_of_work} />
           </Block>

@@ -7,6 +7,7 @@ import {
   findSensitiveKeys,
   POWER_SECTION_NARRATIVE,
   hasPowerSolution,
+  REPORT_VIEWS,
   floorCountLabel,
   floorCounts,
   isRooftopArea,
@@ -233,5 +234,41 @@ describe("connectivity power solution copy", () => {
       expect(POWER_SECTION_NARRATIVE.toLowerCase()).not.toContain(term.toLowerCase());
     }
     expect(POWER_SECTION_NARRATIVE).toContain("up to 12 hours");
+  });
+});
+
+describe("reports & share addendum", () => {
+  it("exposes exactly the proposal, full report and secure link views", () => {
+    expect(REPORT_VIEWS.map((v) => v.value)).toEqual(["proposal", "report", "link"]);
+    expect(parseReportView(null)).toBe("proposal");
+  });
+
+  it("keeps report data scoped to the URL project id", () => {
+    const packs = [
+      { id: "k1", project_id: "p1" },
+      { id: "k2", project_id: "p2" },
+    ];
+    expect(scopeToProject(packs, "p2").map((p) => p.id)).toEqual(["k2"]);
+    expect(scopeToProject(packs, "")).toEqual([]);
+  });
+
+  it("strips supplier, markup, margin and internal fields from a shared pack", () => {
+    const pack = {
+      project: { id: "p1", title: "Tower" },
+      boqLines: [{ description: "AP", customer_unit_rate: 100, supplier_cost: 60, margin_pct: 40 }],
+      images: [{ id: "i1", client_visible: true }],
+    };
+    expect(findSensitiveKeys(pack).length).toBeGreaterThan(0);
+    const safe = stripSensitive(pack);
+    expect(findSensitiveKeys(safe)).toEqual([]);
+    expect((safe as any).boqLines[0].customer_unit_rate).toBe(100);
+    expect(() => assertClientSafe(safe, "project pack")).not.toThrow();
+  });
+
+  it("never issues a proposal, pack or link from a page render", () => {
+    for (const trigger of ["mount", "effect", "render"] as const) {
+      expect(() => assertExplicitAction(trigger, "Generating a project pack")).toThrow(/explicit Generate/);
+    }
+    expect(() => assertExplicitAction("user", "Generating a project pack")).not.toThrow();
   });
 });
