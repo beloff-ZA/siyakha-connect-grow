@@ -31,6 +31,10 @@ import {
 } from "@/lib/planGeometry";
 import { activeRoutes, parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
 import { RackContents } from "@/components/portal/RackEquipment";
+import FloorLevelRail from "@/components/portal/FloorLevelRail";
+import PlanCommandBar from "@/components/pm/PlanCommandBar";
+import { buildFloorLevels, resolveSelectedLevel } from "@/lib/floorLevels";
+import type { EditTool, PlaceTool, SaveState } from "@/lib/planWorkspace";
 import type { RackEquipment } from "@/lib/rackEquipment";
 import {
   bulkCreateMarkers,
@@ -40,6 +44,7 @@ import {
   planRevisionTransaction,
   reconciliationNote,
 } from "@/lib/designApi";
+
 
 type CatalogProduct = {
   id: string;
@@ -68,10 +73,19 @@ const Section: React.FC<{ title: string; children: React.ReactNode; note?: strin
 const selectCls =
   "w-full border border-border bg-background text-foreground text-sm px-3 py-2";
 
-const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
+const FloorPlansManager: React.FC<{
+  projectId: string;
+  /** Real linked design bill, used for a truthful BOQ status. */
+  designBoqId?: string | null;
+  onOpenBoq?: () => void;
+  onGenerateReport?: () => void;
+  onShareLink?: () => void;
+}> = ({ projectId, designBoqId = null, onOpenBoq, onGenerateReport, onShareLink }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
+  const inspectorRef = useRef<HTMLDivElement>(null);
+  const rackRef = useRef<HTMLDivElement>(null);
 
   const [floors, setFloors] = useState<PortalFloor[]>([]);
   const [markers, setMarkers] = useState<FloorMarker[]>([]);
@@ -80,8 +94,11 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [floorId, setFloorId] = useState("");
   const [planUrl, setPlanUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [saveState, setSaveState] = useState<SaveState>("idle");
   const [placing, setPlacing] = useState(false);
   const [placeKind, setPlaceKind] = useState<MarkerKind>("wifi_ap");
+  const [editTool, setEditTool] = useState<EditTool>("select");
+  const [coverageOn, setCoverageOn] = useState(true);
   const [products, setProducts] = useState<CatalogProduct[]>([]);
   const [placeProductId, setPlaceProductId] = useState("");
   const [showArchived, setShowArchived] = useState(false);
@@ -89,6 +106,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [bulk, setBulk] = useState({ prefix: "", count: 10, kind: "wifi_ap" as MarkerKind });
   const [copyTargets, setCopyTargets] = useState<string[]>([]);
   const [newFloor, setNewFloor] = useState({ level_number: "", display_name: "", floor_use: "accommodation" });
+
 
   const load = useCallback(async () => {
     if (!projectId) return;
@@ -112,7 +130,9 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     setProducts((pc ?? []) as unknown as CatalogProduct[]);
     const list = (f ?? []) as unknown as PortalFloor[];
     setFloors(list);
-    setFloorId((prev) => (prev && list.some((x) => x.id === prev) ? prev : list[0]?.id ?? ""));
+    // Selection survives a reload; otherwise the first occupiable floor (display L1).
+    setFloorId((prev) => resolveSelectedLevel(buildFloorLevels(list), prev));
+
     setMarkers((m ?? []) as unknown as FloorMarker[]);
     setRoutes(
       (r ?? []).map((row) => ({
@@ -145,6 +165,54 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     [liveRoutes, floorId],
   );
   const buildingStats = useMemo(() => markerStats(activeMarkers), [activeMarkers]);
+  const levels = useMemo(() => buildFloorLevels(floors), [floors]);
+  const levelCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    activeMarkers.forEach((m) => {
+      counts[m.floor_id] = (counts[m.floor_id] ?? 0) + 1;
+    });
+    return counts;
+  }, [activeMarkers]);
+  const currentLevel = useMemo(
+    () => levels.all.find((l) => l.floor.id === floorId) ?? null,
+    [levels, floorId],
+  );
+
+  const focus = (ref: React.RefObject<HTMLDivElement>) =>
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  /** Command-bar placement tools map onto the existing placement mode. */
+  const choosePlaceTool = (tool: PlaceTool) => {
+    setPlaceKind(tool as MarkerKind);
+    setPlaceProductId("");
+    setPlacing(true);
+    setEditTool("select");
+  };
+
+  /** One coherent edit action set; each entry drives an existing capability. */
+  const chooseEditTool = (tool: EditTool) => {
+    if (tool === "select") {
+      setPlacing(false);
+      setEditTool("select");
+      return;
+    }
+    if (tool === "coverage") {
+      setCoverageOn((v) => !v);
+      return;
+    }
+    if (tool === "properties") {
+      setEditTool("properties");
+      focus(inspectorRef);
+      return;
+    }
+    if (tool === "archive") {
+      void archiveMarker();
+      return;
+    }
+    setPlacing(false);
+    setEditTool(tool);
+  };
+
 
   useEffect(() => {
     let cancelled = false;
@@ -275,19 +343,23 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     successTitle: string,
   ) => {
     setBusy(true);
+    setSaveState("saving");
     try {
       const res = await markerTransaction(action, payload);
       const note = reconciliationNote(res.reconciliation);
       toast({ title: successTitle, description: note });
       await load();
+      setSaveState("idle");
       return res;
     } catch (e) {
       fail(e instanceof Error ? e.message : "Unexpected error");
+      setSaveState("error");
       await load();
       return null;
     } finally {
       setBusy(false);
     }
+
   };
 
   const addMarker = async (x: number, y: number, direction?: number) => {
@@ -323,6 +395,7 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     const m = markers.find((v) => v.id === id);
     if (!m) return;
     setMarkers((prev) => prev.map((v) => (v.id === id ? { ...v, x_norm: x, y_norm: y } : v)));
+    setSaveState("saving");
     try {
       await markerTransaction("save", {
         id,
@@ -331,11 +404,14 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
         x_norm: clamp01(x),
         y_norm: clamp01(y),
       });
+      setSaveState("idle");
     } catch (e) {
       fail(e instanceof Error ? e.message : "Could not save the new position");
+      setSaveState("error");
       await load();
     }
   };
+
 
   /** Live local preview while the aim handle is dragged — no database write. */
   const aimMarker = (id: string, deg: number) => {
@@ -350,13 +426,17 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
     if (!m) return;
     const d = normalizeBearing(deg);
     aimMarker(id, d);
+    setSaveState("saving");
     try {
       await markerTransaction("save", { id, floor_id: m.floor_id, direction_deg: d });
+      setSaveState("idle");
     } catch (e) {
       fail(e instanceof Error ? e.message : "Could not save the camera direction");
+      setSaveState("error");
       await load();
     }
   };
+
 
   const saveMarker = async (patch: Partial<FloorMarker>) => {
     if (!selected) return;
@@ -482,22 +562,16 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="space-y-2 min-w-[240px]">
-          <Label htmlFor="fp-level">Level</Label>
-          <select id="fp-level" className={selectCls} value={floorId} onChange={(e) => setFloorId(e.target.value)}>
-            {floors.map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.display_name}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="flex flex-wrap items-center gap-4">
         <p className="text-xs text-muted-foreground">
-          Building: {buildingStats.aps} Wi-Fi APs · {buildingStats.cameras} CCTV cameras ·{" "}
+          {levels.floorCount} floor{levels.floorCount === 1 ? "" : "s"}
+          {levels.rooftopCount > 0
+            ? ` + rooftop service plan${levels.rooftopCount === 1 ? "" : "s"}`
+            : ""}{" "}
+          · {buildingStats.aps} Wi-Fi APs · {buildingStats.cameras} CCTV cameras ·{" "}
           {buildingStats.racks} network racks · {buildingStats.total} devices total (APs + CCTV +
-          racks) · {buildingStats.planned} planned (all devices) · {buildingStats.installed}{" "}
-          installed · {buildingStats.testedActive} tested/active
+          racks) · {buildingStats.planned} planned · {buildingStats.installed} installed ·{" "}
+          {buildingStats.testedActive} tested/active
         </p>
         {busy && <span className="text-xs text-muted-foreground">Working…</span>}
         <a
@@ -510,73 +584,61 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
         </a>
       </div>
 
-      <Section title="Add level">
-        <div className="grid sm:grid-cols-4 gap-4">
-          <Input
-            placeholder="Level number"
-            value={newFloor.level_number}
-            onChange={(e) => setNewFloor({ ...newFloor, level_number: e.target.value })}
-          />
-          <Input
-            placeholder="Display name"
-            value={newFloor.display_name}
-            onChange={(e) => setNewFloor({ ...newFloor, display_name: e.target.value })}
-          />
-          <select
-            className={selectCls}
-            value={newFloor.floor_use}
-            onChange={(e) => setNewFloor({ ...newFloor, floor_use: e.target.value })}
-          >
-            {FLOOR_USES.map((u) => (
-              <option key={u.value} value={u.value}>
-                {u.label}
-              </option>
-            ))}
-          </select>
-          <Button onClick={createFloor}>Add level</Button>
-        </div>
-      </Section>
+
+      {floors.length === 0 && (
+        <Section title="Add the first level">
+          <div className="grid sm:grid-cols-4 gap-4">
+            <Input
+              placeholder="Level number"
+              value={newFloor.level_number}
+              onChange={(e) => setNewFloor({ ...newFloor, level_number: e.target.value })}
+            />
+            <Input
+              placeholder="Display name"
+              value={newFloor.display_name}
+              onChange={(e) => setNewFloor({ ...newFloor, display_name: e.target.value })}
+            />
+            <select
+              className={selectCls}
+              value={newFloor.floor_use}
+              onChange={(e) => setNewFloor({ ...newFloor, floor_use: e.target.value })}
+            >
+              {FLOOR_USES.map((u) => (
+                <option key={u.value} value={u.value}>
+                  {u.label}
+                </option>
+              ))}
+            </select>
+            <Button onClick={createFloor}>Add level</Button>
+          </div>
+        </Section>
+      )}
 
       {floor && (
         <>
-          <Section title={`Plan image – ${floor.display_name}`} note="Stored in private client storage; clients see it via short-lived signed links only.">
-            <div className="flex flex-wrap items-center gap-3">
-              <input
-                ref={fileRef}
-                type="file"
-                accept="application/pdf,image/png,image/jpeg,image/webp"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) uploadPlan(f);
-                  e.target.value = "";
-                }}
-              />
-              <Button variant="outline" onClick={() => fileRef.current?.click()}>
-                {floor.plan_image_path ? "Upload new plan revision" : "Upload plan (PDF or image)"}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => updateFloor({ client_visible: !floor.client_visible })}
-              >
-                {floor.client_visible ? "Hide level from client" : "Show level to client"}
-              </Button>
-              <span className="text-xs text-muted-foreground">
-                {floor.plan_image_path ?? "No plan image yet"}
-              </span>
-            </div>
-            <Textarea
-              rows={2}
-              value={floor.notes ?? ""}
-              onChange={(e) => setFloors((prev) => prev.map((f) => (f.id === floor.id ? { ...f, notes: e.target.value } : f)))}
-              onBlur={(e) => updateFloor({ notes: e.target.value })}
-              placeholder="Level notes"
-            />
-          </Section>
+          <PlanCommandBar
+            placeTool={placing ? (placeKind as PlaceTool) : null}
+            onPlaceTool={choosePlaceTool}
+            editTool={editTool}
+            onEditTool={chooseEditTool}
+            selected={selected}
+            coverageOn={coverageOn}
+            saveState={saveState}
+            designBoqId={designBoqId}
+            onOpenBoq={() => onOpenBoq?.()}
+            onGenerateReport={() => onGenerateReport?.()}
+            onShareLink={() => onShareLink?.()}
+            onArchive={() => void archiveMarker()}
+            onOpenProperties={() => focus(inspectorRef)}
+            onOpenRackBuild={() => focus(rackRef)}
+            busy={busy}
+          />
 
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr),200px]">
+            <div className="min-w-0 space-y-6">
           <Section
-            title="Place & edit devices"
-            note="Pick a catalogue product (or a plain device type), switch placement mode on and click the plan. Each catalogue-linked device you place, archive or delete updates the project's design bill of quantities in the same transaction."
+            title={`${currentLevel?.longLabel ?? floor.display_name} — plan & devices`}
+            note="Pick a catalogue product (or a plain device type), switch placement mode on and click the plan. Each catalogue-linked device you place, archive or delete updates the project's design bill of quantities in the same transaction. Moving or aiming a device never changes quantities."
           >
             <div className="flex flex-wrap items-center gap-3">
               <select
@@ -625,11 +687,11 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
               onAim={(id, deg) => aimMarker(id, deg)}
               onAimEnd={(id, deg) => persistAim(id, deg)}
               placing={placing}
-              coverage={selectedCoverageMode(selected?.marker_type)}
+              coverage={coverageOn ? selectedCoverageMode(selected?.marker_type) : "off"}
               height="h-[55vh]"
               emptyLabel="Upload a plan image for this level to start placing devices."
             />
-            {coverageHelpText(selected?.marker_type) && (
+            {coverageOn && coverageHelpText(selected?.marker_type) && (
               <p className="flex flex-wrap items-center gap-2 text-xs">
                 <span
                   aria-hidden
@@ -653,8 +715,46 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
             </p>
           </Section>
 
+          <Section title={`Plan image – ${floor.display_name}`} note="Stored in private client storage; clients see it via short-lived signed links only.">
+            <div className="flex flex-wrap items-center gap-3">
+              <input
+                ref={fileRef}
+                type="file"
+                accept="application/pdf,image/png,image/jpeg,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadPlan(f);
+                  e.target.value = "";
+                }}
+              />
+              <Button variant="outline" onClick={() => fileRef.current?.click()}>
+                {floor.plan_image_path ? "Upload new plan revision" : "Upload plan (PDF or image)"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => updateFloor({ client_visible: !floor.client_visible })}
+              >
+                {floor.client_visible ? "Hide level from client" : "Show level to client"}
+              </Button>
+              <span className="text-xs text-muted-foreground">
+                {floor.plan_image_path ?? "No plan image yet"}
+              </span>
+            </div>
+            <Textarea
+              rows={2}
+              value={floor.notes ?? ""}
+              onChange={(e) => setFloors((prev) => prev.map((f) => (f.id === floor.id ? { ...f, notes: e.target.value } : f)))}
+              onBlur={(e) => updateFloor({ notes: e.target.value })}
+              placeholder="Level notes"
+            />
+          </Section>
+
+
           {selected && (
+            <div ref={inspectorRef}>
             <Section title={`Marker – ${selected.label}`}>
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Label</Label>
@@ -841,17 +941,33 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
 
               {/* Selecting a rack opens that rack's 6U build for this level. */}
               {selected.marker_type === "rack" && (
-                <RackContents
-                  rack={selected}
-                  floor={floor}
-                  items={equipment.filter((e) => e.rack_marker_id === selected.id)}
-                  routes={liveRoutes}
-                  canManage
-                  onSaved={() => void load()}
-                />
+                <div ref={rackRef}>
+                  <RackContents
+                    rack={selected}
+                    floor={floor}
+                    items={equipment.filter((e) => e.rack_marker_id === selected.id)}
+                    routes={liveRoutes}
+                    canManage
+                    onSaved={() => void load()}
+                  />
+                </div>
               )}
             </Section>
+            </div>
           )}
+            </div>
+
+
+            {/* Sticky level rail: display floors L1..Ln plus a separate rooftop plan. */}
+            <FloorLevelRail
+              floors={floors}
+              selectedId={floorId}
+              onSelect={setFloorId}
+              deviceCounts={levelCounts}
+            />
+          </div>
+
+
 
           {archivedFloorMarkers.length > 0 && (
             <Section
@@ -931,6 +1047,34 @@ const FloorPlansManager: React.FC<{ projectId: string }> = ({ projectId }) => {
               Copy layout to {copyTargets.length} level(s)
             </Button>
           </Section>
+
+          <Section title="Add level">
+            <div className="grid sm:grid-cols-4 gap-4">
+              <Input
+                placeholder="Level number"
+                value={newFloor.level_number}
+                onChange={(e) => setNewFloor({ ...newFloor, level_number: e.target.value })}
+              />
+              <Input
+                placeholder="Display name"
+                value={newFloor.display_name}
+                onChange={(e) => setNewFloor({ ...newFloor, display_name: e.target.value })}
+              />
+              <select
+                className={selectCls}
+                value={newFloor.floor_use}
+                onChange={(e) => setNewFloor({ ...newFloor, floor_use: e.target.value })}
+              >
+                {FLOOR_USES.map((u) => (
+                  <option key={u.value} value={u.value}>
+                    {u.label}
+                  </option>
+                ))}
+              </select>
+              <Button onClick={createFloor}>Add level</Button>
+            </div>
+          </Section>
+
         </>
       )}
     </div>

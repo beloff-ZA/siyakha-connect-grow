@@ -104,7 +104,9 @@ import {
 } from "@/components/portal/RackEquipment";
 import { type RackEquipment } from "@/lib/rackEquipment";
 import DeviceManager from "@/components/portal/DeviceManager";
+import FloorLevelRail from "@/components/portal/FloorLevelRail";
 import { DISCIPLINES, type Discipline } from "@/lib/productCatalog";
+
 
 
 type CameraDraft = {
@@ -708,6 +710,14 @@ const PortalFloorPlans: React.FC = () => {
   );
   const markerById = useMemo(() => new Map(markers.map((m) => [m.id, m] as const)), [markers]);
   const floorById = useMemo(() => new Map(floors.map((f) => [f.id, f] as const)), [floors]);
+  const levelDeviceCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    markers.forEach((m) => {
+      counts[m.floor_id] = (counts[m.floor_id] ?? 0) + 1;
+    });
+    return counts;
+  }, [markers]);
+
 
   const floorRoutes = useMemo(() => routes.filter((r) => r.floor_id === floorId), [routes, floorId]);
   const buildingRouteStats = useMemo(() => routeStats(routes), [routes]);
@@ -997,47 +1007,15 @@ const PortalFloorPlans: React.FC = () => {
           description="Your Siyakha project team will publish the building levels and device placement here."
         />
       ) : (
-        <div className="grid gap-8 lg:grid-cols-[220px,1fr]">
-          {/* Floor selector */}
-          <div className="border border-border">
-            <p className="px-4 py-3 border-b border-border text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              Levels
-            </p>
-            <div className="max-h-[320px] lg:max-h-none overflow-y-auto">
-              {floors.map((f) => {
-                const onFloor = markers.filter((m) => m.floor_id === f.id);
-                const apCount = onFloor.filter((m) => m.marker_type === "wifi_ap").length;
-                const camCount = onFloor.filter((m) => m.marker_type === "camera").length;
-                const rackCount = onFloor.filter((m) => m.marker_type === "rack").length;
-                const active = f.id === floorId;
-                return (
-                  <button
-                    key={f.id}
-                    type="button"
-                    onClick={() => setFloorId(f.id)}
-                    className={[
-                      "w-full text-left px-4 py-3 border-b border-border last:border-b-0 transition-colors",
-                      active ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted/60",
-                    ].join(" ")}
-                  >
-                    <span className="block text-[11px] uppercase tracking-[0.18em]">
-                      Level {f.level_number}
-                    </span>
-                    <span className="block text-xs mt-1">
-                      {apCount} AP · {camCount} CCTV · {rackCount} rack
-                      {rackCount === 1 ? "" : "s"}
-                    </span>
-                    <span className="block text-[10px] mt-0.5 text-muted-foreground">
-                      {onFloor.length} devices ·{" "}
-                      {routes.filter((r) => r.floor_id === f.id).length} cable routes
-                    </span>
+        <div className="grid gap-8 lg:grid-cols-[200px,1fr]">
+          {/* Read-only level rail: floors L1..Ln plus a separate rooftop service plan. */}
+          <FloorLevelRail
+            floors={floors}
+            selectedId={floorId}
+            onSelect={setFloorId}
+            deviceCounts={levelDeviceCounts}
+          />
 
-
-                  </button>
-                );
-              })}
-            </div>
-          </div>
 
           <div className="min-w-0 space-y-6">
             <Panel title={floor?.display_name ?? "Level"}>

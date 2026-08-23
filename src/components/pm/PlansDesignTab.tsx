@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import FloorPlansManager from "@/components/helpdesk/FloorPlansManager";
 import { Panel, Field, selectCls } from "./ui";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
+
 
 /**
  * Plan upload and concept design entry point. Client → site → project selection
@@ -19,8 +21,20 @@ const PlansDesignTab: React.FC<{
 }> = ({ ws, projectId, setProjectId, locked }) => {
   const { projects, clients, sites } = ws;
   const { toast } = useToast();
+  const [params, setParams] = useSearchParams();
   const [draftBoqs, setDraftBoqs] = useState<{ id: string; revision_label: string; title: string | null }[]>([]);
   const [designBoqId, setDesignBoqId] = useState("");
+
+  /** Navigation only — never generates a report or creates a share link. */
+  const goToSection = (section: string, view?: string) => {
+    const draft = new URLSearchParams(params);
+    draft.set("section", section);
+    if (view) draft.set("view", view);
+    else draft.delete("view");
+    setParams(draft, { replace: false });
+  };
+
+
 
   const loadDesignLink = useCallback(async () => {
     if (!projectId) {
@@ -108,7 +122,14 @@ const PlansDesignTab: React.FC<{
       </Panel>
 
       {projectId ? (
-        <FloorPlansManager projectId={projectId} />
+        <FloorPlansManager
+          projectId={projectId}
+          designBoqId={designBoqId || null}
+          onOpenBoq={() => goToSection("boq")}
+          onGenerateReport={() => goToSection("share", "report")}
+          onShareLink={() => goToSection("share", "link")}
+        />
+
       ) : (
         <p className="text-sm text-muted-foreground">Select a project to open its plan workspace.</p>
       )}

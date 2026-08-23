@@ -223,10 +223,11 @@ export function floorCounts(rows: readonly FloorUseLike[]): FloorCounts {
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
-/** e.g. "11 floors + 1 rooftop/service area" — never "12 floors". */
+/** e.g. "11 floors + rooftop service plan" — never "12 floors". */
 export function floorCountLabel(rows: readonly FloorUseLike[]): string {
   const { floors, rooftopAreas } = floorCounts(rows);
   const base = plural(floors, "floor");
   if (!rooftopAreas) return base;
-  return `${base} + ${rooftopAreas} rooftop/service area${rooftopAreas === 1 ? "" : "s"}`;
+  return `${base} + rooftop service plan${rooftopAreas === 1 ? "" : "s"}`;
 }
+
