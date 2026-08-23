@@ -31,6 +31,10 @@ import {
 } from "@/lib/planGeometry";
 import { activeRoutes, parseWaypoints, routeStats, type CableRoute } from "@/lib/cableRoutes";
 import { RackContents } from "@/components/portal/RackEquipment";
+import FloorLevelRail from "@/components/portal/FloorLevelRail";
+import PlanCommandBar from "@/components/pm/PlanCommandBar";
+import { buildFloorLevels, resolveSelectedLevel } from "@/lib/floorLevels";
+import type { EditTool, PlaceTool, SaveState } from "@/lib/planWorkspace";
 import type { RackEquipment } from "@/lib/rackEquipment";
 import {
   bulkCreateMarkers,
@@ -40,6 +44,7 @@ import {
   planRevisionTransaction,
   reconciliationNote,
 } from "@/lib/designApi";
+
 
 type CatalogProduct = {
   id: string;
