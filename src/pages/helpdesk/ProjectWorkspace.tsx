@@ -38,7 +38,7 @@ const ProjectWorkspace: React.FC = () => {
   const fixed = { ws, projectId, setProjectId: () => {}, locked: true };
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto w-full max-w-[1600px] px-0 sm:px-2 lg:px-4">
       <Link
         to="/helpdesk/project-management"
         className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground hover:text-foreground"
