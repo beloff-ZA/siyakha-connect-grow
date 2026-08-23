@@ -52,9 +52,9 @@ describe("viewer registration gate", () => {
 
   it("scopes a viewer record to one project and share link", () => {
     const viewer = { project_id: "p1", share_link_id: "s1" };
-    expect(viewerMatchesScope(viewer, "p1", "s1")).toBe(true);
-    expect(viewerMatchesScope(viewer, "p2", "s1")).toBe(false);
-    expect(viewerMatchesScope(viewer, "p1", "s2")).toBe(false);
+    expect(viewerMatchesScope(viewer, { project_id: "p1", share_link_id: "s1" })).toBe(true);
+    expect(viewerMatchesScope(viewer, { project_id: "p2", share_link_id: "s1" })).toBe(false);
+    expect(viewerMatchesScope(viewer, { project_id: "p1", share_link_id: "s2" })).toBe(false);
   });
 });
 
@@ -66,9 +66,9 @@ describe("client-safe BOQ view", () => {
       description: "Grandstream GCC6020 gateway",
       quantity: 1,
       unit: "ea",
-      unit_price: 7265,
+      customer_unit_rate: 7265,
       line_total: 7265,
-      section_title: "Core Network",
+      section: "Core Network",
       supplier_name: "Dunamis",
       supplier_cost: 6000,
       markup_percent: 21,
@@ -85,14 +85,14 @@ describe("client-safe BOQ view", () => {
     const keys = Object.keys(line);
     for (const banned of ["supplier_name", "supplier_cost", "markup_percent", "margin", "internal_notes", "banking_details"])
       expect(keys).not.toContain(banned);
-    expect(line.unit_price).toBe(7265);
+    expect(line.customer_unit_rate).toBe(7265);
   });
 
   it("groups sections and totals with 15% VAT", () => {
     const sections = groupBoqSections(toClientBoqLines(rows));
     expect(sections).toHaveLength(1);
     expect(sections[0].subtotal).toBe(7265);
-    const totals = clientBoqTotals(toClientBoqLines(rows), 15);
+    const totals = clientBoqTotals(toClientBoqLines(rows), { vat_enabled: true, vat_rate: 15 });
     expect(totals.subtotal).toBe(7265);
     expect(Math.round(totals.vat * 100) / 100).toBe(1089.75);
     expect(Math.round(totals.total * 100) / 100).toBe(8354.75);
@@ -110,35 +110,36 @@ describe("BOQ acceptance", () => {
   const base = {
     boq_id: "b1",
     revision_label: "Rev 1",
+    version_no: 1,
+    line_count: 88,
     subtotal: 949800,
     vat: 142470,
     total: 1092270,
-    lines: [{ item_code: "SUN-001", quantity: 1, unit_price: 1250 }],
   };
   const hash = revisionFingerprint(base);
 
   it("fingerprints the exact revision and totals", () => {
     expect(revisionFingerprint(base)).toBe(hash);
     expect(revisionFingerprint({ ...base, subtotal: 949801 })).not.toBe(hash);
-    expect(revisionFingerprint({ ...base, lines: [{ item_code: "SUN-001", quantity: 2, unit_price: 1250 }] })).not.toBe(hash);
+    expect(revisionFingerprint({ ...base, line_count: 89 })).not.toBe(hash);
   });
 
   it("viewing or registering never accepts anything", () => {
     expect(acceptanceState([], hash)).toBe("none");
-    expect(() => assertAcceptanceAllowed({ confirmed: false, revision_hash: hash, viewer_id: "v1", project_id: "p1" } as never)).toThrow();
+    expect(() => assertAcceptanceAllowed({ confirmed: false, revision_hash: hash, boq_id: "b1" })).toThrow();
   });
 
   it("requires a deliberate confirmation tied to the current revision", () => {
     expect(() =>
-      assertAcceptanceAllowed({ confirmed: true, revision_hash: hash, viewer_id: "v1", project_id: "p1" } as never),
+      assertAcceptanceAllowed({ confirmed: true, revision_hash: hash, boq_id: "b1" }),
     ).not.toThrow();
     expect(() =>
-      assertAcceptanceAllowed({ confirmed: true, revision_hash: "", viewer_id: "v1", project_id: "p1" } as never),
+      assertAcceptanceAllowed({ confirmed: true, revision_hash: "", boq_id: "b1" }),
     ).toThrow();
   });
 
   it("never transfers an acceptance to a new revision", () => {
-    const accepted = [{ revision_hash: hash, viewer_id: "v1" }];
+    const accepted = [{ revision_hash: hash, accepted_at: "2026-08-01T09:00:00Z" }];
     expect(acceptanceState(accepted, hash)).toBe("accepted");
     expect(acceptanceState(accepted, revisionFingerprint({ ...base, subtotal: 960000 }))).toBe("previous_revision");
     expect(PREVIOUS_REVISION_MESSAGE).toMatch(/new acceptance required/i);
@@ -166,7 +167,7 @@ describe("client notes", () => {
       { id: "t2", project_id: "p2", share_link_id: "s1" },
       { id: "t3", project_id: "p1", share_link_id: "s2" },
     ];
-    expect(scopeThreads(threads, "p1", "s1").map((t) => t.id)).toEqual(["t1"]);
+    expect(scopeThreads(threads, { project_id: "p1", share_link_id: "s1" }).map((t) => t.id)).toEqual(["t1"]);
   });
 });
 
@@ -226,7 +227,7 @@ describe("dynamic equipment summary and retention", () => {
     }
     const pending = retentionEstimate({ camera_count: 63 });
     expect(pending.ok).toBe(false);
-    if (!pending.ok) {
+    if (pending.ok === false) {
       expect(pending.reason).toBe(RETENTION_PENDING);
       expect(pending.missing).toContain("average bitrate");
     }
