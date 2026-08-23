@@ -165,6 +165,54 @@ const FloorPlansManager: React.FC<{
     [liveRoutes, floorId],
   );
   const buildingStats = useMemo(() => markerStats(activeMarkers), [activeMarkers]);
+  const levels = useMemo(() => buildFloorLevels(floors), [floors]);
+  const levelCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    activeMarkers.forEach((m) => {
+      counts[m.floor_id] = (counts[m.floor_id] ?? 0) + 1;
+    });
+    return counts;
+  }, [activeMarkers]);
+  const currentLevel = useMemo(
+    () => levels.all.find((l) => l.floor.id === floorId) ?? null,
+    [levels, floorId],
+  );
+
+  const focus = (ref: React.RefObject<HTMLDivElement>) =>
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  /** Command-bar placement tools map onto the existing placement mode. */
+  const choosePlaceTool = (tool: PlaceTool) => {
+    setPlaceKind(tool as MarkerKind);
+    setPlaceProductId("");
+    setPlacing(true);
+    setEditTool("select");
+  };
+
+  /** One coherent edit action set; each entry drives an existing capability. */
+  const chooseEditTool = (tool: EditTool) => {
+    if (tool === "select") {
+      setPlacing(false);
+      setEditTool("select");
+      return;
+    }
+    if (tool === "coverage") {
+      setCoverageOn((v) => !v);
+      return;
+    }
+    if (tool === "properties") {
+      setEditTool("properties");
+      focus(inspectorRef);
+      return;
+    }
+    if (tool === "archive") {
+      void archiveMarker();
+      return;
+    }
+    setPlacing(false);
+    setEditTool(tool);
+  };
+
 
   useEffect(() => {
     let cancelled = false;
