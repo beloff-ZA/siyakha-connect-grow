@@ -634,7 +634,7 @@ const FloorPlansManager: React.FC<{
             busy={busy}
           />
 
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr),200px]">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr),230px]">
             <div className="min-w-0 space-y-6">
           <Section
             title={`${currentLevel?.longLabel ?? floor.display_name} — plan & devices`}
