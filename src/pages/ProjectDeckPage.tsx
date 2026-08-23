@@ -24,12 +24,14 @@ import {
   DeckRetentionPanel,
 } from "@/components/deck/DeckDeliverySummary";
 import {
+  clearSession,
   deckAcceptBoq,
   deckCreateNote,
   deckNotes,
   deckRegister,
   deckReplyNote,
   deckSession,
+  purgePersistedSessions,
   type DeckPayload,
 } from "@/lib/deckClient";
 import type { ViewerRegistration } from "@/lib/deckViewer";
