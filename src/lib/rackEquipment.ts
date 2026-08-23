@@ -57,8 +57,11 @@ export const ACCESS_SWITCH_MODEL = "GWN7813P";
 /** Model of the ground-floor Layer 3 fibre aggregation switch. */
 export const AGGREGATION_SWITCH_MODEL = "GWN7832";
 
-/** Planned fibre uplinks into the ground-floor aggregation switch (Levels 1–10). */
-export const BACKBONE_UPLINK_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+/**
+ * Planned fibre uplinks into the ground-floor aggregation switch:
+ * Levels 1–10 plus the rooftop / service rack (Level 11).
+ */
+export const BACKBONE_UPLINK_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 export const BACKBONE_DISCLAIMER =
   "Preliminary backbone design — fibre type, transceivers, riser routing and cable lengths remain TBC after the riser and site survey.";

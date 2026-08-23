@@ -124,8 +124,8 @@ const BoqCatalogue: React.FC<{
       code: "NET-002",
       specs: [
         "12 x 10G SFP+ Layer 3 aggregation switch",
-        "10 planned riser uplinks from Levels 1–10",
-        "2 spare SFP+ ports for future growth",
+        "11 planned riser uplinks from Levels 1–10 and the rooftop / service rack",
+        "1 spare SFP+ port for future growth",
       ],
       visual: { kind: "brand", src: grandstreamBrand, alt: "Grandstream authorised partner", model: "GWN7832" },
     },
@@ -203,8 +203,8 @@ const BoqCatalogue: React.FC<{
       key: "fibre",
       brand: "Riser backbone",
       model: "40-core OS2 single-mode fibre",
-      role: "Levels 1–10 access racks to the Level 0 aggregation core",
-      qty: `${num(qty("FIB-001", 500))} m — 10 uplinks`,
+      role: "Levels 1–10 and rooftop / service access racks to the Level 0 aggregation core",
+      qty: `${num(qty("FIB-001", 500))} m — 11 uplinks`,
       status: "proposed",
       code: "FIB-001",
       specs: [

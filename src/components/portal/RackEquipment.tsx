@@ -172,7 +172,7 @@ export const RackContents: React.FC<{
   );
 };
 
-/** Compact preliminary backbone view: Level 1–10 access switches → ground-floor aggregation. */
+/** Compact preliminary backbone view: Level 1–11 (incl. rooftop) access switches → ground-floor aggregation. */
 export const BuildingBackbone: React.FC<{
   floors: PortalFloor[];
   racks: FloorMarker[];
@@ -215,7 +215,7 @@ export const BuildingBackbone: React.FC<{
 
         <div className="flex items-center justify-center py-2 md:px-3">
           <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            10 × planned fibre uplinks →
+            {BACKBONE_UPLINK_LEVELS.length} × planned fibre uplinks →
           </span>
         </div>
 
