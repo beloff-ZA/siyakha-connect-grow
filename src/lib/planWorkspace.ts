@@ -89,3 +89,15 @@ export function saveStateLabel(state: SaveState): string {
 
 export const TEMP_LINK_COPY =
   "A temporary link shares the plans, report and customer bill read-only, with an expiry date and instant revocation. Supplier cost, markup, margin and internal notes are never included.";
+
+/* ------------------------------------------------ Placement tool behaviour */
+
+export type PlaceToolAction = "place_marker" | "edit_routes";
+
+/**
+ * "Cable route" is not a device: it must open route editing instead of entering
+ * marker placement, and it never writes anything when clicked.
+ */
+export function placeToolAction(tool: PlaceTool): PlaceToolAction {
+  return tool === "cable_route" ? "edit_routes" : "place_marker";
+}
