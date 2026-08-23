@@ -319,30 +319,39 @@ const ProjectDeckPage: React.FC = () => {
             {placedFloors.length === 0 ? (
               <p className="text-sm text-muted-foreground">Plan sheets will appear here once the design drawings are issued.</p>
             ) : (
-              <div className="space-y-10">
-                {placedFloors.map((f) => (
-                  <figure key={f.id}>
+              <div className="grid gap-6 lg:grid-cols-[200px,1fr]">
+                {/* Read-only level rail — no editing controls on the client deck. */}
+                <FloorLevelRail
+                  floors={placedFloors}
+                  selectedId={deckFloor?.id ?? ""}
+                  onSelect={setDeckFloorId}
+                  deviceCounts={deckCounts}
+                  presignedFor={(f) => (f as any).plan_image_url ?? null}
+                />
+                {deckFloor && (
+                  <figure className="min-w-0">
                     <figcaption className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-                      <span className="text-sm font-semibold">{f.display_name}</span>
+                      <span className="text-sm font-semibold">{deckFloor.display_name}</span>
                       <span className="text-xs text-muted-foreground">
-                        {(f.markers ?? []).length} device{(f.markers ?? []).length === 1 ? "" : "s"}
-                        {f.floor_use ? ` · ${f.floor_use}` : ""}
+                        {(deckFloor.markers ?? []).length} device
+                        {(deckFloor.markers ?? []).length === 1 ? "" : "s"}
+                        {deckFloor.floor_use ? ` · ${deckFloor.floor_use}` : ""}
                       </span>
                     </figcaption>
                     <div className="border border-border p-2">
                       <PlanSheet
-                        floor={f}
+                        floor={deckFloor}
                         interactive
                         rackEquipment={pack.rackEquipment}
                         cables={pack.cables}
                       />
                     </div>
-
                   </figure>
-                ))}
+                )}
               </div>
             )}
           </Section>
+
 
           <Section id="schedule" eyebrow="04" title="Schedule of works">
             {(pack.boqLines ?? []).length === 0 ? (
