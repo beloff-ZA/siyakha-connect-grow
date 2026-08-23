@@ -511,7 +511,7 @@ const ProjectDeckPage: React.FC = () => {
               <p className="text-sm text-muted-foreground">The priced schedule is not included on this link.</p>
             ) : (
               <>
-                <div className="overflow-x-auto border border-border">
+                <div className={`${SCROLL_CONTAINER_CLASS} border border-border`} role="region" aria-label="Schedule of works — scroll to see all columns" tabIndex={0}>
                   <table className="w-full min-w-[640px] text-sm">
                     <thead className="bg-muted text-left text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                       <tr>
