@@ -1011,6 +1011,34 @@ const FloorPlansManager: React.FC<{
               Copy layout to {copyTargets.length} level(s)
             </Button>
           </Section>
+
+          <Section title="Add level">
+            <div className="grid sm:grid-cols-4 gap-4">
+              <Input
+                placeholder="Level number"
+                value={newFloor.level_number}
+                onChange={(e) => setNewFloor({ ...newFloor, level_number: e.target.value })}
+              />
+              <Input
+                placeholder="Display name"
+                value={newFloor.display_name}
+                onChange={(e) => setNewFloor({ ...newFloor, display_name: e.target.value })}
+              />
+              <select
+                className={selectCls}
+                value={newFloor.floor_use}
+                onChange={(e) => setNewFloor({ ...newFloor, floor_use: e.target.value })}
+              >
+                {FLOOR_USES.map((u) => (
+                  <option key={u.value} value={u.value}>
+                    {u.label}
+                  </option>
+                ))}
+              </select>
+              <Button onClick={createFloor}>Add level</Button>
+            </div>
+          </Section>
+
         </>
       )}
     </div>
