@@ -190,7 +190,7 @@ describe("floor vs rooftop/service counting", () => {
 
   it("counts 12 plan records as 11 floors plus one rooftop/service area", () => {
     expect(floorCounts(anton)).toEqual({ floors: 11, rooftopAreas: 1, planRecords: 12 });
-    expect(floorCountLabel(anton)).toBe("11 floors + 1 rooftop/service area");
+    expect(floorCountLabel(anton)).toBe("11 floors + rooftop service plan");
   });
 
   it("keeps the rooftop record available, separated from the floors", () => {
@@ -209,7 +209,7 @@ describe("floor vs rooftop/service counting", () => {
       { floor_use: null },
     ];
     expect(floorCounts(other)).toEqual({ floors: 2, rooftopAreas: 2, planRecords: 4 });
-    expect(floorCountLabel(other)).toBe("2 floors + 2 rooftop/service areas");
+    expect(floorCountLabel(other)).toBe("2 floors + rooftop service plans");
     expect(isRooftopArea({ floor_use: ROOFTOP_FLOOR_USE })).toBe(true);
   });
 
