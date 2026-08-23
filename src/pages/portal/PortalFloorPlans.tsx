@@ -710,6 +710,14 @@ const PortalFloorPlans: React.FC = () => {
   );
   const markerById = useMemo(() => new Map(markers.map((m) => [m.id, m] as const)), [markers]);
   const floorById = useMemo(() => new Map(floors.map((f) => [f.id, f] as const)), [floors]);
+  const levelDeviceCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    markers.forEach((m) => {
+      counts[m.floor_id] = (counts[m.floor_id] ?? 0) + 1;
+    });
+    return counts;
+  }, [markers]);
+
 
   const floorRoutes = useMemo(() => routes.filter((r) => r.floor_id === floorId), [routes, floorId]);
   const buildingRouteStats = useMemo(() => routeStats(routes), [routes]);
