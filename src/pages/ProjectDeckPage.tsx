@@ -403,6 +403,12 @@ const ProjectDeckPage: React.FC = () => {
               <Prose text={pack.narrative?.executive_summary ?? pack.project?.description} />
               <Prose text={pack.narrative?.project_understanding ?? pack.project?.site_context} />
             </div>
+            <div className="mt-8">
+              <DeckProjectSummary {...deliveryProps} />
+            </div>
+            <div className="mt-8">
+              <DeckBenefitCards {...deliveryProps} />
+            </div>
           </Section>
 
           <Section id="scope" eyebrow="02" title="Scope of work">
@@ -412,6 +418,7 @@ const ProjectDeckPage: React.FC = () => {
                 <Prose text={pack.narrative?.methodology ?? pack.project?.project_approach} />
               </div>
               <div className="space-y-3">
+                <DeckRetentionPanel {...deliveryProps} />
                 {counts.map(([type, n]) => (
                   <div key={type} className="flex items-center justify-between border border-border px-4 py-3 text-sm">
                     <span>{deviceTypeLabel(type)}</span>
@@ -507,7 +514,32 @@ const ProjectDeckPage: React.FC = () => {
             )}
           </Section>
 
-          <Section id="programme" eyebrow="05" title="Programme">
+          <Section id="boq" eyebrow="05" title="BOQ & acceptance">
+            {viewer && (
+              <DeckBoqTab
+                viewer={viewer}
+                boq={deck.boq ?? null}
+                lines={deck.boq_lines ?? []}
+                totals={deck.boq_totals ?? { subtotal: 0, vat: 0, total: 0 }}
+                revisionHash={deck.revision_hash ?? ""}
+                acceptances={deck.acceptances ?? []}
+                onAccept={acceptBoq}
+              />
+            )}
+          </Section>
+
+          <Section id="notes" eyebrow="06" title="Project notes">
+            {viewer && (
+              <DeckNotesTab
+                viewer={viewer}
+                threads={deck.threads ?? []}
+                onCreate={createNote as never}
+                onReply={replyNote}
+              />
+            )}
+          </Section>
+
+          <Section id="programme" eyebrow="07" title="Programme">
             {(pack.milestones ?? []).length === 0 && (pack.tasks ?? []).length === 0 ? (
               <p className="text-sm text-muted-foreground">The delivery programme will be issued after design sign-off.</p>
             ) : (
@@ -568,6 +600,9 @@ const ProjectDeckPage: React.FC = () => {
           )}
 
           <Section id="next" eyebrow="08" title="Next steps">
+            <div className="mb-8">
+              <DeckNextStepsTimeline settings={delivery} />
+            </div>
             <div className="grid gap-8 lg:grid-cols-2">
               <div className="space-y-4">
                 <Prose text={pack.narrative?.deliverables} />
