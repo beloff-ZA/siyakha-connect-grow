@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.share-resolve]
 verify_jwt = false
+
+[functions.deck-client]
+verify_jwt = false

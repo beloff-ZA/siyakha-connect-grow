@@ -14,6 +14,25 @@ import { POWER_SECTION_NARRATIVE, POWER_SECTION_TITLE, hasPowerSolution } from "
 import type { ProjectPack } from "@/lib/projectPack";
 import ProjectPackDocument from "@/components/pm/ProjectPackDocument";
 import PlanSheet from "@/components/pm/PlanSheet";
+import ViewerGate from "@/components/deck/ViewerGate";
+import DeckBoqTab from "@/components/deck/DeckBoqTab";
+import DeckNotesTab from "@/components/deck/DeckNotesTab";
+import {
+  DeckBenefitCards,
+  DeckNextStepsTimeline,
+  DeckProjectSummary,
+  DeckRetentionPanel,
+} from "@/components/deck/DeckDeliverySummary";
+import {
+  deckAcceptBoq,
+  deckCreateNote,
+  deckNotes,
+  deckRegister,
+  deckReplyNote,
+  deckSession,
+  type DeckPayload,
+} from "@/lib/deckClient";
+import type { ViewerRegistration } from "@/lib/deckViewer";
 import FloorLevelRail from "@/components/portal/FloorLevelRail";
 import { Check, Download, MessageSquare, RefreshCw, ShieldCheck } from "lucide-react";
 
@@ -67,6 +86,8 @@ const ProjectDeckPage: React.FC = () => {
   const [stale, setStale] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [deckFloorId, setDeckFloorId] = useState("");
+  const [deck, setDeck] = useState<DeckPayload | null>(null);
+  const [gateError, setGateError] = useState<string | null>(null);
 
   /**
    * `refresh` marks a background/manual live poll: it still participates in rate
@@ -105,6 +126,60 @@ const ProjectDeckPage: React.FC = () => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  /**
+   * Engagement payload (viewer session, client BOQ, notes, delivery summary).
+   * It is only requested once the share token itself resolved, and it returns
+   * nothing about the project until the viewer has registered.
+   */
+  const loadDeck = async () => {
+    try {
+      const res = await deckSession(token);
+      if (res.state !== "ok") {
+        setDeck(res);
+        return;
+      }
+      const notes = await deckNotes(token);
+      setDeck({ ...res, threads: notes.state === "ok" ? notes.threads : [] });
+    } catch {
+      setDeck({ state: "unavailable" });
+    }
+  };
+
+  useEffect(() => {
+    if (state === "ok") void loadDeck();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, token]);
+
+  const register = async (input: ViewerRegistration) => {
+    setGateError(null);
+    const res = await deckRegister(token, input);
+    if (res.state === "ok") await loadDeck();
+    else setGateError(res.error ?? "We could not open this link. Please contact Siyakha.");
+  };
+
+  const acceptBoq = async (input: { revision_hash: string; po_reference: string | null }) => {
+    const res = await deckAcceptBoq(token, { ...input, confirmed: true });
+    if (res.state === "revision_changed") {
+      await loadDeck();
+      throw new Error("This BOQ has been revised. Please review the updated revision and accept again.");
+    }
+    if (res.state !== "ok") throw new Error(res.error ?? "Could not record the acceptance.");
+    await loadDeck();
+    toast({ title: res.repeat ? "Already accepted" : "Acceptance recorded" });
+  };
+
+  const createNote = async (input: { category: never; body: string }) => {
+    const res = await deckCreateNote(token, input as never);
+    if (res.state !== "ok") throw new Error(res.error ?? "Could not send the note.");
+    setDeck((d) => (d ? { ...d, threads: res.threads } : d));
+  };
+
+  const replyNote = async (input: { thread_id: string; body: string }) => {
+    const res = await deckReplyNote(token, input);
+    if (res.state !== "ok") throw new Error(res.error ?? "Could not send the reply.");
+    setDeck((d) => (d ? { ...d, threads: res.threads } : d));
+  };
 
   const live = isLiveView(data as never);
 
@@ -202,11 +277,36 @@ const ProjectDeckPage: React.FC = () => {
       </Shell>
     );
 
+  // Registration gate: no project, client or commercial detail is rendered until
+  // the viewer has registered against this validated token.
+  if (!deck || deck.state === "registration_required")
+    return deck ? (
+      <ViewerGate onRegister={register} error={gateError} />
+    ) : (
+      <Shell>
+        <p className="mt-3 text-sm text-muted-foreground">Opening your secure project deck…</p>
+      </Shell>
+    );
+
+  const viewer = deck.viewer ?? null;
+  const delivery = deck.delivery ?? null;
+  const equipmentMarkers = deck.equipment?.markers ?? [];
+  const equipmentRack = deck.equipment?.rack ?? (pack.rackEquipment as never[]) ?? [];
+  const deliveryProps = {
+    settings: delivery,
+    markers: equipmentMarkers,
+    rack: equipmentRack,
+    boqLines: (deck.boq_lines ?? pack.boqLines ?? []) as never[],
+    floors: pack.floors ?? [],
+  };
+
   const nav = [
     ["overview", "Overview"],
     ["scope", "Scope"],
     ["design", "Design & plans"],
     ["schedule", "Schedule of works"],
+    ["boq", "BOQ & acceptance"],
+    ["notes", "Project notes"],
     ["programme", "Programme"],
     pack.gallery?.length ? ["gallery", "Site gallery"] : null,
     pack.documents?.length ? ["documents", "Documents"] : null,
@@ -304,6 +404,12 @@ const ProjectDeckPage: React.FC = () => {
               <Prose text={pack.narrative?.executive_summary ?? pack.project?.description} />
               <Prose text={pack.narrative?.project_understanding ?? pack.project?.site_context} />
             </div>
+            <div className="mt-8">
+              <DeckProjectSummary {...deliveryProps} />
+            </div>
+            <div className="mt-8">
+              <DeckBenefitCards {...deliveryProps} />
+            </div>
           </Section>
 
           <Section id="scope" eyebrow="02" title="Scope of work">
@@ -313,6 +419,7 @@ const ProjectDeckPage: React.FC = () => {
                 <Prose text={pack.narrative?.methodology ?? pack.project?.project_approach} />
               </div>
               <div className="space-y-3">
+                <DeckRetentionPanel {...deliveryProps} />
                 {counts.map(([type, n]) => (
                   <div key={type} className="flex items-center justify-between border border-border px-4 py-3 text-sm">
                     <span>{deviceTypeLabel(type)}</span>
@@ -408,7 +515,32 @@ const ProjectDeckPage: React.FC = () => {
             )}
           </Section>
 
-          <Section id="programme" eyebrow="05" title="Programme">
+          <Section id="boq" eyebrow="05" title="BOQ & acceptance">
+            {viewer && (
+              <DeckBoqTab
+                viewer={viewer}
+                boq={deck.boq ?? null}
+                lines={deck.boq_lines ?? []}
+                totals={deck.boq_totals ?? { subtotal: 0, vat: 0, total: 0 }}
+                revisionHash={deck.revision_hash ?? ""}
+                acceptances={deck.acceptances ?? []}
+                onAccept={acceptBoq}
+              />
+            )}
+          </Section>
+
+          <Section id="notes" eyebrow="06" title="Project notes">
+            {viewer && (
+              <DeckNotesTab
+                viewer={viewer}
+                threads={deck.threads ?? []}
+                onCreate={createNote as never}
+                onReply={replyNote}
+              />
+            )}
+          </Section>
+
+          <Section id="programme" eyebrow="07" title="Programme">
             {(pack.milestones ?? []).length === 0 && (pack.tasks ?? []).length === 0 ? (
               <p className="text-sm text-muted-foreground">The delivery programme will be issued after design sign-off.</p>
             ) : (
@@ -469,6 +601,9 @@ const ProjectDeckPage: React.FC = () => {
           )}
 
           <Section id="next" eyebrow="08" title="Next steps">
+            <div className="mb-8">
+              <DeckNextStepsTimeline settings={delivery} />
+            </div>
             <div className="grid gap-8 lg:grid-cols-2">
               <div className="space-y-4">
                 <Prose text={pack.narrative?.deliverables} />
