@@ -59,9 +59,12 @@ const Thumb: React.FC<{ path?: string | null; presigned?: string | null; alt: st
   }, [near, path, presigned]);
 
   return (
-    <div ref={ref} className="h-14 w-full overflow-hidden border border-border bg-muted">
+    <div
+      ref={ref}
+      className="aspect-[4/3] w-full overflow-hidden border border-border bg-white dark:bg-neutral-100"
+    >
       {url && !failed ? (
-        <img src={url} alt={alt} loading="lazy" className="h-full w-full object-cover" />
+        <img src={url} alt={alt} loading="lazy" className="h-full w-full object-contain" />
       ) : (
         <div className="flex h-full w-full items-center justify-center text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
           {path ? "Plan" : "No plan"}
