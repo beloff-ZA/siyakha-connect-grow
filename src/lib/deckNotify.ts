@@ -17,7 +17,7 @@ export type NotifyEvent = {
   method?: string;
   viewer_id?: string | null;
   first_name?: string | null;
-  surname?: string | null
+  surname?: string | null;
   email?: string | null;
   consent?: boolean;
 };
