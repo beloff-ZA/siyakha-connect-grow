@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import FloorPlansManager from "@/components/helpdesk/FloorPlansManager";
 import { Panel, Field, selectCls } from "./ui";
 import type { PmWorkspace } from "@/hooks/usePmWorkspace";
+
 
 /**
  * Plan upload and concept design entry point. Client → site → project selection
