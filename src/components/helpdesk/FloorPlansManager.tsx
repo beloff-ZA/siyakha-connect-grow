@@ -562,22 +562,16 @@ const FloorPlansManager: React.FC<{
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="space-y-2 min-w-[240px]">
-          <Label htmlFor="fp-level">Level</Label>
-          <select id="fp-level" className={selectCls} value={floorId} onChange={(e) => setFloorId(e.target.value)}>
-            {floors.map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.display_name}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="flex flex-wrap items-center gap-4">
         <p className="text-xs text-muted-foreground">
-          Building: {buildingStats.aps} Wi-Fi APs · {buildingStats.cameras} CCTV cameras ·{" "}
+          {levels.floorCount} floor{levels.floorCount === 1 ? "" : "s"}
+          {levels.rooftopCount > 0
+            ? ` + rooftop service plan${levels.rooftopCount === 1 ? "" : "s"}`
+            : ""}{" "}
+          · {buildingStats.aps} Wi-Fi APs · {buildingStats.cameras} CCTV cameras ·{" "}
           {buildingStats.racks} network racks · {buildingStats.total} devices total (APs + CCTV +
-          racks) · {buildingStats.planned} planned (all devices) · {buildingStats.installed}{" "}
-          installed · {buildingStats.testedActive} tested/active
+          racks) · {buildingStats.planned} planned · {buildingStats.installed} installed ·{" "}
+          {buildingStats.testedActive} tested/active
         </p>
         {busy && <span className="text-xs text-muted-foreground">Working…</span>}
         <a
@@ -589,6 +583,7 @@ const FloorPlansManager: React.FC<{
           Preview client building view
         </a>
       </div>
+
 
       {floors.length === 0 && (
         <Section title="Add the first level">
