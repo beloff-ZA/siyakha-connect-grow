@@ -5,7 +5,15 @@ import { SIYAKHA, PROPOSAL_DEFAULTS } from "@/lib/proposals";
 import { assetStatusLabel, deviceTypeLabel, lineKindLabel, NOT_PROCURED, packSectionFlags, stageLabel } from "@/lib/lifecycle";
 import type { ProjectPack } from "@/lib/projectPack";
 import PlanSheet from "./PlanSheet";
-import { ROOFTOP_EXCLUDED_NOTE, ROOFTOP_SECTION_TITLE, floorCountLabel, splitFloorAreas } from "@/lib/reporting";
+import {
+  POWER_SECTION_NARRATIVE,
+  POWER_SECTION_TITLE,
+  ROOFTOP_EXCLUDED_NOTE,
+  ROOFTOP_SECTION_TITLE,
+  floorCountLabel,
+  hasPowerSolution,
+  splitFloorAreas,
+} from "@/lib/reporting";
 
 /** Page-level block. Adds a print page break before every section but the first. */
 const Page: React.FC<{ title?: string; first?: boolean; children: React.ReactNode }> = ({ title, first, children }) => (
@@ -426,6 +434,12 @@ const ProjectPackDocument: React.FC<{ pack: ProjectPack }> = ({ pack }) => {
 
       {/* BOQ */}
       <Page title="Bill of quantities and pricing">
+        {hasPowerSolution(boqLines) && (
+          <div className="mb-3 border border-black p-3">
+            <p className="text-[9.5pt] font-semibold uppercase tracking-[0.1em]">{POWER_SECTION_TITLE}</p>
+            <p className="mt-1 text-[9pt] leading-relaxed text-neutral-700">{POWER_SECTION_NARRATIVE}</p>
+          </div>
+        )}
         {boq && (
           <p className="mb-2 text-[9pt] text-neutral-600">
             {boq.title} · {boq.revision_label} (v{boq.version_no}) · valid until {formatDate(boq.valid_until)}

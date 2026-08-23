@@ -218,3 +218,18 @@ describe("floor vs rooftop/service counting", () => {
     expect(floorCountLabel([])).toBe("0 floors");
   });
 });
+
+describe("connectivity power solution copy", () => {
+  it("detects power lines by section title or item code", () => {
+    expect(hasPowerSolution([{ section: "CCTV & Recording" }])).toBe(false);
+    expect(hasPowerSolution([{ section: "Connectivity Power Solution" }])).toBe(true);
+    expect(hasPowerSolution([{ item_code: "PWR-009" }])).toBe(true);
+  });
+
+  it("keeps the client narrative free of internal commercial terms", () => {
+    for (const term of ["Dunamis", "supplier", "markup", "margin", "cost", "QUO"]) {
+      expect(POWER_SECTION_NARRATIVE.toLowerCase()).not.toContain(term.toLowerCase());
+    }
+    expect(POWER_SECTION_NARRATIVE).toContain("up to 12 hours");
+  });
+});
