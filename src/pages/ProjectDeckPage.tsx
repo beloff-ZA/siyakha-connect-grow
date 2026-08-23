@@ -36,6 +36,8 @@ import {
 } from "@/lib/deckClient";
 import type { ViewerRegistration } from "@/lib/deckViewer";
 import FloorLevelRail from "@/components/portal/FloorLevelRail";
+import DeckMobileNav from "@/components/deck/DeckMobileNav";
+import { NO_OVERFLOW_CLASS, SCROLL_CONTAINER_CLASS, TOUCH_TARGET_CLASS, buildDeckNav } from "@/lib/deckMobileNav";
 import { Check, Download, MessageSquare, RefreshCw, ShieldCheck } from "lucide-react";
 
 type Resolved = Awaited<ReturnType<typeof resolveShare>>;
@@ -90,6 +92,7 @@ const ProjectDeckPage: React.FC = () => {
   const [deckFloorId, setDeckFloorId] = useState("");
   const [deck, setDeck] = useState<DeckPayload | null>(null);
   const [gateError, setGateError] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState("overview");
 
   /**
    * `refresh` marks a background/manual live poll: it still participates in rate
