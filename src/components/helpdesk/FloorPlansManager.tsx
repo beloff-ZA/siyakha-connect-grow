@@ -48,7 +48,7 @@ import { RackContents } from "@/components/portal/RackEquipment";
 import FloorLevelRail from "@/components/portal/FloorLevelRail";
 import PlanCommandBar from "@/components/pm/PlanCommandBar";
 import { buildFloorLevels, resolveSelectedLevel } from "@/lib/floorLevels";
-import type { EditTool, PlaceTool, SaveState } from "@/lib/planWorkspace";
+import { placeToolAction, type EditTool, type PlaceTool, type SaveState } from "@/lib/planWorkspace";
 import type { RackEquipment } from "@/lib/rackEquipment";
 import {
   bulkCreateMarkers,
@@ -100,6 +100,7 @@ const FloorPlansManager: React.FC<{
   const fileRef = useRef<HTMLInputElement>(null);
   const inspectorRef = useRef<HTMLDivElement>(null);
   const rackRef = useRef<HTMLDivElement>(null);
+  const routeRef = useRef<HTMLDivElement>(null);
 
   const [floors, setFloors] = useState<PortalFloor[]>([]);
   const [markers, setMarkers] = useState<FloorMarker[]>([]);
@@ -119,6 +120,10 @@ const FloorPlansManager: React.FC<{
   const [selected, setSelected] = useState<FloorMarker | null>(null);
   const [bulk, setBulk] = useState({ prefix: "", count: 10, kind: "wifi_ap" as MarkerKind });
   const [copyTargets, setCopyTargets] = useState<string[]>([]);
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+  const [editingRoutes, setEditingRoutes] = useState(false);
+  const [routeDraft, setRouteDraft] = useState<Record<string, Waypoint[]>>({});
+  const [savingRoutes, setSavingRoutes] = useState(false);
   const [newFloor, setNewFloor] = useState({ level_number: "", display_name: "", floor_use: "accommodation" });
 
 
@@ -178,6 +183,104 @@ const FloorPlansManager: React.FC<{
     () => routeStats(liveRoutes.filter((r) => r.floor_id === floorId)),
     [liveRoutes, floorId],
   );
+  const routeById = useMemo(() => new Map(liveRoutes.map((r) => [r.id, r] as const)), [liveRoutes]);
+
+  /** Live local marker position, so dragging a device drags its route endpoint. */
+  const positionOf = useCallback(
+    (markerId: string): Waypoint | null => {
+      const m = activeMarkers.find((v) => v.id === markerId);
+      if (!m) return null;
+      return { x: Number(m.x_norm), y: Number(m.y_norm) };
+    },
+    [activeMarkers],
+  );
+
+  /** Waypoints currently displayed for a route — an unsaved local draft wins. */
+  const waypointsOf = useCallback(
+    (r: CableRoute) => routeDraft[r.id] ?? r.waypoints,
+    [routeDraft],
+  );
+
+  const canvasRoutes = useMemo(
+    () => resolveCanvasRoutes(liveRoutes, floorId, positionOf, waypointsOf),
+    [liveRoutes, floorId, positionOf, waypointsOf],
+  );
+  const selectedRoute = selectedRouteId ? routeById.get(selectedRouteId) ?? null : null;
+  const pendingRouteIds = useMemo(() => Object.keys(routeDraft), [routeDraft]);
+
+  const moveWaypoint = useCallback(
+    (routeId: string, index: number, x: number, y: number) => {
+      const r = routeById.get(routeId);
+      if (!r || r.status !== "planned") return;
+      const current = routeDraft[routeId] ?? r.waypoints;
+      const from = positionOf(r.rack_marker_id);
+      const to = positionOf(r.device_marker_id);
+      const path = [from ?? { x, y }, ...current, to ?? { x, y }];
+      const next = [...current];
+      next[index] = snapOrthogonal({ x, y }, path[index], path[index + 2], {
+        width: 1000,
+        height: 1000,
+      });
+      setRouteDraft((d) => ({ ...d, [routeId]: next }));
+    },
+    [routeById, routeDraft, positionOf],
+  );
+
+  const addWaypoint = useCallback(
+    (routeId: string, segment: number, x: number, y: number) => {
+      const r = routeById.get(routeId);
+      if (!r || r.status !== "planned") return;
+      const current = routeDraft[routeId] ?? r.waypoints;
+      setRouteDraft((d) => ({ ...d, [routeId]: insertWaypoint(current, segment, { x, y }) }));
+    },
+    [routeById, routeDraft],
+  );
+
+  const dropWaypoint = useCallback(
+    (routeId: string, index: number) => {
+      const r = routeById.get(routeId);
+      if (!r || r.status !== "planned") return;
+      const current = routeDraft[routeId] ?? r.waypoints;
+      setRouteDraft((d) => ({ ...d, [routeId]: removeWaypoint(current, index) }));
+    },
+    [routeById, routeDraft],
+  );
+
+  const cancelRouteEdits = useCallback(() => {
+    setRouteDraft({});
+    setEditingRoutes(false);
+  }, []);
+
+  /** Explicit save only — nothing is written while reshaping a route. */
+  const saveRouteEdits = useCallback(async () => {
+    const entries = Object.entries(routeDraft);
+    if (entries.length === 0) return;
+    setSavingRoutes(true);
+    let failed: string | null = null;
+    for (const [routeId, wps] of entries) {
+      const { error } = await supabase.rpc("portal_update_cable_route_waypoints", {
+        _route_id: routeId,
+        _waypoints: wps as unknown as never,
+      });
+      if (error) {
+        failed = error.message;
+        break;
+      }
+    }
+    setSavingRoutes(false);
+    if (failed) {
+      toast({ title: "Cable routes not saved", description: failed, variant: "destructive" });
+      return;
+    }
+    setRouteDraft({});
+    setEditingRoutes(false);
+    await load();
+    toast({
+      title: "Cable routes saved",
+      description: `${entries.length} route${entries.length === 1 ? "" : "s"} updated.`,
+    });
+  }, [routeDraft, load, toast]);
+
   const buildingStats = useMemo(() => markerStats(activeMarkers), [activeMarkers]);
   const levels = useMemo(() => buildFloorLevels(floors), [floors]);
   const levelCounts = useMemo(() => {
@@ -197,6 +300,15 @@ const FloorPlansManager: React.FC<{
 
   /** Command-bar placement tools map onto the existing placement mode. */
   const choosePlaceTool = (tool: PlaceTool) => {
+    // "Cable route" is not a device: it opens route editing and never places a
+    // cable_route marker or writes anything.
+    if (placeToolAction(tool) === "edit_routes") {
+      setPlacing(false);
+      setEditTool("select");
+      setEditingRoutes(true);
+      focus(routeRef);
+      return;
+    }
     setPlaceKind(tool as MarkerKind);
     setPlaceProductId("");
     setPlacing(true);
@@ -690,6 +802,91 @@ const FloorPlansManager: React.FC<{
               </span>
             </div>
 
+            {/* Compact cable-routing strip: truthful counts, selection and explicit save. */}
+            <div ref={routeRef} className="border border-border p-3 space-y-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  Cable routing
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {canvasRoutes.length} of {floorRouteStats.total} route
+                  {floorRouteStats.total === 1 ? "" : "s"} drawn on this level (
+                  {floorRouteStats.wifi} Wi-Fi / {floorRouteStats.camera} CCTV)
+                </span>
+                {ROUTE_LEGEND.map((l) => (
+                  <span key={l.service} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span
+                      aria-hidden
+                      className="inline-block h-0 w-6"
+                      style={{
+                        borderTop: `2px ${l.service === "camera" ? "dashed" : "solid"} ${routeColor(l.service)}`,
+                      }}
+                    />
+                    {l.label}
+                  </span>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <select
+                  className={selectCls + " max-w-[280px]"}
+                  value={selectedRouteId ?? ""}
+                  onChange={(e) => setSelectedRouteId(e.target.value || null)}
+                >
+                  <option value="">No route selected</option>
+                  {liveRoutes
+                    .filter((r) => r.floor_id === floorId)
+                    .map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.route_label} — {serviceLabel(r.service_type)}
+                      </option>
+                    ))}
+                </select>
+                {selectedRoute && (
+                  <span className="text-xs text-muted-foreground">
+                    {serviceLabel(selectedRoute.service_type)} · {stateLabel(selectedRoute.status)} ·{" "}
+                    {waypointsOf(selectedRoute).length} waypoint
+                    {waypointsOf(selectedRoute).length === 1 ? "" : "s"}
+                    {selectedRoute.status !== "planned" && " · geometry locked"}
+                  </span>
+                )}
+                {editingRoutes ? (
+                  <>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                      {savingRoutes
+                        ? "Saving…"
+                        : `${pendingRouteIds.length} route${pendingRouteIds.length === 1 ? "" : "s"} edited`}
+                    </span>
+                    <Button variant="outline" onClick={cancelRouteEdits} disabled={savingRoutes}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() => void saveRouteEdits()}
+                      disabled={pendingRouteIds.length === 0 || savingRoutes}
+                    >
+                      {savingRoutes ? "Saving…" : "Save routes"}
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setPlacing(false);
+                      setEditingRoutes(true);
+                    }}
+                  >
+                    Edit cable routes
+                  </Button>
+                )}
+              </div>
+
+              <p className="text-xs text-muted-foreground">
+                {editingRoutes
+                  ? "Press along a planned route to add an intermediate waypoint, drag a waypoint to reshape it and double-click one to remove it. Route ends stay locked to the rack and the device. Nothing is saved until you press Save routes."
+                  : CABLE_ROUTE_DISCLAIMER}
+              </p>
+            </div>
+
             <FloorPlanCanvas
               imageUrl={planUrl}
               markers={floorMarkers}
@@ -701,6 +898,13 @@ const FloorPlansManager: React.FC<{
               onAim={(id, deg) => aimMarker(id, deg)}
               onAimEnd={(id, deg) => persistAim(id, deg)}
               placing={placing}
+              routes={canvasRoutes}
+              selectedRouteId={selectedRouteId}
+              onSelectRoute={setSelectedRouteId}
+              editingRoutes={editingRoutes}
+              onMoveWaypoint={moveWaypoint}
+              onAddWaypoint={addWaypoint}
+              onRemoveWaypoint={dropWaypoint}
               coverage={coverageOn ? selectedCoverageMode(selected?.marker_type) : "off"}
               height="h-[55vh]"
               emptyLabel="Upload a plan image for this level to start placing devices."
