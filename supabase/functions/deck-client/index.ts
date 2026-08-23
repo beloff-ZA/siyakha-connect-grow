@@ -571,6 +571,7 @@ Deno.serve(async (req) => {
       boq_lines: boq.lines,
       boq_totals: boq.totals,
       revision_hash: boq.revision_hash,
+      boq_pending_reason: boq.pending_reason ?? null,
       acceptances,
       delivery,
       equipment,
