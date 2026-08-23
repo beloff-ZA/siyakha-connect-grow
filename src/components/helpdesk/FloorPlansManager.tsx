@@ -426,13 +426,17 @@ const FloorPlansManager: React.FC<{
     if (!m) return;
     const d = normalizeBearing(deg);
     aimMarker(id, d);
+    setSaveState("saving");
     try {
       await markerTransaction("save", { id, floor_id: m.floor_id, direction_deg: d });
+      setSaveState("idle");
     } catch (e) {
       fail(e instanceof Error ? e.message : "Could not save the camera direction");
+      setSaveState("error");
       await load();
     }
   };
+
 
   const saveMarker = async (patch: Partial<FloorMarker>) => {
     if (!selected) return;
