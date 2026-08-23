@@ -179,7 +179,8 @@ const ClientEngagementTab: React.FC<{ projectId: string; projectTitle?: string }
         ))}
       </div>
 
-      <Panel title="Deck viewers" description="Who registered on the secure project link, and when they last viewed it.">
+      <Panel title="Deck viewers">
+        <p className="mb-3 text-xs text-muted-foreground">Who registered on the secure project link, and when they last viewed it.</p>
         {viewers.length === 0 ? (
           <p className="text-sm text-muted-foreground">No client viewer has registered on a project link yet.</p>
         ) : (
@@ -198,10 +199,8 @@ const ClientEngagementTab: React.FC<{ projectId: string; projectTitle?: string }
         )}
       </Panel>
 
-      <Panel
-        title="BOQ acceptance audit"
-        description="Append-only record of the exact revision and totals a client accepted. It cannot be edited."
-      >
+      <Panel title={"BOQ acceptance audit"}>
+        <p className="mb-3 text-xs text-muted-foreground">{"Append-only record of the exact revision and totals a client accepted. It cannot be edited."}</p>
         {acceptances.length === 0 ? (
           <p className="text-sm text-muted-foreground">No client acceptance has been recorded for this project.</p>
         ) : (
@@ -234,10 +233,8 @@ const ClientEngagementTab: React.FC<{ projectId: string; projectTitle?: string }
         )}
       </Panel>
 
-      <Panel
-        title="Client notes"
-        description="Client-facing conversation only. Internal and private project notes are never shown on a share link."
-      >
+      <Panel title={"Client notes"}>
+        <p className="mb-3 text-xs text-muted-foreground">{"Client-facing conversation only. Internal and private project notes are never shown on a share link."}</p>
         {threads.length === 0 ? (
           <p className="text-sm text-muted-foreground">No client notes yet.</p>
         ) : (
@@ -290,10 +287,8 @@ const ClientEngagementTab: React.FC<{ projectId: string; projectTitle?: string }
         )}
       </Panel>
 
-      <Panel
-        title="Client delivery summary"
-        description={`Drives the client deck, proposal and report for ${projectTitle ?? "this project"}. Nothing is stored until you save.`}
-      >
+      <Panel title={"Client delivery summary"}>
+        <p className="mb-3 text-xs text-muted-foreground">{`Drives the client deck, proposal and report for ${projectTitle ?? "this project"}. Nothing is stored until you save.`}</p>
         <div className="space-y-4">
           {text("executive_summary", "Executive project summary", 4)}
           {text("delivery_objectives", "Delivery objectives", 3)}
