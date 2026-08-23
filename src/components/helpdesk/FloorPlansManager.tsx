@@ -395,6 +395,7 @@ const FloorPlansManager: React.FC<{
     const m = markers.find((v) => v.id === id);
     if (!m) return;
     setMarkers((prev) => prev.map((v) => (v.id === id ? { ...v, x_norm: x, y_norm: y } : v)));
+    setSaveState("saving");
     try {
       await markerTransaction("save", {
         id,
@@ -403,11 +404,14 @@ const FloorPlansManager: React.FC<{
         x_norm: clamp01(x),
         y_norm: clamp01(y),
       });
+      setSaveState("idle");
     } catch (e) {
       fail(e instanceof Error ? e.message : "Could not save the new position");
+      setSaveState("error");
       await load();
     }
   };
+
 
   /** Live local preview while the aim handle is dragged — no database write. */
   const aimMarker = (id: string, deg: number) => {
