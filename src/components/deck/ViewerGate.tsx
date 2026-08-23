@@ -50,7 +50,7 @@ const ViewerGate: React.FC<{
         aria-invalid={!!errors[key]}
         aria-describedby={errors[key] ? `${key}-error` : undefined}
         onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-        className="mt-1"
+        className="mt-1 min-h-[44px] w-full max-w-full text-base sm:text-sm"
         required
       />
       {errors[key] && (
