@@ -118,6 +118,137 @@ const CLIENT_BOQ_STATUSES = ["shared", "published", "approved"];
 
 const VIEWER_PUBLIC = "id, share_link_id, project_id, first_name, surname, email, consent_at, first_viewed_at, last_viewed_at";
 
+/* -------------------------------------- generic client BOQ revision resolver */
+/** Mirrors src/lib/deckBoqResolver.ts — generic, never project-specific. */
+const isClientVisibleStatus = (status?: string | null) =>
+  CLIENT_BOQ_STATUSES.includes(String(status ?? "").trim().toLowerCase());
+
+const revisionSort = (a: any, b: any) =>
+  Number(b.version_no ?? 0) - Number(a.version_no ?? 0) ||
+  new Date(String(b.updated_at ?? 0)).getTime() - new Date(String(a.updated_at ?? 0)).getTime();
+
+const resolveClientBoq = (rows: any[], designatedIds: (string | null | undefined)[]) => {
+  if (!rows.length) return { boq: null, reason: "no_boq_for_project" as const };
+  const eligible = rows.filter((r) => isClientVisibleStatus(r.status)).sort(revisionSort);
+  const designated = designatedIds.filter(Boolean) as string[];
+  if (!eligible.length)
+    return {
+      boq: null,
+      reason: (rows.some((r) => designated.includes(r.id))
+        ? "designated_revision_not_issued"
+        : "no_issued_revision") as const,
+    };
+  for (const id of designated) {
+    const hit = eligible.find((r) => r.id === id);
+    if (hit) return { boq: hit, reason: null };
+  }
+  return { boq: eligible[0], reason: null };
+};
+
+/* ------------------------------------- internal "project viewed" notification */
+const NOTIFY_RECIPIENT = "nikita@siyakhatechnology.co.za";
+const NOTIFY_SENDER = Deno.env.get("SIYAKHA_NOTIFY_FROM") ?? "Siyakha Projects <notifications@siyakhatechnology.co.za>";
+const ADMIN_ORIGIN = "https://siyakhatechnology.co.za";
+
+const pad = (n: number) => String(n).padStart(2, "0");
+const sastStamp = (iso: string | number | Date) => {
+  const t = new Date(new Date(iso).getTime() + 2 * 60 * 60 * 1000);
+  return `${t.getUTCFullYear()}-${pad(t.getUTCMonth() + 1)}-${pad(t.getUTCDate())} ${pad(t.getUTCHours())}:${pad(
+    t.getUTCMinutes(),
+  )} SAST`;
+};
+
+async function notifyInternalView(input: {
+  admin: any;
+  project_id: string;
+  share_link_id: string;
+  viewer_id: string;
+  session_hash: string;
+  first_name: string;
+  surname: string;
+  email: string;
+  origin?: string | null;
+}) {
+  const { admin } = input;
+  if (!input.viewer_id) return;
+  const idempotencyKey = `deck_view:${input.viewer_id}:${input.session_hash.slice(0, 32)}`;
+
+  // Reserve the access event first: a retry of the same request cannot resend.
+  const { data: reserved, error: reserveError } = await admin
+    .from("portal_deck_view_notifications")
+    .insert({
+      project_id: input.project_id,
+      share_link_id: input.share_link_id,
+      viewer_id: input.viewer_id,
+      idempotency_key: idempotencyKey,
+      recipient: NOTIFY_RECIPIENT,
+      delivery_status: "pending",
+    })
+    .select("id")
+    .maybeSingle();
+  if (reserveError || !reserved) return; // duplicate key or table missing — never resend, never block
+
+  const [{ data: project }] = await Promise.all([
+    admin.from("portal_projects").select("title, client_id, site_id").eq("id", input.project_id).maybeSingle(),
+  ]);
+  const [{ data: client }, { data: site }] = await Promise.all([
+    project?.client_id
+      ? admin.from("portal_clients").select("display_name").eq("id", project.client_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    project?.site_id
+      ? admin.from("portal_sites").select("name").eq("id", project.site_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
+  const projectTitle = String(project?.title ?? "").trim() || "Untitled project";
+  const subject = `Project viewed — ${projectTitle}`;
+  const adminLink = `${ADMIN_ORIGIN}/helpdesk/project-management/${input.project_id}`;
+  const rows: [string, string][] = [
+    ["Project", projectTitle],
+    ["Client", String(client?.display_name ?? "—")],
+    ["Site", String(site?.name ?? "—")],
+    ["Viewer", `${input.first_name} ${input.surname}`.trim()],
+    ["Email", input.email],
+    ["Viewed at", sastStamp(Date.now())],
+    ["Admin project", adminLink],
+  ];
+  const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
+  const html = `<div style="font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#111"><p style="text-transform:uppercase;letter-spacing:.18em;font-size:10px;color:#666">Siyakha Technology</p><h2 style="font-size:16px;margin:8px 0 16px">${subject}</h2><table cellpadding="6" style="border-collapse:collapse">${rows
+    .map(
+      ([k, v]) =>
+        `<tr><td style="color:#666">${k}</td><td><strong>${String(v).replace(/[<>]/g, "")}</strong></td></tr>`,
+    )
+    .join("")}</table><p style="color:#666;font-size:12px;margin-top:16px">Internal notification only. The secure link is not included.</p></div>`;
+
+  const apiKey = Deno.env.get("RESEND_API_KEY") ?? "";
+  const finish = (status: string, error?: string | null) =>
+    admin
+      .from("portal_deck_view_notifications")
+      .update({ delivery_status: status, error_message: error ?? null, subject, sent_at: new Date().toISOString() })
+      .eq("id", reserved.id);
+
+  if (!apiKey) {
+    await finish("blocked", "RESEND_API_KEY is not configured");
+    return;
+  }
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: NOTIFY_SENDER, to: [NOTIFY_RECIPIENT], subject, text, html }),
+    });
+    if (!res.ok) {
+      await finish("failed", `provider ${res.status}`);
+      return;
+    }
+    await finish("sent", null);
+  } catch (e) {
+    await finish("failed", String((e as Error)?.message ?? e).slice(0, 300));
+  }
+}
+
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: { ...cors, ...privacyHeaders } });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
