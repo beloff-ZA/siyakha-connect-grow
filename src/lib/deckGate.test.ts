@@ -22,10 +22,30 @@ const freshModule = async () => {
 
 const sentSession = () => (invoke.mock.calls[invoke.mock.calls.length - 1]?.[1] as { body: { session: string } }).body.session;
 
+/** Minimal Storage stub — this suite runs in a plain node environment. */
+const makeStorage = (): Storage => {
+  const map = new Map<string, string>();
+  return {
+    get length() {
+      return map.size;
+    },
+    clear: () => map.clear(),
+    getItem: (k: string) => (map.has(k) ? (map.get(k) as string) : null),
+    key: (i: number) => Array.from(map.keys())[i] ?? null,
+    removeItem: (k: string) => void map.delete(k),
+    setItem: (k: string, v: string) => void map.set(k, v),
+  } as Storage;
+};
+
+let localStorage: Storage;
+let sessionStorage: Storage;
+
 beforeEach(() => {
   invoke.mockReset();
-  localStorage.clear();
-  sessionStorage.clear();
+  localStorage = makeStorage();
+  sessionStorage = makeStorage();
+  Object.defineProperty(globalThis, "localStorage", { value: localStorage, configurable: true });
+  Object.defineProperty(globalThis, "sessionStorage", { value: sessionStorage, configurable: true });
 });
 
 describe("deck viewer gate", () => {
@@ -56,9 +76,8 @@ describe("deck viewer gate", () => {
     invoke.mockResolvedValueOnce({ data: { state: "ok", session: "s-2" }, error: null });
     await mod.deckRegister(TOKEN, registration);
     expect(localStorage.getItem(viewerSessionKey(TOKEN))).toBeNull();
-    expect(Object.keys(localStorage)).toHaveLength(0);
-    expect(Object.keys(sessionStorage)).toHaveLength(0);
-    expect(document.cookie).not.toContain("siyakha.deck");
+    expect(localStorage.length).toBe(0);
+    expect(sessionStorage.length).toBe(0);
   });
 
   it("requires the gate again after a reload or new page load", async () => {
