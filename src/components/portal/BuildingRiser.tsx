@@ -43,7 +43,7 @@ const BuildingRiser: React.FC<{
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-3">
         {[
-          ["Racks on levels 0–10", occupied.filter((s) => s.racks > 0).length],
+          ["Racks on occupied floors", occupied.filter((s) => s.racks > 0).length],
           [
             "Planned fibre uplinks",
             `${backbone.used} / ${backbone.portCount} SFP+ · ${backbone.spare} spare`,
