@@ -74,9 +74,11 @@ export const equipmentTypeLabel = (t: string) =>
     ? "Access switch"
     : t === "aggregation_switch"
       ? "Fibre aggregation switch"
-      : t === "switch"
-        ? "Switch"
-        : t.replace(/_/g, " ");
+      : t === "gateway_firewall"
+        ? "Gateway / firewall"
+        : t === "switch"
+          ? "Switch"
+          : t.replace(/_/g, " ");
 
 /** Used / free rack units for a single rack, from its equipment records. */
 export function rackUtilisation(items: RackEquipment[]) {
