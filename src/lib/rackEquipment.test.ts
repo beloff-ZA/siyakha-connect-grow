@@ -5,7 +5,7 @@ import { backboneSummary, type FloorSummary } from "@/lib/buildingView";
 describe("backbone uplinks", () => {
   it("plans one uplink per level 1–11, including the rooftop / service rack", () => {
     expect(BACKBONE_UPLINK_LEVELS).toHaveLength(11);
-    expect(BACKBONE_UPLINK_LEVELS.at(-1)).toBe(11);
+    expect(BACKBONE_UPLINK_LEVELS[BACKBONE_UPLINK_LEVELS.length - 1]).toBe(11);
   });
 
   it("leaves one spare port on the 12-port aggregation switch", () => {
