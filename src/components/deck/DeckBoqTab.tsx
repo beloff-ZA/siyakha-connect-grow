@@ -42,8 +42,9 @@ const DeckBoqTab: React.FC<{
   totals: { subtotal: number; vat: number; total: number };
   revisionHash: string;
   acceptances: BoqAcceptance[];
+  pendingReason?: string | null;
   onAccept: (input: { revision_hash: string; po_reference: string | null }) => Promise<void>;
-}> = ({ viewer, boq, lines, totals, revisionHash, acceptances, onAccept }) => {
+}> = ({ viewer, boq, lines, totals, revisionHash, acceptances, pendingReason, onAccept }) => {
   const [confirmed, setConfirmed] = useState(false);
   const [po, setPo] = useState("");
   const [dialog, setDialog] = useState(false);
@@ -56,12 +57,17 @@ const DeckBoqTab: React.FC<{
 
   if (!boq || !lines.length)
     return (
-      <div className="border border-border p-6">
+      <div className="max-w-full border border-border p-5 sm:p-6">
         <p className="text-sm font-medium">{BOQ_NOT_ISSUED_MESSAGE}</p>
         <p className="mt-2 text-sm text-muted-foreground">
           Your bill of quantities will appear here as soon as a revision is issued for review. No pricing is shown until
           then.
         </p>
+        {pendingReason && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Your Siyakha project manager has been notified that the schedule is still being prepared.
+          </p>
+        )}
       </div>
     );
 
@@ -101,7 +107,12 @@ const DeckBoqTab: React.FC<{
       {sections.map((section) => (
         <section key={section.title}>
           <h3 className="text-sm font-semibold uppercase tracking-[0.16em]">{section.title}</h3>
-          <div className="mt-3 overflow-x-auto border border-border">
+          <div
+            className="mt-3 w-full max-w-full overflow-x-auto border border-border"
+            role="region"
+            aria-label={`${section.title} — scroll to see all columns`}
+            tabIndex={0}
+          >
             <table className="w-full min-w-[720px] text-sm">
               <caption className="sr-only">{section.title} schedule of client rates</caption>
               <thead className="bg-muted text-left text-[10px] uppercase tracking-[0.18em] text-muted-foreground">

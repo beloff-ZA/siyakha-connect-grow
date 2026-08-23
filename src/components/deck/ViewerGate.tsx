@@ -50,7 +50,7 @@ const ViewerGate: React.FC<{
         aria-invalid={!!errors[key]}
         aria-describedby={errors[key] ? `${key}-error` : undefined}
         onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-        className="mt-1"
+        className="mt-1 min-h-[44px] w-full max-w-full text-base sm:text-sm"
         required
       />
       {errors[key] && (
@@ -62,8 +62,8 @@ const ViewerGate: React.FC<{
   );
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-16">
-      <div className="w-full max-w-md border border-border p-8">
+    <main className="flex min-h-screen w-full max-w-full items-center justify-center overflow-x-hidden bg-background px-4 py-10 sm:py-16">
+      <div className="w-full max-w-md border border-border p-5 sm:p-8">
         <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">{SIYAKHA.company}</p>
         <h1 className="mt-3 text-xl font-semibold tracking-tight">Secure project deck</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -81,7 +81,7 @@ const ViewerGate: React.FC<{
             <input
               id="consent"
               type="checkbox"
-              className="mt-1 h-4 w-4"
+              className="mt-1 h-5 w-5 shrink-0"
               checked={form.consent}
               aria-invalid={!!errors.consent}
               onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
@@ -93,7 +93,7 @@ const ViewerGate: React.FC<{
           {errors.consent && <p className="text-xs text-destructive">{errors.consent}</p>}
           {error && <p className="text-xs text-destructive">{error}</p>}
 
-          <Button type="submit" className="w-full" disabled={busy}>
+          <Button type="submit" className="min-h-[44px] w-full" disabled={busy}>
             {busy ? "Opening…" : "Open project deck"}
           </Button>
         </form>

@@ -36,6 +36,8 @@ import {
 } from "@/lib/deckClient";
 import type { ViewerRegistration } from "@/lib/deckViewer";
 import FloorLevelRail from "@/components/portal/FloorLevelRail";
+import DeckMobileNav from "@/components/deck/DeckMobileNav";
+import { NO_OVERFLOW_CLASS, SCROLL_CONTAINER_CLASS, TOUCH_TARGET_CLASS, buildDeckNav } from "@/lib/deckMobileNav";
 import { Check, Download, MessageSquare, RefreshCw, ShieldCheck } from "lucide-react";
 
 type Resolved = Awaited<ReturnType<typeof resolveShare>>;
@@ -90,6 +92,7 @@ const ProjectDeckPage: React.FC = () => {
   const [deckFloorId, setDeckFloorId] = useState("");
   const [deck, setDeck] = useState<DeckPayload | null>(null);
   const [gateError, setGateError] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState("overview");
 
   /**
    * `refresh` marks a background/manual live poll: it still participates in rate
@@ -307,21 +310,11 @@ const ProjectDeckPage: React.FC = () => {
     floors: pack.floors ?? [],
   };
 
-  const nav = [
-    ["overview", "Overview"],
-    ["scope", "Scope"],
-    ["design", "Design & plans"],
-    ["schedule", "Schedule of works"],
-    ["boq", "BOQ & acceptance"],
-    ["notes", "Project notes"],
-    ["programme", "Programme"],
-    pack.gallery?.length ? ["gallery", "Site gallery"] : null,
-    pack.documents?.length ? ["documents", "Documents"] : null,
-    ["next", "Next steps"],
-  ].filter(Boolean) as [string, string][];
+  const nav = buildDeckNav({ gallery: pack.gallery?.length ?? 0, documents: pack.documents?.length ?? 0 });
+  const deckTitle = pack.project?.title ?? link?.title ?? null;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${NO_OVERFLOW_CLASS}`}>
       {/* Print surface: the full A4 pack, only when download is permitted. */}
       {link?.download_allowed && (
         <div className="hidden print:block">
@@ -332,18 +325,26 @@ const ProjectDeckPage: React.FC = () => {
       <div className="print:hidden">
         <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-            <div>
+            {/* Compact sticky mobile header with a labelled section selector. */}
+            <DeckMobileNav
+              company={SIYAKHA.company}
+              title={deckTitle}
+              nav={nav}
+              active={activeSection}
+              onSelect={setActiveSection}
+            />
+            <div className="hidden min-w-0 lg:block">
               <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">{SIYAKHA.company}</p>
-              <p className="text-sm font-semibold">{pack.project?.title ?? link?.title}</p>
+              <p className="truncate text-sm font-semibold">{deckTitle}</p>
             </div>
             <nav className="hidden items-center gap-4 text-xs uppercase tracking-[0.14em] text-muted-foreground lg:flex">
-              {nav.map(([id, label]) => (
-                <a key={id} href={`#${id}`} className="hover:text-foreground">
-                  {label}
+              {nav.map((item) => (
+                <a key={item.id} href={`#${item.id}`} className="hover:text-foreground">
+                  {item.label}
                 </a>
               ))}
             </nav>
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-wrap items-center gap-2 lg:w-auto">
               {live && (
                 <span className="flex items-center gap-2 border border-border px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
                   <span className="h-1.5 w-1.5 rounded-full bg-foreground" aria-hidden />
@@ -441,17 +442,41 @@ const ProjectDeckPage: React.FC = () => {
             {placedFloors.length === 0 ? (
               <p className="text-sm text-muted-foreground">Plan sheets will appear here once the design drawings are issued.</p>
             ) : (
-              <div className="grid gap-6 lg:grid-cols-[200px,1fr]">
+              <div className="grid min-w-0 gap-6 lg:grid-cols-[200px,1fr]">
+                {/* Compact level selector on mobile; the desktop rail is unchanged. */}
+                <div className="lg:hidden">
+                  <label
+                    htmlFor="deck-floor-select"
+                    className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    Level
+                  </label>
+                  <select
+                    id="deck-floor-select"
+                    value={deckFloor?.id ?? ""}
+                    onChange={(e) => setDeckFloorId(e.target.value)}
+                    className={`${TOUCH_TARGET_CLASS} mt-1 w-full max-w-full border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring`}
+                  >
+                    {placedFloors.map((f: any) => (
+                      <option key={f.id} value={f.id}>
+                        {f.display_name}
+                        {f.markers?.length ? ` · ${f.markers.length} devices` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 {/* Read-only level rail — no editing controls on the client deck. */}
-                <FloorLevelRail
-                  floors={placedFloors}
-                  selectedId={deckFloor?.id ?? ""}
-                  onSelect={setDeckFloorId}
-                  deviceCounts={deckCounts}
-                  presignedFor={(f) => (f as any).plan_image_url ?? null}
-                />
+                <div className="hidden lg:block">
+                  <FloorLevelRail
+                    floors={placedFloors}
+                    selectedId={deckFloor?.id ?? ""}
+                    onSelect={setDeckFloorId}
+                    deviceCounts={deckCounts}
+                    presignedFor={(f) => (f as any).plan_image_url ?? null}
+                  />
+                </div>
                 {deckFloor && (
-                  <figure className="min-w-0">
+                  <figure className="min-w-0 max-w-full">
                     <figcaption className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
                       <span className="text-sm font-semibold">{deckFloor.display_name}</span>
                       <span className="text-xs text-muted-foreground">
@@ -460,7 +485,7 @@ const ProjectDeckPage: React.FC = () => {
                         {deckFloor.floor_use ? ` · ${deckFloor.floor_use}` : ""}
                       </span>
                     </figcaption>
-                    <div className="border border-border p-2">
+                    <div className={`${SCROLL_CONTAINER_CLASS} touch-pan-x touch-pan-y border border-border p-2`}>
                       <PlanSheet
                         floor={deckFloor}
                         interactive
@@ -486,7 +511,7 @@ const ProjectDeckPage: React.FC = () => {
               <p className="text-sm text-muted-foreground">The priced schedule is not included on this link.</p>
             ) : (
               <>
-                <div className="overflow-x-auto border border-border">
+                <div className={`${SCROLL_CONTAINER_CLASS} border border-border`} role="region" aria-label="Schedule of works — scroll to see all columns" tabIndex={0}>
                   <table className="w-full min-w-[640px] text-sm">
                     <thead className="bg-muted text-left text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                       <tr>
@@ -531,6 +556,7 @@ const ProjectDeckPage: React.FC = () => {
                 totals={deck.boq_totals ?? { subtotal: 0, vat: 0, total: 0 }}
                 revisionHash={deck.revision_hash ?? ""}
                 acceptances={deck.acceptances ?? []}
+                pendingReason={deck.boq_pending_reason ?? null}
                 onAccept={acceptBoq}
               />
             )}

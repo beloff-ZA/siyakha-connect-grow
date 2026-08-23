@@ -2026,6 +2026,48 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_deck_view_notifications: {
+        Row: {
+          created_at: string
+          delivery_status: string
+          error_message: string | null
+          id: string
+          idempotency_key: string
+          project_id: string
+          recipient: string
+          sent_at: string | null
+          share_link_id: string | null
+          subject: string | null
+          viewer_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          delivery_status?: string
+          error_message?: string | null
+          id?: string
+          idempotency_key: string
+          project_id: string
+          recipient: string
+          sent_at?: string | null
+          share_link_id?: string | null
+          subject?: string | null
+          viewer_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          delivery_status?: string
+          error_message?: string | null
+          id?: string
+          idempotency_key?: string
+          project_id?: string
+          recipient?: string
+          sent_at?: string | null
+          share_link_id?: string | null
+          subject?: string | null
+          viewer_id?: string | null
+        }
+        Relationships: []
+      }
       portal_deck_viewers: {
         Row: {
           consent_at: string
