@@ -932,6 +932,18 @@ const FloorPlansManager: React.FC<{
               )}
             </Section>
           )}
+          </div>
+
+            {/* Sticky level rail: display floors L1..Ln plus a separate rooftop plan. */}
+            <FloorLevelRail
+              floors={floors}
+              selectedId={floorId}
+              onSelect={setFloorId}
+              deviceCounts={levelCounts}
+            />
+          </div>
+
+
 
           {archivedFloorMarkers.length > 0 && (
             <Section
