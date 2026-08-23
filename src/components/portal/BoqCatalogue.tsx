@@ -160,7 +160,7 @@ const BoqCatalogue: React.FC<{
       specs: [
         "Excluded provisional variance to the approved 100 access points",
         "Weather-rated outdoor model to be confirmed",
-        "Feed from the Level 10 rack pending riser confirmation",
+        "Feed from the rooftop / service rack pending riser confirmation",
       ],
       visual: { kind: "icon", icon: Radio, model: "Rooftop outdoor AP — model TBC" },
     },
@@ -188,7 +188,7 @@ const BoqCatalogue: React.FC<{
       key: "rack",
       brand: "Wall-mount network rack",
       model: "6U lockable enclosure",
-      role: "Level distribution point, Levels 0–10",
+      role: "Level distribution point, Levels 0–10 plus rooftop / service plan",
       qty: `${num(racks)} racks`,
       status: "confirmed",
       code: "RACK-001",
