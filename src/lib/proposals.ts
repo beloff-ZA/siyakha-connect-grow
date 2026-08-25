@@ -14,7 +14,7 @@ export const SIYAKHA = {
   company: "Siyakha Technology Solutions",
   email: "nikita@siyakhatechnology.co.za",
   website: "www.siyakhatechnology.co.za",
-  phone: "081 501 2993",
+  phone: "087 723 9183",
   positioning:
     "A full-service technology infrastructure and managed solutions company delivering smart, scalable and secure technology environments.",
 };

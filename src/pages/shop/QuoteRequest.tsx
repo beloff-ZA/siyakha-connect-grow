@@ -137,7 +137,7 @@ const QuoteRequest = () => {
                 <CheckCircle2 className="h-10 w-10 mx-auto mb-4" strokeWidth={1.25} />
                 <h2 className="font-display text-3xl font-light mb-3">Request received.</h2>
                 <p className="text-sm text-muted-foreground mb-6">
-                  A confirmation was sent to your email. Eshlan will follow up with an official quote shortly. For urgent enquiries call 081 501 2993.
+                  A confirmation was sent to your email. Eshlan will follow up with an official quote shortly. For urgent enquiries call 087 723 9183.
                 </p>
                 <div className="flex flex-wrap gap-3 justify-center">
                   <Button onClick={() => navigate("/shop")} className="rounded-none bg-foreground text-background hover:bg-foreground/90 text-[11px] uppercase tracking-[0.24em] h-11 px-6">

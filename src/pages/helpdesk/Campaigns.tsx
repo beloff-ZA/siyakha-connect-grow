@@ -34,7 +34,7 @@ const defaultTemplate = `<div style="font-family:Arial,sans-serif;max-width:600p
     </div>
   </div>
   <div style="text-align:center;padding:16px;color:#888;font-size:12px;">
-    <p>Siyakha Technology • nikita@siyakhatechnology.co.za • 081 501 2993</p>
+    <p>Siyakha Technology • nikita@siyakhatechnology.co.za • 087 723 9183</p>
   </div>
 </div>`;
 

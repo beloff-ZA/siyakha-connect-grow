@@ -423,10 +423,10 @@ const RegionalServices = () => {
               Email the team
             </a>
             <a
-              href="tel:+27815012993"
+              href="tel:+27877239183"
               className="inline-flex items-center gap-2 border border-background/30 px-6 py-3 text-[11px] uppercase tracking-[0.22em] hover:border-background transition-colors"
             >
-              Call 081 501 2993
+              Call 087 723 9183
             </a>
           </div>
         </div>

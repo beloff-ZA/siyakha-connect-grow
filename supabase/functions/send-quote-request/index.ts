@@ -225,7 +225,7 @@ serve(async (req) => {
             <p style="font-size:14px;line-height:1.6;color:#333;">
               We've received your request for ${cleanItems.length} item${cleanItems.length !== 1 ? "s" : ""}. Eshlan from our accounts team will prepare an official quote and reply to <b>${esc(cleanCustomer.email)}</b> shortly.
             </p>
-            <p style="font-size:13px;color:#666;">If it's urgent, call us on 081 501 2993.</p>
+            <p style="font-size:13px;color:#666;">If it's urgent, call us on 087 723 9183.</p>
             <hr style="border:none;border-top:1px solid #eee;margin:20px 0;" />
             <p style="font-size:11px;color:#999;letter-spacing:0.14em;text-transform:uppercase;">Siyakha Technology</p>
           </div>`,
