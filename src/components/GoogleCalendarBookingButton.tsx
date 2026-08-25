@@ -42,8 +42,6 @@ export const GoogleCalendarBookingButton: React.FC = () => {
       script.onload = renderButton;
       script.onerror = () => setError("Could not load the booking calendar.");
       document.body.appendChild(script);
-    } else if (script.readyState === "complete" || script.readyState === "loaded") {
-      renderButton();
     } else {
       script.onload = renderButton;
       script.onerror = () => setError("Could not load the booking calendar.");
