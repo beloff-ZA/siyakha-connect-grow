@@ -82,8 +82,7 @@ const Footer = () => {
             </a>
             <a
               href={TECHNICIAN_BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_top"
               className="inline-flex items-center gap-2 text-foreground border-b border-foreground/40 hover:border-foreground pb-1 transition-colors text-sm uppercase tracking-[0.18em]"
             >
               <CalendarCheck className="h-3.5 w-3.5" strokeWidth={1.5} />
