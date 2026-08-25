@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDate } from "@/lib/portalFiles";
-import { CalendarCheck } from "lucide-react";
-import { TECHNICIAN_BOOKING_LABEL, TECHNICIAN_BOOKING_URL } from "@/lib/booking";
+import { GoogleCalendarBookingButton } from "@/components/GoogleCalendarBookingButton";
 
 type Query = {
   id: string;
