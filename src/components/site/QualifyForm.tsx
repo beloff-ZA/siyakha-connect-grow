@@ -110,7 +110,7 @@ const QualifyForm = () => {
             </p>
             <div className="mt-10 text-[13px] text-background/70 space-y-2">
               <p>Nikita Jacobs · nikita@siyakhatechnology.co.za</p>
-              <p>+27 81 501 2993 · +971 50 867 3469</p>
+              <p>+27 87 723 9183 · +971 50 867 3469</p>
             </div>
           </div>
 

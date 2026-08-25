@@ -73,11 +73,11 @@ const Footer = () => {
               nikita@siyakhatechnology.co.za
             </a>
             <a
-              href="tel:+27815012993"
+              href="tel:+27877239183"
               className="block text-muted-foreground hover:text-foreground transition-colors"
             >
               <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground/60 mr-2">ZA</span>
-              +27 81 501 2993
+              +27 87 723 9183
             </a>
             <a
               href="tel:+971508673469"
