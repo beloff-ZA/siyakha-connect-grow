@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDate } from "@/lib/portalFiles";
-import { CalendarCheck } from "lucide-react";
-import { TECHNICIAN_BOOKING_LABEL, TECHNICIAN_BOOKING_URL } from "@/lib/booking";
+import { GoogleCalendarBookingButton } from "@/components/GoogleCalendarBookingButton";
 
 type Query = {
   id: string;
@@ -152,12 +151,7 @@ const PortalSupport: React.FC = () => {
           <p className="text-sm text-muted-foreground mb-4">
             Schedule a technician visit or remote session at a time that suits you.
           </p>
-          <Button asChild>
-            <a href={TECHNICIAN_BOOKING_URL} target="_top">
-              <CalendarCheck className="h-4 w-4 mr-2" strokeWidth={1.5} />
-              {TECHNICIAN_BOOKING_LABEL}
-            </a>
-          </Button>
+          <GoogleCalendarBookingButton />
         </Panel>
 
         <Panel title="Contact Siyakha">
