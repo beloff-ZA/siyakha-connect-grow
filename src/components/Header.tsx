@@ -52,20 +52,10 @@ const Header = () => {
                 Speak to our AI agent, she will help you log a call faster
               </span>
             </a>
-            <span className="hidden md:inline text-background/40" aria-hidden="true">|</span>
-            <a
-              href={TECHNICIAN_BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Book a technician online"
-              className="flex items-center gap-2 border border-background/40 px-3 py-1 text-[11px] md:text-xs uppercase tracking-[0.18em] hover:bg-background hover:text-foreground transition-colors"
-            >
-              <CalendarCheck className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />
-              {TECHNICIAN_BOOKING_LABEL}
-            </a>
           </div>
         </div>
       </div>
+
       <div className="bg-background/90 border-b border-border backdrop-blur-md">
         <div className="container mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between gap-3 h-20 md:h-28">
@@ -190,23 +180,9 @@ const Header = () => {
                         </span>
                       </div>
                     </a>
-                    <a
-                      href={TECHNICIAN_BOOKING_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setMenuOpen(false)}
-                      className="flex items-center gap-3 border border-foreground px-4 py-3 text-foreground hover:bg-muted transition-colors"
-                    >
-                      <CalendarCheck className="h-4 w-4 flex-shrink-0" strokeWidth={1.5} />
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium tracking-wide">{TECHNICIAN_BOOKING_LABEL}</span>
-                        <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-                          Pick a time that suits you
-                        </span>
-                      </div>
-                    </a>
                     <div className="space-y-2">
                       <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Who We Serve</p>
+
                       {audienceLinks.map((l) => (
                         <Link
                           key={l.to}

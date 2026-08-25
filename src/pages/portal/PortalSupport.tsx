@@ -147,14 +147,8 @@ const PortalSupport: React.FC = () => {
           )}
         </Panel>
 
-        <Panel title="Book a technician">
-          <p className="text-sm text-muted-foreground mb-4">
-            Schedule a technician visit or remote session at a time that suits you.
-          </p>
-          <GoogleCalendarBookingButton />
-        </Panel>
-
         <Panel title="Contact Siyakha">
+
           <div className="space-y-2 text-sm">
             <a className="block hover:underline" href="mailto:nikita@siyakhatechnology.co.za">
               nikita@siyakhatechnology.co.za
