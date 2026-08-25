@@ -1,4 +1,4 @@
-import { Building2, Camera, Radar, Cable, MonitorCog } from "lucide-react";
+import { Building2, Camera, Radar, Cable, MonitorCog, Bot } from "lucide-react";
 
 export interface Capability {
   slug: string;
@@ -84,6 +84,20 @@ export const CAPABILITIES: Capability[] = [
       "Client dashboards and monthly reporting",
     ],
     who: "Any client whose security posture depends on someone actually watching — not just recording.",
+  },
+  {
+    slug: "ai-agents",
+    label: "AI Agents for Business",
+    icon: Bot,
+    teaser: "Always-on AI agents that answer calls, log support requests and book appointments — available from as little as R399 per month.",
+    what: "Siyakha AI agents work alongside your team — answering calls, helping clients log support requests faster, booking appointments and handling routine enquiries around the clock. Available to businesses from as little as R399 per month.",
+    how: [
+      "Answers calls and WhatsApp enquiries 24/7 in a natural voice",
+      "Logs support requests and tickets directly into your helpdesk",
+      "Books appointments and confirms them with your clients",
+      "Escalates complex queries to your team with full context",
+    ],
+    who: "Small and growing businesses that want every call answered and every request logged — without hiring more staff.",
   },
 ];
 

@@ -95,7 +95,7 @@ const Footer = () => {
           <span>© {currentYear} Siyakha Interlink — {t("footer.rights")}</span>
           <div className="flex items-center gap-5">
             <Link to="/sign-in" className="hover:text-foreground transition-colors">
-              Client Sign In
+              Login
             </Link>
             <span>{t("footer.regions")}</span>
           </div>

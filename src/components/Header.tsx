@@ -26,6 +26,7 @@ const Header = () => {
     { to: "/capabilities/border-radar", label: "Border Radar" },
     { to: "/capabilities/fibre-connectivity", label: "Fibre & Connectivity" },
     { to: "/capabilities/command-centre", label: "Command Centre" },
+    { to: "/capabilities/ai-agents", label: "AI Agents" },
     { to: "/brand-wifi", label: "Your Brand Wi-Fi" },
   ];
 
@@ -140,7 +141,7 @@ const Header = () => {
                 to="/sign-in"
                 className="text-[11px] uppercase tracking-[0.22em] border border-border px-4 py-2 text-foreground/85 hover:bg-muted transition-colors"
               >
-                Client Sign In
+                Login
               </Link>
             </nav>
 
@@ -232,7 +233,7 @@ const Header = () => {
                       onClick={() => setMenuOpen(false)}
                       className="block border border-border px-4 py-3 text-sm uppercase tracking-[0.18em] text-foreground hover:bg-muted transition-colors"
                     >
-                      Client Sign In
+                      Login
                     </Link>
                   </div>
                 </SheetContent>
