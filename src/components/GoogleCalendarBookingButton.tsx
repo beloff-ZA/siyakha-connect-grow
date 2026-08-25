@@ -1,63 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
+import { CalendarCheck, Copy, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { TECHNICIAN_BOOKING_LABEL, TECHNICIAN_BOOKING_URL } from "@/lib/booking";
 
 export const GoogleCalendarBookingButton: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    // Load the Google Calendar scheduling stylesheet if not already present.
-    const existingLink = document.querySelector('link[href="https://calendar.google.com/calendar/scheduling-button-script.css"]');
-    if (!existingLink) {
-      const link = document.createElement("link");
-      link.href = "https://calendar.google.com/calendar/scheduling-button-script.css";
-      link.rel = "stylesheet";
-      document.head.appendChild(link);
+  const copyBookingLink = async () => {
+    try {
+      await navigator.clipboard.writeText(TECHNICIAN_BOOKING_URL);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      window.location.assign(TECHNICIAN_BOOKING_URL);
     }
-
-    // Load the scheduling script and render the button once ready.
-    const scriptId = "google-calendar-scheduling-button";
-    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
-
-    const renderButton = () => {
-      const cal = (window as typeof window & { calendar?: { schedulingButton?: { load: (opts: Record<string, unknown>) => void } } }).calendar;
-      if (!cal?.schedulingButton) {
-        setError("Booking calendar is unavailable right now.");
-        return;
-      }
-      cal.schedulingButton.load({
-        url: "https://calendar.google.com/calendar/appointments/AcZssZ3M_HaeQ441DUp5YFtjeDq3ITLeax6GUbpUPV8=?gv=true",
-        color: "#039BE5",
-        label: "Book an appointment",
-        target: containerRef.current,
-      });
-      setLoaded(true);
-    };
-
-    if (!script) {
-      script = document.createElement("script");
-      script.id = scriptId;
-      script.src = "https://calendar.google.com/calendar/scheduling-button-script.js";
-      script.async = true;
-      script.onload = renderButton;
-      script.onerror = () => setError("Could not load the booking calendar.");
-      document.body.appendChild(script);
-    } else {
-      script.onload = renderButton;
-      script.onerror = () => setError("Could not load the booking calendar.");
-    }
-  }, []);
+  };
 
   return (
-    <div
-      ref={containerRef}
-      className="min-h-[44px] flex items-center"
-      aria-live="polite"
-    >
-      {!loaded && !error && (
-        <span className="text-sm text-muted-foreground">Loading booking calendar…</span>
-      )}
-      {error && <span className="text-sm text-destructive">{error}</span>}
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center" aria-live="polite">
+      <Button asChild className="w-full sm:w-auto">
+        <a href={TECHNICIAN_BOOKING_URL} target="_blank" rel="noopener noreferrer">
+          <CalendarCheck className="h-4 w-4" strokeWidth={1.5} />
+          {TECHNICIAN_BOOKING_LABEL}
+          <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
+        </a>
+      </Button>
+      <Button type="button" variant="outline" className="w-full sm:w-auto" onClick={copyBookingLink}>
+        <Copy className="h-4 w-4" strokeWidth={1.5} />
+        {copied ? "Link copied" : "Copy booking link"}
+      </Button>
     </div>
   );
 };
