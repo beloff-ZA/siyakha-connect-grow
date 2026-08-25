@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, Menu } from "lucide-react";
+import { ChevronDown, Menu, Phone } from "lucide-react";
 import CartDrawer from "@/components/shop/CartDrawer";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
+
 
 const Header = () => {
   const { t } = useTranslation();
