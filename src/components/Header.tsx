@@ -2,9 +2,10 @@ import { Link } from "react-router-dom";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, Menu, Phone } from "lucide-react";
+import { CalendarCheck, ChevronDown, Menu, Phone } from "lucide-react";
 import CartDrawer from "@/components/shop/CartDrawer";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { TECHNICIAN_BOOKING_LABEL, TECHNICIAN_BOOKING_URL } from "@/lib/booking";
 import { useState } from "react";
 
 
@@ -36,22 +37,35 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50">
-      <a
-        href="tel:+27877239183"
-        aria-label="Call Siyakha on 087 723 9183"
-        className="block bg-foreground text-background hover:bg-foreground/90 transition-colors"
-      >
+      <div className="bg-foreground text-background">
         <div className="container mx-auto px-6 lg:px-10 py-2.5">
-          <div className="flex items-center justify-center gap-2.5 flex-wrap text-center">
-            <Phone className="h-4 w-4 flex-shrink-0" strokeWidth={1.5} />
-            <span className="text-sm md:text-base font-medium tracking-wide">087 723 9183</span>
-            <span className="hidden sm:inline text-background/70" aria-hidden="true">·</span>
-            <span className="text-[11px] md:text-xs uppercase tracking-[0.18em] text-background/80">
-              Speak to our AI agent, she will help you log a call faster
-            </span>
+          <div className="flex items-center justify-center gap-x-5 gap-y-1.5 flex-wrap text-center">
+            <a
+              href="tel:+27877239183"
+              aria-label="Call Siyakha on 087 723 9183"
+              className="flex items-center gap-2.5 hover:text-background/80 transition-colors"
+            >
+              <Phone className="h-4 w-4 flex-shrink-0" strokeWidth={1.5} />
+              <span className="text-sm md:text-base font-medium tracking-wide">087 723 9183</span>
+              <span className="hidden sm:inline text-background/70" aria-hidden="true">·</span>
+              <span className="text-[11px] md:text-xs uppercase tracking-[0.18em] text-background/80">
+                Speak to our AI agent, she will help you log a call faster
+              </span>
+            </a>
+            <span className="hidden md:inline text-background/40" aria-hidden="true">|</span>
+            <a
+              href={TECHNICIAN_BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Book a technician online"
+              className="flex items-center gap-2 border border-background/40 px-3 py-1 text-[11px] md:text-xs uppercase tracking-[0.18em] hover:bg-background hover:text-foreground transition-colors"
+            >
+              <CalendarCheck className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1.5} />
+              {TECHNICIAN_BOOKING_LABEL}
+            </a>
           </div>
         </div>
-      </a>
+      </div>
       <div className="bg-background/90 border-b border-border backdrop-blur-md">
         <div className="container mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between gap-3 h-20 md:h-28">
@@ -173,6 +187,21 @@ const Header = () => {
                         <span className="text-sm font-medium tracking-wide">087 723 9183</span>
                         <span className="text-[10px] uppercase tracking-[0.16em] text-background/80">
                           Speak to our AI agent
+                        </span>
+                      </div>
+                    </a>
+                    <a
+                      href={TECHNICIAN_BOOKING_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 border border-foreground px-4 py-3 text-foreground hover:bg-muted transition-colors"
+                    >
+                      <CalendarCheck className="h-4 w-4 flex-shrink-0" strokeWidth={1.5} />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium tracking-wide">{TECHNICIAN_BOOKING_LABEL}</span>
+                        <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                          Pick a time that suits you
                         </span>
                       </div>
                     </a>
