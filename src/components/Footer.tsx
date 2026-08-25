@@ -2,7 +2,8 @@ import interlinkLogo from "@/assets/interlink-logo.png";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { ArrowRight, Wrench } from "lucide-react";
+import { ArrowRight, CalendarCheck, Wrench } from "lucide-react";
+import { TECHNICIAN_BOOKING_LABEL, TECHNICIAN_BOOKING_URL } from "@/lib/booking";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -78,6 +79,15 @@ const Footer = () => {
             >
               <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground/60 mr-2">ZA</span>
               +27 87 723 9183
+            </a>
+            <a
+              href={TECHNICIAN_BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-foreground border-b border-foreground/40 hover:border-foreground pb-1 transition-colors text-sm uppercase tracking-[0.18em]"
+            >
+              <CalendarCheck className="h-3.5 w-3.5" strokeWidth={1.5} />
+              {TECHNICIAN_BOOKING_LABEL}
             </a>
             <a
               href="tel:+971508673469"
