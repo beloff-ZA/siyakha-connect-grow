@@ -12,7 +12,7 @@ const SmartEstateHero = () => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   return (
-    <section className="relative min-h-[92vh] flex flex-col bg-background overflow-hidden">
+    <section className="relative min-h-[78vh] flex flex-col bg-background overflow-hidden">
       {/* Cable management hero video */}
       <div className="absolute inset-0">
         <video
@@ -39,7 +39,7 @@ const SmartEstateHero = () => {
       </div>
 
       {/* Main editorial block */}
-      <div className="relative z-10 flex-1 flex items-end pb-20 md:pb-28">
+      <div className="relative z-10 flex-1 flex items-center py-16 md:py-20">
         <div className="container mx-auto px-6 lg:px-10">
           <div className="max-w-5xl">
             <div className="animate-fade-in">
