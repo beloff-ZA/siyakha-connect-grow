@@ -151,8 +151,8 @@ const PortalSupport: React.FC = () => {
             <a className="block hover:underline" href="mailto:nikita@siyakhatechnology.co.za">
               nikita@siyakhatechnology.co.za
             </a>
-            <a className="block text-muted-foreground hover:text-foreground" href="tel:+27815012993">
-              +27 81 501 2993
+            <a className="block text-muted-foreground hover:text-foreground" href="tel:+27877239183">
+              +27 87 723 9183
             </a>
           </div>
         </Panel>

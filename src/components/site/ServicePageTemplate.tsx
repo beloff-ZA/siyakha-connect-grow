@@ -67,7 +67,7 @@ const ServicePageTemplate = ({
     provider: {
       "@type": "Organization",
       name: "Siyakha Technology",
-      telephone: "+27 81 501 2993",
+      telephone: "+27 87 723 9183",
       email: "nikita@siyakhatechnology.co.za",
       url: "https://siyakhatechnology.co.za",
     },
