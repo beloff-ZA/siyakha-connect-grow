@@ -55,7 +55,8 @@ const Header = () => {
             <span className="hidden md:inline text-background/40" aria-hidden="true">|</span>
             <a
               href={TECHNICIAN_BOOKING_URL}
-              target="_top"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Book a technician online"
               className="flex items-center gap-2 border border-background/40 px-3 py-1 text-[11px] md:text-xs uppercase tracking-[0.18em] hover:bg-background hover:text-foreground transition-colors"
             >
@@ -191,7 +192,8 @@ const Header = () => {
                     </a>
                     <a
                       href={TECHNICIAN_BOOKING_URL}
-                      target="_top"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={() => setMenuOpen(false)}
                       className="flex items-center gap-3 border border-foreground px-4 py-3 text-foreground hover:bg-muted transition-colors"
                     >
