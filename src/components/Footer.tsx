@@ -2,8 +2,8 @@ import interlinkLogo from "@/assets/interlink-logo.png";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { ArrowRight, CalendarCheck, Wrench } from "lucide-react";
-import { TECHNICIAN_BOOKING_LABEL, TECHNICIAN_BOOKING_URL } from "@/lib/booking";
+import { ArrowRight, Wrench } from "lucide-react";
+
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

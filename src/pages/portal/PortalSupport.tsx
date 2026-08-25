@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDate } from "@/lib/portalFiles";
-import { GoogleCalendarBookingButton } from "@/components/GoogleCalendarBookingButton";
+
 
 type Query = {
   id: string;
