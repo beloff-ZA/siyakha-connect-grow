@@ -46,11 +46,16 @@ export type DeckPayload = {
   equipment?: { markers: MarkerLike[]; rack: RackItemLike[] };
   terms?: { text: string; version: string };
   threads?: ClientNoteThread[];
+  /** Comparison packages issued to this link (never drafts). */
+  options?: Record<string, unknown>[];
+  option_lines?: Record<string, Record<string, unknown>[]>;
+  option_preference?: { id: string; option_id: string; selected_at: string; note?: string | null } | null;
   repeat?: boolean;
   acceptance_id?: string;
   accepted_at?: string;
   totals?: { subtotal: number; vat: number; total: number };
 };
+
 
 /**
  * Viewer access lives ONLY in this module's memory, for the lifetime of the
