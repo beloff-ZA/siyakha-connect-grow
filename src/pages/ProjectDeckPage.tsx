@@ -620,7 +620,7 @@ const ProjectDeckPage: React.FC = () => {
             )}
           </Section>
 
-          <Section id="notes" eyebrow="06" title="Project notes">
+          <Section id="notes" eyebrow="07" title="Project notes">
             {viewer && (
               <DeckNotesTab
                 viewer={viewer}
@@ -631,7 +631,7 @@ const ProjectDeckPage: React.FC = () => {
             )}
           </Section>
 
-          <Section id="programme" eyebrow="07" title="Programme">
+          <Section id="programme" eyebrow="08" title="Programme">
             {(pack.milestones ?? []).length === 0 && (pack.tasks ?? []).length === 0 ? (
               <p className="text-sm text-muted-foreground">The delivery programme will be issued after design sign-off.</p>
             ) : (
