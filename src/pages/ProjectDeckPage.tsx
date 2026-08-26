@@ -593,7 +593,19 @@ const ProjectDeckPage: React.FC = () => {
             )}
           </Section>
 
-          <Section id="boq" eyebrow="05" title="BOQ & acceptance">
+          {options.length > 0 && (
+            <Section id="options" eyebrow="05" title="Solution options">
+              <OptionComparison
+                options={options}
+                lines={optionLines}
+                preferredOptionId={preferredOptionId}
+                onPrefer={preferOption}
+                busy={optionBusy}
+              />
+            </Section>
+          )}
+
+          <Section id="boq" eyebrow="06" title="BOQ & acceptance">
             {viewer && (
               <DeckBoqTab
                 viewer={viewer}
