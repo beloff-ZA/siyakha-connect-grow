@@ -154,12 +154,45 @@ const ProjectDeckPage: React.FC = () => {
         setDeck(res);
         return;
       }
-      const notes = await deckNotes(token);
+      const [notes, opts] = await Promise.all([deckNotes(token), deckOptions(token)]);
       setDeck({ ...res, threads: notes.state === "ok" ? notes.threads : [] });
+      applyOptions(opts);
     } catch {
       setDeck({ state: "unavailable" });
     }
   };
+
+  /** Stores the issued comparison packages exactly as the edge function returned them. */
+  const applyOptions = (payload: DeckPayload) => {
+    if (payload.state !== "ok") {
+      setOptions([]);
+      setOptionLines({});
+      setPreferredOptionId(null);
+      return;
+    }
+    setOptions((payload.options ?? []).map(normalizeOption));
+    setOptionLines((payload.option_lines ?? {}) as Record<string, OptionLine[]>);
+    setPreferredOptionId(payload.option_preference?.option_id ?? null);
+  };
+
+  /**
+   * Non-destructive preference. It records the client's preferred package and
+   * never touches the BOQ acceptance workflow or any pricing.
+   */
+  const preferOption = async (option: SolutionOption) => {
+    setOptionBusy(true);
+    try {
+      const res = await deckPreferOption(token, { option_id: option.id });
+      if (res.state !== "ok") throw new Error(res.error ?? "Could not record your preferred option.");
+      applyOptions(res);
+      toast({ title: "Preferred option recorded", description: `${option.name}. This is not an acceptance.` });
+    } catch (e) {
+      toast({ title: "Could not save", description: (e as any)?.message, variant: "destructive" as never });
+    } finally {
+      setOptionBusy(false);
+    }
+  };
+
 
   useEffect(() => {
     if (state === "ok") void loadDeck();
