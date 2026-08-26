@@ -289,7 +289,9 @@ Deno.serve(async (req) => {
     admin.from("portal_share_access_log").select("id", { count: "exact", head: true }).eq("rate_key", rateKey).gte("accessed_at", since),
   ]);
   if (ipCount.error || keyCount.error) return json({ state: "rate_limited" }, 429);
-  const writeAction = action !== "session" && action !== "boq" && action !== "notes";
+  const READ_ACTIONS = new Set(["session", "boq", "notes", "options"]);
+  const writeAction = !READ_ACTIONS.has(action);
+
   if ((ipCount.count ?? 0) >= 200 || (keyCount.count ?? 0) >= (writeAction ? 10 : 120))
     return json({ state: "rate_limited" }, 429);
 
