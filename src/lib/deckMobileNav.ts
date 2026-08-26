@@ -14,6 +14,7 @@ export const DECK_NAV_ITEMS: readonly DeckNavItem[] = [
   { id: "scope", label: "Scope" },
   { id: "design", label: "Design & plans" },
   { id: "schedule", label: "Schedule of works" },
+  { id: "options", label: "Solution options" },
   { id: "boq", label: "BOQ & acceptance" },
   { id: "notes", label: "Project notes" },
   { id: "programme", label: "Programme" },
@@ -23,19 +24,21 @@ export const DECK_NAV_ITEMS: readonly DeckNavItem[] = [
 ] as const;
 
 /** Sections that are always present, regardless of the pack contents. */
-export const DECK_OPTIONAL_SECTIONS = ["gallery", "documents"] as const;
+export const DECK_OPTIONAL_SECTIONS = ["options", "gallery", "documents"] as const;
 
 /**
  * Builds the nav for one deck. Optional sections only appear when the pack
  * actually carries that content, so a mobile viewer never opens an empty page.
  */
-export function buildDeckNav(opts: { gallery?: number; documents?: number } = {}): DeckNavItem[] {
+export function buildDeckNav(opts: { gallery?: number; documents?: number; options?: number } = {}): DeckNavItem[] {
   return DECK_NAV_ITEMS.filter((item) => {
     if (item.id === "gallery") return (opts.gallery ?? 0) > 0;
     if (item.id === "documents") return (opts.documents ?? 0) > 0;
+    if (item.id === "options") return (opts.options ?? 0) > 0;
     return true;
   }).map((item) => ({ ...item }));
 }
+
 
 export const navLabel = (nav: readonly DeckNavItem[], id: string) =>
   nav.find((n) => n.id === id)?.label ?? nav[0]?.label ?? "";
