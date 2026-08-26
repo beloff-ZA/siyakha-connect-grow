@@ -98,6 +98,10 @@ const ProjectDeckPage: React.FC = () => {
   const [deck, setDeck] = useState<DeckPayload | null>(null);
   const [gateError, setGateError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("overview");
+  const [options, setOptions] = useState<SolutionOption[]>([]);
+  const [optionLines, setOptionLines] = useState<Record<string, OptionLine[]>>({});
+  const [preferredOptionId, setPreferredOptionId] = useState<string | null>(null);
+  const [optionBusy, setOptionBusy] = useState(false);
 
   /**
    * `refresh` marks a background/manual live poll: it still participates in rate
