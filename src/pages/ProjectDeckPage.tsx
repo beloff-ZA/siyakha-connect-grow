@@ -352,7 +352,11 @@ const ProjectDeckPage: React.FC = () => {
     floors: pack.floors ?? [],
   };
 
-  const nav = buildDeckNav({ gallery: pack.gallery?.length ?? 0, documents: pack.documents?.length ?? 0 });
+  const nav = buildDeckNav({
+    gallery: pack.gallery?.length ?? 0,
+    documents: pack.documents?.length ?? 0,
+    options: options.length,
+  });
   const deckTitle = pack.project?.title ?? link?.title ?? null;
 
   return (
