@@ -6,6 +6,7 @@ import ProjectOverviewPanel from "@/components/pm/ProjectOverviewPanel";
 import BuildingSiteTab from "@/components/pm/BuildingSiteTab";
 import PlansDesignTab from "@/components/pm/PlansDesignTab";
 import QuickBoqTab from "@/components/pm/QuickBoqTab";
+import SolutionOptionsTab from "@/components/pm/SolutionOptionsTab";
 import ProjectFilesTab from "@/components/pm/ProjectFilesTab";
 import ReportsShareTab from "@/components/pm/ReportsShareTab";
 import ClientEngagementTab from "@/components/pm/ClientEngagementTab";
