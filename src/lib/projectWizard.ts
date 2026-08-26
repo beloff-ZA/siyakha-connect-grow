@@ -9,6 +9,7 @@ export const WORKSPACE_SECTIONS = [
   { value: "building", label: "Building & site" },
   { value: "plans", label: "Plans & mapping" },
   { value: "boq", label: "BOQ & costing" },
+  { value: "options", label: "Solution options" },
   { value: "files", label: "Documents & site images" },
   { value: "engagement", label: "Client engagement" },
   { value: "share", label: "Reports & share" },
