@@ -657,7 +657,102 @@ Deno.serve(async (req) => {
     });
   }
 
+  /* ----------------------------------------------- solution / package options */
+  // Options are read-only comparison packages. Only rows explicitly issued
+  // (client_visible AND not draft) are ever returned, each with its own BOQ
+  // revision, so no existing revision is touched, hidden or superseded.
+  const OPTION_COLUMNS =
+    "id, project_id, boq_id, code, name, quote_reference, badge, comparison_label, positioning, summary, price_ex_vat, vat_rate, vat_amount, total_incl_vat, deposit_incl_vat, balance_incl_vat, status, client_visible, sort_order, highlights, technical_notes, exclusions";
+
+  const loadOptions = async () => {
+    const { data: rows } = await admin
+      .from("portal_solution_options")
+      .select(OPTION_COLUMNS)
+      .eq("project_id", projectId)
+      .eq("client_visible", true)
+      .neq("status", "draft")
+      .order("sort_order", { ascending: true });
+    const options = rows ?? [];
+    const boqIds = options.map((o: any) => o.boq_id).filter(Boolean);
+    const { data: items } = boqIds.length
+      ? await admin
+          .from("portal_boq_items")
+          .select("boq_id, item_code, description, specification, quantity, unit, customer_unit_rate, line_total, vat_applicable, is_included, sort_order")
+          .in("boq_id", boqIds)
+          .order("sort_order", { ascending: true })
+      : { data: [] as any[] };
+    const lines: Record<string, unknown[]> = {};
+    for (const it of items ?? []) {
+      if (it.is_included === false) continue;
+      const bucket = (lines[String(it.boq_id)] ??= []);
+      bucket.push({
+        item_code: it.item_code ?? null,
+        description: it.description,
+        specification: it.specification ?? null,
+        quantity: Number(it.quantity),
+        unit: it.unit,
+        customer_unit_rate: Number(it.customer_unit_rate),
+        line_total: Number(it.line_total),
+        vat_applicable: it.vat_applicable !== false,
+      });
+    }
+    const { data: prefs } = await admin
+      .from("portal_option_preferences")
+      .select("id, option_id, full_name, email, note, selected_at")
+      .eq("project_id", projectId)
+      .eq("viewer_id", viewerId)
+      .order("selected_at", { ascending: false });
+    return { options, option_lines: lines, option_preference: (prefs ?? [])[0] ?? null };
+  };
+
+  if (action === "options") {
+    await touch();
+    await log("granted", "options listed");
+    return json({ state: "ok", ...(await loadOptions()) });
+  }
+
+  if (action === "option_prefer") {
+    const optionId = String(payload.option_id ?? "");
+    if (!/^[0-9a-fA-F-]{36}$/.test(optionId)) return json({ state: "invalid", error: "Select an option first." }, 400);
+    const { data: option } = await admin
+      .from("portal_solution_options")
+      .select("id, name, client_visible, status")
+      .eq("id", optionId)
+      .eq("project_id", projectId)
+      .maybeSingle();
+    if (!option || option.client_visible !== true || String(option.status) === "draft") {
+      await log("denied", "option out of scope");
+      return json({ state: "denied", error: "That option is not available on this link." }, 403);
+    }
+    // Append-only: a preference NEVER accepts a BOQ and never alters pricing.
+    const { error } = await admin.from("portal_option_preferences").insert({
+      project_id: projectId,
+      option_id: optionId,
+      share_link_id: link.id,
+      viewer_id: viewerId,
+      full_name: `${viewer.first_name} ${viewer.surname}`.trim(),
+      email: viewer.email,
+      note: sanitizeText(String(payload.note ?? ""), 400) || null,
+    });
+    if (error) {
+      await log("error", "option preference failed");
+      return json({ error: "Could not record your preferred option" }, 500);
+    }
+    await admin.from("portal_activity").insert({
+      client_id: link.client_id,
+      project_id: projectId,
+      entity_type: "solution_option",
+      entity_id: optionId,
+      action: "client_marked_preferred_option",
+      detail: `${viewer.first_name} ${viewer.surname} marked ${option.name} as their preferred option`,
+      actor_type: "client",
+    });
+    await log("granted", "option preference recorded");
+    return json({ state: "ok", ...(await loadOptions()) });
+  }
+
   /* ---------------------------------------------------------- project notes */
+
   const loadThreads = async () => {
     const { data: threads } = await admin
       .from("portal_client_note_threads")
