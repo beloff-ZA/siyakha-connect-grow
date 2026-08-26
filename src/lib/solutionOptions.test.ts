@@ -50,7 +50,7 @@ describe("solution option totals", () => {
   it("reconciles a priced schedule against the published price", () => {
     const lines = [{ line_total: 112200 }, { line_total: 399017.39 }];
     expect(linesReconcile(lines, 511217.39)).toBe(true);
-    expect(linesReconcile(lines, 511217.4)).toBe(true); // within one cent
+    expect(linesReconcile(lines, 511217.4)).toBe(false);
     expect(linesReconcile(lines, 500000)).toBe(false);
   });
 });
