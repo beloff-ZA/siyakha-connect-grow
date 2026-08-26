@@ -64,7 +64,10 @@ const ACTIONS = new Set([
   "note_create",
   "note_reply",
   "accept",
+  "options",
+  "option_prefer",
 ]);
+
 
 const NOTE_CATEGORIES = new Set(["general", "boq", "plans", "programme", "technical", "site_safety"]);
 const NOTE_MAX = 2000;
