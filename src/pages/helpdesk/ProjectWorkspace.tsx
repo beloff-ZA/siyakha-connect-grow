@@ -105,6 +105,9 @@ const ProjectWorkspace: React.FC = () => {
             <TabsContent value="boq">
               <QuickBoqTab ws={ws} projectId={projectId} />
             </TabsContent>
+            <TabsContent value="options">
+              <SolutionOptionsTab projectId={projectId} />
+            </TabsContent>
             <TabsContent value="files">
               <ProjectFilesTab {...fixed} />
             </TabsContent>
