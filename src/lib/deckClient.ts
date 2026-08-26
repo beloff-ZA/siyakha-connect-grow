@@ -138,3 +138,14 @@ export const deckAcceptBoq = (
   token: string,
   input: { revision_hash: string; po_reference?: string | null; confirmed: true },
 ) => call(token, "accept", input);
+
+/** Read-only list of the comparison packages issued on this link. */
+export const deckOptions = (token: string) => call(token, "options");
+
+/**
+ * Non-destructive "mark as preferred" choice. This never accepts a BOQ — the
+ * existing acceptance workflow is untouched and still requires its own explicit
+ * confirmation.
+ */
+export const deckPreferOption = (token: string, input: { option_id: string; note?: string }) =>
+  call(token, "option_prefer", input);
