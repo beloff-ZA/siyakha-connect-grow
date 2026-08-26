@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.1"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -2779,6 +2779,71 @@ export type Database = {
           },
         ]
       }
+      portal_option_preferences: {
+        Row: {
+          email: string | null
+          full_name: string | null
+          id: string
+          note: string | null
+          option_id: string
+          project_id: string
+          selected_at: string
+          share_link_id: string | null
+          viewer_id: string | null
+        }
+        Insert: {
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          note?: string | null
+          option_id: string
+          project_id: string
+          selected_at?: string
+          share_link_id?: string | null
+          viewer_id?: string | null
+        }
+        Update: {
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          note?: string | null
+          option_id?: string
+          project_id?: string
+          selected_at?: string
+          share_link_id?: string | null
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_option_preferences_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "portal_solution_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_option_preferences_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_option_preferences_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "portal_share_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_option_preferences_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
+            referencedRelation: "portal_deck_viewers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_phases: {
         Row: {
           created_at: string
@@ -4205,6 +4270,102 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "portal_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_solution_options: {
+        Row: {
+          badge: string | null
+          balance_incl_vat: number | null
+          boq_id: string | null
+          client_visible: boolean
+          code: string
+          comparison_label: string | null
+          created_at: string
+          deposit_incl_vat: number | null
+          exclusions: Json
+          highlights: Json
+          id: string
+          name: string
+          positioning: string | null
+          price_ex_vat: number
+          project_id: string
+          quote_reference: string | null
+          sort_order: number
+          status: string
+          summary: string | null
+          technical_notes: Json
+          total_incl_vat: number
+          updated_at: string
+          vat_amount: number
+          vat_rate: number
+        }
+        Insert: {
+          badge?: string | null
+          balance_incl_vat?: number | null
+          boq_id?: string | null
+          client_visible?: boolean
+          code: string
+          comparison_label?: string | null
+          created_at?: string
+          deposit_incl_vat?: number | null
+          exclusions?: Json
+          highlights?: Json
+          id?: string
+          name: string
+          positioning?: string | null
+          price_ex_vat?: number
+          project_id: string
+          quote_reference?: string | null
+          sort_order?: number
+          status?: string
+          summary?: string | null
+          technical_notes?: Json
+          total_incl_vat?: number
+          updated_at?: string
+          vat_amount?: number
+          vat_rate?: number
+        }
+        Update: {
+          badge?: string | null
+          balance_incl_vat?: number | null
+          boq_id?: string | null
+          client_visible?: boolean
+          code?: string
+          comparison_label?: string | null
+          created_at?: string
+          deposit_incl_vat?: number | null
+          exclusions?: Json
+          highlights?: Json
+          id?: string
+          name?: string
+          positioning?: string | null
+          price_ex_vat?: number
+          project_id?: string
+          quote_reference?: string | null
+          sort_order?: number
+          status?: string
+          summary?: string | null
+          technical_notes?: Json
+          total_incl_vat?: number
+          updated_at?: string
+          vat_amount?: number
+          vat_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_solution_options_boq_id_fkey"
+            columns: ["boq_id"]
+            isOneToOne: false
+            referencedRelation: "portal_boqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_solution_options_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
             referencedColumns: ["id"]
           },
         ]

@@ -46,11 +46,16 @@ export type DeckPayload = {
   equipment?: { markers: MarkerLike[]; rack: RackItemLike[] };
   terms?: { text: string; version: string };
   threads?: ClientNoteThread[];
+  /** Comparison packages issued to this link (never drafts). */
+  options?: Record<string, unknown>[];
+  option_lines?: Record<string, Record<string, unknown>[]>;
+  option_preference?: { id: string; option_id: string; selected_at: string; note?: string | null } | null;
   repeat?: boolean;
   acceptance_id?: string;
   accepted_at?: string;
   totals?: { subtotal: number; vat: number; total: number };
 };
+
 
 /**
  * Viewer access lives ONLY in this module's memory, for the lifetime of the
@@ -133,3 +138,14 @@ export const deckAcceptBoq = (
   token: string,
   input: { revision_hash: string; po_reference?: string | null; confirmed: true },
 ) => call(token, "accept", input);
+
+/** Read-only list of the comparison packages issued on this link. */
+export const deckOptions = (token: string) => call(token, "options");
+
+/**
+ * Non-destructive "mark as preferred" choice. This never accepts a BOQ — the
+ * existing acceptance workflow is untouched and still requires its own explicit
+ * confirmation.
+ */
+export const deckPreferOption = (token: string, input: { option_id: string; note?: string }) =>
+  call(token, "option_prefer", input);

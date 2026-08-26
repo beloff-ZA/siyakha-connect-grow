@@ -28,16 +28,21 @@ import {
   deckAcceptBoq,
   deckCreateNote,
   deckNotes,
+  deckOptions,
+  deckPreferOption,
   deckRegister,
   deckReplyNote,
   deckSession,
   purgePersistedSessions,
   type DeckPayload,
 } from "@/lib/deckClient";
+import OptionComparison from "@/components/deck/OptionComparison";
+import { normalizeOption, type OptionLine, type SolutionOption } from "@/lib/solutionOptions";
 import type { ViewerRegistration } from "@/lib/deckViewer";
 import FloorLevelRail from "@/components/portal/FloorLevelRail";
 import DeckMobileNav from "@/components/deck/DeckMobileNav";
 import { NO_OVERFLOW_CLASS, SCROLL_CONTAINER_CLASS, TOUCH_TARGET_CLASS, buildDeckNav } from "@/lib/deckMobileNav";
+
 import { Check, Download, MessageSquare, RefreshCw, ShieldCheck } from "lucide-react";
 
 type Resolved = Awaited<ReturnType<typeof resolveShare>>;
@@ -93,6 +98,10 @@ const ProjectDeckPage: React.FC = () => {
   const [deck, setDeck] = useState<DeckPayload | null>(null);
   const [gateError, setGateError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("overview");
+  const [options, setOptions] = useState<SolutionOption[]>([]);
+  const [optionLines, setOptionLines] = useState<Record<string, OptionLine[]>>({});
+  const [preferredOptionId, setPreferredOptionId] = useState<string | null>(null);
+  const [optionBusy, setOptionBusy] = useState(false);
 
   /**
    * `refresh` marks a background/manual live poll: it still participates in rate
@@ -149,12 +158,45 @@ const ProjectDeckPage: React.FC = () => {
         setDeck(res);
         return;
       }
-      const notes = await deckNotes(token);
+      const [notes, opts] = await Promise.all([deckNotes(token), deckOptions(token)]);
       setDeck({ ...res, threads: notes.state === "ok" ? notes.threads : [] });
+      applyOptions(opts);
     } catch {
       setDeck({ state: "unavailable" });
     }
   };
+
+  /** Stores the issued comparison packages exactly as the edge function returned them. */
+  const applyOptions = (payload: DeckPayload) => {
+    if (payload.state !== "ok") {
+      setOptions([]);
+      setOptionLines({});
+      setPreferredOptionId(null);
+      return;
+    }
+    setOptions((payload.options ?? []).map(normalizeOption));
+    setOptionLines((payload.option_lines ?? {}) as Record<string, OptionLine[]>);
+    setPreferredOptionId(payload.option_preference?.option_id ?? null);
+  };
+
+  /**
+   * Non-destructive preference. It records the client's preferred package and
+   * never touches the BOQ acceptance workflow or any pricing.
+   */
+  const preferOption = async (option: SolutionOption) => {
+    setOptionBusy(true);
+    try {
+      const res = await deckPreferOption(token, { option_id: option.id });
+      if (res.state !== "ok") throw new Error(res.error ?? "Could not record your preferred option.");
+      applyOptions(res);
+      toast({ title: "Preferred option recorded", description: `${option.name}. This is not an acceptance.` });
+    } catch (e) {
+      toast({ title: "Could not save", description: (e as any)?.message, variant: "destructive" as never });
+    } finally {
+      setOptionBusy(false);
+    }
+  };
+
 
   useEffect(() => {
     if (state === "ok") void loadDeck();
@@ -310,7 +352,11 @@ const ProjectDeckPage: React.FC = () => {
     floors: pack.floors ?? [],
   };
 
-  const nav = buildDeckNav({ gallery: pack.gallery?.length ?? 0, documents: pack.documents?.length ?? 0 });
+  const nav = buildDeckNav({
+    gallery: pack.gallery?.length ?? 0,
+    documents: pack.documents?.length ?? 0,
+    options: options.length,
+  });
   const deckTitle = pack.project?.title ?? link?.title ?? null;
 
   return (
@@ -547,7 +593,19 @@ const ProjectDeckPage: React.FC = () => {
             )}
           </Section>
 
-          <Section id="boq" eyebrow="05" title="BOQ & acceptance">
+          {options.length > 0 && (
+            <Section id="options" eyebrow="05" title="Solution options">
+              <OptionComparison
+                options={options}
+                lines={optionLines}
+                preferredOptionId={preferredOptionId}
+                onPrefer={preferOption}
+                busy={optionBusy}
+              />
+            </Section>
+          )}
+
+          <Section id="boq" eyebrow="06" title="BOQ & acceptance">
             {viewer && (
               <DeckBoqTab
                 viewer={viewer}
@@ -562,7 +620,7 @@ const ProjectDeckPage: React.FC = () => {
             )}
           </Section>
 
-          <Section id="notes" eyebrow="06" title="Project notes">
+          <Section id="notes" eyebrow="07" title="Project notes">
             {viewer && (
               <DeckNotesTab
                 viewer={viewer}
@@ -573,7 +631,7 @@ const ProjectDeckPage: React.FC = () => {
             )}
           </Section>
 
-          <Section id="programme" eyebrow="07" title="Programme">
+          <Section id="programme" eyebrow="08" title="Programme">
             {(pack.milestones ?? []).length === 0 && (pack.tasks ?? []).length === 0 ? (
               <p className="text-sm text-muted-foreground">The delivery programme will be issued after design sign-off.</p>
             ) : (
