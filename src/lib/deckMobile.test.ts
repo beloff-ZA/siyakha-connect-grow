@@ -37,7 +37,7 @@ import { CLIENT_BOQ_LINE_KEYS } from "./deckViewer";
 
 describe("mobile deck navigation", () => {
   it("lists every deck section, including BOQ and notes", () => {
-    const nav = buildDeckNav({ gallery: 2, documents: 3 });
+    const nav = buildDeckNav({ gallery: 2, documents: 3, options: 3 });
     const labels = nav.map((n) => n.label);
     for (const expected of [
       "Overview",
@@ -49,17 +49,21 @@ describe("mobile deck navigation", () => {
       "Next steps",
       "BOQ & acceptance",
       "Project notes",
+      "Solution options",
     ])
       expect(labels).toContain(expected);
-    expect(DECK_NAV_ITEMS.length).toBe(10);
+    expect(DECK_NAV_ITEMS.length).toBe(11);
   });
 
   it("hides optional sections that carry no content", () => {
     const nav = buildDeckNav();
     expect(nav.map((n) => n.id)).not.toContain("gallery");
     expect(nav.map((n) => n.id)).not.toContain("documents");
+    expect(nav.map((n) => n.id)).not.toContain("options");
     expect(buildDeckNav({ documents: 1 }).map((n) => n.id)).toContain("documents");
+    expect(buildDeckNav({ options: 3 }).map((n) => n.id)).toContain("options");
   });
+
 
   it("shows the active section and closes after selection", () => {
     const nav = buildDeckNav({ documents: 1 });
