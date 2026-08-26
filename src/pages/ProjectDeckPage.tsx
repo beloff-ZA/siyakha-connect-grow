@@ -28,16 +28,21 @@ import {
   deckAcceptBoq,
   deckCreateNote,
   deckNotes,
+  deckOptions,
+  deckPreferOption,
   deckRegister,
   deckReplyNote,
   deckSession,
   purgePersistedSessions,
   type DeckPayload,
 } from "@/lib/deckClient";
+import OptionComparison from "@/components/deck/OptionComparison";
+import { normalizeOption, type OptionLine, type SolutionOption } from "@/lib/solutionOptions";
 import type { ViewerRegistration } from "@/lib/deckViewer";
 import FloorLevelRail from "@/components/portal/FloorLevelRail";
 import DeckMobileNav from "@/components/deck/DeckMobileNav";
 import { NO_OVERFLOW_CLASS, SCROLL_CONTAINER_CLASS, TOUCH_TARGET_CLASS, buildDeckNav } from "@/lib/deckMobileNav";
+
 import { Check, Download, MessageSquare, RefreshCw, ShieldCheck } from "lucide-react";
 
 type Resolved = Awaited<ReturnType<typeof resolveShare>>;
