@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import LeadMagnetDialog from "@/components/leads/LeadMagnetDialog";
+import LeadCtaRow from "@/components/site/LeadCtaRow";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import {
   HeadphonesIcon,
@@ -156,6 +157,16 @@ const ManagedIT = () => {
                 WhatsApp Us
               </a>
             </div>
+            <div className="mt-3">
+              <LeadCtaRow
+                service="Managed IT Services"
+                context="Managed IT page hero"
+                whatsappMessage="Hi Siyakha, I'd like to discuss managed IT support for our business."
+              />
+            </div>
+            <p className="mt-6 text-[13px] text-foreground/60 max-w-2xl">
+              Supporting businesses in Johannesburg and Sandton, and in Durban and KwaZulu-Natal.
+            </p>
           </div>
         </div>
       </section>
