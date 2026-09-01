@@ -264,26 +264,24 @@ serve(async (req: Request) => {
     // The lead is stored. Email is best-effort from here on.
     let emailDelivered = false;
     if (RESEND_API_KEY && !duplicate) {
-      const subject = `New lead — ${lead.service} · ${lead.location} · ${lead.company ?? lead.full_name}`;
       const html = buildEmail(lead as Record<string, unknown>);
-      const send = (from: string, to: string[]) =>
-        fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ from, to, reply_to: lead.work_email, subject, html }),
-        });
-      let errorDetail: string | null = null;
-      try {
-        let res = await send(FROM, [OWNER_EMAIL]);
-        if (!res.ok) {
-          errorDetail = `primary: ${await res.text()}`.slice(0, 500);
-          res = await send(FALLBACK_FROM, FALLBACK_RECIPIENTS);
+      const requests = buildLeadEmailRequests(lead as Record<string, unknown>, html);
+      const errors: string[] = [];
+      // Each owner recipient is sent separately: one rejection never blocks the other copy.
+      for (const request of requests) {
+        try {
+          const res = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify(request),
+          });
+          if (res.ok) emailDelivered = true;
+          else errors.push(`${request.to[0]}: ${(await res.text()).slice(0, 300)}`);
+        } catch (e) {
+          errors.push(`${request.to[0]}: ${String(e).slice(0, 300)}`);
         }
-        if (res.ok) emailDelivered = true;
-        else errorDetail = `${errorDetail ?? ""} | fallback: ${await res.text()}`.slice(0, 500);
-      } catch (e) {
-        errorDetail = String(e).slice(0, 500);
       }
+      const errorDetail = errors.length ? errors.join(" | ").slice(0, 500) : null;
       await admin
         .from("website_leads")
         .update({
