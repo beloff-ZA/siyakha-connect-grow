@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { formatQty, formatZar } from "@/lib/boq";
 import {
-  OPTION_DIFFERENCE_NOTE,
+  buildComparisonNote,
   OPTION_VAT_NOTE,
   isClientVisibleOption,
   sortOptions,
@@ -192,6 +192,7 @@ const OptionComparison: React.FC<{
   adminView?: boolean;
 }> = ({ options, lines, preferredOptionId, onPrefer, busy, adminView }) => {
   const ordered = sortOptions(options);
+  const comparisonNote = buildComparisonNote(ordered);
 
   if (!ordered.length)
     return (
@@ -218,7 +219,9 @@ const OptionComparison: React.FC<{
       </div>
       <div className="mt-6 border border-border p-5">
         <p className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">How the options compare</p>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{OPTION_DIFFERENCE_NOTE}</p>
+        {comparisonNote && (
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{comparisonNote}</p>
+        )}
         {onPrefer && (
           <p className="mt-3 text-xs text-muted-foreground">
             Marking an option as preferred is not an acceptance. It simply tells us which package to work up — the

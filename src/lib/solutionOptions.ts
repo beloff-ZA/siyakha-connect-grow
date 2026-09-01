@@ -66,11 +66,29 @@ export type OptionPreference = {
 export const OPTION_VAT_NOTE = "All option prices are shown excluding VAT; the VAT-inclusive total is listed separately.";
 
 /**
- * Honest comparison note: Option 3 is dearer than Option 2 purely because of
- * the doubled camera count and the second NVR.
+ * Builds an honest comparison note from the options actually issued on this
+ * project. Returns null when there is nothing to compare (0 or 1 option), so no
+ * claim is ever shown that the project's own figures do not support.
  */
-export const OPTION_DIFFERENCE_NOTE =
-  "Option 3 costs more than Option 2 because it includes 64 cameras instead of 32 and two NVRs instead of one, while still remaining far below Option 1.";
+export function buildComparisonNote(options: readonly SolutionOption[]): string | null {
+  const ordered = sortOptions(options);
+  if (ordered.length < 2) return null;
+  const cheapest = ordered.reduce((best, o) => (o.price_ex_vat < best.price_ex_vat ? o : best), ordered[0]);
+  const dearest = ordered.reduce((best, o) => (o.price_ex_vat > best.price_ex_vat ? o : best), ordered[0]);
+  if (cheapest.id === dearest.id) {
+    return `All ${ordered.length} options are priced the same excluding VAT; they differ in scope only.`;
+  }
+  const diff = round2(dearest.price_ex_vat - cheapest.price_ex_vat);
+  return `${ordered.length} options are shown. ${cheapest.name} has the lowest initial price at ${formatCompactZar(
+    cheapest.price_ex_vat,
+  )} excl. VAT, while ${dearest.name} is the most comprehensive at ${formatCompactZar(
+    dearest.price_ex_vat,
+  )} excl. VAT — a difference of ${formatCompactZar(diff)} excl. VAT. Compare the detailed scope of each option before choosing.`;
+}
+
+const formatCompactZar = (value: number) =>
+  `R${value.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 
 const list = (value: unknown): string[] =>
   Array.isArray(value) ? value.map((v) => String(v)).filter((v) => v.trim().length > 0) : [];
