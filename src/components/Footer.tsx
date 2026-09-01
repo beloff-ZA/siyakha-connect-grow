@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ArrowRight, Wrench } from "lucide-react";
 import { BRAND } from "@/lib/brand";
+import { enquiryHref } from "@/lib/leadForm";
 
 
 const Footer = () => {
@@ -62,7 +63,7 @@ const Footer = () => {
               <Link to="/industries" className="hover:text-foreground transition-colors">Industries</Link>
               <Link to="/projects" className="hover:text-foreground transition-colors">Projects</Link>
               <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
-              <Link to="/contact" className="hover:text-foreground transition-colors">Get Help</Link>
+              <Link to={enquiryHref("Managed IT Services")} className="hover:text-foreground transition-colors">Get Help</Link>
               <Link to="/shop" className="hover:text-foreground transition-colors">Shop</Link>
             </div>
           </div>
