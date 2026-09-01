@@ -144,6 +144,14 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/brand-wifi" element={<BrandWifi />} />
 
+              {/* Service divisions */}
+              <Route path="/services" element={<ServicesIndex />} />
+              <Route path="/services/:slug" element={<ServiceDivisionPage />} />
+
+              {/* Industries */}
+              <Route path="/industries" element={<IndustriesIndex />} />
+              <Route path="/industries/:slug" element={<IndustryPage />} />
+
               {/* Who we serve */}
               <Route path="/who-we-serve/:slug" element={<AudiencePage />} />
 
