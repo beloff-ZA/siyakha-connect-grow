@@ -1,0 +1,1 @@
+ALTER TABLE public.website_leads ADD COLUMN IF NOT EXISTS focus_areas text[] NOT NULL DEFAULT '{}'::text[];
