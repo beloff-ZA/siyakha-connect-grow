@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { BRAND, TRUST_POINTS } from "./brand";
 import { DIVISIONS, getDivision } from "@/content/divisions";
 import { INDUSTRIES, getIndustry } from "@/content/industries";
-import { FAQS } from "@/content/faqs";
-import { enquiryHref, SERVICES } from "./leadForm";
+import { HOME_HOME_FAQS } from "@/content/faqs";
+import { enquiryHref, LEAD_SERVICES } from "./leadForm";
 
 describe("master brand", () => {
   it("uses Siyakha Technology Solutions as the public master brand", () => {
@@ -81,7 +81,7 @@ describe("industries", () => {
 
 describe("lead flow is preserved", () => {
   it("maps every division lead service to a real enquiry service option", () => {
-    const values = SERVICES.map((s) => s.value);
+    const values: readonly string[] = LEAD_SERVICES;
     for (const d of DIVISIONS) {
       expect(values).toContain(d.leadService);
     }
@@ -93,8 +93,8 @@ describe("lead flow is preserved", () => {
 
 describe("faqs", () => {
   it("provides genuine FAQs without invented guarantees", () => {
-    expect(FAQS.length).toBeGreaterThanOrEqual(5);
-    const text = FAQS.map((f) => `${f.q} ${f.a}`).join(" ");
+    expect(HOME_FAQS.length).toBeGreaterThanOrEqual(5);
+    const text = HOME_FAQS.map((f) => `${f.q} ${f.a}`).join(" ");
     expect(text).not.toMatch(/guarantee/i);
     expect(text).toMatch(/Johannesburg/);
     expect(text).toMatch(/Durban/);
