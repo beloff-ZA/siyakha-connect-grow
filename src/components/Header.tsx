@@ -3,6 +3,10 @@ import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
 import { ChevronDown, Menu, Phone } from "lucide-react";
+import { DIVISIONS } from "@/content/divisions";
+import { INDUSTRIES } from "@/content/industries";
+import { BRAND } from "@/lib/brand";
+import { enquiryHref } from "@/lib/leadForm";
 import CartDrawer from "@/components/shop/CartDrawer";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -13,27 +17,15 @@ const Header = () => {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const audienceLinks = [
-    { to: "/who-we-serve/estates", label: "Estates" },
-    { to: "/who-we-serve/commercial", label: "Commercial" },
-    { to: "/who-we-serve/schools", label: "Schools" },
-    { to: "/who-we-serve/government", label: "Government & Border" },
-  ];
+  const serviceLinks = DIVISIONS.map((d) => ({ to: `/services/${d.slug}`, label: d.title }));
 
-  const solutionsLinks = [
-    { to: "/capabilities/smart-estates", label: "Smart Estate Systems" },
-    { to: "/capabilities/ai-surveillance", label: "AI Surveillance" },
-    { to: "/capabilities/border-radar", label: "Border Radar" },
-    { to: "/capabilities/fibre-connectivity", label: "Fibre & Connectivity" },
-    { to: "/capabilities/command-centre", label: "Command Centre" },
-    { to: "/capabilities/ai-agents", label: "AI Agents" },
-    { to: "/brand-wifi", label: "Your Brand Wi-Fi" },
-  ];
+  const industryLinks = INDUSTRIES.map((i) => ({ to: `/industries/${i.slug}`, label: i.label }));
 
   const companyLinks = [
     { to: "/about", label: "About" },
     { to: "/projects", label: "Projects" },
     { to: "/partner-engineers", label: "Partner Engineers" },
+    { to: "/shop", label: "Shop" },
   ];
 
   return (
@@ -60,24 +52,24 @@ const Header = () => {
       <div className="bg-background/90 border-b border-border backdrop-blur-md">
         <div className="container mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between gap-3 h-20 md:h-28">
-            <Link to="/" aria-label="Siyakha Interlink home" className="flex items-center min-w-0 flex-shrink">
+            <Link to="/" aria-label={`${BRAND.name} home`} className="flex items-center min-w-0 flex-shrink">
               <img
                 src={siyakhaWordmark}
-                alt="Siyakha logo"
+                alt={`${BRAND.name} logo`}
                 className="h-8 w-auto md:h-12 flex-shrink-0"
                 decoding="async"
               />
-              <span className="sr-only">Siyakha Interlink</span>
+              <span className="sr-only">{BRAND.name}</span>
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-7 flex-1 justify-center">
+            <nav className="hidden lg:flex items-center gap-6 flex-1 justify-center">
               <div className="relative group">
                 <button className="flex items-center gap-1 text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors py-2">
-                  Who We Serve <ChevronDown className="h-3 w-3" />
+                  Services <ChevronDown className="h-3 w-3" />
                 </button>
                 <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                  <div className="bg-background border border-border shadow-lg min-w-[240px] py-2">
-                    {audienceLinks.map((l) => (
+                  <div className="bg-background border border-border shadow-lg min-w-[260px] py-2">
+                    {serviceLinks.map((l) => (
                       <Link
                         key={l.to}
                         to={l.to}
@@ -86,17 +78,23 @@ const Header = () => {
                         {l.label}
                       </Link>
                     ))}
+                    <Link
+                      to="/services"
+                      className="block px-4 py-2 text-xs uppercase tracking-[0.18em] text-foreground/55 hover:text-foreground hover:bg-muted transition-colors border-t border-border mt-1 pt-2"
+                    >
+                      All services
+                    </Link>
                   </div>
                 </div>
               </div>
 
               <div className="relative group">
                 <button className="flex items-center gap-1 text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors py-2">
-                  Solutions <ChevronDown className="h-3 w-3" />
+                  Industries <ChevronDown className="h-3 w-3" />
                 </button>
                 <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                  <div className="bg-background border border-border shadow-lg min-w-[260px] py-2">
-                    {solutionsLinks.map((l) => (
+                  <div className="bg-background border border-border shadow-lg min-w-[280px] py-2">
+                    {industryLinks.map((l) => (
                       <Link
                         key={l.to}
                         to={l.to}
@@ -105,6 +103,12 @@ const Header = () => {
                         {l.label}
                       </Link>
                     ))}
+                    <Link
+                      to="/industries"
+                      className="block px-4 py-2 text-xs uppercase tracking-[0.18em] text-foreground/55 hover:text-foreground hover:bg-muted transition-colors border-t border-border mt-1 pt-2"
+                    >
+                      All industries
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -117,13 +121,6 @@ const Header = () => {
               </Link>
 
               <Link
-                to="/brand-wifi"
-                className="text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
-              >
-                Your Brand Wi-Fi
-              </Link>
-
-              <Link
                 to="/about"
                 className="text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
               >
@@ -131,15 +128,22 @@ const Header = () => {
               </Link>
 
               <Link
-                to="/shop"
-                className="text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors"
+                to={enquiryHref("Managed IT Services")}
+                className="text-[11px] uppercase tracking-[0.22em] bg-foreground text-background px-4 py-2.5 hover:bg-foreground/90 transition-colors"
               >
-                Shop
+                Get Help
+              </Link>
+
+              <Link
+                to={enquiryHref("Office Networking & Structured Cabling")}
+                className="text-[11px] uppercase tracking-[0.22em] border border-border px-4 py-2 text-foreground/85 hover:bg-muted transition-colors"
+              >
+                Request Assessment
               </Link>
 
               <Link
                 to="/sign-in"
-                className="text-[11px] uppercase tracking-[0.22em] border border-border px-4 py-2 text-foreground/85 hover:bg-muted transition-colors"
+                className="text-[11px] uppercase tracking-[0.22em] text-foreground/70 hover:text-foreground transition-colors"
               >
                 Login
               </Link>
@@ -181,28 +185,43 @@ const Header = () => {
                         </span>
                       </div>
                     </a>
+                    <div className="flex flex-col gap-2">
+                      <Link
+                        to={enquiryHref("Managed IT Services")}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center justify-center min-h-[48px] bg-foreground text-background px-4 text-sm uppercase tracking-[0.18em]"
+                      >
+                        Get IT help
+                      </Link>
+                      <Link
+                        to={enquiryHref("Office Networking & Structured Cabling")}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center justify-center min-h-[48px] border border-border px-4 text-sm uppercase tracking-[0.18em] text-foreground"
+                      >
+                        Request assessment
+                      </Link>
+                    </div>
                     <div className="space-y-2">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Who We Serve</p>
-
-                      {audienceLinks.map((l) => (
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Services</p>
+                      {serviceLinks.map((l) => (
                         <Link
                           key={l.to}
                           to={l.to}
                           onClick={() => setMenuOpen(false)}
-                          className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
+                          className="flex items-center min-h-[44px] text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors"
                         >
                           {l.label}
                         </Link>
                       ))}
                     </div>
                     <div className="space-y-2">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Solutions</p>
-                      {solutionsLinks.map((l) => (
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Industries</p>
+                      {industryLinks.map((l) => (
                         <Link
                           key={l.to}
                           to={l.to}
                           onClick={() => setMenuOpen(false)}
-                          className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
+                          className="flex items-center min-h-[44px] text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors"
                         >
                           {l.label}
                         </Link>

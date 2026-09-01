@@ -18,7 +18,7 @@ export function buildLocalBusinessSchema() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "@id": `${SITE_ORIGIN}/#localbusiness`,
-    name: "Siyakha Technology",
+    name: "Siyakha Technology Solutions",
     url: SITE_ORIGIN,
     telephone: CONTACT.phoneE164,
     email: CONTACT.email,
@@ -61,7 +61,7 @@ export function buildServiceSchema(input: {
     provider: {
       "@type": "LocalBusiness",
       "@id": `${SITE_ORIGIN}/#localbusiness`,
-      name: "Siyakha Technology",
+      name: "Siyakha Technology Solutions",
       telephone: CONTACT.phoneE164,
       email: CONTACT.email,
       url: SITE_ORIGIN,

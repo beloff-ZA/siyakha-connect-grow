@@ -18,6 +18,10 @@ import AudiencePage from "./pages/AudiencePage";
 import CapabilityPage from "./pages/CapabilityPage";
 import Projects from "./pages/Projects";
 import BrandWifi from "./pages/BrandWifi";
+import ServicesIndex from "./pages/ServicesIndex";
+import ServiceDivisionPage from "./pages/ServiceDivisionPage";
+import IndustriesIndex from "./pages/IndustriesIndex";
+import IndustryPage from "./pages/IndustryPage";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./contexts/AuthContext";
 import Shop from "./pages/shop/Shop";
@@ -139,6 +143,14 @@ function App() {
               <Route path="/cloud-networking" element={<CloudNetworking />} />
               <Route path="/about" element={<About />} />
               <Route path="/brand-wifi" element={<BrandWifi />} />
+
+              {/* Service divisions */}
+              <Route path="/services" element={<ServicesIndex />} />
+              <Route path="/services/:slug" element={<ServiceDivisionPage />} />
+
+              {/* Industries */}
+              <Route path="/industries" element={<IndustriesIndex />} />
+              <Route path="/industries/:slug" element={<IndustryPage />} />
 
               {/* Who we serve */}
               <Route path="/who-we-serve/:slug" element={<AudiencePage />} />
