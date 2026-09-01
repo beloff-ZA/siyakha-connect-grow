@@ -9,6 +9,7 @@ import {
   validateLeadForm,
   LEAD_SERVICES,
   LEAD_LOCATIONS,
+  AI_FOCUS_AREAS,
 } from "./leadForm";
 import { buildEventPayload } from "./analytics";
 import { parseAttribution, mergeAttribution, deriveSource } from "./attribution";
@@ -59,10 +60,49 @@ describe("lead form validation", () => {
   it("exposes the required B2B service and location options", () => {
     expect(LEAD_SERVICES).toContain("Field Support Engineers / Smart Hands");
     expect(LEAD_SERVICES).toContain("Student Accommodation Connectivity");
-    expect(LEAD_SERVICES).toContain("AI Process Automation & Voice Agents");
+    expect(LEAD_SERVICES).toContain("Business Process & AI Solutions");
+    expect(LEAD_SERVICES).toContain("Restaurant Technology");
+    expect(LEAD_SERVICES).toContain("Websites, Hosting & Domains");
     expect(LEAD_SERVICES).not.toContain("Event Wi-Fi");
     expect(LEAD_LOCATIONS[0]).toBe("Johannesburg / Sandton");
     expect(LEAD_LOCATIONS[1]).toBe("Durban / KZN");
+  });
+});
+
+describe("business process & AI qualification", () => {
+  const aiForm = () => ({
+    ...validForm(),
+    service: "Business Process & AI Solutions",
+    focus_areas: [] as string[],
+  });
+
+  it("requires at least one focus area for the AI service", () => {
+    expect(validateLeadForm(aiForm()).focus_areas).toBeTruthy();
+    expect(
+      validateLeadForm({ ...aiForm(), focus_areas: ["AI voice agents", "Appointment booking"] }).focus_areas,
+    ).toBeUndefined();
+  });
+
+  it("keeps every required sub-choice available", () => {
+    expect(AI_FOCUS_AREAS).toEqual([
+      "AI voice agents",
+      "Enquiry handling",
+      "Appointment booking",
+      "Workflow automation",
+      "Document processing",
+      "CRM follow-up automation",
+      "Operational process improvement",
+    ]);
+  });
+
+  it("only stores focus areas for the AI service and drops unknown values", () => {
+    const ai = buildLeadPayload(
+      { ...aiForm(), focus_areas: ["Workflow automation", "Rocket launches"] },
+      {},
+    );
+    expect(ai.focus_areas).toEqual(["Workflow automation"]);
+    const other = buildLeadPayload({ ...validForm(), focus_areas: ["AI voice agents"] }, {});
+    expect(other.focus_areas).toEqual([]);
   });
 });
 
@@ -70,7 +110,7 @@ describe("service preselection", () => {
   it("maps page slugs and exact names to services", () => {
     expect(resolveService("security-surveillance")).toBe("Commercial CCTV & Access Control");
     expect(resolveService("schools")).toBe("School ICT & Wi-Fi");
-    expect(resolveService("ai-agents")).toBe("AI Process Automation & Voice Agents");
+    expect(resolveService("ai-agents")).toBe("Business Process & AI Solutions");
     expect(resolveService("Managed IT Services")).toBe("Managed IT Services");
     expect(resolveService("unknown-page")).toBeNull();
   });

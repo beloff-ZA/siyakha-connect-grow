@@ -39,8 +39,18 @@ const SERVICES = [
   "Commercial CCTV & Access Control",
   "Restaurant Technology",
   "Websites, Hosting & Domains",
-  "AI Process Automation & Voice Agents",
+  "Business Process & AI Solutions",
   "Other",
+] as const;
+
+const FOCUS_AREAS = [
+  "AI voice agents",
+  "Enquiry handling",
+  "Appointment booking",
+  "Workflow automation",
+  "Document processing",
+  "CRM follow-up automation",
+  "Operational process improvement",
 ] as const;
 
 const LOCATIONS = ["Johannesburg / Sandton", "Durban / KZN", "Other"] as const;
@@ -56,6 +66,7 @@ const LeadSchema = z.object({
   whatsapp: nullableText(40),
   service: z.enum(SERVICES),
   location: z.enum(LOCATIONS),
+  focus_areas: z.array(z.enum(FOCUS_AREAS)).max(7).optional().default([]),
   budget_range: nullableText(80),
   timeline: nullableText(80),
   project_description: z.string().trim().min(20).max(4000),
@@ -102,6 +113,7 @@ function buildEmail(lead: Record<string, unknown>) {
       ${row("WhatsApp", lead.whatsapp)}
       ${row("Service", lead.service)}
       ${row("Location", lead.location)}
+      ${row("Focus areas", Array.isArray(lead.focus_areas) && lead.focus_areas.length ? (lead.focus_areas as string[]).join(", ") : "—")}
       ${row("Budget", lead.budget_range)}
       ${row("Timeline", lead.timeline)}
     </table>
@@ -197,6 +209,7 @@ serve(async (req: Request) => {
       referrer: input.referrer,
       service: input.service,
       location: input.location,
+      focus_areas: input.service === "Business Process & AI Solutions" ? input.focus_areas : [],
       full_name: input.full_name,
       company: input.company,
       work_email: input.work_email.toLowerCase(),

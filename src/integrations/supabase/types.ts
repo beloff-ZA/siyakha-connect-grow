@@ -4902,6 +4902,7 @@ export type Database = {
           contacted_at: string | null
           created_at: string
           dedupe_key: string | null
+          focus_areas: string[]
           follow_up_notes: string | null
           full_name: string
           gclid: string | null
@@ -4935,6 +4936,7 @@ export type Database = {
           contacted_at?: string | null
           created_at?: string
           dedupe_key?: string | null
+          focus_areas?: string[]
           follow_up_notes?: string | null
           full_name: string
           gclid?: string | null
@@ -4968,6 +4970,7 @@ export type Database = {
           contacted_at?: string | null
           created_at?: string
           dedupe_key?: string | null
+          focus_areas?: string[]
           follow_up_notes?: string | null
           full_name?: string
           gclid?: string | null

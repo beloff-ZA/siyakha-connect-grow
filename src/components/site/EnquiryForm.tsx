@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import {
+  AI_FOCUS_AREAS,
+  isAiService,
   LEAD_BUDGETS,
   LEAD_LOCATIONS,
   LEAD_SERVICES,
@@ -283,6 +285,41 @@ const EnquiryForm = ({ defaultService }: { defaultService?: string }) => {
         </select>
         {errorText("service")}
       </div>
+
+      {isAiService(values.service) && (
+        <fieldset className="border border-background/20 p-4">
+          <legend className="px-2 text-[11px] uppercase tracking-[0.22em] text-background/60">
+            What should we automate? *
+          </legend>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {AI_FOCUS_AREAS.map((area) => {
+              const checked = values.focus_areas.includes(area);
+              return (
+                <label
+                  key={area}
+                  className="flex items-center gap-3 min-h-[44px] text-sm text-background/85 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-background"
+                    checked={checked}
+                    onChange={(e) =>
+                      set(
+                        "focus_areas",
+                        e.target.checked
+                          ? [...values.focus_areas, area]
+                          : values.focus_areas.filter((a) => a !== area),
+                      )
+                    }
+                  />
+                  {area}
+                </label>
+              );
+            })}
+          </div>
+          {errorText("focus_areas")}
+        </fieldset>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>

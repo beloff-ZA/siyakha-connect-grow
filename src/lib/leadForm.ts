@@ -14,7 +14,7 @@ export const LEAD_SERVICES = [
   "Commercial CCTV & Access Control",
   "Restaurant Technology",
   "Websites, Hosting & Domains",
-  "AI Process Automation & Voice Agents",
+  "Business Process & AI Solutions",
   "Other",
 ] as const;
 export type LeadService = (typeof LEAD_SERVICES)[number];
@@ -43,6 +43,20 @@ export const LEAD_TIMELINES = [
   "Planning / budgeting",
 ] as const;
 
+/** Sub/qualification choices shown when Business Process & AI Solutions is chosen. */
+export const AI_FOCUS_AREAS = [
+  "AI voice agents",
+  "Enquiry handling",
+  "Appointment booking",
+  "Workflow automation",
+  "Document processing",
+  "CRM follow-up automation",
+  "Operational process improvement",
+] as const;
+export type LeadFocusArea = (typeof AI_FOCUS_AREAS)[number];
+
+export const AI_SERVICE: LeadService = "Business Process & AI Solutions";
+
 /**
  * "Serious project" services. Selecting one of these is a stronger buying signal
  * and is reported to analytics as a qualified service selection.
@@ -55,7 +69,7 @@ export const QUALIFIED_SERVICES: readonly LeadService[] = [
   "School ICT & Wi-Fi",
   "Student Accommodation Connectivity",
   "Commercial CCTV & Access Control",
-  "AI Process Automation & Voice Agents",
+  "Business Process & AI Solutions",
 ];
 
 export function isQualifiedService(service: string): boolean {
@@ -90,8 +104,12 @@ const SERVICE_ALIASES: Record<string, LeadService> = {
   websites: "Websites, Hosting & Domains",
   "regional-services": "Websites, Hosting & Domains",
   hosting: "Websites, Hosting & Domains",
-  "ai-agents": "AI Process Automation & Voice Agents",
-  "ai-automation": "AI Process Automation & Voice Agents",
+  "ai-agents": "Business Process & AI Solutions",
+  "ai-automation": "Business Process & AI Solutions",
+  "ai-voice-agents": "Business Process & AI Solutions",
+  "business-process": "Business Process & AI Solutions",
+  "automation": "Business Process & AI Solutions",
+  "ai-process-automation-&-voice-agents": "Business Process & AI Solutions",
   commercial: "Office Networking & Structured Cabling",
 };
 
@@ -121,6 +139,7 @@ export interface LeadFormValues {
   whatsapp: string;
   service: string;
   location: string;
+  focus_areas: string[];
   budget_range: string;
   timeline: string;
   project_description: string;
@@ -136,6 +155,7 @@ export const emptyLeadForm = (): LeadFormValues => ({
   whatsapp: "",
   service: "",
   location: "",
+  focus_areas: [],
   budget_range: "",
   timeline: "",
   project_description: "",
@@ -144,6 +164,10 @@ export const emptyLeadForm = (): LeadFormValues => ({
 });
 
 export type LeadFieldErrors = Partial<Record<keyof LeadFormValues, string>>;
+
+export function isAiService(service: string): boolean {
+  return resolveService(service) === AI_SERVICE;
+}
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const FREE_EMAIL_DOMAINS = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com", "webmail.co.za"];
@@ -169,6 +193,10 @@ export function validateLeadForm(values: LeadFormValues): LeadFieldErrors {
   }
   if (!resolveService(values.service)) errors.service = "Choose the service you need.";
   if (!(LEAD_LOCATIONS as readonly string[]).includes(values.location)) errors.location = "Choose a location.";
+  if (isAiService(values.service)) {
+    const picked = values.focus_areas.filter((a) => (AI_FOCUS_AREAS as readonly string[]).includes(a));
+    if (picked.length === 0) errors.focus_areas = "Select at least one area you want to automate.";
+  }
   if (values.project_description.trim().length < 20) {
     errors.project_description = "Please give us at least a sentence or two about the site and scope.";
   }
@@ -190,6 +218,7 @@ export interface LeadSubmissionPayload {
   whatsapp: string | null;
   service: string;
   location: string;
+  focus_areas: string[];
   budget_range: string | null;
   timeline: string | null;
   project_description: string;
@@ -226,6 +255,9 @@ export function buildLeadPayload(
     whatsapp: orNull(values.whatsapp),
     service: values.service,
     location: values.location,
+    focus_areas: isAiService(values.service)
+      ? values.focus_areas.filter((a) => (AI_FOCUS_AREAS as readonly string[]).includes(a))
+      : [],
     budget_range: orNull(values.budget_range),
     timeline: orNull(values.timeline),
     project_description: values.project_description.trim(),

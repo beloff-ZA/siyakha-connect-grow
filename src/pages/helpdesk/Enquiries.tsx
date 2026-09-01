@@ -206,6 +206,12 @@ const Enquiries = () => {
                           <dd className="inline">{lead.whatsapp ?? "—"}</dd>
                         </div>
                         <div>
+                          <dt className="inline text-muted-foreground">Focus areas: </dt>
+                          <dd className="inline">
+                            {lead.focus_areas?.length ? lead.focus_areas.join(", ") : "—"}
+                          </dd>
+                        </div>
+                        <div>
                           <dt className="inline text-muted-foreground">Budget: </dt>
                           <dd className="inline">{lead.budget_range ?? "—"}</dd>
                         </div>
