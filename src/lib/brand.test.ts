@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { BRAND, TRUST_POINTS } from "./brand";
 import { DIVISIONS, getDivision } from "@/content/divisions";
 import { INDUSTRIES, getIndustry } from "@/content/industries";
-import { HOME_HOME_FAQS } from "@/content/faqs";
+import { HOME_FAQS } from "@/content/faqs";
 import { enquiryHref, LEAD_SERVICES } from "./leadForm";
 
 describe("master brand", () => {
@@ -73,8 +73,8 @@ describe("industries", () => {
       expect(getIndustry(i.slug)).toBeDefined();
       expect(i.problems.length).toBeGreaterThan(2);
       const href = enquiryHref(i.leadService, i.leadLocation ?? null);
-      expect(href.startsWith("/contact")).toBe(true);
       expect(href).toContain("service=");
+      expect(href.endsWith("#enquiry")).toBe(true);
     }
   });
 });
