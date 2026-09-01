@@ -71,7 +71,7 @@ const Footer = () => {
             <div className="flex items-center gap-5 md:justify-end">
               <img
                 src={interlinkLogo}
-                alt="Siyakha Interlink mark"
+                alt={`${BRAND.short} mark`}
                 className="h-12 w-auto"
                 loading="lazy"
               />
