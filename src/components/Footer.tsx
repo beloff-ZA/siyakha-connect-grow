@@ -42,13 +42,28 @@ const Footer = () => {
           <div>
             <img
               src={interlinkLogo}
-              alt="Siyakha Interlink logo"
+              alt={`${BRAND.name} logo`}
               className="h-16 w-auto mb-6"
               loading="lazy"
             />
-            <p className="text-muted-foreground max-w-md leading-relaxed">
-              {t("footer.tagline")}
+            <p className="font-display text-xl font-light tracking-tight text-foreground mb-3">
+              {BRAND.name}
             </p>
+            <p className="text-muted-foreground max-w-md leading-relaxed">
+              Managed IT, technology projects, commercial security, digital services and AI &
+              business-process solutions — Johannesburg, Sandton, Durban and KZN.
+            </p>
+            <p className="text-sm text-muted-foreground/80 mt-4 max-w-md leading-relaxed">
+              {BRAND.ownerReplyLine}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              <Link to="/services" className="hover:text-foreground transition-colors">Services</Link>
+              <Link to="/industries" className="hover:text-foreground transition-colors">Industries</Link>
+              <Link to="/projects" className="hover:text-foreground transition-colors">Projects</Link>
+              <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
+              <Link to="/contact" className="hover:text-foreground transition-colors">Get Help</Link>
+              <Link to="/shop" className="hover:text-foreground transition-colors">Shop</Link>
+            </div>
           </div>
 
           <div className="text-left md:text-right space-y-4">
