@@ -13,27 +13,15 @@ const Header = () => {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const audienceLinks = [
-    { to: "/who-we-serve/estates", label: "Estates" },
-    { to: "/who-we-serve/commercial", label: "Commercial" },
-    { to: "/who-we-serve/schools", label: "Schools" },
-    { to: "/who-we-serve/government", label: "Government & Border" },
-  ];
+  const serviceLinks = DIVISIONS.map((d) => ({ to: `/services/${d.slug}`, label: d.title }));
 
-  const solutionsLinks = [
-    { to: "/capabilities/smart-estates", label: "Smart Estate Systems" },
-    { to: "/capabilities/ai-surveillance", label: "AI Surveillance" },
-    { to: "/capabilities/border-radar", label: "Border Radar" },
-    { to: "/capabilities/fibre-connectivity", label: "Fibre & Connectivity" },
-    { to: "/capabilities/command-centre", label: "Command Centre" },
-    { to: "/capabilities/ai-agents", label: "AI Agents" },
-    { to: "/brand-wifi", label: "Your Brand Wi-Fi" },
-  ];
+  const industryLinks = INDUSTRIES.map((i) => ({ to: `/industries/${i.slug}`, label: i.label }));
 
   const companyLinks = [
     { to: "/about", label: "About" },
     { to: "/projects", label: "Projects" },
     { to: "/partner-engineers", label: "Partner Engineers" },
+    { to: "/shop", label: "Shop" },
   ];
 
   return (
