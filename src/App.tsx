@@ -27,6 +27,7 @@ import { useCartSync } from "./hooks/useCartSync";
 
 // Director PA / Helpdesk (protected backend — preserved)
 import AdminRoute from "./components/helpdesk/AdminRoute";
+import AnalyticsScripts from "./components/AnalyticsScripts";
 import HelpdeskDashboard from "./pages/helpdesk/Dashboard";
 import HelpdeskDiary from "./pages/helpdesk/Diary";
 import HelpdeskCalendar from "./pages/helpdesk/DirectorCalendar";
@@ -46,6 +47,7 @@ import InternetProvidersPage from "./pages/helpdesk/InternetProviders";
 import VoipProvidersPage from "./pages/helpdesk/VoipProviders";
 import PackagesPage from "./pages/helpdesk/Packages";
 import ClientPortalAdmin from "./pages/helpdesk/ClientPortalAdmin";
+import Enquiries from "./pages/helpdesk/Enquiries";
 
 // Client Portal
 import SharePage from "./pages/SharePage";
@@ -83,6 +85,7 @@ function App() {
         <Sonner position="top-center" />
         <AuthProvider>
           <Router>
+            <AnalyticsScripts />
             <ScrollToTop />
             <CartSyncMount />
             <Routes>
@@ -171,6 +174,7 @@ function App() {
               <Route path="/helpdesk/internet-providers" element={<AdminRoute><InternetProvidersPage /></AdminRoute>} />
               <Route path="/helpdesk/voip-providers" element={<AdminRoute><VoipProvidersPage /></AdminRoute>} />
               <Route path="/helpdesk/packages" element={<AdminRoute><PackagesPage /></AdminRoute>} />
+              <Route path="/helpdesk/enquiries" element={<AdminRoute><Enquiries /></AdminRoute>} />
               <Route path="/helpdesk/client-portal" element={<AdminRoute><ClientPortalAdmin /></AdminRoute>} />
 
               {/* Everything else redirects home */}

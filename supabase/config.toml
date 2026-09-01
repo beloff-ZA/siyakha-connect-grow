@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.deck-client]
 verify_jwt = false
+
+[functions.submit-lead]
+verify_jwt = false

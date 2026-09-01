@@ -9,6 +9,7 @@ import CaseStudiesTriad from "@/components/site/CaseStudiesTriad";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
 import QualifyForm from "@/components/site/QualifyForm";
 import Footer from "@/components/Footer";
+import { buildLocalBusinessSchema } from "@/lib/seoSchema";
 
 const CANONICAL_DOMAIN = "https://siyakhatechnology.co.za";
 
@@ -106,6 +107,8 @@ const Index = () => {
     publisher: { "@id": `${origin}/#organization` },
   }), [origin]);
 
+  const localBusinessJson = useMemo(() => buildLocalBusinessSchema(), []);
+
   const faqJson = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -159,6 +162,7 @@ const Index = () => {
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationJson) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJson) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJson) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJson) }} />
     </div>
   );

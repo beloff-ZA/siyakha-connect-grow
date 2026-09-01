@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.17"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -4891,6 +4891,108 @@ export type Database = {
           services?: string | null
           updated_at?: string | null
           website?: string | null
+        }
+        Relationships: []
+      }
+      website_leads: {
+        Row: {
+          budget_range: string | null
+          company: string | null
+          consent: boolean
+          contacted_at: string | null
+          created_at: string
+          dedupe_key: string | null
+          follow_up_notes: string | null
+          full_name: string
+          gclid: string | null
+          id: string
+          ip_hash: string | null
+          landing_page: string | null
+          location: string
+          notification_error: string | null
+          notification_status: string
+          phone: string | null
+          project_description: string
+          referrer: string | null
+          service: string
+          source: string
+          status: string
+          timeline: string | null
+          updated_at: string
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          whatsapp: string | null
+          work_email: string
+        }
+        Insert: {
+          budget_range?: string | null
+          company?: string | null
+          consent?: boolean
+          contacted_at?: string | null
+          created_at?: string
+          dedupe_key?: string | null
+          follow_up_notes?: string | null
+          full_name: string
+          gclid?: string | null
+          id?: string
+          ip_hash?: string | null
+          landing_page?: string | null
+          location: string
+          notification_error?: string | null
+          notification_status?: string
+          phone?: string | null
+          project_description: string
+          referrer?: string | null
+          service: string
+          source?: string
+          status?: string
+          timeline?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          whatsapp?: string | null
+          work_email: string
+        }
+        Update: {
+          budget_range?: string | null
+          company?: string | null
+          consent?: boolean
+          contacted_at?: string | null
+          created_at?: string
+          dedupe_key?: string | null
+          follow_up_notes?: string | null
+          full_name?: string
+          gclid?: string | null
+          id?: string
+          ip_hash?: string | null
+          landing_page?: string | null
+          location?: string
+          notification_error?: string | null
+          notification_status?: string
+          phone?: string | null
+          project_description?: string
+          referrer?: string | null
+          service?: string
+          source?: string
+          status?: string
+          timeline?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          whatsapp?: string | null
+          work_email?: string
         }
         Relationships: []
       }

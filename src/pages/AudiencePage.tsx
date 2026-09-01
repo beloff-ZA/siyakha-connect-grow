@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
 import SchoolProductsBand from "@/components/site/SchoolProductsBand";
+import { enquiryHref } from "@/lib/leadForm";
 import { ArrowLeft, ArrowUpRight, Building2, Briefcase, GraduationCap, Shield } from "lucide-react";
 import { CAPABILITIES } from "@/content/capabilities";
 import { getCaseStudy } from "@/content/caseStudies";
@@ -125,7 +126,7 @@ const AudiencePage = () => {
             </p>
             <div className="mt-10">
               <Link
-                to={`/?type=${data.slug}#qualify`}
+                to={enquiryHref(data.slug)}
                 className="inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-foreground/90"
               >
                 Talk to us — {data.label.toLowerCase()} <ArrowUpRight className="h-4 w-4" />
