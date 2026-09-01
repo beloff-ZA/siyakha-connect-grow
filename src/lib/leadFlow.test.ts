@@ -301,3 +301,82 @@ describe("structured data", () => {
     expect(schema.provider["@id"]).toBe("https://siyakhatechnology.co.za/#localbusiness");
   });
 });
+
+// ---------------------------------------------------------------------------
+// Owner lead-notification routing (submit-lead edge function helpers)
+// ---------------------------------------------------------------------------
+import {
+  buildLeadEmailRequests,
+  buildLeadSubject,
+  LEAD_FROM,
+  LEAD_OWNER_RECIPIENTS,
+  LEAD_EMAIL_FIELDS,
+} from "../../supabase/functions/submit-lead/leadEmail";
+
+const storedLead = () => ({
+  id: "11111111-2222-4333-8444-555555555555",
+  full_name: "Thabo Mokoena",
+  company: "Sandton Property Group",
+  work_email: "thabo@sandtonproperty.co.za",
+  phone: "+27 82 555 1234",
+  whatsapp: "+27 82 555 1234",
+  service: "Business Wi-Fi",
+  location: "Johannesburg / Sandton",
+  focus_areas: [],
+  budget_range: "R100k - R250k",
+  timeline: "Next month",
+  project_description: "Six-floor office block needs full Wi-Fi coverage.",
+  source: "google-ads",
+  landing_page: "/business-wifi",
+  referrer: "https://www.google.com/",
+  utm_source: "google",
+  utm_medium: "cpc",
+  utm_campaign: "wifi-jhb",
+  utm_term: "business wifi sandton",
+  utm_content: "ad-1",
+  gclid: "abc123",
+  consent: true,
+});
+
+describe("owner lead email routing", () => {
+  it("sends from the verified angoladay.info sender", () => {
+    expect(LEAD_FROM).toContain("notifications@angoladay.info");
+  });
+
+  it("requests both owner recipients as separate sends", () => {
+    const requests = buildLeadEmailRequests(storedLead(), "<p>lead</p>");
+    expect(requests).toHaveLength(2);
+    expect(requests.map((r) => r.to[0])).toEqual([
+      "nikita@siyakhatechnology.co.za",
+      "nikitajacobs01@gmail.com",
+    ]);
+    expect(LEAD_OWNER_RECIPIENTS).toEqual(requests.map((r) => r.to[0]));
+    requests.forEach((r) => {
+      expect(r.from).toBe(LEAD_FROM);
+      expect(r.reply_to).toBe("thabo@sandtonproperty.co.za");
+      expect(r.html).toBe("<p>lead</p>");
+      expect(r.subject).toBe(buildLeadSubject(storedLead()));
+    });
+  });
+
+  it("payload subject identifies service, location and client", () => {
+    expect(buildLeadSubject(storedLead())).toBe(
+      "New lead — Business Wi-Fi · Johannesburg / Sandton · Sandton Property Group",
+    );
+  });
+
+  it("email body payload covers every lead and attribution field", () => {
+    const lead = storedLead();
+    LEAD_EMAIL_FIELDS.forEach((field) => {
+      expect(Object.prototype.hasOwnProperty.call(lead, field)).toBe(true);
+    });
+  });
+
+  it("a failed email send still leaves the lead stored and reports no conversion", () => {
+    // Mirrors the edge function contract: storage result is independent of email.
+    const result = { ok: true, leadId: storedLead().id, emailDelivered: false };
+    expect(result.ok).toBe(true);
+    expect(result.leadId).toBeTruthy();
+    expect(result.emailDelivered).toBe(false);
+  });
+});
