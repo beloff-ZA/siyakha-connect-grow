@@ -108,7 +108,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-16 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-          <span>© {currentYear} Siyakha Interlink — {t("footer.rights")}</span>
+          <span>© {currentYear} {BRAND.legalName} — {t("footer.rights")}</span>
           <div className="flex items-center gap-5">
             <Link to="/sign-in" className="hover:text-foreground transition-colors">
               Login
