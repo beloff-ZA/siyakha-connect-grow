@@ -285,11 +285,11 @@ serve(async (req: Request) => {
       await admin
         .from("website_leads")
         .update({
-          notification_status: emailDelivered ? "sent" : "failed",
-          notification_error: emailDelivered ? null : errorDetail,
+          notification_status: emailDelivered ? (errorDetail ? "partial" : "sent") : "failed",
+          notification_error: errorDetail,
         })
         .eq("id", lead.id);
-      if (!emailDelivered) console.error("submit-lead email failure", errorDetail);
+      if (errorDetail) console.error("submit-lead email failure", errorDetail);
     }
 
     return json({
