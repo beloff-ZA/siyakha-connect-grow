@@ -19,12 +19,14 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-const OWNER_EMAIL = "nikita@siyakhatechnology.co.za";
-const FROM = "Siyakha Website <notifications@mail.siyakhatechnology.co.za>";
-const FALLBACK_FROM = "Siyakha Website <onboarding@resend.dev>";
-// Last-resort delivery while the branded sending domain is pending verification
-// (same fallback the existing send-enquiry function uses).
-const FALLBACK_RECIPIENTS = ["nikitajacobs01@gmail.com"];
+import {
+  buildLeadEmailRequests,
+  LEAD_FROM,
+  LEAD_OWNER_RECIPIENTS,
+  LEAD_PRIMARY_RECIPIENT,
+} from "./leadEmail.ts";
+
+const OWNER_EMAIL = LEAD_PRIMARY_RECIPIENT;
 const PHONE = "087 723 9183";
 const WHATSAPP = "+27815012993";
 
