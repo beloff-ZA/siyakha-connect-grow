@@ -3,6 +3,7 @@ import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ArrowRight, Wrench } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 
 const Footer = () => {
