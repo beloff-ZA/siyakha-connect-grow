@@ -185,28 +185,43 @@ const Header = () => {
                         </span>
                       </div>
                     </a>
+                    <div className="flex flex-col gap-2">
+                      <Link
+                        to={enquiryHref("Managed IT Services")}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center justify-center min-h-[48px] bg-foreground text-background px-4 text-sm uppercase tracking-[0.18em]"
+                      >
+                        Get IT help
+                      </Link>
+                      <Link
+                        to={enquiryHref("Office Networking & Structured Cabling")}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center justify-center min-h-[48px] border border-border px-4 text-sm uppercase tracking-[0.18em] text-foreground"
+                      >
+                        Request assessment
+                      </Link>
+                    </div>
                     <div className="space-y-2">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Who We Serve</p>
-
-                      {audienceLinks.map((l) => (
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Services</p>
+                      {serviceLinks.map((l) => (
                         <Link
                           key={l.to}
                           to={l.to}
                           onClick={() => setMenuOpen(false)}
-                          className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
+                          className="flex items-center min-h-[44px] text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors"
                         >
                           {l.label}
                         </Link>
                       ))}
                     </div>
                     <div className="space-y-2">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Solutions</p>
-                      {solutionsLinks.map((l) => (
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Industries</p>
+                      {industryLinks.map((l) => (
                         <Link
                           key={l.to}
                           to={l.to}
                           onClick={() => setMenuOpen(false)}
-                          className="block text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors py-1"
+                          className="flex items-center min-h-[44px] text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors"
                         >
                           {l.label}
                         </Link>
