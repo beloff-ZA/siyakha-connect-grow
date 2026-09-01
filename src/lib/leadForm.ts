@@ -111,6 +111,16 @@ const SERVICE_ALIASES: Record<string, LeadService> = {
   "automation": "Business Process & AI Solutions",
   "ai-process-automation-&-voice-agents": "Business Process & AI Solutions",
   commercial: "Office Networking & Structured Cabling",
+  // Service division routes (/services/:slug)
+  projects: "Office Networking & Structured Cabling",
+  security: "Commercial CCTV & Access Control",
+  digital: "Websites, Hosting & Domains",
+  "ai-solutions": "Business Process & AI Solutions",
+  // Industry routes (/industries/:slug)
+  "medical-practices": "Managed IT Services",
+  "professional-firms": "Managed IT Services",
+  restaurants: "Restaurant Technology",
+  offices: "Managed IT Services",
 };
 
 export function resolveService(value: string | null | undefined): LeadService | null {
