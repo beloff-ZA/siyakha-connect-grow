@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import WhySiyakhaBand from "@/components/site/WhySiyakhaBand";
+import { enquiryHref } from "@/lib/leadForm";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getCapability } from "@/content/capabilities";
 import { getCaseStudy } from "@/content/caseStudies";
@@ -44,7 +45,7 @@ const CapabilityPage = () => {
             </p>
             <div className="mt-10">
               <Link
-                to="/#qualify"
+                to={enquiryHref(cap.slug)}
                 className="inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-foreground/90"
               >
                 Talk to us about {cap.label.toLowerCase()} <ArrowUpRight className="h-4 w-4" />
