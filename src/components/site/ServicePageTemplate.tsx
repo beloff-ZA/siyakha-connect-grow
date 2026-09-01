@@ -5,7 +5,9 @@ import Footer from "@/components/Footer";
 import SiteSEO from "./SiteSEO";
 import LeadMagnetDialog, { LeadMagnetKind } from "@/components/leads/LeadMagnetDialog";
 import WhySiyakhaBand from "./WhySiyakhaBand";
-import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import LeadCtaRow from "./LeadCtaRow";
+import { buildServiceSchema } from "@/lib/seoSchema";
+import { resolveService } from "@/lib/leadForm";
 import { LucideIcon, ArrowLeft } from "lucide-react";
 
 export interface ServiceCapability {
@@ -35,6 +37,8 @@ interface Props {
   finalCtaKind: LeadMagnetKind;
   finalCtaLabel: string;
   extraSection?: ReactNode;
+  /** Service name or slug used to preselect the enquiry form. Defaults to the page path. */
+  enquiryService?: string;
 }
 
 const ServicePageTemplate = ({
@@ -58,21 +62,11 @@ const ServicePageTemplate = ({
   finalCtaKind,
   finalCtaLabel,
   extraSection,
+  enquiryService,
 }: Props) => {
-  const whatsappUrl = buildWhatsAppUrl("+27815012993", whatsappMessage);
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    serviceType,
-    provider: {
-      "@type": "Organization",
-      name: "Siyakha Technology",
-      telephone: "+27 87 723 9183",
-      email: "nikita@siyakhatechnology.co.za",
-      url: "https://siyakhatechnology.co.za",
-    },
-    areaServed: { "@type": "Country", name: "South Africa" },
-  };
+  const leadService =
+    resolveService(enquiryService) ?? resolveService(path.replace(/^\//, "")) ?? undefined;
+  const jsonLd = buildServiceSchema({ serviceType, description: seoDescription, path });
 
   return (
     <div className="min-h-screen bg-background">
@@ -105,15 +99,19 @@ const ServicePageTemplate = ({
                   </button>
                 }
               />
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-foreground/30 text-foreground px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-foreground/[0.04] transition-colors"
-              >
-                WhatsApp Us
-              </a>
             </div>
+            <div className="mt-3">
+              <LeadCtaRow
+                service={leadService}
+                context={`${serviceType} hero`}
+                whatsappMessage={whatsappMessage}
+                tone="light"
+              />
+            </div>
+
+            <p className="mt-6 text-[13px] text-foreground/60 max-w-2xl">
+              Delivered on site across Johannesburg and Sandton, and in Durban and KwaZulu-Natal.
+            </p>
           </div>
         </div>
       </section>
@@ -166,14 +164,15 @@ const ServicePageTemplate = ({
                   </button>
                 }
               />
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-background/40 text-background px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-background/10 transition-colors"
-              >
-                WhatsApp 081 501 2993
-              </a>
+            </div>
+            <div className="mt-3">
+
+              <LeadCtaRow
+                service={leadService}
+                context={`${serviceType} final CTA`}
+                whatsappMessage={whatsappMessage}
+                tone="dark"
+              />
             </div>
           </div>
         </div>
