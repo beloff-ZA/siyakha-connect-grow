@@ -21,6 +21,7 @@ export interface WebsiteLead {
   referrer: string | null;
   service: string;
   location: string;
+  focus_areas?: string[] | null;
   full_name: string;
   company: string | null;
   work_email: string;
