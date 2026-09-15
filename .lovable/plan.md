@@ -9,6 +9,7 @@ Right now a completed job card can only be read on screen or sent as a plain ema
 3. **Attached to the email.** When the customer signs on the device, the completed sheet is generated as a PDF and attached to the notification that already goes to accounts@ and admin@siyakhatechnology.co.za, plus the logging client (Satio) and the site contact when their addresses are on the call. The email body keeps the short summary; the attachment is the replica sheet.
 4. **A "Send sign-off sheet" button** on the job card, so you can re-send the same PDF later without asking the customer to sign again.
 5. Blank fields print as ruled empty lines, so you can also print the sheet before the visit and fill it in by hand if there is no signal.
+6. **Sign on this device.** A "Hand over to client to sign" button on the job card opens the sign-off sheet full screen on the same tablet, phone or PC you are holding — the client reads the summary, rates the service, types their name and signs with a finger or stylus, then hands the device back. No link to send, no separate login. Works on the same device you just did the work on, and the signature box is sized for touch on a phone.
 
 Nothing on a signed job card can change — the sheet is generated from the stored record every time, and re-sending does not alter the sign-off.
 
