@@ -9,14 +9,18 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip } from "lucide-react";
 import {
   CALL_PRIORITIES,
   CALL_STATUSES,
   addItem,
+  attachmentLink,
   formatDuration,
+  formatFileSize,
   getCall,
+  listAttachments,
   listItems,
+  removeAttachment,
   removeItem,
   signoffReadiness,
   signoffUrl,
@@ -24,7 +28,9 @@ import {
   timeOnSiteMinutes,
   totalKm,
   updateCall,
+  uploadAttachment,
   type LoggedCall,
+  type LoggedCallAttachment,
   type LoggedCallItem,
 } from "@/lib/loggedCalls";
 
@@ -44,13 +50,20 @@ const LoggedCallView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newItem, setNewItem] = useState({ description: "", quantity: "1", serial_number: "" });
+  const [files, setFiles] = useState<LoggedCallAttachment[]>([]);
+  const [fileLabel, setFileLabel] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const load = async () => {
     setLoading(true);
     try {
       const c = await getCall(callId);
       setCall(c);
-      if (c) setItems(await listItems(c.id));
+      if (c) {
+        setItems(await listItems(c.id));
+        setFiles(await listAttachments(c.id));
+      }
     } catch (e: unknown) {
       toast({ title: "Could not load this call", description: (e as Error).message, variant: "destructive" });
     } finally {
@@ -102,6 +115,30 @@ const LoggedCallView: React.FC = () => {
     setItems(await listItems(call.id));
   };
 
+  const handleUpload = async (fileList: FileList | null) => {
+    if (!call || !fileList?.length) return;
+    setUploading(true);
+    try {
+      for (const f of Array.from(fileList)) await uploadAttachment(call.id, f, fileLabel);
+      setFileLabel("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      setFiles(await listAttachments(call.id));
+      toast({ title: fileList.length > 1 ? "Files uploaded" : "File uploaded" });
+    } catch (e: unknown) {
+      toast({ title: "Upload failed", description: (e as Error).message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const openFile = async (att: LoggedCallAttachment) => {
+    try {
+      window.open(await attachmentLink(att.storage_path), "_blank");
+    } catch (e: unknown) {
+      toast({ title: "Could not open file", description: (e as Error).message, variant: "destructive" });
+    }
+  };
+
   if (loading) return <><p className="text-muted-foreground">Loading…</p></>;
   if (!call)
     return (
@@ -134,9 +171,15 @@ const LoggedCallView: React.FC = () => {
               {[call.site_address, call.city].filter(Boolean).join(", ") || "No site address captured"}
             </p>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-2">
             <Badge variant="outline">{statusLabel(call.status)}</Badge>
             {locked ? <Badge className="bg-foreground text-background">Signed off</Badge> : <Badge variant="outline">Sign-off pending</Badge>}
+            <Link to={`/helpdesk/logged-calls/${call.id}/view`}>
+              <Button variant="outline" size="sm" className="min-h-11">
+                <Eye className="h-4 w-4 mr-1" />
+                View job card
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -163,6 +206,7 @@ const LoggedCallView: React.FC = () => {
             <TabsTrigger value="card" className="min-h-11">Job card</TabsTrigger>
             <TabsTrigger value="work" className="min-h-11">Work &amp; travel</TabsTrigger>
             <TabsTrigger value="items" className="min-h-11">Items used</TabsTrigger>
+            <TabsTrigger value="files" className="min-h-11">Forms &amp; files</TabsTrigger>
             <TabsTrigger value="signoff" className="min-h-11">Customer sign-off</TabsTrigger>
           </TabsList>
 
@@ -264,6 +308,57 @@ const LoggedCallView: React.FC = () => {
                   <div><Label>Serial number</Label><Input value={newItem.serial_number} onChange={(e) => setNewItem((n) => ({ ...n, serial_number: e.target.value }))} /></div>
                   <Button onClick={handleAddItem} disabled={!newItem.description.trim()} className="min-h-11"><Plus className="h-4 w-4 mr-1" />Add</Button>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="files" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base">Uploaded forms, photos &amp; documents</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Upload the customer&apos;s own forms (like the Saicom site survey), site photos or a scanned sign-off. Only your team can open these.
+                </p>
+                <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                  <div>
+                    <Label>What is this file? (optional)</Label>
+                    <Input value={fileLabel} placeholder="e.g. Saicom site survey" onChange={(e) => setFileLabel(e.target.value)} />
+                  </div>
+                  <Button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="min-h-11">
+                    <Upload className="h-4 w-4 mr-1" />{uploading ? "Uploading…" : "Upload file"}
+                  </Button>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => handleUpload(e.target.files)}
+                />
+                {files.length === 0 && <p className="text-sm text-muted-foreground">No files uploaded yet.</p>}
+                {files.map((f) => (
+                  <div key={f.id} className="flex flex-wrap items-center gap-3 border-b border-border pb-2 text-sm">
+                    <Paperclip className="h-4 w-4 shrink-0" />
+                    <span className="flex-1 min-w-[160px] break-all">{f.label ? `${f.label} — ` : ""}{f.file_name}</span>
+                    <span className="text-muted-foreground">{formatFileSize(f.size_bytes)}</span>
+                    <Button variant="outline" size="sm" className="min-h-11" onClick={() => openFile(f)}>Open</Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="min-h-11"
+                      onClick={async () => {
+                        try {
+                          await removeAttachment(f);
+                          setFiles(await listAttachments(call.id));
+                        } catch (e: unknown) {
+                          toast({ title: "Could not remove file", description: (e as Error).message, variant: "destructive" });
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </TabsContent>

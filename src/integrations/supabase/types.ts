@@ -784,6 +784,50 @@ export type Database = {
         }
         Relationships: []
       }
+      logged_call_attachments: {
+        Row: {
+          call_id: string
+          created_at: string
+          file_name: string
+          id: string
+          label: string | null
+          mime_type: string | null
+          size_bytes: number | null
+          storage_path: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          call_id: string
+          created_at?: string
+          file_name: string
+          id?: string
+          label?: string | null
+          mime_type?: string | null
+          size_bytes?: number | null
+          storage_path: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          call_id?: string
+          created_at?: string
+          file_name?: string
+          id?: string
+          label?: string | null
+          mime_type?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "logged_call_attachments_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "logged_calls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       logged_call_items: {
         Row: {
           call_id: string

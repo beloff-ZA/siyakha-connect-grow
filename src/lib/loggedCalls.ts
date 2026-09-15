@@ -200,3 +200,78 @@ export async function submitSignoff(input: {
   if (error) throw error;
   return data as { ok: boolean; error?: string; already_signed?: boolean; signed_at?: string };
 }
+
+/* ---------- Attachments (uploaded forms, photos, signed PDFs) ---------- */
+
+export const CALL_FILES_BUCKET = "job-card-files";
+
+export type LoggedCallAttachment = {
+  id: string;
+  call_id: string;
+  file_name: string;
+  storage_path: string;
+  mime_type: string | null;
+  size_bytes: number | null;
+  label: string | null;
+  created_at: string;
+};
+
+export const listAttachments = async (callId: string): Promise<LoggedCallAttachment[]> => {
+  const { data, error } = await supabase
+    .from("logged_call_attachments")
+    .select("*")
+    .eq("call_id", callId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as LoggedCallAttachment[];
+};
+
+const safeName = (name: string) => name.replace(/[^\w.\-]+/g, "_").slice(-120);
+
+export const uploadAttachment = async (
+  callId: string,
+  file: File,
+  label?: string | null,
+): Promise<LoggedCallAttachment> => {
+  const path = `${callId}/${Date.now()}-${safeName(file.name)}`;
+  const { error: upErr } = await supabase.storage
+    .from(CALL_FILES_BUCKET)
+    .upload(path, file, { contentType: file.type || undefined, upsert: false });
+  if (upErr) throw upErr;
+
+  const { data, error } = await supabase
+    .from("logged_call_attachments")
+    .insert({
+      call_id: callId,
+      file_name: file.name,
+      storage_path: path,
+      mime_type: file.type || null,
+      size_bytes: file.size,
+      label: label?.trim() || null,
+    })
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data as LoggedCallAttachment;
+};
+
+export const attachmentLink = async (storagePath: string): Promise<string> => {
+  const { data, error } = await supabase.storage
+    .from(CALL_FILES_BUCKET)
+    .createSignedUrl(storagePath, 60 * 30);
+  if (error) throw error;
+  return data.signedUrl;
+};
+
+export const removeAttachment = async (att: LoggedCallAttachment): Promise<void> => {
+  await supabase.storage.from(CALL_FILES_BUCKET).remove([att.storage_path]);
+  const { error } = await supabase.from("logged_call_attachments").delete().eq("id", att.id);
+  if (error) throw error;
+};
+
+export const formatFileSize = (bytes?: number | null): string => {
+  if (!bytes || bytes < 0) return "";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
