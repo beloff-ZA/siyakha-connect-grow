@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip, PenLine, FileText, Mail, Wand2, ClipboardList } from "lucide-react";
 import JobCardSignSheet from "@/components/helpdesk/JobCardSignSheet";
@@ -27,6 +28,8 @@ import {
   removeAttachment,
   removeItem,
   resendSignoffSheet,
+  notifyCallUpdate,
+  knownLoggingContact,
   signoffReadiness,
   signoffUrl,
   statusLabel,
@@ -63,11 +66,14 @@ const LoggedCallView: React.FC = () => {
   const [emailing, setEmailing] = useState(false);
   const [polish, setPolish] = useState<PolishResult | null>(null);
 
+  const savedStatusRef = React.useRef<string | null>(null);
+
   const load = async () => {
     setLoading(true);
     try {
       const c = await getCall(callId);
       setCall(c);
+      savedStatusRef.current = c?.status ?? null;
       if (c) {
         setItems(await listItems(c.id));
         setFiles(await listAttachments(c.id));
@@ -96,6 +102,11 @@ const LoggedCallView: React.FC = () => {
         signed_by_email, satisfaction_rating, signoff_comment, created_at, updated_at, logged_at, ...editable
       } = call;
       await updateCall(call.id, { ...editable, ...extra });
+      const nextStatus = (extra?.status ?? call.status) as string;
+      if (nextStatus !== savedStatusRef.current) {
+        void notifyCallUpdate({ ...call, ...extra }, "status");
+        savedStatusRef.current = nextStatus;
+      }
       toast({ title: "Job card saved" });
       load();
     } catch (e: unknown) {
@@ -273,6 +284,40 @@ const LoggedCallView: React.FC = () => {
                     <Label>Client email (who logged the call)</Label>
                     <Input type="email" value={call.client_email ?? ""} onChange={(e) => set("client_email", e.target.value)} />
                     <p className="mt-1 text-xs text-muted-foreground">The signed job card is emailed here, plus accounts and admin.</p>
+                  </div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3 items-end">
+                  <div>
+                    <Label>Logged by — name</Label>
+                    <Input
+                      value={call.logging_contact_name ?? ""}
+                      onChange={(e) => set("logging_contact_name", e.target.value)}
+                      onBlur={() => {
+                        const known = knownLoggingContact(call.logging_customer);
+                        if (known && !call.logging_contact_email) {
+                          set("logging_contact_name", known.name);
+                          set("logging_contact_email", known.email);
+                        }
+                      }}
+                      placeholder="Danelle van den Berg"
+                    />
+                  </div>
+                  <div>
+                    <Label>Logged by — update emails go to</Label>
+                    <Input type="email" value={call.logging_contact_email ?? ""} onChange={(e) => set("logging_contact_email", e.target.value)} placeholder="support@satio.co.za" />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {call.logging_contact_email
+                        ? `Updates go to: ${call.logging_contact_name ? `${call.logging_contact_name} ` : ""}<${call.logging_contact_email}>`
+                        : "No update recipient set — no progress emails will be sent."}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 pb-1">
+                    <Switch
+                      id="update-emails-toggle"
+                      checked={call.update_emails_enabled !== false}
+                      onCheckedChange={(v) => set("update_emails_enabled", v)}
+                    />
+                    <Label htmlFor="update-emails-toggle" className="text-sm">Email call updates</Label>
                   </div>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-3">

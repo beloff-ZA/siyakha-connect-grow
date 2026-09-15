@@ -893,6 +893,8 @@ export type Database = {
           id: string
           internal_notes: string | null
           logged_at: string
+          logging_contact_email: string | null
+          logging_contact_name: string | null
           logging_customer: string | null
           opening_km: number | null
           priority: string
@@ -912,6 +914,7 @@ export type Database = {
           site_survey: Json | null
           special_instructions: string | null
           status: string
+          update_emails_enabled: boolean
           updated_at: string
         }
         Insert: {
@@ -937,6 +940,8 @@ export type Database = {
           id?: string
           internal_notes?: string | null
           logged_at?: string
+          logging_contact_email?: string | null
+          logging_contact_name?: string | null
           logging_customer?: string | null
           opening_km?: number | null
           priority?: string
@@ -956,6 +961,7 @@ export type Database = {
           site_survey?: Json | null
           special_instructions?: string | null
           status?: string
+          update_emails_enabled?: boolean
           updated_at?: string
         }
         Update: {
@@ -981,6 +987,8 @@ export type Database = {
           id?: string
           internal_notes?: string | null
           logged_at?: string
+          logging_contact_email?: string | null
+          logging_contact_name?: string | null
           logging_customer?: string | null
           opening_km?: number | null
           priority?: string
@@ -1000,6 +1008,7 @@ export type Database = {
           site_survey?: Json | null
           special_instructions?: string | null
           status?: string
+          update_emails_enabled?: boolean
           updated_at?: string
         }
         Relationships: []

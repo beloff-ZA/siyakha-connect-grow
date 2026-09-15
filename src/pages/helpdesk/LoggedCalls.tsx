@@ -16,7 +16,9 @@ import {
   CALL_PRIORITIES,
   CALL_STATUSES,
   createCall,
+  knownLoggingContact,
   listCalls,
+  notifyCallUpdate,
   statusLabel,
   customerName,
   type LoggedCall,
@@ -32,6 +34,8 @@ const emptyForm = {
   contact_number: "",
   contact_email: "",
   client_email: "",
+  logging_contact_name: "",
+  logging_contact_email: "",
   site_address: "",
   city: "",
   fault_description: "",
@@ -74,13 +78,14 @@ const LoggedCalls: React.FC = () => {
     if (!form.end_customer_company.trim()) return;
     setSaving(true);
     try {
-      await createCall(
+      const created = await createCall(
         {
           ...form,
           scheduled_at: form.scheduled_at ? new Date(form.scheduled_at).toISOString() : null,
         } as Partial<LoggedCall>,
         user?.id,
       );
+      void notifyCallUpdate(created, "created");
       toast({ title: "Call logged" });
       setForm(emptyForm);
       setShowCreate(false);
@@ -176,7 +181,17 @@ const LoggedCalls: React.FC = () => {
                   </div>
                   <div>
                     <Label>Customer logging the call</Label>
-                    <Input value={form.logging_customer} onChange={(e) => set("logging_customer", e.target.value)} placeholder="Satio Business Solutions" />
+                    <Input
+                      value={form.logging_customer}
+                      onChange={(e) => {
+                        set("logging_customer", e.target.value);
+                        const known = knownLoggingContact(e.target.value);
+                        if (known && !form.logging_contact_email) {
+                          setForm((f) => ({ ...f, logging_contact_name: known.name, logging_contact_email: known.email }));
+                        }
+                      }}
+                      placeholder="Satio Business Solutions"
+                    />
                   </div>
                   <div>
                     <Label>Their reference / order no.</Label>
@@ -210,10 +225,18 @@ const LoggedCalls: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-3">
                   <div>
                     <Label>Client email (who logged the call)</Label>
                     <Input type="email" value={form.client_email} onChange={(e) => set("client_email", e.target.value)} placeholder="support@satio.co.za" />
+                  </div>
+                  <div>
+                    <Label>Logged by — name</Label>
+                    <Input value={form.logging_contact_name} onChange={(e) => set("logging_contact_name", e.target.value)} placeholder="Danelle van den Berg" />
+                  </div>
+                  <div>
+                    <Label>Logged by — update emails go to</Label>
+                    <Input type="email" value={form.logging_contact_email} onChange={(e) => set("logging_contact_email", e.target.value)} placeholder="support@satio.co.za" />
                   </div>
                 </div>
 

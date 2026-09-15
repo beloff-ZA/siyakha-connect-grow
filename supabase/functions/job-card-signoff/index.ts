@@ -29,6 +29,8 @@ const CUSTOMER_FIELDS = [
   "call_ref",
   "sit_number",
   "logging_customer",
+  "logging_contact_name",
+  "logging_contact_email",
   "customer_order_ref",
   "end_customer_company",
   "end_customer_first_name",
@@ -159,7 +161,7 @@ Deno.serve(async (req: Request) => {
 
   const { data: contacts } = await admin
     .from("logged_calls")
-    .select("contact_email, client_email")
+    .select("contact_email, client_email, logging_contact_email")
     .eq("signoff_token", token)
     .maybeSingle();
   const contactRow = (contacts ?? {}) as Row;
@@ -189,6 +191,7 @@ Deno.serve(async (req: Request) => {
     const sent = await emailSheet(call as Row, items, [
       contactRow.client_email as string,
       contactRow.contact_email as string,
+      contactRow.logging_contact_email as string,
     ]);
     return json({ ok: true, sent_to: sent });
   }
@@ -264,6 +267,7 @@ Deno.serve(async (req: Request) => {
   await emailSheet(signedCard, items, [
     contactRow.client_email as string,
     contactRow.contact_email as string,
+    contactRow.logging_contact_email as string,
     email,
   ]);
 
