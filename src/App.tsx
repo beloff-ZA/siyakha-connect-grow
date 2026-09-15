@@ -52,6 +52,9 @@ import VoipProvidersPage from "./pages/helpdesk/VoipProviders";
 import PackagesPage from "./pages/helpdesk/Packages";
 import ClientPortalAdmin from "./pages/helpdesk/ClientPortalAdmin";
 import Enquiries from "./pages/helpdesk/Enquiries";
+import LoggedCalls from "./pages/helpdesk/LoggedCalls";
+import LoggedCallView from "./pages/helpdesk/LoggedCallView";
+import JobCardSignoff from "./pages/JobCardSignoff";
 
 // Client Portal
 import SharePage from "./pages/SharePage";
@@ -107,6 +110,7 @@ function App() {
 
               <Route path="/share/:token" element={<SharePage />} />
               <Route path="/project-deck/:token" element={<ProjectDeckPage />} />
+              <Route path="/sign-off/:token" element={<JobCardSignoff />} />
               <Route path="/portal" element={<ClientRoute><PortalDashboard /></ClientRoute>} />
               <Route path="/portal/project" element={<ClientRoute><PortalProject /></ClientRoute>} />
               <Route path="/portal/tracker" element={<ClientRoute><PortalTracker /></ClientRoute>} />
@@ -187,6 +191,8 @@ function App() {
               <Route path="/helpdesk/voip-providers" element={<AdminRoute><VoipProvidersPage /></AdminRoute>} />
               <Route path="/helpdesk/packages" element={<AdminRoute><PackagesPage /></AdminRoute>} />
               <Route path="/helpdesk/enquiries" element={<AdminRoute><Enquiries /></AdminRoute>} />
+              <Route path="/helpdesk/logged-calls" element={<AdminRoute><LoggedCalls /></AdminRoute>} />
+              <Route path="/helpdesk/logged-calls/:callId" element={<AdminRoute><LoggedCallView /></AdminRoute>} />
               <Route path="/helpdesk/client-portal" element={<AdminRoute><ClientPortalAdmin /></AdminRoute>} />
 
               {/* Everything else redirects home */}

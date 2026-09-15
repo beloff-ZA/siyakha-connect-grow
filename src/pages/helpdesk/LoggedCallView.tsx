@@ -1,0 +1,317 @@
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2 } from "lucide-react";
+import {
+  CALL_PRIORITIES,
+  CALL_STATUSES,
+  addItem,
+  formatDuration,
+  getCall,
+  listItems,
+  removeItem,
+  signoffReadiness,
+  signoffUrl,
+  statusLabel,
+  timeOnSiteMinutes,
+  totalKm,
+  updateCall,
+  type LoggedCall,
+  type LoggedCallItem,
+} from "@/lib/loggedCalls";
+
+const toLocalInput = (iso?: string | null) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+const fromLocalInput = (v: string) => (v ? new Date(v).toISOString() : null);
+
+const LoggedCallView: React.FC = () => {
+  const { callId = "" } = useParams();
+  const { toast } = useToast();
+  const [call, setCall] = useState<LoggedCall | null>(null);
+  const [items, setItems] = useState<LoggedCallItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [newItem, setNewItem] = useState({ description: "", quantity: "1", serial_number: "" });
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const c = await getCall(callId);
+      setCall(c);
+      if (c) setItems(await listItems(c.id));
+    } catch (e: unknown) {
+      toast({ title: "Could not load this call", description: (e as Error).message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [callId]);
+
+  const set = <K extends keyof LoggedCall>(key: K, value: LoggedCall[K]) =>
+    setCall((c) => (c ? { ...c, [key]: value } : c));
+
+  const save = async (extra?: Partial<LoggedCall>) => {
+    if (!call) return;
+    setSaving(true);
+    try {
+      const {
+        id, call_ref, signoff_token, signoff_status, signature_data, signed_at, signed_by_name,
+        signed_by_email, satisfaction_rating, signoff_comment, created_at, updated_at, logged_at, ...editable
+      } = call;
+      await updateCall(call.id, { ...editable, ...extra });
+      toast({ title: "Job card saved" });
+      load();
+    } catch (e: unknown) {
+      toast({ title: "Could not save", description: (e as Error).message, variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const copyLink = async () => {
+    if (!call) return;
+    await navigator.clipboard.writeText(signoffUrl(call.signoff_token));
+    toast({ title: "Sign-off link copied", description: "Send it to the customer by email or WhatsApp." });
+  };
+
+  const handleAddItem = async () => {
+    if (!call || !newItem.description.trim()) return;
+    await addItem(call.id, {
+      description: newItem.description.trim(),
+      quantity: Number(newItem.quantity) || 1,
+      serial_number: newItem.serial_number.trim() || null,
+      sort_order: items.length,
+    });
+    setNewItem({ description: "", quantity: "1", serial_number: "" });
+    setItems(await listItems(call.id));
+  };
+
+  if (loading) return <><p className="text-muted-foreground">Loading…</p></>;
+  if (!call)
+    return (
+      <>
+        <p className="text-muted-foreground">This call could not be found.</p>
+      </>
+    );
+
+  const locked = call.signoff_status === "signed";
+  const readiness = signoffReadiness(call);
+  const km = totalKm(call.opening_km, call.closing_km);
+  const mins = timeOnSiteMinutes(call.arrival_at, call.departure_at);
+
+  return (
+    <>
+      <div className="space-y-5">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link to="/helpdesk/logged-calls">
+            <Button variant="ghost" size="sm" className="min-h-11">
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              All calls
+            </Button>
+          </Link>
+          <div className="min-w-0">
+            <h1 className="text-lg font-semibold truncate">
+              {call.call_ref}
+              {call.sit_number ? ` · SIT ${call.sit_number}` : ""} — {call.end_customer_company}
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              {[call.site_address, call.city].filter(Boolean).join(", ") || "No site address captured"}
+            </p>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            <Badge variant="outline">{statusLabel(call.status)}</Badge>
+            {locked ? <Badge className="bg-foreground text-background">Signed off</Badge> : <Badge variant="outline">Sign-off pending</Badge>}
+          </div>
+        </div>
+
+        {locked && (
+          <Card>
+            <CardContent className="flex flex-wrap items-center gap-4 p-4">
+              <CheckCircle2 className="h-5 w-5" />
+              <div className="text-sm">
+                <p className="font-medium">
+                  Signed by {call.signed_by_name} · {call.satisfaction_rating}/5
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  {call.signed_at ? new Date(call.signed_at).toLocaleString("en-ZA") : ""}
+                  {call.signoff_comment ? ` — “${call.signoff_comment}”` : ""}
+                </p>
+              </div>
+              {call.signature_data && <img src={call.signature_data} alt="Customer signature" className="ml-auto max-h-16" />}
+            </CardContent>
+          </Card>
+        )}
+
+        <Tabs defaultValue="card">
+          <TabsList className="flex-wrap h-auto">
+            <TabsTrigger value="card" className="min-h-11">Job card</TabsTrigger>
+            <TabsTrigger value="work" className="min-h-11">Work &amp; travel</TabsTrigger>
+            <TabsTrigger value="items" className="min-h-11">Items used</TabsTrigger>
+            <TabsTrigger value="signoff" className="min-h-11">Customer sign-off</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="card" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base">Call &amp; customer details</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div><Label>SIT / call number</Label><Input value={call.sit_number ?? ""} onChange={(e) => set("sit_number", e.target.value)} /></div>
+                  <div><Label>Customer logging the call</Label><Input value={call.logging_customer ?? ""} onChange={(e) => set("logging_customer", e.target.value)} /></div>
+                  <div><Label>Their reference / order no.</Label><Input value={call.customer_order_ref ?? ""} onChange={(e) => set("customer_order_ref", e.target.value)} /></div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div><Label>End customer</Label><Input value={call.end_customer_company} onChange={(e) => set("end_customer_company", e.target.value)} /></div>
+                  <div><Label>Contact first name</Label><Input value={call.end_customer_first_name ?? ""} onChange={(e) => set("end_customer_first_name", e.target.value)} /></div>
+                  <div><Label>Contact surname</Label><Input value={call.end_customer_last_name ?? ""} onChange={(e) => set("end_customer_last_name", e.target.value)} /></div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div><Label>Contact number</Label><Input value={call.contact_number ?? ""} onChange={(e) => set("contact_number", e.target.value)} /></div>
+                  <div><Label>Contact email</Label><Input type="email" value={call.contact_email ?? ""} onChange={(e) => set("contact_email", e.target.value)} /></div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="sm:col-span-2"><Label>Site address</Label><Input value={call.site_address ?? ""} onChange={(e) => set("site_address", e.target.value)} /></div>
+                  <div><Label>Town / city</Label><Input value={call.city ?? ""} onChange={(e) => set("city", e.target.value)} /></div>
+                </div>
+                <div><Label>Fault / request as logged</Label><Textarea rows={4} value={call.fault_description ?? ""} onChange={(e) => set("fault_description", e.target.value)} /></div>
+                <div><Label>Special instructions</Label><Textarea rows={3} value={call.special_instructions ?? ""} onChange={(e) => set("special_instructions", e.target.value)} /></div>
+                <div className="grid gap-3 sm:grid-cols-4">
+                  <div><Label>Engineer</Label><Input value={call.engineer_name ?? ""} onChange={(e) => set("engineer_name", e.target.value)} /></div>
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={call.status} onValueChange={(v) => set("status", v)} disabled={locked}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{CALL_STATUSES.map((s) => <SelectItem key={s} value={s}>{statusLabel(s)}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Priority</Label>
+                    <Select value={call.priority} onValueChange={(v) => set("priority", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{CALL_PRIORITIES.map((p) => <SelectItem key={p} value={p}>{statusLabel(p)}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Appointment</Label>
+                    <Input type="datetime-local" value={toLocalInput(call.scheduled_at)} onChange={(e) => set("scheduled_at", fromLocalInput(e.target.value))} />
+                  </div>
+                </div>
+                <Button onClick={() => save()} disabled={saving} className="min-h-11">
+                  <Save className="h-4 w-4 mr-1" />{saving ? "Saving…" : "Save job card"}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="work" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base">Work done, time and travel</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div><Label>Fault solution / work done (shown to the customer)</Label><Textarea rows={6} value={call.fault_solution ?? ""} onChange={(e) => set("fault_solution", e.target.value)} /></div>
+                <div><Label>Change control (equipment replaced or removed: S/N + description)</Label><Textarea rows={3} value={call.change_control ?? ""} onChange={(e) => set("change_control", e.target.value)} /></div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div><Label>Arrival date &amp; time</Label><Input type="datetime-local" value={toLocalInput(call.arrival_at)} onChange={(e) => set("arrival_at", fromLocalInput(e.target.value))} /></div>
+                  <div><Label>Departure date &amp; time</Label><Input type="datetime-local" value={toLocalInput(call.departure_at)} onChange={(e) => set("departure_at", fromLocalInput(e.target.value))} /></div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div><Label>Opening km</Label><Input type="number" value={call.opening_km ?? ""} onChange={(e) => set("opening_km", e.target.value === "" ? null : Number(e.target.value))} /></div>
+                  <div><Label>Closing km</Label><Input type="number" value={call.closing_km ?? ""} onChange={(e) => set("closing_km", e.target.value === "" ? null : Number(e.target.value))} /></div>
+                  <div>
+                    <Label>Totals</Label>
+                    <p className="text-sm mt-2">{km === null ? "— km" : `${km} km`} · {formatDuration(mins)} on site</p>
+                  </div>
+                </div>
+                <div><Label>Internal notes (never shown to the customer)</Label><Textarea rows={3} value={call.internal_notes ?? ""} onChange={(e) => set("internal_notes", e.target.value)} /></div>
+                <Button onClick={() => save()} disabled={saving} className="min-h-11">
+                  <Save className="h-4 w-4 mr-1" />{saving ? "Saving…" : "Save"}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="items" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base">Additional items used</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                {items.length === 0 && <p className="text-sm text-muted-foreground">No items captured yet.</p>}
+                {items.map((it) => (
+                  <div key={it.id} className="flex items-center gap-3 border-b border-border pb-2 text-sm">
+                    <span className="flex-1">{it.description}{it.serial_number ? ` · S/N ${it.serial_number}` : ""}</span>
+                    <span className="text-muted-foreground">Qty {it.quantity}</span>
+                    <Button variant="ghost" size="sm" className="min-h-11" onClick={async () => { await removeItem(it.id); setItems(await listItems(call.id)); }}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <div className="grid gap-3 sm:grid-cols-[2fr_80px_1fr_auto] sm:items-end">
+                  <div><Label>Description</Label><Input value={newItem.description} onChange={(e) => setNewItem((n) => ({ ...n, description: e.target.value }))} /></div>
+                  <div><Label>Qty</Label><Input type="number" value={newItem.quantity} onChange={(e) => setNewItem((n) => ({ ...n, quantity: e.target.value }))} /></div>
+                  <div><Label>Serial number</Label><Input value={newItem.serial_number} onChange={(e) => setNewItem((n) => ({ ...n, serial_number: e.target.value }))} /></div>
+                  <Button onClick={handleAddItem} disabled={!newItem.description.trim()} className="min-h-11"><Plus className="h-4 w-4 mr-1" />Add</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="signoff" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base">Customer sign-off link</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                {locked ? (
+                  <p className="text-sm">This job card was signed off by {call.signed_by_name}. The sign-off is final and locked.</p>
+                ) : (
+                  <>
+                    {!readiness.ready && (
+                      <div className="rounded-md border border-border p-3 text-sm">
+                        <p className="font-medium">Complete these before sending the link:</p>
+                        <ul className="mt-1 list-disc pl-5 text-muted-foreground">
+                          {readiness.missing.map((m) => <li key={m}>{m}</li>)}
+                        </ul>
+                      </div>
+                    )}
+                    <div className="space-y-2">
+                      <Label>Link to send the customer</Label>
+                      <div className="flex flex-wrap gap-2">
+                        <Input readOnly value={signoffUrl(call.signoff_token)} className="flex-1 min-w-[240px] font-mono text-xs" />
+                        <Button variant="outline" onClick={copyLink} className="min-h-11"><Copy className="h-4 w-4 mr-1" />Copy</Button>
+                        <Button variant="outline" onClick={() => window.open(signoffUrl(call.signoff_token), "_blank")} className="min-h-11">Preview</Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        The customer opens this on their phone, checks the job card, rates the service and signs. No login needed.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button onClick={() => save({ status: "awaiting_signoff" })} disabled={saving || !readiness.ready} className="min-h-11">
+                        Mark as sent for sign-off
+                      </Button>
+                      <Button variant="outline" onClick={() => window.print()} className="min-h-11">
+                        <Printer className="h-4 w-4 mr-1" />Print job card
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </>
+  );
+};
+
+export default LoggedCallView;
