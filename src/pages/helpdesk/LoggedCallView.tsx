@@ -396,8 +396,24 @@ const LoggedCallView: React.FC = () => {
                         </ul>
                       </div>
                     )}
+                    <div className="rounded-md border border-border p-4 space-y-2">
+                      <p className="font-medium text-sm">Signing on site, right now</p>
+                      <p className="text-sm text-muted-foreground">
+                        Open the sign-off page on this phone or tablet and hand it to the customer. They read the summary of
+                        the work, rate the service, type their name and sign with a finger or stylus. As soon as they sign,
+                        the completed job card is emailed to them, to the client and to accounts and admin.
+                      </p>
+                      <Button
+                        onClick={() => window.open(signoffUrl(call.signoff_token), "_blank")}
+                        disabled={!readiness.ready}
+                        className="min-h-11"
+                      >
+                        <PenLine className="h-4 w-4 mr-1" />Open sign-off page for the customer
+                      </Button>
+                    </div>
+
                     <div className="space-y-2">
-                      <Label>Link to send the customer</Label>
+                      <Label>Or send them the link</Label>
                       <div className="flex flex-wrap gap-2">
                         <Input readOnly value={signoffUrl(call.signoff_token)} className="flex-1 min-w-[240px] font-mono text-xs" />
                         <Button variant="outline" onClick={copyLink} className="min-h-11"><Copy className="h-4 w-4 mr-1" />Copy</Button>
