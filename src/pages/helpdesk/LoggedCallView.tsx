@@ -56,6 +56,8 @@ const LoggedCallView: React.FC = () => {
   const [fileLabel, setFileLabel] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [signing, setSigning] = useState(false);
+  const [emailing, setEmailing] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -103,6 +105,20 @@ const LoggedCallView: React.FC = () => {
     if (!call) return;
     await navigator.clipboard.writeText(signoffUrl(call.signoff_token));
     toast({ title: "Sign-off link copied", description: "Send it to the customer by email or WhatsApp." });
+  };
+
+  const emailSheet = async () => {
+    if (!call) return;
+    setEmailing(true);
+    try {
+      const res = await resendSignoffSheet(call.signoff_token);
+      if (!res?.ok) throw new Error(res?.error || "Could not send the sheet.");
+      toast({ title: "Sign-off sheet emailed", description: (res.sent_to || []).join(", ") });
+    } catch (e: unknown) {
+      toast({ title: "Could not email the sheet", description: (e as Error).message, variant: "destructive" });
+    } finally {
+      setEmailing(false);
+    }
   };
 
   const handleAddItem = async () => {
