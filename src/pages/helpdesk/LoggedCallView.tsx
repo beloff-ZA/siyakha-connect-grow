@@ -461,6 +461,18 @@ const LoggedCallView: React.FC = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {signing && !locked && (
+        <JobCardSignSheet
+          call={call}
+          items={items}
+          onClose={() => {
+            setSigning(false);
+            void load();
+          }}
+          onSigned={() => void load()}
+        />
+      )}
     </>
   );
 };
