@@ -31,6 +31,7 @@ const emptyForm = {
   end_customer_last_name: "",
   contact_number: "",
   contact_email: "",
+  client_email: "",
   site_address: "",
   city: "",
   fault_description: "",
