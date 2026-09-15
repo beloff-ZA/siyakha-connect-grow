@@ -102,6 +102,11 @@ const LoggedCallView: React.FC = () => {
         signed_by_email, satisfaction_rating, signoff_comment, created_at, updated_at, logged_at, ...editable
       } = call;
       await updateCall(call.id, { ...editable, ...extra });
+      const nextStatus = (extra?.status ?? call.status) as string;
+      if (nextStatus !== savedStatusRef.current) {
+        void notifyCallUpdate({ ...call, ...extra }, "status");
+        savedStatusRef.current = nextStatus;
+      }
       toast({ title: "Job card saved" });
       load();
     } catch (e: unknown) {
