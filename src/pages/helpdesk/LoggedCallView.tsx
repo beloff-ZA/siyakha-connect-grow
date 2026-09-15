@@ -286,6 +286,40 @@ const LoggedCallView: React.FC = () => {
                     <p className="mt-1 text-xs text-muted-foreground">The signed job card is emailed here, plus accounts and admin.</p>
                   </div>
                 </div>
+                <div className="grid gap-3 sm:grid-cols-3 items-end">
+                  <div>
+                    <Label>Logged by — name</Label>
+                    <Input
+                      value={call.logging_contact_name ?? ""}
+                      onChange={(e) => set("logging_contact_name", e.target.value)}
+                      onBlur={() => {
+                        const known = knownLoggingContact(call.logging_customer);
+                        if (known && !call.logging_contact_email) {
+                          set("logging_contact_name", known.name);
+                          set("logging_contact_email", known.email);
+                        }
+                      }}
+                      placeholder="Danelle van den Berg"
+                    />
+                  </div>
+                  <div>
+                    <Label>Logged by — update emails go to</Label>
+                    <Input type="email" value={call.logging_contact_email ?? ""} onChange={(e) => set("logging_contact_email", e.target.value)} placeholder="support@satio.co.za" />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {call.logging_contact_email
+                        ? `Updates go to: ${call.logging_contact_name ? `${call.logging_contact_name} ` : ""}<${call.logging_contact_email}>`
+                        : "No update recipient set — no progress emails will be sent."}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 pb-1">
+                    <Switch
+                      id="update-emails-toggle"
+                      checked={call.update_emails_enabled !== false}
+                      onCheckedChange={(v) => set("update_emails_enabled", v)}
+                    />
+                    <Label htmlFor="update-emails-toggle" className="text-sm">Email call updates</Label>
+                  </div>
+                </div>
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className="sm:col-span-2"><Label>Site address</Label><Input value={call.site_address ?? ""} onChange={(e) => set("site_address", e.target.value)} /></div>
                   <div><Label>Town / city</Label><Input value={call.city ?? ""} onChange={(e) => set("city", e.target.value)} /></div>
