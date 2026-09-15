@@ -448,9 +448,11 @@ const LoggedCallView: React.FC = () => {
                       <Button onClick={() => save({ status: "awaiting_signoff" })} disabled={saving || !readiness.ready} className="min-h-11">
                         Mark as sent for sign-off
                       </Button>
-                      <Button variant="outline" onClick={() => window.print()} className="min-h-11">
-                        <Printer className="h-4 w-4 mr-1" />Print job card
-                      </Button>
+                      <Link to={`/helpdesk/logged-calls/${call.id}/sheet`}>
+                        <Button variant="outline" className="min-h-11">
+                          <Printer className="h-4 w-4 mr-1" />Print Satio sign-off sheet
+                        </Button>
+                      </Link>
                     </div>
                   </>
                 )}
