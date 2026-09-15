@@ -50,13 +50,20 @@ const LoggedCallView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newItem, setNewItem] = useState({ description: "", quantity: "1", serial_number: "" });
+  const [files, setFiles] = useState<LoggedCallAttachment[]>([]);
+  const [fileLabel, setFileLabel] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const load = async () => {
     setLoading(true);
     try {
       const c = await getCall(callId);
       setCall(c);
-      if (c) setItems(await listItems(c.id));
+      if (c) {
+        setItems(await listItems(c.id));
+        setFiles(await listAttachments(c.id));
+      }
     } catch (e: unknown) {
       toast({ title: "Could not load this call", description: (e as Error).message, variant: "destructive" });
     } finally {
