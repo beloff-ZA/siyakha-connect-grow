@@ -19,6 +19,7 @@ export type LoggedCall = {
   call_ref: string;
   sit_number: string | null;
   logging_customer: string | null;
+  client_email: string | null;
   customer_order_ref: string | null;
   end_customer_company: string;
   end_customer_first_name: string | null;

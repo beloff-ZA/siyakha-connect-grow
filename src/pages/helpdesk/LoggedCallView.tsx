@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip } from "lucide-react";
+import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip, PenLine } from "lucide-react";
 import {
   CALL_PRIORITIES,
   CALL_STATUSES,
@@ -180,6 +180,16 @@ const LoggedCallView: React.FC = () => {
                 View job card
               </Button>
             </Link>
+            {!locked && (
+              <Button
+                size="sm"
+                className="min-h-11"
+                onClick={() => window.open(signoffUrl(call.signoff_token), "_blank")}
+              >
+                <PenLine className="h-4 w-4 mr-1" />
+                Sign on this device
+              </Button>
+            )}
           </div>
         </div>
 
@@ -227,6 +237,13 @@ const LoggedCallView: React.FC = () => {
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div><Label>Contact number</Label><Input value={call.contact_number ?? ""} onChange={(e) => set("contact_number", e.target.value)} /></div>
                   <div><Label>Contact email</Label><Input type="email" value={call.contact_email ?? ""} onChange={(e) => set("contact_email", e.target.value)} /></div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <Label>Client email (who logged the call)</Label>
+                    <Input type="email" value={call.client_email ?? ""} onChange={(e) => set("client_email", e.target.value)} />
+                    <p className="mt-1 text-xs text-muted-foreground">The signed job card is emailed here, plus accounts and admin.</p>
+                  </div>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className="sm:col-span-2"><Label>Site address</Label><Input value={call.site_address ?? ""} onChange={(e) => set("site_address", e.target.value)} /></div>
@@ -379,8 +396,24 @@ const LoggedCallView: React.FC = () => {
                         </ul>
                       </div>
                     )}
+                    <div className="rounded-md border border-border p-4 space-y-2">
+                      <p className="font-medium text-sm">Signing on site, right now</p>
+                      <p className="text-sm text-muted-foreground">
+                        Open the sign-off page on this phone or tablet and hand it to the customer. They read the summary of
+                        the work, rate the service, type their name and sign with a finger or stylus. As soon as they sign,
+                        the completed job card is emailed to them, to the client and to accounts and admin.
+                      </p>
+                      <Button
+                        onClick={() => window.open(signoffUrl(call.signoff_token), "_blank")}
+                        disabled={!readiness.ready}
+                        className="min-h-11"
+                      >
+                        <PenLine className="h-4 w-4 mr-1" />Open sign-off page for the customer
+                      </Button>
+                    </div>
+
                     <div className="space-y-2">
-                      <Label>Link to send the customer</Label>
+                      <Label>Or send them the link</Label>
                       <div className="flex flex-wrap gap-2">
                         <Input readOnly value={signoffUrl(call.signoff_token)} className="flex-1 min-w-[240px] font-mono text-xs" />
                         <Button variant="outline" onClick={copyLink} className="min-h-11"><Copy className="h-4 w-4 mr-1" />Copy</Button>

@@ -1,0 +1,1 @@
+ALTER TABLE public.logged_calls ADD COLUMN IF NOT EXISTS client_email text;

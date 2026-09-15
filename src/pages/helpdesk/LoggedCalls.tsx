@@ -31,6 +31,7 @@ const emptyForm = {
   end_customer_last_name: "",
   contact_number: "",
   contact_email: "",
+  client_email: "",
   site_address: "",
   city: "",
   fault_description: "",
@@ -206,6 +207,13 @@ const LoggedCalls: React.FC = () => {
                   <div>
                     <Label>Contact email (for the sign-off link)</Label>
                     <Input type="email" value={form.contact_email} onChange={(e) => set("contact_email", e.target.value)} />
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <Label>Client email (who logged the call)</Label>
+                    <Input type="email" value={form.client_email} onChange={(e) => set("client_email", e.target.value)} placeholder="support@satio.co.za" />
                   </div>
                 </div>
 
