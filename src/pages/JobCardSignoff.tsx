@@ -10,7 +10,7 @@ import SignaturePad from "@/components/helpdesk/SignaturePad";
 import { fetchSignoffCard, submitSignoff, formatDuration, timeOnSiteMinutes, totalKm } from "@/lib/loggedCalls";
 import { CheckCircle2, Star } from "lucide-react";
 
-type Card = Record<string, string | number | null>;
+type CardData = Record<string, string | number | null>;
 
 const dt = (v?: string | number | null) => (v ? new Date(String(v)).toLocaleString("en-ZA", { dateStyle: "medium", timeStyle: "short" }) : "—");
 
@@ -25,7 +25,7 @@ const JobCardSignoff: React.FC = () => {
   const { token = "" } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [card, setCard] = useState<Card | null>(null);
+  const [card, setCard] = useState<CardData | null>(null);
   const [items, setItems] = useState<{ description: string; quantity: number; serial_number: string | null }[]>([]);
   const [signed, setSigned] = useState(false);
 
@@ -45,7 +45,7 @@ const JobCardSignoff: React.FC = () => {
         if (!res?.ok) {
           setError(res?.error || "This sign-off link is not valid.");
         } else {
-          setCard(res.card as Card);
+          setCard(res.card as CardData);
           setItems(res.items ?? []);
           setSigned(Boolean(res.already_signed));
         }
@@ -93,7 +93,7 @@ const JobCardSignoff: React.FC = () => {
       </div>
     );
 
-  const c = card as Card;
+  const c = card as CardData;
   const km = totalKm(c.opening_km as number | null, c.closing_km as number | null);
   const mins = timeOnSiteMinutes(c.arrival_at as string | null, c.departure_at as string | null);
 
