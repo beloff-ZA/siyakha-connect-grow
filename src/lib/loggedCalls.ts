@@ -154,6 +154,52 @@ export async function updateCall(id: string, patch: Partial<LoggedCall>) {
   if (error) throw error;
 }
 
+export type CallUpdateEvent = "created" | "status";
+
+/** Well-known service desks that email us job cards — prefills the logging contact. */
+export const KNOWN_LOGGING_CONTACTS: { match: RegExp; name: string; email: string }[] = [
+  { match: /satio/i, name: "Danelle van den Berg", email: "support@satio.co.za" },
+];
+
+export function knownLoggingContact(loggingCustomer?: string | null) {
+  if (!loggingCustomer) return null;
+  return KNOWN_LOGGING_CONTACTS.find((k) => k.match.test(loggingCustomer)) ?? null;
+}
+
+/**
+ * Emails the person who logged the call about progress (created, status change).
+ * Uses the branded app-email queue; never throws — email must not block saving.
+ */
+export async function notifyCallUpdate(call: LoggedCall, event: CallUpdateEvent, detail?: string) {
+  try {
+    if (call.update_emails_enabled === false) return;
+    const recipient = call.logging_contact_email?.trim();
+    if (!recipient) return;
+    await supabase.functions.invoke("send-transactional-email", {
+      body: {
+        templateName: "logged-call-update",
+        recipientEmail: recipient,
+        idempotencyKey: `call-update-${call.id}-${event}-${detail ?? call.status}`,
+        templateData: {
+          contactName: call.logging_contact_name ?? "",
+          callRef: call.call_ref,
+          sitNumber: call.sit_number ?? "",
+          loggingCustomer: call.logging_customer ?? "",
+          endCustomer: call.end_customer_company,
+          site: [call.site_address, call.city].filter(Boolean).join(", "),
+          status: statusLabel(call.status),
+          engineer: call.engineer_name ?? "",
+          event,
+          detail: detail ?? "",
+          scheduledAt: call.scheduled_at ?? "",
+        },
+      },
+    });
+  } catch (e) {
+    console.warn("call update email not sent", e);
+  }
+}
+
 export async function deleteCall(id: string) {
   const { error } = await supabase.from("logged_calls").delete().eq("id", id);
   if (error) throw error;
