@@ -54,6 +54,7 @@ import ClientPortalAdmin from "./pages/helpdesk/ClientPortalAdmin";
 import Enquiries from "./pages/helpdesk/Enquiries";
 import LoggedCalls from "./pages/helpdesk/LoggedCalls";
 import LoggedCallView from "./pages/helpdesk/LoggedCallView";
+import LoggedCallCardView from "./pages/helpdesk/LoggedCallCardView";
 import JobCardSignoff from "./pages/JobCardSignoff";
 
 // Client Portal
