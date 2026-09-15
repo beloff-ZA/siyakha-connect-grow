@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip, PenLine, FileText, Mail, Wand2, ClipboardList } from "lucide-react";
 import JobCardSignSheet from "@/components/helpdesk/JobCardSignSheet";
@@ -27,6 +28,8 @@ import {
   removeAttachment,
   removeItem,
   resendSignoffSheet,
+  notifyCallUpdate,
+  knownLoggingContact,
   signoffReadiness,
   signoffUrl,
   statusLabel,
