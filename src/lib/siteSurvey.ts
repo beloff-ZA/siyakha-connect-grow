@@ -6,7 +6,14 @@
  * Keep in sync with supabase/functions/_shared/siteSurvey.ts.
  */
 
-export type SurveyCabinetRow = {
+/** A photo captured on site for a single survey line. */
+export type SurveyPhoto = {
+  /** Storage path in the private job-card-files bucket. */
+  photo_path: string;
+  photo_name: string;
+};
+
+export type SurveyCabinetRow = SurveyPhoto & {
   item: string;
   description: string;
   qty: string;
@@ -14,7 +21,7 @@ export type SurveyCabinetRow = {
   comment: string;
 };
 
-export type SurveyLanRow = {
+export type SurveyLanRow = SurveyPhoto & {
   item: string;
   description: string;
   location: string;
@@ -61,8 +68,8 @@ export function emptySurvey(seed: Partial<SiteSurvey> = {}): SiteSurvey {
     engineer: "",
     photos_taken: false,
     notes: "",
-    cabinet: CABINET_ITEMS.map((item) => ({ item, description: "", qty: "", status: "", comment: "" })),
-    lan: LAN_ITEMS.map((item) => ({ item, description: "", location: "", condition: "", comment: "" })),
+    cabinet: CABINET_ITEMS.map((item) => ({ item, description: "", qty: "", status: "", comment: "", photo_path: "", photo_name: "" })),
+    lan: LAN_ITEMS.map((item) => ({ item, description: "", location: "", condition: "", comment: "", photo_path: "", photo_name: "" })),
     ...seed,
   };
 }
@@ -81,7 +88,7 @@ export function normaliseSurvey(raw: unknown, seed: Partial<SiteSurvey> = {}): S
 }
 
 const rowFilled = (row: Record<string, unknown>) =>
-  ["description", "qty", "status", "condition", "location", "comment"].some((k) =>
+  ["description", "qty", "status", "condition", "location", "comment", "photo_path"].some((k) =>
     String((row as Record<string, unknown>)[k] ?? "").trim(),
   );
 
@@ -104,6 +111,7 @@ export function surveyReadiness(survey: SiteSurvey) {
   const cab = survey.cabinet.filter((r) => !String(r.status ?? "").trim()).map((r) => r.item);
   if (cab.length) missing.push(`Cabinet status: ${cab.join(", ")}`);
   if (!survey.lan.some(rowFilled)) missing.push("At least one LAN line");
-  if (!survey.photos_taken) missing.push("Confirm site photos were taken");
+  const anyPhoto = [...survey.cabinet, ...survey.lan].some((r) => String(r.photo_path ?? "").trim());
+  if (!survey.photos_taken && !anyPhoto) missing.push("Add site photos, or confirm they were taken");
   return { ready: missing.length === 0, missing };
 }

@@ -427,6 +427,7 @@ const LoggedCallView: React.FC = () => {
                   return (
                     <>
                       <SiteSurveyForm
+                        callId={call.id}
                         survey={survey}
                         onChange={(next: SiteSurvey) => set("site_survey", next as unknown as LoggedCall["site_survey"])}
                       />

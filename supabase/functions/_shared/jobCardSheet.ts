@@ -211,7 +211,12 @@ type SurveyLike = {
 };
 
 const filled = (row: Record<string, unknown>) =>
-  ["description", "qty", "status", "location", "condition", "comment"].some((k) => String(row[k] ?? "").trim());
+  ["description", "qty", "status", "location", "condition", "comment", "photo_path"].some((k) =>
+    String(row[k] ?? "").trim(),
+  );
+
+const photoCell = (row: Record<string, unknown>) =>
+  `<td class="sh-value">${String(row.photo_path ?? "").trim() ? txt(row.photo_name) || "Photo attached" : ""}</td>`;
 
 /**
  * Site survey sheet (cabinet + LAN) appended to the job card when the engineer
@@ -231,7 +236,7 @@ export function siteSurveySection(raw: unknown): string {
       (r) =>
         `<tr><td class="sh-value">${txt(r.item)}</td><td class="sh-value">${txt(r.description)}</td>` +
         `<td class="sh-value sh-qty">${txt(r.qty)}</td><td class="sh-value">${txt(r.status)}</td>` +
-        `<td class="sh-value">${txt(r.comment)}</td></tr>`,
+        `<td class="sh-value">${txt(r.comment)}</td>${photoCell(r)}</tr>`,
     )
     .join("");
 
@@ -240,7 +245,7 @@ export function siteSurveySection(raw: unknown): string {
       (r) =>
         `<tr><td class="sh-value">${txt(r.item)}</td><td class="sh-value">${txt(r.description)}</td>` +
         `<td class="sh-value">${txt(r.location)}</td><td class="sh-value">${txt(r.condition)}</td>` +
-        `<td class="sh-value">${txt(r.comment)}</td></tr>`,
+        `<td class="sh-value">${txt(r.comment)}</td>${photoCell(r)}</tr>`,
     )
     .join("");
 
@@ -256,14 +261,14 @@ export function siteSurveySection(raw: unknown): string {
 </table>
 
 <table style="margin-top:8px" class="sh-items">
-  <tr><td class="sh-band" colspan="5">Cabinet${String(s.photos_taken) === "true" ? " — photos taken" : " — photos are required"}</td></tr>
-  <tr><td class="sh-label">Cabinet</td><td class="sh-label">Description</td><td class="sh-label sh-qty">QTY</td><td class="sh-label">Status</td><td class="sh-label">Comment</td></tr>
+  <tr><td class="sh-band" colspan="6">Cabinet${String(s.photos_taken) === "true" ? " — photos taken" : " — photos are required"}</td></tr>
+  <tr><td class="sh-label">Cabinet</td><td class="sh-label">Description</td><td class="sh-label sh-qty">QTY</td><td class="sh-label">Status</td><td class="sh-label">Comment</td><td class="sh-label">Photo</td></tr>
   ${cabRows}
 </table>
 
 <table style="margin-top:8px" class="sh-items">
-  <tr><td class="sh-band" colspan="5">LAN</td></tr>
-  <tr><td class="sh-label">LAN</td><td class="sh-label">Description</td><td class="sh-label">Location</td><td class="sh-label">Condition</td><td class="sh-label">Comment</td></tr>
+  <tr><td class="sh-band" colspan="6">LAN</td></tr>
+  <tr><td class="sh-label">LAN</td><td class="sh-label">Description</td><td class="sh-label">Location</td><td class="sh-label">Condition</td><td class="sh-label">Comment</td><td class="sh-label">Photo</td></tr>
   ${lanRows}
 </table>
 

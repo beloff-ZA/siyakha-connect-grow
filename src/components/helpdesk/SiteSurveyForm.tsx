@@ -10,8 +10,10 @@ import {
   type SurveyCabinetRow,
   type SurveyLanRow,
 } from "@/lib/siteSurvey";
+import SurveyPhotoField from "@/components/helpdesk/SurveyPhotoField";
 
 type Props = {
+  callId: string;
   survey: SiteSurvey;
   onChange: (next: SiteSurvey) => void;
 };
@@ -37,7 +39,7 @@ const Picker: React.FC<{ value: string; options: string[]; onChange: (v: string)
 );
 
 /** On-site survey sheet: cabinet checks and LAN checks, exactly as the customer's form asks. */
-const SiteSurveyForm: React.FC<Props> = ({ survey, onChange }) => {
+const SiteSurveyForm: React.FC<Props> = ({ callId, survey, onChange }) => {
   const set = <K extends keyof SiteSurvey>(key: K, value: SiteSurvey[K]) => onChange({ ...survey, [key]: value });
 
   const setCabinet = (i: number, patch: Partial<SurveyCabinetRow>) =>
@@ -108,6 +110,15 @@ const SiteSurveyForm: React.FC<Props> = ({ survey, onChange }) => {
                   onChange={(e) => setCabinet(i, { comment: e.target.value })}
                 />
               </div>
+              <div>
+                <Label className="text-xs">Photo</Label>
+                <SurveyPhotoField
+                  callId={callId}
+                  item={row.item}
+                  value={{ photo_path: row.photo_path, photo_name: row.photo_name }}
+                  onChange={(p) => setCabinet(i, p)}
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -149,6 +160,15 @@ const SiteSurveyForm: React.FC<Props> = ({ survey, onChange }) => {
               <div>
                 <Label className="text-xs">Comment</Label>
                 <Input className="min-h-11" value={row.comment} onChange={(e) => setLan(i, { comment: e.target.value })} />
+              </div>
+              <div>
+                <Label className="text-xs">Photo</Label>
+                <SurveyPhotoField
+                  callId={callId}
+                  item={row.item}
+                  value={{ photo_path: row.photo_path, photo_name: row.photo_name }}
+                  onChange={(p) => setLan(i, p)}
+                />
               </div>
             </div>
           ))}

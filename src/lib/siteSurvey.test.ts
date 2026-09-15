@@ -53,3 +53,33 @@ describe("site survey", () => {
     expect(siteSurveySection(s)).not.toContain("<script>");
   });
 });
+
+describe("survey photos", () => {
+  it("gives every line an empty photo slot", () => {
+    const s = emptySurvey();
+    expect(s.cabinet.every((r) => r.photo_path === "" && r.photo_name === "")).toBe(true);
+    expect(s.lan.every((r) => r.photo_path === "")).toBe(true);
+  });
+
+  it("counts a line with only a photo as captured", () => {
+    const s = emptySurvey();
+    s.cabinet[0].photo_path = "call/1-rack.jpg";
+    expect(surveyHasContent(s)).toBe(true);
+  });
+
+  it("accepts attached photos instead of the confirmation tick", () => {
+    const s = emptySurvey();
+    expect(surveyReadiness(s).missing.join(" ")).toMatch(/photos/i);
+    s.lan[0].photo_path = "call/1-lan.jpg";
+    expect(surveyReadiness(s).missing.join(" ")).not.toMatch(/photos/i);
+  });
+
+  it("shows the photo name in the printed survey", () => {
+    const s = emptySurvey({ customer: "InteliGro" });
+    s.cabinet[1].photo_path = "call/1-rack.jpg";
+    s.cabinet[1].photo_name = "rack-space.jpg";
+    const html = siteSurveySection(s);
+    expect(html).toContain("Photo</td>");
+    expect(html).toContain("rack-space.jpg");
+  });
+});
