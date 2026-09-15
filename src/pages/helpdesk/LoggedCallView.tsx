@@ -9,8 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip, PenLine, FileText, Mail } from "lucide-react";
+import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip, PenLine, FileText, Mail, Wand2, ClipboardList } from "lucide-react";
 import JobCardSignSheet from "@/components/helpdesk/JobCardSignSheet";
+import SiteSurveyForm from "@/components/helpdesk/SiteSurveyForm";
+import { normaliseSurvey, surveyReadiness, type SiteSurvey } from "@/lib/siteSurvey";
+import { SOLUTION_TEMPLATES, polishWorkDone, type PolishResult } from "@/lib/writingPolish";
 import {
   CALL_PRIORITIES,
   CALL_STATUSES,
@@ -58,6 +61,7 @@ const LoggedCallView: React.FC = () => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [signing, setSigning] = useState(false);
   const [emailing, setEmailing] = useState(false);
+  const [polish, setPolish] = useState<PolishResult | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -241,6 +245,7 @@ const LoggedCallView: React.FC = () => {
             <TabsTrigger value="card" className="min-h-11">Job card</TabsTrigger>
             <TabsTrigger value="work" className="min-h-11">Work &amp; travel</TabsTrigger>
             <TabsTrigger value="items" className="min-h-11">Items used</TabsTrigger>
+            <TabsTrigger value="survey" className="min-h-11">Site survey</TabsTrigger>
             <TabsTrigger value="files" className="min-h-11">Forms &amp; files</TabsTrigger>
             <TabsTrigger value="signoff" className="min-h-11">Customer sign-off</TabsTrigger>
           </TabsList>
@@ -308,7 +313,78 @@ const LoggedCallView: React.FC = () => {
             <Card>
               <CardHeader className="pb-3"><CardTitle className="text-base">Work done, time and travel</CardTitle></CardHeader>
               <CardContent className="space-y-3">
-                <div><Label>Fault solution / work done (shown to the customer)</Label><Textarea rows={6} value={call.fault_solution ?? ""} onChange={(e) => set("fault_solution", e.target.value)} /></div>
+                <div className="space-y-2">
+                  <Label>Fault solution / work done (shown to the customer)</Label>
+                  <Textarea
+                    rows={6}
+                    value={call.fault_solution ?? ""}
+                    onChange={(e) => {
+                      set("fault_solution", e.target.value);
+                      setPolish(null);
+                    }}
+                  />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="min-h-11"
+                      disabled={!call.fault_solution?.trim()}
+                      onClick={() => setPolish(polishWorkDone(call.fault_solution ?? ""))}
+                    >
+                      <Wand2 className="h-4 w-4 mr-1" />
+                      Improve wording
+                    </Button>
+                    {SOLUTION_TEMPLATES.map((t) => (
+                      <Button
+                        key={t.label}
+                        variant="ghost"
+                        size="sm"
+                        className="min-h-11"
+                        onClick={() => {
+                          const existing = (call.fault_solution ?? "").trim();
+                          set("fault_solution", existing ? `${existing}\n${t.text}` : t.text);
+                          setPolish(null);
+                        }}
+                      >
+                        + {t.label}
+                      </Button>
+                    ))}
+                  </div>
+                  {polish && (
+                    <div className="rounded-md border border-border p-3 space-y-3 text-sm">
+                      <p className="font-medium">Suggested wording</p>
+                      <p className="whitespace-pre-wrap">{polish.text}</p>
+                      {polish.changes.length > 0 && (
+                        <ul className="list-disc pl-5 text-xs text-muted-foreground">
+                          {polish.changes.map((c) => <li key={c}>{c}</li>)}
+                        </ul>
+                      )}
+                      {polish.suggestions.length > 0 && (
+                        <>
+                          <p className="font-medium text-xs uppercase tracking-wide">Worth adding</p>
+                          <ul className="list-disc pl-5 text-xs text-muted-foreground">
+                            {polish.suggestions.map((s) => <li key={s}>{s}</li>)}
+                          </ul>
+                        </>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          size="sm"
+                          className="min-h-11"
+                          onClick={() => {
+                            set("fault_solution", polish.text);
+                            setPolish(null);
+                          }}
+                        >
+                          Use this wording
+                        </Button>
+                        <Button variant="ghost" size="sm" className="min-h-11" onClick={() => setPolish(null)}>
+                          Keep mine
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <div><Label>Change control (equipment replaced or removed: S/N + description)</Label><Textarea rows={3} value={call.change_control ?? ""} onChange={(e) => set("change_control", e.target.value)} /></div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div><Label>Arrival date &amp; time</Label><Input type="datetime-local" value={toLocalInput(call.arrival_at)} onChange={(e) => set("arrival_at", fromLocalInput(e.target.value))} /></div>
@@ -326,6 +402,55 @@ const LoggedCallView: React.FC = () => {
                 <Button onClick={() => save()} disabled={saving} className="min-h-11">
                   <Save className="h-4 w-4 mr-1" />{saving ? "Saving…" : "Save"}
                 </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="survey" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Site survey (complete on site)</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  The customer&apos;s survey sheet, digitally. Fill it in on site — once it has anything captured it
+                  prints and emails together with the sign-off sheet.
+                </p>
+                {(() => {
+                  const survey = normaliseSurvey(call.site_survey, {
+                    customer: call.end_customer_company || "",
+                    site_branch: call.city || "",
+                    site_contact: [call.end_customer_first_name, call.end_customer_last_name].filter(Boolean).join(" "),
+                    engineer: call.engineer_name || "",
+                  });
+                  const readiness = surveyReadiness(survey);
+                  return (
+                    <>
+                      <SiteSurveyForm
+                        survey={survey}
+                        onChange={(next: SiteSurvey) => set("site_survey", next as unknown as LoggedCall["site_survey"])}
+                      />
+                      {!readiness.ready && (
+                        <div className="rounded-md border border-border p-3 text-sm">
+                          <p className="font-medium">Still to complete:</p>
+                          <ul className="mt-1 list-disc pl-5 text-muted-foreground">
+                            {readiness.missing.map((m) => <li key={m}>{m}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        <Button onClick={() => save()} disabled={saving} className="min-h-11">
+                          <Save className="h-4 w-4 mr-1" />{saving ? "Saving…" : "Save survey"}
+                        </Button>
+                        <Link to={`/helpdesk/logged-calls/${call.id}/sheet`}>
+                          <Button variant="outline" className="min-h-11">
+                            <ClipboardList className="h-4 w-4 mr-1" />Preview / print with job card
+                          </Button>
+                        </Link>
+                      </div>
+                    </>
+                  );
+                })()}
               </CardContent>
             </Card>
           </TabsContent>
