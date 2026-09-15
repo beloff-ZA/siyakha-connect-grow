@@ -194,12 +194,23 @@ export async function submitSignoff(input: {
   signature_data: string;
   satisfaction_rating: number;
   signoff_comment?: string;
+  /** Optional signing moment as captured on the sheet (ISO). Defaults to now. */
+  signed_at?: string;
 }) {
   const { data, error } = await supabase.functions.invoke("job-card-signoff", {
     body: { action: "sign", ...input },
   });
   if (error) throw error;
   return data as { ok: boolean; error?: string; already_signed?: boolean; signed_at?: string };
+}
+
+/** Re-send the signed Satio sheet by email. Staff only; changes no data. */
+export async function resendSignoffSheet(token: string) {
+  const { data, error } = await supabase.functions.invoke("job-card-signoff", {
+    body: { action: "resend", token },
+  });
+  if (error) throw error;
+  return data as { ok: boolean; error?: string; sent_to?: string[] };
 }
 
 /* ---------- Attachments (uploaded forms, photos, signed PDFs) ---------- */

@@ -1,7 +1,10 @@
 // Public edge function: job-card-signoff
 // Lets an end customer view a customer-safe job card via a secret token and
 // sign it off once. Append-only: an already signed card can never be re-signed.
+// On signing (and on staff-triggered resend) it emails a replica of the Satio
+// service request / sign-off form.
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { jobCardSheetDocument, jobCardSheetFileName, jobCardSheetHtml, JOB_CARD_SHEET_CSS } from "../_shared/jobCardSheet.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,6 +21,8 @@ const json = (body: unknown, status = 200) =>
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
+
+const STAFF_ROLES = ["admin", "siyakha_admin", "super_admin", "project_manager", "engineer"];
 
 const CUSTOMER_FIELDS = [
   "id",
@@ -55,6 +60,65 @@ function clean(input: unknown, max = 2000) {
     .slice(0, max);
 }
 
+const validEmail = (v?: string | null) => (v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? v : null);
+
+type Row = Record<string, unknown>;
+
+/** Sends the sheet replica. Never throws — notification must not block signing. */
+async function emailSheet(card: Row, items: Row[], extraTo: (string | null)[]) {
+  if (!RESEND_API_KEY) return [];
+  const to = Array.from(
+    new Set(
+      [
+        "accounts@siyakhatechnology.co.za",
+        "admin@siyakhatechnology.co.za",
+        ...extraTo.map((v) => validEmail(typeof v === "string" ? v : null)),
+      ].filter(Boolean) as string[],
+    ),
+  );
+
+  const sheet = jobCardSheetHtml(card, items as never);
+  const doc = jobCardSheetDocument(card, items as never);
+  const html =
+    `<div style="font-family:Arial,Helvetica,sans-serif;color:#111">` +
+    `<p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#666;margin:0 0 6px">Siyakha Technology Solutions</p>` +
+    `<p style="margin:0 0 14px;font-size:13px">Completed and signed job card — a copy of the signed sign-off form is below and attached.</p>` +
+    `<style>${JOB_CARD_SHEET_CSS}</style>${sheet}` +
+    `<p style="margin-top:18px;font-size:12px;color:#666">Siyakha Technology Solutions · 087 723 9183</p>` +
+    `</div>`;
+
+  const ref = String(card.sit_number ?? card.call_ref ?? "");
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "Siyakha Technology <notifications@angoladay.info>",
+        to,
+        subject: `Signed job card ${card.call_ref} — ${card.end_customer_company}${ref ? ` (SIT ${ref})` : ""}`,
+        html,
+        text:
+          `Signed job card ${card.call_ref}\n` +
+          `End customer: ${card.end_customer_company}\nSite: ${card.site_address ?? ""} ${card.city ?? ""}\n` +
+          `Engineer: ${card.engineer_name ?? ""}\nWork done: ${card.fault_solution ?? ""}\n` +
+          `Signed by: ${card.signed_by_name ?? ""} at ${card.signed_at ?? ""}\n` +
+          `Rating: ${card.satisfaction_rating ?? ""}/5\nComment: ${card.signoff_comment ?? "—"}\n\n` +
+          `The completed sign-off form is attached.`,
+        attachments: [
+          {
+            filename: jobCardSheetFileName(card),
+            content: btoa(unescape(encodeURIComponent(doc))),
+          },
+        ],
+      }),
+    });
+    return to;
+  } catch (e) {
+    console.error("notify failed", e);
+    return [];
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ ok: false, error: "Method not allowed" }, 405);
@@ -85,25 +149,53 @@ Deno.serve(async (req: Request) => {
   }
   if (!call) return json({ ok: false, error: "This sign-off link is not valid" }, 404);
 
-  const { data: items } = await admin
+  const { data: itemsData } = await admin
     .from("logged_call_items")
     .select("description, quantity, serial_number")
-    .eq("call_id", (call as Record<string, string>).id)
+    .eq("call_id", (call as Row).id as string)
     .order("sort_order", { ascending: true });
+  const items = (itemsData ?? []) as Row[];
+
+  const { data: contacts } = await admin
+    .from("logged_calls")
+    .select("contact_email, client_email")
+    .eq("signoff_token", token)
+    .maybeSingle();
+  const contactRow = (contacts ?? {}) as Row;
 
   if (action === "fetch") {
     return json({
       ok: true,
       card: call,
-      items: items ?? [],
-      already_signed: (call as Record<string, string>).signoff_status === "signed",
+      items,
+      already_signed: (call as Row).signoff_status === "signed",
     });
+  }
+
+  // Staff-only: re-send the signed sheet without touching the record.
+  if (action === "resend") {
+    const jwt = req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") ?? "";
+    if (!jwt) return json({ ok: false, error: "Sign in required" }, 401);
+    const { data: userData } = await admin.auth.getUser(jwt);
+    const uid = userData?.user?.id;
+    if (!uid) return json({ ok: false, error: "Sign in required" }, 401);
+    const { data: roles } = await admin.from("user_roles").select("role").eq("user_id", uid);
+    const allowed = (roles ?? []).some((r: Row) => STAFF_ROLES.includes(String(r.role)));
+    if (!allowed) return json({ ok: false, error: "Not allowed" }, 403);
+    if ((call as Row).signoff_status !== "signed") {
+      return json({ ok: false, error: "This job card has not been signed off yet" }, 400);
+    }
+    const sent = await emailSheet(call as Row, items, [
+      contactRow.client_email as string,
+      contactRow.contact_email as string,
+    ]);
+    return json({ ok: true, sent_to: sent });
   }
 
   if (action !== "sign") return json({ ok: false, error: "Unknown action" }, 400);
 
-  if ((call as Record<string, string>).signoff_status === "signed") {
-    return json({ ok: true, already_signed: true, signed_at: (call as Record<string, string>).signed_at });
+  if ((call as Row).signoff_status === "signed") {
+    return json({ ok: true, already_signed: true, signed_at: (call as Row).signed_at });
   }
 
   const name = clean(body.signed_by_name, 120);
@@ -119,12 +211,22 @@ Deno.serve(async (req: Request) => {
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
     return json({ ok: false, error: "Please rate the service from 1 to 5" }, 400);
   }
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (email && !validEmail(email)) {
     return json({ ok: false, error: "Please enter a valid email address" }, 400);
   }
 
+  // Signing moment as captured on the sheet; must be sane (not far in future).
+  let signedAt = new Date().toISOString();
+  const supplied = clean(body.signed_at, 40);
+  if (supplied) {
+    const d = new Date(supplied);
+    const skew = d.getTime() - Date.now();
+    if (!Number.isNaN(d.getTime()) && skew < 60 * 60 * 1000 && skew > -1000 * 60 * 60 * 24 * 30) {
+      signedAt = d.toISOString();
+    }
+  }
+
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
-  const signedAt = new Date().toISOString();
 
   const { error: updErr } = await admin
     .from("logged_calls")
@@ -148,100 +250,21 @@ Deno.serve(async (req: Request) => {
     return json({ ok: false, error: "Could not save your sign-off" }, 500);
   }
 
-  // Completed job card email — never blocks the customer.
-  if (RESEND_API_KEY) {
-    const c = call as Record<string, string>;
-    try {
-      const { data: contacts } = await admin
-        .from("logged_calls")
-        .select("contact_email, client_email")
-        .eq("signoff_token", token)
-        .maybeSingle();
+  const signedCard: Row = {
+    ...(call as Row),
+    signoff_status: "signed",
+    signed_by_name: name,
+    signature_data: signature,
+    satisfaction_rating: rating,
+    signoff_comment: comment || null,
+    signed_at: signedAt,
+  };
 
-      const valid = (v?: string | null) => (v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? v : null);
-      const to = Array.from(
-        new Set(
-          [
-            "accounts@siyakhatechnology.co.za",
-            "admin@siyakhatechnology.co.za",
-            valid((contacts as Record<string, string> | null)?.client_email),
-            valid((contacts as Record<string, string> | null)?.contact_email),
-            valid(email),
-          ].filter(Boolean) as string[],
-        ),
-      );
-
-      const esc = (v: unknown) =>
-        String(v ?? "—").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      const row = (label: string, value: unknown) =>
-        `<tr><td style="padding:6px 10px;border-bottom:1px solid #eee;color:#666;width:210px">${label}</td>` +
-        `<td style="padding:6px 10px;border-bottom:1px solid #eee;white-space:pre-wrap">${esc(value)}</td></tr>`;
-
-      const mins =
-        c.arrival_at && c.departure_at
-          ? Math.max(0, Math.round((new Date(c.departure_at).getTime() - new Date(c.arrival_at).getTime()) / 60000))
-          : null;
-      const km =
-        c.opening_km !== null && c.closing_km !== null ? Number(c.closing_km) - Number(c.opening_km) : null;
-      const itemRows = (items ?? [])
-        .map(
-          (it: Record<string, unknown>) =>
-            `<li>${esc(it.description)}${it.serial_number ? ` — S/N ${esc(it.serial_number)}` : ""} (Qty ${esc(it.quantity)})</li>`,
-        )
-        .join("");
-
-      const html =
-        `<div style="font-family:Arial,Helvetica,sans-serif;color:#111;max-width:680px">` +
-        `<p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#666;margin:0">Siyakha Technology Solutions</p>` +
-        `<h2 style="margin:6px 0 2px">Completed job card — ${esc(c.call_ref)}</h2>` +
-        `<p style="margin:0 0 14px;color:#666">Signed off by the customer on site${c.sit_number ? ` · SIT ${esc(c.sit_number)}` : ""}</p>` +
-        `<table style="border-collapse:collapse;width:100%;font-size:14px">` +
-        row("Customer logging the call", c.logging_customer) +
-        row("Customer order / reference", c.customer_order_ref) +
-        row("End customer", c.end_customer_company) +
-        row("Site contact", [c.end_customer_first_name, c.end_customer_last_name].filter(Boolean).join(" ")) +
-        row("Contact number", c.contact_number) +
-        row("Site address", [c.site_address, c.city].filter(Boolean).join(", ")) +
-        row("Engineer", c.engineer_name) +
-        row("Fault / request logged", c.fault_description) +
-        row("Work done on site", c.fault_solution) +
-        row("Equipment change control", c.change_control) +
-        row("Arrival", c.arrival_at ? new Date(c.arrival_at).toLocaleString("en-ZA") : "—") +
-        row("Departure", c.departure_at ? new Date(c.departure_at).toLocaleString("en-ZA") : "—") +
-        row("Time on site", mins === null ? "—" : `${Math.floor(mins / 60)} hrs ${mins % 60} min`) +
-        row("Kilometres travelled", km === null || km < 0 ? "—" : `${km} km`) +
-        row("Items used", itemRows ? `<ul style="margin:0;padding-left:18px">${itemRows}</ul>` : "None recorded") +
-        row("Signed by", name) +
-        row("Service rating", `${rating}/5`) +
-        row("Customer comment", comment || "—") +
-        row("Signed at", new Date(signedAt).toLocaleString("en-ZA")) +
-        `</table>` +
-        `<p style="margin:16px 0 4px;font-size:12px;color:#666">Customer signature</p>` +
-        `<img src="${signature}" alt="Customer signature" style="max-height:110px;border:1px solid #eee;padding:6px" />` +
-        `<p style="margin-top:18px;font-size:12px;color:#666">Siyakha Technology Solutions · 087 723 9183</p>` +
-        `</div>`;
-
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: "Siyakha Technology <notifications@angoladay.info>",
-          to,
-          subject: `Signed job card ${c.call_ref} — ${c.end_customer_company}${c.sit_number ? ` (SIT ${c.sit_number})` : ""}`,
-          html,
-          text:
-            `Job card ${c.call_ref} has been signed off by the customer.\n\n` +
-            `Client (logged by): ${c.logging_customer ?? ""}\nEnd customer: ${c.end_customer_company}\n` +
-            `Site: ${c.site_address ?? ""} ${c.city ?? ""}\n` +
-            `SIT/Call number: ${c.sit_number ?? ""}\nEngineer: ${c.engineer_name ?? ""}\n\n` +
-            `Work done: ${c.fault_solution ?? ""}\n\n` +
-            `Signed by: ${name}\nRating: ${rating}/5\nComment: ${comment || "—"}\nSigned at: ${signedAt}`,
-        }),
-      });
-    } catch (e) {
-      console.error("notify failed", e);
-    }
-  }
+  await emailSheet(signedCard, items, [
+    contactRow.client_email as string,
+    contactRow.contact_email as string,
+    email,
+  ]);
 
   return json({ ok: true, signed_at: signedAt });
 });

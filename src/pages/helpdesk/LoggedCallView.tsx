@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip, PenLine } from "lucide-react";
+import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip, PenLine, FileText, Mail } from "lucide-react";
+import JobCardSignSheet from "@/components/helpdesk/JobCardSignSheet";
 import {
   CALL_PRIORITIES,
   CALL_STATUSES,
@@ -22,6 +23,7 @@ import {
   listItems,
   removeAttachment,
   removeItem,
+  resendSignoffSheet,
   signoffReadiness,
   signoffUrl,
   statusLabel,
@@ -54,6 +56,8 @@ const LoggedCallView: React.FC = () => {
   const [fileLabel, setFileLabel] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [signing, setSigning] = useState(false);
+  const [emailing, setEmailing] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -101,6 +105,20 @@ const LoggedCallView: React.FC = () => {
     if (!call) return;
     await navigator.clipboard.writeText(signoffUrl(call.signoff_token));
     toast({ title: "Sign-off link copied", description: "Send it to the customer by email or WhatsApp." });
+  };
+
+  const emailSheet = async () => {
+    if (!call) return;
+    setEmailing(true);
+    try {
+      const res = await resendSignoffSheet(call.signoff_token);
+      if (!res?.ok) throw new Error(res?.error || "Could not send the sheet.");
+      toast({ title: "Sign-off sheet emailed", description: (res.sent_to || []).join(", ") });
+    } catch (e: unknown) {
+      toast({ title: "Could not email the sheet", description: (e as Error).message, variant: "destructive" });
+    } finally {
+      setEmailing(false);
+    }
   };
 
   const handleAddItem = async () => {
@@ -180,14 +198,21 @@ const LoggedCallView: React.FC = () => {
                 View job card
               </Button>
             </Link>
-            {!locked && (
-              <Button
-                size="sm"
-                className="min-h-11"
-                onClick={() => window.open(signoffUrl(call.signoff_token), "_blank")}
-              >
+            <Link to={`/helpdesk/logged-calls/${call.id}/sheet`}>
+              <Button variant="outline" size="sm" className="min-h-11">
+                <FileText className="h-4 w-4 mr-1" />
+                Satio sign-off sheet
+              </Button>
+            </Link>
+            {locked ? (
+              <Button size="sm" className="min-h-11" onClick={emailSheet} disabled={emailing}>
+                <Mail className="h-4 w-4 mr-1" />
+                {emailing ? "Sending…" : "Email signed sheet"}
+              </Button>
+            ) : (
+              <Button size="sm" className="min-h-11" onClick={() => setSigning(true)}>
                 <PenLine className="h-4 w-4 mr-1" />
-                Sign on this device
+                Hand over to client to sign
               </Button>
             )}
           </div>
@@ -399,16 +424,12 @@ const LoggedCallView: React.FC = () => {
                     <div className="rounded-md border border-border p-4 space-y-2">
                       <p className="font-medium text-sm">Signing on site, right now</p>
                       <p className="text-sm text-muted-foreground">
-                        Open the sign-off page on this phone or tablet and hand it to the customer. They read the summary of
-                        the work, rate the service, type their name and sign with a finger or stylus. As soon as they sign,
-                        the completed job card is emailed to them, to the client and to accounts and admin.
+                        Hand this phone, tablet or laptop to the customer. They see the full Satio sign-off sheet with
+                        every detail filled in, then sign it on the sheet itself — first name, surname, date, time and
+                        signature. The signed sheet is emailed to them, to the client and to accounts and admin.
                       </p>
-                      <Button
-                        onClick={() => window.open(signoffUrl(call.signoff_token), "_blank")}
-                        disabled={!readiness.ready}
-                        className="min-h-11"
-                      >
-                        <PenLine className="h-4 w-4 mr-1" />Open sign-off page for the customer
+                      <Button onClick={() => setSigning(true)} disabled={!readiness.ready} className="min-h-11">
+                        <PenLine className="h-4 w-4 mr-1" />Hand over to client to sign
                       </Button>
                     </div>
 
@@ -427,9 +448,11 @@ const LoggedCallView: React.FC = () => {
                       <Button onClick={() => save({ status: "awaiting_signoff" })} disabled={saving || !readiness.ready} className="min-h-11">
                         Mark as sent for sign-off
                       </Button>
-                      <Button variant="outline" onClick={() => window.print()} className="min-h-11">
-                        <Printer className="h-4 w-4 mr-1" />Print job card
-                      </Button>
+                      <Link to={`/helpdesk/logged-calls/${call.id}/sheet`}>
+                        <Button variant="outline" className="min-h-11">
+                          <Printer className="h-4 w-4 mr-1" />Print Satio sign-off sheet
+                        </Button>
+                      </Link>
                     </div>
                   </>
                 )}
@@ -438,6 +461,18 @@ const LoggedCallView: React.FC = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {signing && !locked && (
+        <JobCardSignSheet
+          call={call}
+          items={items}
+          onClose={() => {
+            setSigning(false);
+            void load();
+          }}
+          onSigned={() => void load()}
+        />
+      )}
     </>
   );
 };
