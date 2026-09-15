@@ -875,6 +875,7 @@ export type Database = {
           call_ref: string
           change_control: string | null
           city: string | null
+          client_email: string | null
           closing_km: number | null
           contact_email: string | null
           contact_number: string | null
@@ -917,6 +918,7 @@ export type Database = {
           call_ref: string
           change_control?: string | null
           city?: string | null
+          client_email?: string | null
           closing_km?: number | null
           contact_email?: string | null
           contact_number?: string | null
@@ -959,6 +961,7 @@ export type Database = {
           call_ref?: string
           change_control?: string | null
           city?: string | null
+          client_email?: string | null
           closing_km?: number | null
           contact_email?: string | null
           contact_number?: string | null
