@@ -180,6 +180,16 @@ const LoggedCallView: React.FC = () => {
                 View job card
               </Button>
             </Link>
+            {!locked && (
+              <Button
+                size="sm"
+                className="min-h-11"
+                onClick={() => window.open(signoffUrl(call.signoff_token), "_blank")}
+              >
+                <PenLine className="h-4 w-4 mr-1" />
+                Sign on this device
+              </Button>
+            )}
           </div>
         </div>
 
