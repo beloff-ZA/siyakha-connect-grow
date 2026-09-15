@@ -115,6 +115,30 @@ const LoggedCallView: React.FC = () => {
     setItems(await listItems(call.id));
   };
 
+  const handleUpload = async (fileList: FileList | null) => {
+    if (!call || !fileList?.length) return;
+    setUploading(true);
+    try {
+      for (const f of Array.from(fileList)) await uploadAttachment(call.id, f, fileLabel);
+      setFileLabel("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      setFiles(await listAttachments(call.id));
+      toast({ title: fileList.length > 1 ? "Files uploaded" : "File uploaded" });
+    } catch (e: unknown) {
+      toast({ title: "Upload failed", description: (e as Error).message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const openFile = async (att: LoggedCallAttachment) => {
+    try {
+      window.open(await attachmentLink(att.storage_path), "_blank");
+    } catch (e: unknown) {
+      toast({ title: "Could not open file", description: (e as Error).message, variant: "destructive" });
+    }
+  };
+
   if (loading) return <><p className="text-muted-foreground">Loading…</p></>;
   if (!call)
     return (
