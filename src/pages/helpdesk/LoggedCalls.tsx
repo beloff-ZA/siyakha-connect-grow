@@ -225,10 +225,18 @@ const LoggedCalls: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-3">
                   <div>
                     <Label>Client email (who logged the call)</Label>
                     <Input type="email" value={form.client_email} onChange={(e) => set("client_email", e.target.value)} placeholder="support@satio.co.za" />
+                  </div>
+                  <div>
+                    <Label>Logged by — name</Label>
+                    <Input value={form.logging_contact_name} onChange={(e) => set("logging_contact_name", e.target.value)} placeholder="Danelle van den Berg" />
+                  </div>
+                  <div>
+                    <Label>Logged by — update emails go to</Label>
+                    <Input type="email" value={form.logging_contact_email} onChange={(e) => set("logging_contact_email", e.target.value)} placeholder="support@satio.co.za" />
                   </div>
                 </div>
 
