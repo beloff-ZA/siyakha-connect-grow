@@ -198,14 +198,21 @@ const LoggedCallView: React.FC = () => {
                 View job card
               </Button>
             </Link>
-            {!locked && (
-              <Button
-                size="sm"
-                className="min-h-11"
-                onClick={() => window.open(signoffUrl(call.signoff_token), "_blank")}
-              >
+            <Link to={`/helpdesk/logged-calls/${call.id}/sheet`}>
+              <Button variant="outline" size="sm" className="min-h-11">
+                <FileText className="h-4 w-4 mr-1" />
+                Satio sign-off sheet
+              </Button>
+            </Link>
+            {locked ? (
+              <Button size="sm" className="min-h-11" onClick={emailSheet} disabled={emailing}>
+                <Mail className="h-4 w-4 mr-1" />
+                {emailing ? "Sending…" : "Email signed sheet"}
+              </Button>
+            ) : (
+              <Button size="sm" className="min-h-11" onClick={() => setSigning(true)}>
                 <PenLine className="h-4 w-4 mr-1" />
-                Sign on this device
+                Hand over to client to sign
               </Button>
             )}
           </div>
