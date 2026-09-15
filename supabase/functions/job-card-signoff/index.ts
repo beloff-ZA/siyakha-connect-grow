@@ -157,11 +157,12 @@ Deno.serve(async (req: Request) => {
         headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           from: "Siyakha Technology <notifications@angoladay.info>",
-          to: ["nikita@siyakhatechnology.co.za"],
+          to: ["accounts@siyakhatechnology.co.za", "admin@siyakhatechnology.co.za"],
           subject: `Job card signed off: ${c.call_ref} — ${c.end_customer_company}`,
           text:
             `Job card ${c.call_ref} has been signed off by the customer.\n\n` +
-            `Customer: ${c.end_customer_company}\nSite: ${c.site_address ?? ""} ${c.city ?? ""}\n` +
+            `Client (logged by): ${c.logging_customer ?? ""}\nEnd customer: ${c.end_customer_company}\n` +
+            `Site: ${c.site_address ?? ""} ${c.city ?? ""}\n` +
             `SIT/Call number: ${c.sit_number ?? ""}\nEngineer: ${c.engineer_name ?? ""}\n\n` +
             `Signed by: ${name}\nRating: ${rating}/5\nComment: ${comment || "—"}\nSigned at: ${signedAt}`,
         }),
