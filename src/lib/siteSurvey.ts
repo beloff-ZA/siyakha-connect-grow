@@ -6,7 +6,14 @@
  * Keep in sync with supabase/functions/_shared/siteSurvey.ts.
  */
 
-export type SurveyCabinetRow = {
+/** A photo captured on site for a single survey line. */
+export type SurveyPhoto = {
+  /** Storage path in the private job-card-files bucket. */
+  photo_path: string;
+  photo_name: string;
+};
+
+export type SurveyCabinetRow = SurveyPhoto & {
   item: string;
   description: string;
   qty: string;
@@ -14,7 +21,7 @@ export type SurveyCabinetRow = {
   comment: string;
 };
 
-export type SurveyLanRow = {
+export type SurveyLanRow = SurveyPhoto & {
   item: string;
   description: string;
   location: string;

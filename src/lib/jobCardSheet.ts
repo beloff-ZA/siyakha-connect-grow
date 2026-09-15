@@ -261,14 +261,14 @@ export function siteSurveySection(raw: unknown): string {
 </table>
 
 <table style="margin-top:8px" class="sh-items">
-  <tr><td class="sh-band" colspan="5">Cabinet${String(s.photos_taken) === "true" ? " — photos taken" : " — photos are required"}</td></tr>
-  <tr><td class="sh-label">Cabinet</td><td class="sh-label">Description</td><td class="sh-label sh-qty">QTY</td><td class="sh-label">Status</td><td class="sh-label">Comment</td></tr>
+  <tr><td class="sh-band" colspan="6">Cabinet${String(s.photos_taken) === "true" ? " — photos taken" : " — photos are required"}</td></tr>
+  <tr><td class="sh-label">Cabinet</td><td class="sh-label">Description</td><td class="sh-label sh-qty">QTY</td><td class="sh-label">Status</td><td class="sh-label">Comment</td><td class="sh-label">Photo</td></tr>
   ${cabRows}
 </table>
 
 <table style="margin-top:8px" class="sh-items">
-  <tr><td class="sh-band" colspan="5">LAN</td></tr>
-  <tr><td class="sh-label">LAN</td><td class="sh-label">Description</td><td class="sh-label">Location</td><td class="sh-label">Condition</td><td class="sh-label">Comment</td></tr>
+  <tr><td class="sh-band" colspan="6">LAN</td></tr>
+  <tr><td class="sh-label">LAN</td><td class="sh-label">Description</td><td class="sh-label">Location</td><td class="sh-label">Condition</td><td class="sh-label">Comment</td><td class="sh-label">Photo</td></tr>
   ${lanRows}
 </table>
 
