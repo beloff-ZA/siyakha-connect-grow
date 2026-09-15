@@ -406,6 +406,55 @@ const LoggedCallView: React.FC = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="survey" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Site survey (complete on site)</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  The customer&apos;s survey sheet, digitally. Fill it in on site — once it has anything captured it
+                  prints and emails together with the sign-off sheet.
+                </p>
+                {(() => {
+                  const survey = normaliseSurvey(call.site_survey, {
+                    customer: call.end_customer_company || "",
+                    site_branch: call.city || "",
+                    site_contact: [call.end_customer_first_name, call.end_customer_last_name].filter(Boolean).join(" "),
+                    engineer: call.engineer_name || "",
+                  });
+                  const readiness = surveyReadiness(survey);
+                  return (
+                    <>
+                      <SiteSurveyForm
+                        survey={survey}
+                        onChange={(next: SiteSurvey) => set("site_survey", next as unknown as LoggedCall["site_survey"])}
+                      />
+                      {!readiness.ready && (
+                        <div className="rounded-md border border-border p-3 text-sm">
+                          <p className="font-medium">Still to complete:</p>
+                          <ul className="mt-1 list-disc pl-5 text-muted-foreground">
+                            {readiness.missing.map((m) => <li key={m}>{m}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        <Button onClick={() => save()} disabled={saving} className="min-h-11">
+                          <Save className="h-4 w-4 mr-1" />{saving ? "Saving…" : "Save survey"}
+                        </Button>
+                        <Link to={`/helpdesk/logged-calls/${call.id}/sheet`}>
+                          <Button variant="outline" className="min-h-11">
+                            <ClipboardList className="h-4 w-4 mr-1" />Preview / print with job card
+                          </Button>
+                        </Link>
+                      </div>
+                    </>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="items" className="space-y-4 pt-4">
             <Card>
               <CardHeader className="pb-3"><CardTitle className="text-base">Additional items used</CardTitle></CardHeader>
