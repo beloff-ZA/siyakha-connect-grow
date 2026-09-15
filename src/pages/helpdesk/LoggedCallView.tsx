@@ -61,6 +61,7 @@ const LoggedCallView: React.FC = () => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [signing, setSigning] = useState(false);
   const [emailing, setEmailing] = useState(false);
+  const [polish, setPolish] = useState<PolishResult | null>(null);
 
   const load = async () => {
     setLoading(true);

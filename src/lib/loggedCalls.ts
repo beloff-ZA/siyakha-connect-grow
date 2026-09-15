@@ -42,6 +42,8 @@ export type LoggedCall = {
   fault_solution: string | null;
   change_control: string | null;
   internal_notes: string | null;
+  /** On-site survey sheet (cabinet + LAN), see src/lib/siteSurvey.ts. */
+  site_survey: unknown | null;
   signoff_token: string;
   signoff_status: string;
   signed_by_name: string | null;
