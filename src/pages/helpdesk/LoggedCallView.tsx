@@ -206,6 +206,7 @@ const LoggedCallView: React.FC = () => {
             <TabsTrigger value="card" className="min-h-11">Job card</TabsTrigger>
             <TabsTrigger value="work" className="min-h-11">Work &amp; travel</TabsTrigger>
             <TabsTrigger value="items" className="min-h-11">Items used</TabsTrigger>
+            <TabsTrigger value="files" className="min-h-11">Forms &amp; files</TabsTrigger>
             <TabsTrigger value="signoff" className="min-h-11">Customer sign-off</TabsTrigger>
           </TabsList>
 
