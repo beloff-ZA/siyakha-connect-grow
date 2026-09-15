@@ -111,6 +111,7 @@ export function surveyReadiness(survey: SiteSurvey) {
   const cab = survey.cabinet.filter((r) => !String(r.status ?? "").trim()).map((r) => r.item);
   if (cab.length) missing.push(`Cabinet status: ${cab.join(", ")}`);
   if (!survey.lan.some(rowFilled)) missing.push("At least one LAN line");
-  if (!survey.photos_taken) missing.push("Confirm site photos were taken");
+  const anyPhoto = [...survey.cabinet, ...survey.lan].some((r) => String(r.photo_path ?? "").trim());
+  if (!survey.photos_taken && !anyPhoto) missing.push("Add site photos, or confirm they were taken");
   return { ready: missing.length === 0, missing };
 }
