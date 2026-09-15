@@ -424,16 +424,12 @@ const LoggedCallView: React.FC = () => {
                     <div className="rounded-md border border-border p-4 space-y-2">
                       <p className="font-medium text-sm">Signing on site, right now</p>
                       <p className="text-sm text-muted-foreground">
-                        Open the sign-off page on this phone or tablet and hand it to the customer. They read the summary of
-                        the work, rate the service, type their name and sign with a finger or stylus. As soon as they sign,
-                        the completed job card is emailed to them, to the client and to accounts and admin.
+                        Hand this phone, tablet or laptop to the customer. They see the full Satio sign-off sheet with
+                        every detail filled in, then sign it on the sheet itself — first name, surname, date, time and
+                        signature. The signed sheet is emailed to them, to the client and to accounts and admin.
                       </p>
-                      <Button
-                        onClick={() => window.open(signoffUrl(call.signoff_token), "_blank")}
-                        disabled={!readiness.ready}
-                        className="min-h-11"
-                      >
-                        <PenLine className="h-4 w-4 mr-1" />Open sign-off page for the customer
+                      <Button onClick={() => setSigning(true)} disabled={!readiness.ready} className="min-h-11">
+                        <PenLine className="h-4 w-4 mr-1" />Hand over to client to sign
                       </Button>
                     </div>
 
