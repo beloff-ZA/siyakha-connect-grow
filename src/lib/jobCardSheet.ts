@@ -236,7 +236,7 @@ export function siteSurveySection(raw: unknown): string {
       (r) =>
         `<tr><td class="sh-value">${txt(r.item)}</td><td class="sh-value">${txt(r.description)}</td>` +
         `<td class="sh-value sh-qty">${txt(r.qty)}</td><td class="sh-value">${txt(r.status)}</td>` +
-        `<td class="sh-value">${txt(r.comment)}</td></tr>`,
+        `<td class="sh-value">${txt(r.comment)}</td>${photoCell(r)}</tr>`,
     )
     .join("");
 
@@ -245,7 +245,7 @@ export function siteSurveySection(raw: unknown): string {
       (r) =>
         `<tr><td class="sh-value">${txt(r.item)}</td><td class="sh-value">${txt(r.description)}</td>` +
         `<td class="sh-value">${txt(r.location)}</td><td class="sh-value">${txt(r.condition)}</td>` +
-        `<td class="sh-value">${txt(r.comment)}</td></tr>`,
+        `<td class="sh-value">${txt(r.comment)}</td>${photoCell(r)}</tr>`,
     )
     .join("");
 
