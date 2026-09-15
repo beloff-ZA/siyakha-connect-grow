@@ -194,6 +194,7 @@ function App() {
               <Route path="/helpdesk/enquiries" element={<AdminRoute><Enquiries /></AdminRoute>} />
               <Route path="/helpdesk/logged-calls" element={<AdminRoute><LoggedCalls /></AdminRoute>} />
               <Route path="/helpdesk/logged-calls/:callId" element={<AdminRoute><LoggedCallView /></AdminRoute>} />
+              <Route path="/helpdesk/logged-calls/:callId/view" element={<AdminRoute><LoggedCallCardView /></AdminRoute>} />
               <Route path="/helpdesk/client-portal" element={<AdminRoute><ClientPortalAdmin /></AdminRoute>} />
 
               {/* Everything else redirects home */}
