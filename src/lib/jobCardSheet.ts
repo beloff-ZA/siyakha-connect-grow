@@ -187,6 +187,8 @@ export function jobCardSheetHtml(
   ${itemRows}
 </table>
 
+${siteSurveySection(c.site_survey)}
+
 ${signSection}
 
 <div class="sh-note">Completed digitally by Siyakha Technology Solutions · 087 723 9183 · admin@siyakhatechnology.co.za</div>
@@ -194,6 +196,81 @@ ${signSection}
     [c.end_customer_company, c.city].filter(Boolean).join(" - "),
   )}</span></div>
 </div>`;
+}
+
+type SurveyLike = {
+  survey_date?: unknown;
+  customer?: unknown;
+  site_branch?: unknown;
+  site_contact?: unknown;
+  engineer?: unknown;
+  photos_taken?: unknown;
+  notes?: unknown;
+  cabinet?: Record<string, unknown>[];
+  lan?: Record<string, unknown>[];
+};
+
+const filled = (row: Record<string, unknown>) =>
+  ["description", "qty", "status", "location", "condition", "comment"].some((k) => String(row[k] ?? "").trim());
+
+/**
+ * Site survey sheet (cabinet + LAN) appended to the job card when the engineer
+ * captured it on site. Returns "" when nothing was completed.
+ */
+export function siteSurveySection(raw: unknown): string {
+  if (!raw || typeof raw !== "object") return "";
+  const s = raw as SurveyLike;
+  const cabinet = Array.isArray(s.cabinet) ? s.cabinet : [];
+  const lan = Array.isArray(s.lan) ? s.lan : [];
+  const headers = [s.survey_date, s.customer, s.site_branch, s.site_contact, s.engineer, s.notes];
+  const any = headers.some((v) => String(v ?? "").trim()) || cabinet.some(filled) || lan.some(filled);
+  if (!any) return "";
+
+  const cabRows = cabinet
+    .map(
+      (r) =>
+        `<tr><td class="sh-value">${txt(r.item)}</td><td class="sh-value">${txt(r.description)}</td>` +
+        `<td class="sh-value sh-qty">${txt(r.qty)}</td><td class="sh-value">${txt(r.status)}</td>` +
+        `<td class="sh-value">${txt(r.comment)}</td></tr>`,
+    )
+    .join("");
+
+  const lanRows = lan
+    .map(
+      (r) =>
+        `<tr><td class="sh-value">${txt(r.item)}</td><td class="sh-value">${txt(r.description)}</td>` +
+        `<td class="sh-value">${txt(r.location)}</td><td class="sh-value">${txt(r.condition)}</td>` +
+        `<td class="sh-value">${txt(r.comment)}</td></tr>`,
+    )
+    .join("");
+
+  return `<table style="margin-top:14px">
+  <tr><td class="sh-title sh-band" colspan="5">Site survey — completed on site</td></tr>
+  <tr>
+    ${cell("Date", txt(s.survey_date))}
+    ${cell("Customer", txt(s.customer))}
+    ${cell("Site / branch", txt(s.site_branch))}
+    ${cell("Site contact", txt(s.site_contact))}
+    ${cell("Engineer", txt(s.engineer))}
+  </tr>
+</table>
+
+<table style="margin-top:8px" class="sh-items">
+  <tr><td class="sh-band" colspan="5">Cabinet${String(s.photos_taken) === "true" ? " — photos taken" : " — photos are required"}</td></tr>
+  <tr><td class="sh-label">Cabinet</td><td class="sh-label">Description</td><td class="sh-label sh-qty">QTY</td><td class="sh-label">Status</td><td class="sh-label">Comment</td></tr>
+  ${cabRows}
+</table>
+
+<table style="margin-top:8px" class="sh-items">
+  <tr><td class="sh-band" colspan="5">LAN</td></tr>
+  <tr><td class="sh-label">LAN</td><td class="sh-label">Description</td><td class="sh-label">Location</td><td class="sh-label">Condition</td><td class="sh-label">Comment</td></tr>
+  ${lanRows}
+</table>
+
+<table style="margin-top:8px">
+  <tr><td class="sh-band">Survey notes</td></tr>
+  <tr><td class="sh-small">${multiline(s.notes)}</td></tr>
+</table>`;
 }
 
 /** Standalone document (printing, email attachment). */
