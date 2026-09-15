@@ -29,6 +29,8 @@ const CUSTOMER_FIELDS = [
   "call_ref",
   "sit_number",
   "logging_customer",
+  "logging_contact_name",
+  "logging_contact_email",
   "customer_order_ref",
   "end_customer_company",
   "end_customer_first_name",

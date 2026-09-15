@@ -20,6 +20,11 @@ export type LoggedCall = {
   sit_number: string | null;
   logging_customer: string | null;
   client_email: string | null;
+  /** Person who logged the call — receives progress update emails. */
+  logging_contact_name: string | null;
+  logging_contact_email: string | null;
+  /** Master on/off for update emails to the logging contact. */
+  update_emails_enabled: boolean;
   customer_order_ref: string | null;
   end_customer_company: string;
   end_customer_first_name: string | null;
