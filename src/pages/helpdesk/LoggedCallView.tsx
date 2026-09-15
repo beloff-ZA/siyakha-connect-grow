@@ -312,6 +312,57 @@ const LoggedCallView: React.FC = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="files" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader className="pb-3"><CardTitle className="text-base">Uploaded forms, photos &amp; documents</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Upload the customer&apos;s own forms (like the Saicom site survey), site photos or a scanned sign-off. Only your team can open these.
+                </p>
+                <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                  <div>
+                    <Label>What is this file? (optional)</Label>
+                    <Input value={fileLabel} placeholder="e.g. Saicom site survey" onChange={(e) => setFileLabel(e.target.value)} />
+                  </div>
+                  <Button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="min-h-11">
+                    <Upload className="h-4 w-4 mr-1" />{uploading ? "Uploading…" : "Upload file"}
+                  </Button>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => handleUpload(e.target.files)}
+                />
+                {files.length === 0 && <p className="text-sm text-muted-foreground">No files uploaded yet.</p>}
+                {files.map((f) => (
+                  <div key={f.id} className="flex flex-wrap items-center gap-3 border-b border-border pb-2 text-sm">
+                    <Paperclip className="h-4 w-4 shrink-0" />
+                    <span className="flex-1 min-w-[160px] break-all">{f.label ? `${f.label} — ` : ""}{f.file_name}</span>
+                    <span className="text-muted-foreground">{formatFileSize(f.size_bytes)}</span>
+                    <Button variant="outline" size="sm" className="min-h-11" onClick={() => openFile(f)}>Open</Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="min-h-11"
+                      onClick={async () => {
+                        try {
+                          await removeAttachment(f);
+                          setFiles(await listAttachments(call.id));
+                        } catch (e: unknown) {
+                          toast({ title: "Could not remove file", description: (e as Error).message, variant: "destructive" });
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="signoff" className="space-y-4 pt-4">
             <Card>
               <CardHeader className="pb-3"><CardTitle className="text-base">Customer sign-off link</CardTitle></CardHeader>
