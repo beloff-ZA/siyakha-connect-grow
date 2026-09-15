@@ -909,6 +909,7 @@ export type Database = {
           signoff_token: string
           sit_number: string | null
           site_address: string | null
+          site_survey: Json | null
           special_instructions: string | null
           status: string
           updated_at: string
@@ -952,6 +953,7 @@ export type Database = {
           signoff_token?: string
           sit_number?: string | null
           site_address?: string | null
+          site_survey?: Json | null
           special_instructions?: string | null
           status?: string
           updated_at?: string
@@ -995,6 +997,7 @@ export type Database = {
           signoff_token?: string
           sit_number?: string | null
           site_address?: string | null
+          site_survey?: Json | null
           special_instructions?: string | null
           status?: string
           updated_at?: string
