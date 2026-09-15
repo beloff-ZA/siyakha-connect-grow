@@ -238,6 +238,13 @@ const LoggedCallView: React.FC = () => {
                   <div><Label>Contact number</Label><Input value={call.contact_number ?? ""} onChange={(e) => set("contact_number", e.target.value)} /></div>
                   <div><Label>Contact email</Label><Input type="email" value={call.contact_email ?? ""} onChange={(e) => set("contact_email", e.target.value)} /></div>
                 </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <Label>Client email (who logged the call)</Label>
+                    <Input type="email" value={call.client_email ?? ""} onChange={(e) => set("client_email", e.target.value)} />
+                    <p className="mt-1 text-xs text-muted-foreground">The signed job card is emailed here, plus accounts and admin.</p>
+                  </div>
+                </div>
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className="sm:col-span-2"><Label>Site address</Label><Input value={call.site_address ?? ""} onChange={(e) => set("site_address", e.target.value)} /></div>
                   <div><Label>Town / city</Label><Input value={call.city ?? ""} onChange={(e) => set("city", e.target.value)} /></div>
