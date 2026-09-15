@@ -171,9 +171,15 @@ const LoggedCallView: React.FC = () => {
               {[call.site_address, call.city].filter(Boolean).join(", ") || "No site address captured"}
             </p>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-2">
             <Badge variant="outline">{statusLabel(call.status)}</Badge>
             {locked ? <Badge className="bg-foreground text-background">Signed off</Badge> : <Badge variant="outline">Sign-off pending</Badge>}
+            <Link to={`/helpdesk/logged-calls/${call.id}/view`}>
+              <Button variant="outline" size="sm" className="min-h-11">
+                <Eye className="h-4 w-4 mr-1" />
+                View job card
+              </Button>
+            </Link>
           </div>
         </div>
 
