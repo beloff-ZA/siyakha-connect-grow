@@ -784,6 +784,176 @@ export type Database = {
         }
         Relationships: []
       }
+      logged_call_items: {
+        Row: {
+          call_id: string
+          created_at: string
+          description: string
+          id: string
+          quantity: number
+          serial_number: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          call_id: string
+          created_at?: string
+          description: string
+          id?: string
+          quantity?: number
+          serial_number?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          call_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          quantity?: number
+          serial_number?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "logged_call_items_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "logged_calls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      logged_calls: {
+        Row: {
+          arrival_at: string | null
+          call_ref: string
+          change_control: string | null
+          city: string | null
+          closing_km: number | null
+          contact_email: string | null
+          contact_number: string | null
+          created_at: string
+          created_by: string | null
+          customer_order_ref: string | null
+          departure_at: string | null
+          end_customer_company: string
+          end_customer_first_name: string | null
+          end_customer_last_name: string | null
+          engineer_name: string | null
+          engineer_user_id: string | null
+          fault_description: string | null
+          fault_solution: string | null
+          id: string
+          internal_notes: string | null
+          logged_at: string
+          logging_customer: string | null
+          opening_km: number | null
+          priority: string
+          satisfaction_rating: number | null
+          scheduled_at: string | null
+          signature_data: string | null
+          signed_at: string | null
+          signed_by_email: string | null
+          signed_by_name: string | null
+          signed_ip: string | null
+          signed_user_agent: string | null
+          signoff_comment: string | null
+          signoff_status: string
+          signoff_token: string
+          sit_number: string | null
+          site_address: string | null
+          special_instructions: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          arrival_at?: string | null
+          call_ref: string
+          change_control?: string | null
+          city?: string | null
+          closing_km?: number | null
+          contact_email?: string | null
+          contact_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_order_ref?: string | null
+          departure_at?: string | null
+          end_customer_company: string
+          end_customer_first_name?: string | null
+          end_customer_last_name?: string | null
+          engineer_name?: string | null
+          engineer_user_id?: string | null
+          fault_description?: string | null
+          fault_solution?: string | null
+          id?: string
+          internal_notes?: string | null
+          logged_at?: string
+          logging_customer?: string | null
+          opening_km?: number | null
+          priority?: string
+          satisfaction_rating?: number | null
+          scheduled_at?: string | null
+          signature_data?: string | null
+          signed_at?: string | null
+          signed_by_email?: string | null
+          signed_by_name?: string | null
+          signed_ip?: string | null
+          signed_user_agent?: string | null
+          signoff_comment?: string | null
+          signoff_status?: string
+          signoff_token?: string
+          sit_number?: string | null
+          site_address?: string | null
+          special_instructions?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          arrival_at?: string | null
+          call_ref?: string
+          change_control?: string | null
+          city?: string | null
+          closing_km?: number | null
+          contact_email?: string | null
+          contact_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_order_ref?: string | null
+          departure_at?: string | null
+          end_customer_company?: string
+          end_customer_first_name?: string | null
+          end_customer_last_name?: string | null
+          engineer_name?: string | null
+          engineer_user_id?: string | null
+          fault_description?: string | null
+          fault_solution?: string | null
+          id?: string
+          internal_notes?: string | null
+          logged_at?: string
+          logging_customer?: string | null
+          opening_km?: number | null
+          priority?: string
+          satisfaction_rating?: number | null
+          scheduled_at?: string | null
+          signature_data?: string | null
+          signed_at?: string | null
+          signed_by_email?: string | null
+          signed_by_name?: string | null
+          signed_ip?: string | null
+          signed_user_agent?: string | null
+          signoff_comment?: string | null
+          signoff_status?: string
+          signoff_token?: string
+          sit_number?: string | null
+          site_address?: string | null
+          special_instructions?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       packages: {
         Row: {
           billing_cycle: string | null
