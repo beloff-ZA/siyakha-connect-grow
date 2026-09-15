@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import AdminLayout from "@/components/helpdesk/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -103,12 +102,12 @@ const LoggedCallView: React.FC = () => {
     setItems(await listItems(call.id));
   };
 
-  if (loading) return <AdminLayout><p className="text-muted-foreground">Loading…</p></AdminLayout>;
+  if (loading) return <><p className="text-muted-foreground">Loading…</p></>;
   if (!call)
     return (
-      <AdminLayout>
+      <>
         <p className="text-muted-foreground">This call could not be found.</p>
-      </AdminLayout>
+      </>
     );
 
   const locked = call.signoff_status === "signed";
@@ -117,7 +116,7 @@ const LoggedCallView: React.FC = () => {
   const mins = timeOnSiteMinutes(call.arrival_at, call.departure_at);
 
   return (
-    <AdminLayout>
+    <>
       <div className="space-y-5">
         <div className="flex flex-wrap items-center gap-3">
           <Link to="/helpdesk/logged-calls">
@@ -311,7 +310,7 @@ const LoggedCallView: React.FC = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 

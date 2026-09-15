@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import AdminLayout from "@/components/helpdesk/AdminLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -112,7 +111,7 @@ const LoggedCalls: React.FC = () => {
   }, [calls]);
 
   return (
-    <AdminLayout>
+    <>
       <div className="space-y-5">
         <div className="grid gap-3 sm:grid-cols-3">
           {[
@@ -331,7 +330,7 @@ const LoggedCalls: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
