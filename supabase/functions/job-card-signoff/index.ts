@@ -51,6 +51,7 @@ const CUSTOMER_FIELDS = [
   "satisfaction_rating",
   "signoff_comment",
   "signature_data",
+  "site_survey",
 ].join(", ");
 
 function clean(input: unknown, max = 2000) {

@@ -9,8 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip, PenLine, FileText, Mail } from "lucide-react";
+import { ArrowLeft, Copy, Printer, Save, Trash2, Plus, CheckCircle2, Eye, Upload, Paperclip, PenLine, FileText, Mail, Wand2, ClipboardList } from "lucide-react";
 import JobCardSignSheet from "@/components/helpdesk/JobCardSignSheet";
+import SiteSurveyForm from "@/components/helpdesk/SiteSurveyForm";
+import { normaliseSurvey, surveyReadiness, type SiteSurvey } from "@/lib/siteSurvey";
+import { SOLUTION_TEMPLATES, polishWorkDone, type PolishResult } from "@/lib/writingPolish";
 import {
   CALL_PRIORITIES,
   CALL_STATUSES,
