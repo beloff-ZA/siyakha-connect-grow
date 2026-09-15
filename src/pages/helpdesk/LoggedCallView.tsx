@@ -66,11 +66,14 @@ const LoggedCallView: React.FC = () => {
   const [emailing, setEmailing] = useState(false);
   const [polish, setPolish] = useState<PolishResult | null>(null);
 
+  const savedStatusRef = React.useRef<string | null>(null);
+
   const load = async () => {
     setLoading(true);
     try {
       const c = await getCall(callId);
       setCall(c);
+      savedStatusRef.current = c?.status ?? null;
       if (c) {
         setItems(await listItems(c.id));
         setFiles(await listAttachments(c.id));
