@@ -211,7 +211,12 @@ type SurveyLike = {
 };
 
 const filled = (row: Record<string, unknown>) =>
-  ["description", "qty", "status", "location", "condition", "comment"].some((k) => String(row[k] ?? "").trim());
+  ["description", "qty", "status", "location", "condition", "comment", "photo_path"].some((k) =>
+    String(row[k] ?? "").trim(),
+  );
+
+const photoCell = (row: Record<string, unknown>) =>
+  `<td class="sh-value">${String(row.photo_path ?? "").trim() ? txt(row.photo_name) || "Photo attached" : ""}</td>`;
 
 /**
  * Site survey sheet (cabinet + LAN) appended to the job card when the engineer
