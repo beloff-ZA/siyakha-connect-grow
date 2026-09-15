@@ -1,22 +1,19 @@
 project_id = "xgnvaemzxfblhqxhsslq"
 
-[functions.bootstrap-admin]
-verify_jwt = false
-
-[functions.send-campaign]
-verify_jwt = false
-
-[functions.send-quote-request]
-verify_jwt = false
-
-[functions.send-enquiry]
-verify_jwt = false
-
-[functions.share-resolve]
-verify_jwt = false
-
-[functions.deck-client]
-verify_jwt = false
-
-[functions.submit-lead]
-verify_jwt = false
+[functions]
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.bootstrap-admin]
+    verify_jwt = false
+  [functions.deck-client]
+    verify_jwt = false
+  [functions.send-campaign]
+    verify_jwt = false
+  [functions.send-enquiry]
+    verify_jwt = false
+  [functions.send-quote-request]
+    verify_jwt = false
+  [functions.share-resolve]
+    verify_jwt = false
+  [functions.submit-lead]
+    verify_jwt = false
