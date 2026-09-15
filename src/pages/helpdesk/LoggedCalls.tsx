@@ -209,6 +209,13 @@ const LoggedCalls: React.FC = () => {
                   </div>
                 </div>
 
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <Label>Client email (who logged the call)</Label>
+                    <Input type="email" value={form.client_email} onChange={(e) => set("client_email", e.target.value)} placeholder="support@satio.co.za" />
+                  </div>
+                </div>
+
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className="sm:col-span-2">
                     <Label>Site address</Label>
