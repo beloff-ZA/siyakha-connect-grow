@@ -78,13 +78,14 @@ const LoggedCalls: React.FC = () => {
     if (!form.end_customer_company.trim()) return;
     setSaving(true);
     try {
-      await createCall(
+      const created = await createCall(
         {
           ...form,
           scheduled_at: form.scheduled_at ? new Date(form.scheduled_at).toISOString() : null,
         } as Partial<LoggedCall>,
         user?.id,
       );
+      void notifyCallUpdate(created, "created");
       toast({ title: "Call logged" });
       setForm(emptyForm);
       setShowCreate(false);
@@ -180,7 +181,17 @@ const LoggedCalls: React.FC = () => {
                   </div>
                   <div>
                     <Label>Customer logging the call</Label>
-                    <Input value={form.logging_customer} onChange={(e) => set("logging_customer", e.target.value)} placeholder="Satio Business Solutions" />
+                    <Input
+                      value={form.logging_customer}
+                      onChange={(e) => {
+                        set("logging_customer", e.target.value);
+                        const known = knownLoggingContact(e.target.value);
+                        if (known && !form.logging_contact_email) {
+                          setForm((f) => ({ ...f, logging_contact_name: known.name, logging_contact_email: known.email }));
+                        }
+                      }}
+                      placeholder="Satio Business Solutions"
+                    />
                   </div>
                   <div>
                     <Label>Their reference / order no.</Label>
