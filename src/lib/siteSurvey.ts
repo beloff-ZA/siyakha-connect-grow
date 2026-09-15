@@ -68,8 +68,8 @@ export function emptySurvey(seed: Partial<SiteSurvey> = {}): SiteSurvey {
     engineer: "",
     photos_taken: false,
     notes: "",
-    cabinet: CABINET_ITEMS.map((item) => ({ item, description: "", qty: "", status: "", comment: "" })),
-    lan: LAN_ITEMS.map((item) => ({ item, description: "", location: "", condition: "", comment: "" })),
+    cabinet: CABINET_ITEMS.map((item) => ({ item, description: "", qty: "", status: "", comment: "", photo_path: "", photo_name: "" })),
+    lan: LAN_ITEMS.map((item) => ({ item, description: "", location: "", condition: "", comment: "", photo_path: "", photo_name: "" })),
     ...seed,
   };
 }
@@ -88,7 +88,7 @@ export function normaliseSurvey(raw: unknown, seed: Partial<SiteSurvey> = {}): S
 }
 
 const rowFilled = (row: Record<string, unknown>) =>
-  ["description", "qty", "status", "condition", "location", "comment"].some((k) =>
+  ["description", "qty", "status", "condition", "location", "comment", "photo_path"].some((k) =>
     String((row as Record<string, unknown>)[k] ?? "").trim(),
   );
 
