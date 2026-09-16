@@ -1,29 +1,36 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { CheckCircle2, ChevronLeft, ChevronRight, Send } from "lucide-react";
+import { ChevronLeft, ChevronRight, Lock, Save, Send } from "lucide-react";
 import { applyGuestPrivacyMeta } from "@/lib/shareLinks";
 import FieldPhotoStep from "@/components/site/FieldPhotoStep";
 import VoiceTextArea from "@/components/site/VoiceTextArea";
 import type { PhotoCategory } from "@/lib/siteDelivery";
 import {
+  answersFromUpdate,
   buildUpdatePayload,
   dateChoiceLabel,
+  dayRecord,
   emptyAnswers,
+  isLockedUpdate,
   localDate,
   problemSeverity,
   PROBLEM_LABELS,
   QUANTITY_UNITS,
+  readyToSave,
   readyToSend,
+  savedTime,
   workSummary,
   WORK_CHIPS,
   type FieldAnswers,
   type ProblemLevel,
+  type StoredUpdate,
 } from "@/lib/fieldForm";
 import {
   linkMessage,
   loadFieldJob,
   readyPhotos,
   reportFieldIssue,
+  saveFieldUpdate,
   setFieldStepStatus,
   submitFieldUpdate,
   uploadFieldPhoto,
@@ -36,8 +43,17 @@ import { toast } from "@/hooks/use-toast";
 const bigOption =
   "min-h-[64px] w-full border-2 px-4 text-left text-lg font-semibold flex items-center justify-between gap-3";
 const navBtn = "min-h-[56px] flex-1 border-2 border-foreground text-base font-semibold flex items-center justify-center gap-2";
+/**
+ * The two deliberate colour exceptions on this page, approved for the site form:
+ * green keeps the day's report up to date, red hands it to the office.
+ */
+const saveBtn =
+  "min-h-[64px] w-full border-2 border-[#127A3E] bg-[#127A3E] text-lg font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50";
+const submitBtn =
+  "min-h-[76px] w-full border-2 border-[#B01B1B] bg-[#B01B1B] text-xl font-bold text-white flex items-center justify-center gap-3 disabled:opacity-50";
 
 const STEPS = ["Where", "What", "How much", "Problems", "Needs", "Photos", "Next", "Send"] as const;
+
 
 const FieldJobPage: React.FC = () => {
   const { token = "" } = useParams();
