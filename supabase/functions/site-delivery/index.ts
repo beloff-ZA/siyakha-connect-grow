@@ -579,7 +579,7 @@ Deno.serve(async (req) => {
       admin
         .from("portal_site_updates")
         .select(
-          "id, shift_date, submitted_at, submitted_by_name, category, photos_outstanding, photo_evidence_required, photo_evidence_override_reason, floor_id, area_label, work_completed, work_outstanding, blockers, materials_required, team_onsite, progress_pct, next_shift_plan, notes, approval_status, client_visible",
+          "id, shift_date, submitted_at, updated_at, submitted_by_name, field_access_id, category, photos_outstanding, photo_evidence_required, photo_evidence_override_reason, floor_id, area_label, work_completed, work_outstanding, blockers, materials_required, team_onsite, progress_pct, next_shift_plan, notes, approval_status, approved_at, locked_at, client_visible",
         )
         .eq("project_id", projectId)
         .order("submitted_at", { ascending: false })
