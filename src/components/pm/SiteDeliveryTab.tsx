@@ -462,6 +462,7 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                                 <div className="h-20 w-full bg-muted" />
                               )}
                               <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{p.category}</p>
+                              {p.title && <p className="text-[11px] font-medium">{p.title}</p>}
                               {p.caption && <p className="text-[11px]">{p.caption}</p>}
                               <p className="text-[10px] text-muted-foreground">
                                 {p.timestamp_confirmed ? "Timestamp confirmed" : "Timestamp not confirmed"}

@@ -188,6 +188,7 @@ export type SitePhoto = {
   issue_id: string | null;
   floor_id: string | null;
   category: PhotoCategory;
+  title?: string | null;
   caption: string | null;
   storage_path: string;
   original_storage_path: string | null;
