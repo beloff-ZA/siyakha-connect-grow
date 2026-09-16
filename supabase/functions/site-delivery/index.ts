@@ -57,6 +57,13 @@ const SEVERITIES = new Set(["low", "medium", "high", "critical"]);
 
 const str = (v: unknown, max = 4000) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 const clean = (v: unknown, max = 4000) => str(v, max).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "");
+/** Accepts only a real timestamp read from the file; never invents one. */
+const isoOrNull = (v: unknown) => {
+  const s = str(v, 40);
+  if (!s) return null;
+  const d = new Date(s);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+};
 const pct = (v: unknown) => {
   const n = Number(v);
   return Number.isFinite(n) ? Math.min(100, Math.max(0, Math.round(n))) : 0;
