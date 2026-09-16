@@ -44,6 +44,14 @@ const ResetPassword: React.FC = () => {
       return Boolean(data.session);
     };
 
+    /** Auth errors are technical; the person only needs to know to ask for a new link. */
+    const friendly = (raw: string) =>
+      /expired|invalid or has expired/i.test(raw)
+        ? "This password reset link has expired or has already been used."
+        : "This password reset link could not be verified. It may have expired or already been used.";
+
+
+
     const establish = async (link: RecoveryLink | null) => {
       if (!link) {
         // No link on this page load — only an already-restored recovery session
