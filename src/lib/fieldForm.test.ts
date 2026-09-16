@@ -1,15 +1,21 @@
 import { describe, expect, it } from "vitest";
 import {
+  answersFromUpdate,
   buildUpdatePayload,
   dateChoiceLabel,
+  dayRecord,
   emptyAnswers,
   isFutureDate,
+  isLockedUpdate,
   localDate,
   problemSeverity,
   quantityLine,
+  readyToSave,
   readyToSend,
   workSummary,
+  type StoredUpdate,
 } from "@/lib/fieldForm";
+
 
 const base = () => ({ ...emptyAnswers(localDate()), work_text: "Pulled cables on fifth floor" });
 
