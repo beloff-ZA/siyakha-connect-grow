@@ -332,6 +332,21 @@ export async function loadSiteDelivery(projectId: string) {
   };
 }
 
+/**
+ * Just the technician/client links for one project, for admin screens that only
+ * manage sharing. Same records the site-delivery tab reads.
+ */
+export async function loadDeliveryLinks(projectId: string) {
+  const { data, error } = await db
+    .from("portal_share_links")
+    .select("id, title, link_role, assignee_label, recipient_label, expires_at, revoked_at, access_count, last_accessed_at, created_at")
+    .eq("project_id", projectId)
+    .eq("resource_type", "site_delivery")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as DeliveryLink[];
+}
+
 /** Publishes or hides one project document on the client progress link. */
 export async function setDocumentVisibility(id: string, clientVisible: boolean) {
   const { error } = await db.from("portal_documents").update({ client_visible: clientVisible }).eq("id", id);
