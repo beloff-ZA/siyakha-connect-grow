@@ -39,6 +39,9 @@ export type FieldAnswers = {
   next_text: string;
   /** Optional site note kept with the day's record in the project. */
   note_text: string;
+  /** Engineer flags work that may be extra. The office decides, never the form. */
+  extra_work: boolean;
+  extra_work_text: string;
 };
 
 export const emptyAnswers = (workDate: string): FieldAnswers => ({
@@ -55,6 +58,8 @@ export const emptyAnswers = (workDate: string): FieldAnswers => ({
   needs_text: "",
   next_text: "",
   note_text: "",
+  extra_work: false,
+  extra_work_text: "",
 });
 
 /** Local calendar date (site time), not UTC, so "today" matches the engineer's day. */
