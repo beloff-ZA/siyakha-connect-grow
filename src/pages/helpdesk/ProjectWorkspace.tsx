@@ -117,7 +117,14 @@ const ProjectWorkspace: React.FC = () => {
               <ClientEngagementTab projectId={projectId} projectTitle={project.title} />
             </TabsContent>
             <TabsContent value="delivery">
-              <SiteDeliveryTab projectId={projectId} projectTitle={project.title} clientId={project.client_id} />
+              <SiteDeliveryTab
+                projectId={projectId}
+                projectTitle={project.title}
+                clientId={project.client_id}
+                projectReference={project.reference}
+                projectAddress={site?.name ?? project.address}
+                clientName={client?.display_name ?? null}
+              />
             </TabsContent>
             <TabsContent value="share">
               <ReportsShareTab {...fixed} />
