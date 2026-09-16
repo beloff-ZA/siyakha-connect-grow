@@ -4672,6 +4672,7 @@ export type Database = {
           revoked_at: string | null
           snapshot: Json
           title: string
+          token_cipher: string | null
           token_hash: string
           updated_at: string
         }
@@ -4701,6 +4702,7 @@ export type Database = {
           revoked_at?: string | null
           snapshot?: Json
           title: string
+          token_cipher?: string | null
           token_hash: string
           updated_at?: string
         }
@@ -4730,6 +4732,7 @@ export type Database = {
           revoked_at?: string | null
           snapshot?: Json
           title?: string
+          token_cipher?: string | null
           token_hash?: string
           updated_at?: string
         }

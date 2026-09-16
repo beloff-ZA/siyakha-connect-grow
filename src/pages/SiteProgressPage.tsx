@@ -141,12 +141,16 @@ const SiteProgressPage: React.FC = () => {
               <article key={f.id} className="border border-border bg-background p-4">
                 <div className="flex items-baseline justify-between gap-3">
                   <h3 className="text-sm font-semibold">{f.display_name}</h3>
-                  <span className="text-sm font-semibold">{f.progress_pct}%</span>
+                  <span className="text-sm font-semibold">
+                    {typeof f.progress_pct === "number" ? `${f.progress_pct}%` : NOT_REPORTED}
+                  </span>
                 </div>
                 <div className="mt-3 h-1.5 w-full bg-muted">
-                  <div className="h-1.5 bg-foreground" style={{ width: `${f.progress_pct}%` }} />
+                  <div className="h-1.5 bg-foreground" style={{ width: `${f.progress_pct ?? 0}%` }} />
                 </div>
-                <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{titleCase(f.status)}</p>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  {f.status ? titleCase(f.status) : NOT_REPORTED}
+                </p>
                 <p className="mt-2 text-xs text-muted-foreground">{f.note ? f.note : `Points completed: ${NOT_REPORTED}`}</p>
               </article>
             ))}
@@ -230,8 +234,9 @@ const SiteProgressPage: React.FC = () => {
                                   <div className="h-32 w-full bg-muted" />
                                 )}
                                 <figcaption className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                                  {ph.category}
+                                  {ph.title || ph.category}
                                   {ph.caption ? ` — ${ph.caption}` : ""}
+                                  {ph.timestamp_confirmed ? " · Timestamped" : ""}
                                 </figcaption>
                               </figure>
                             ))}
@@ -268,8 +273,9 @@ const SiteProgressPage: React.FC = () => {
                           <div className="h-28 w-full bg-muted" />
                         )}
                         <figcaption className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                          {ph.category}
+                          {ph.title || ph.category}
                           {ph.caption ? ` — ${ph.caption}` : ""}
+                          {ph.timestamp_confirmed ? " · Timestamped" : ""}
                         </figcaption>
                       </figure>
                     ))}

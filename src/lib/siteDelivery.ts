@@ -517,7 +517,31 @@ export async function issueDeliveryLink(input: {
     if (accessError) throw accessError;
   }
 
+  // Keeps an encrypted copy server-side so the office can copy the same link
+  // again tomorrow. The database still never holds a usable link.
+  try {
+    await supabase.functions.invoke("share-link-vault", {
+      body: { action: "store", link_id: data.id, token },
+    });
+  } catch {
+    /* the link works regardless; it just may not be re-copyable later */
+  }
+
   return { id: data.id as string, url: input.role === "field" ? fieldUrl(token) : clientProgressUrl(token) };
+}
+
+/**
+ * Recovers the address of an already-issued link for an admin. The plain link is
+ * decrypted server-side only and never stored in the browser.
+ */
+export async function revealDeliveryLink(id: string, role: "client" | "field") {
+  const { data, error } = await supabase.functions.invoke("share-link-vault", {
+    body: { action: "reveal", link_id: id },
+  });
+  if (error) throw error;
+  const res = data as { ok?: boolean; token?: string; reason?: string; error?: string };
+  if (!res?.ok || !res.token) return null;
+  return role === "field" ? fieldUrl(res.token) : clientProgressUrl(res.token);
 }
 
 export async function revokeDeliveryLink(id: string) {
