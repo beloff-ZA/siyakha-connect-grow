@@ -129,6 +129,7 @@ const FieldJobPage: React.FC = () => {
       category,
       caption: "",
       floor_id: form.floor_id || null,
+      timestamp_confirmed: false,
       previewUrl: URL.createObjectURL(file),
       file,
     }));
@@ -476,8 +477,13 @@ const PhotoBlock: React.FC<{
   const libraryRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="border border-border p-3">
-      <span className={label}>Photos of the work</span>
+    <div className="border border-foreground p-3">
+      <span className={label}>Photo evidence of the work</span>
+      <p className="mt-1 text-sm font-semibold">{TIMESTAMP_EVIDENCE_NOTICE}</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Take the photos in the Timestamp App, then choose them here. Tick the box on each photo to confirm it came from the
+        Timestamp App. Siyakha Connect never adds a timestamp to your pictures.
+      </p>
       <select className={input} value={category} onChange={(e) => setCategory(e.target.value as PhotoCategory)}>
         {PHOTO_CATEGORIES.map((c) => (
           <option key={c.value} value={c.value}>
