@@ -4806,6 +4806,7 @@ export type Database = {
           approved_by: string | null
           area_label: string | null
           blockers: string | null
+          category: string | null
           client_visible: boolean
           created_at: string
           field_access_id: string | null
@@ -4816,6 +4817,7 @@ export type Database = {
           materials_required: string | null
           next_shift_plan: string | null
           notes: string | null
+          photos_outstanding: boolean
           progress_pct: number
           project_id: string
           published_at: string | null
@@ -4835,6 +4837,7 @@ export type Database = {
           approved_by?: string | null
           area_label?: string | null
           blockers?: string | null
+          category?: string | null
           client_visible?: boolean
           created_at?: string
           field_access_id?: string | null
@@ -4845,6 +4848,7 @@ export type Database = {
           materials_required?: string | null
           next_shift_plan?: string | null
           notes?: string | null
+          photos_outstanding?: boolean
           progress_pct?: number
           project_id: string
           published_at?: string | null
@@ -4864,6 +4868,7 @@ export type Database = {
           approved_by?: string | null
           area_label?: string | null
           blockers?: string | null
+          category?: string | null
           client_visible?: boolean
           created_at?: string
           field_access_id?: string | null
@@ -4874,6 +4879,7 @@ export type Database = {
           materials_required?: string | null
           next_shift_plan?: string | null
           notes?: string | null
+          photos_outstanding?: boolean
           progress_pct?: number
           project_id?: string
           published_at?: string | null
