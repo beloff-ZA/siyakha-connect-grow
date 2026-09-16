@@ -61,6 +61,8 @@ import JobCardSignoff from "./pages/JobCardSignoff";
 // Client Portal
 import SharePage from "./pages/SharePage";
 import ProjectDeckPage from "./pages/ProjectDeckPage";
+import FieldJobPage from "./pages/FieldJobPage";
+import SiteProgressPage from "./pages/SiteProgressPage";
 import ClientRoute from "./components/portal/ClientRoute";
 import PortalDashboard from "./pages/portal/PortalDashboard";
 import PortalProject from "./pages/portal/PortalProject";
@@ -113,6 +115,8 @@ function App() {
               <Route path="/share/:token" element={<SharePage />} />
               <Route path="/project-deck/:token" element={<ProjectDeckPage />} />
               <Route path="/sign-off/:token" element={<JobCardSignoff />} />
+              <Route path="/field/:token" element={<FieldJobPage />} />
+              <Route path="/site-progress/:token" element={<SiteProgressPage />} />
               <Route path="/portal" element={<ClientRoute><PortalDashboard /></ClientRoute>} />
               <Route path="/portal/project" element={<ClientRoute><PortalProject /></ClientRoute>} />
               <Route path="/portal/tracker" element={<ClientRoute><PortalTracker /></ClientRoute>} />
