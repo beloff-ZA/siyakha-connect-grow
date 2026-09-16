@@ -30,6 +30,7 @@ import {
   setUpdateBaseline,
   evidenceState,
   overridePhotoEvidence,
+  setPhotoScopeChange,
   setPhotoTimestampConfirmed,
   setPhotoVisibility,
   setUpdateVisibility,
@@ -40,6 +41,17 @@ import {
 } from "@/lib/siteDelivery";
 
 const btn = "border border-border px-3 py-2 text-[11px] uppercase tracking-[0.18em] hover:bg-muted";
+
+/** Blank additional-work item. Operational fields only — never any pricing. */
+const emptyScope = () => ({
+  title: "",
+  description: "",
+  trigger_reason: "",
+  floor_id: "",
+  source: "admin_update",
+  raised_by_name: "",
+  work_date: new Date().toISOString().slice(0, 10),
+});
 const fmtDay = (d: string) =>
   new Date(`${d}T00:00:00`).toLocaleDateString("en-ZA", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
