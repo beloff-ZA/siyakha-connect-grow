@@ -294,6 +294,12 @@ Deno.serve(async (req) => {
       if (!insert.work_completed && !insert.work_outstanding && !insert.notes) {
         return json({ error: "Add what was completed or what is outstanding before submitting." }, 400);
       }
+      // Earlier work dates are allowed (an engineer may report a previous day),
+      // future work dates are not.
+      const siteToday = new Date(Date.now() + 2 * 3600000).toISOString().slice(0, 10);
+      if (insert.shift_date > siteToday) {
+        return json({ error: "Choose today or an earlier day." }, 400);
+      }
       const { data: created, error } = await admin.from("portal_site_updates").insert(insert).select("id").maybeSingle();
       if (error) return json({ error: "The update could not be saved." }, 500);
 

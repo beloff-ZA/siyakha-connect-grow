@@ -3,7 +3,9 @@ import { Panel, Stat, Field, Chip, selectCls } from "@/components/pm/ui";
 import { signedUrl } from "@/lib/portalFiles";
 import { toast } from "@/hooks/use-toast";
 import {
+  addScopeChange,
   approveUpdate,
+  BASELINE_CATEGORIES,
   complianceFlags,
   dailyTimeline,
   deliveryCounts,
@@ -15,8 +17,13 @@ import {
   lockUpdate,
   overallProgress,
   patchIssue,
+  patchScopeChange,
   revokeDeliveryLink,
+  SCOPE_SOURCES,
+  SCOPE_STATUSES,
+  scopeSourceLabel,
   setFloorProgress,
+  setUpdateBaseline,
   evidenceState,
   overridePhotoEvidence,
   setPhotoTimestampConfirmed,
@@ -29,6 +36,8 @@ import {
 } from "@/lib/siteDelivery";
 
 const btn = "border border-border px-3 py-2 text-[11px] uppercase tracking-[0.18em] hover:bg-muted";
+const fmtDay = (d: string) =>
+  new Date(`${d}T00:00:00`).toLocaleDateString("en-ZA", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
 /** Daily site delivery: progress dashboard, approvals and the two guest links. */
 const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clientId: string | null }> = ({
@@ -249,9 +258,7 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
         <div className="space-y-5">
           {timeline.map(({ date, rows }) => (
             <div key={date}>
-              <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                {new Date(date).toLocaleDateString("en-ZA", { weekday: "short", day: "2-digit", month: "short", year: "numeric" })}
-              </p>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Work date · {fmtDay(date)}</p>
               <div className="mt-2 space-y-3">
                 {rows.map((u) => {
                   const photos = data.photos.filter((p) => p.update_id === u.id);
@@ -266,10 +273,54 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                         {u.area_label && <Chip>{u.area_label}</Chip>}
                         <Chip>{u.progress_pct}%</Chip>
                         <Chip>{u.approval_status}</Chip>
+                        {u.backdated && <Chip>Backdated</Chip>}
                         {u.client_visible && <Chip>Client visible</Chip>}
                         <span className="text-xs text-muted-foreground">
-                          submitted {new Date(u.submitted_at).toLocaleString("en-ZA")}
+                          Work date {fmtDay(u.shift_date)} · Submitted on {new Date(u.submitted_at).toLocaleString("en-ZA")}
                         </span>
+                      </div>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Scope baseline</span>
+                        <select
+                          className="h-9 border border-input bg-background px-2 text-sm"
+                          defaultValue={u.baseline_category ?? ""}
+                          onChange={(e) => run(() => setUpdateBaseline(u.id, e.target.value), "Baseline category saved")}
+                        >
+                          <option value="">Not tagged</option>
+                          {BASELINE_CATEGORIES.map((c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          type="button"
+                          className={btn}
+                          disabled={busy}
+                          onClick={() => {
+                            const title = window.prompt("Short title for the additional work identified on this day");
+                            if (!title?.trim()) return;
+                            run(
+                              () =>
+                                addScopeChange({
+                                  project_id: projectId,
+                                  work_date: u.shift_date,
+                                  title,
+                                  description: u.work_completed ?? undefined,
+                                  trigger_reason: u.blockers ?? undefined,
+                                  floor_id: u.floor_id,
+                                  update_id: u.id,
+                                  area_label: u.area_label ?? undefined,
+                                  source: u.source === "field" ? "field_update" : "admin_update",
+                                  baseline_category: u.baseline_category,
+                                  raised_by_name: u.submitted_by_name,
+                                }),
+                              "Recorded as additional work, under review",
+                            );
+                          }}
+                        >
+                          Flag as additional work
+                        </button>
                       </div>
                       <dl className="mt-2 grid gap-2 text-sm sm:grid-cols-2">
                         {[
@@ -452,6 +503,67 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
             </div>
           ))}
           {!data.issues.length && <p className="text-sm text-muted-foreground">No issues reported.</p>}
+        </div>
+      </Panel>
+
+      <Panel title="Additional works identified on site (operational record — no pricing)">
+        <p className="mb-3 text-xs text-muted-foreground">
+          Work identified outside the agreed scope of works. This register carries no rates, costs or totals. Items stay under
+          review until you decide otherwise.
+        </p>
+        <div className="space-y-3">
+          {data.scopeChanges.map((s) => (
+            <div key={s.id} className="border border-border p-3 text-sm">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-medium">{s.title}</span>
+                <Chip>{fmtDay(s.work_date)}</Chip>
+                <Chip>{floorName(s.floor_id)}</Chip>
+                <Chip>{scopeSourceLabel(s.source)}</Chip>
+                {s.baseline_category && <Chip>{s.baseline_category}</Chip>}
+                {s.client_visible && <Chip>Client visible</Chip>}
+              </div>
+              {s.description && <p className="mt-1 whitespace-pre-wrap">{s.description}</p>}
+              {s.trigger_reason && (
+                <p className="mt-1 text-xs text-muted-foreground">Why it came up: {s.trigger_reason}</p>
+              )}
+              {s.internal_notes && <p className="mt-1 text-xs text-muted-foreground">Office note: {s.internal_notes}</p>}
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <select
+                  className="h-9 border border-input bg-background px-2 text-sm"
+                  defaultValue={s.status}
+                  onChange={(e) => run(() => patchScopeChange(s.id, { status: e.target.value }), "Status saved")}
+                >
+                  {SCOPE_STATUSES.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  className="h-9 border border-input bg-background px-2 text-sm"
+                  defaultValue={s.source}
+                  onChange={(e) => run(() => patchScopeChange(s.id, { source: e.target.value }), "Source saved")}
+                >
+                  {SCOPE_SOURCES.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className={btn}
+                  disabled={busy}
+                  onClick={() => run(() => patchScopeChange(s.id, { client_visible: !s.client_visible }), "Visibility saved")}
+                >
+                  {s.client_visible ? "Hide from client" : "Show client"}
+                </button>
+              </div>
+            </div>
+          ))}
+          {!data.scopeChanges.length && (
+            <p className="text-sm text-muted-foreground">No additional works recorded.</p>
+          )}
         </div>
       </Panel>
     </div>

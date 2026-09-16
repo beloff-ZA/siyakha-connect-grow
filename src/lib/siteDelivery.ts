@@ -35,13 +35,117 @@ export const TIMESTAMP_EVIDENCE_NOTICE =
 
 /** Diary categories. Free text in the database, so this list can grow freely. */
 export const UPDATE_CATEGORIES = [
+  "Health & Safety",
+  "Cabling",
   "Site Work",
+  "Site Constraint",
   "Procurement",
+  "Additional Routing",
   "Testing & Commissioning",
   "Snagging",
   "Delay / Standing Time",
   "Other",
 ] as const;
+
+/**
+ * Scope baseline categories taken from the existing Sun International network
+ * infrastructure scope of works. Office reporting only — quantities live in the
+ * scope document and are never restated or invented here.
+ */
+export const BASELINE_CATEGORIES = [
+  "LAN Move",
+  "LAN New Install",
+  "WiFi Access Points",
+  "Surveillance Cameras",
+  "Biometric Readers",
+] as const;
+
+/* ------------------------------------------- additional / out-of-scope work */
+
+export const SCOPE_STATUSES = [
+  { value: "identified", label: "Identified" },
+  { value: "under_review", label: "Under review" },
+  { value: "approved_to_proceed", label: "Approved to proceed" },
+  { value: "completed", label: "Completed" },
+  { value: "not_proceeding", label: "Not proceeding" },
+] as const;
+
+export const SCOPE_SOURCES = [
+  { value: "field_update", label: "Field engineer update" },
+  { value: "admin_update", label: "Office update" },
+  { value: "client_instruction", label: "Client instruction" },
+  { value: "site_condition", label: "Site condition" },
+] as const;
+
+/**
+ * Operational register of additional works identified on site. Deliberately
+ * carries no rates, costs, margins or totals — commercial decisions are handled
+ * outside this project workflow.
+ */
+export type ScopeChange = {
+  id: string;
+  project_id: string;
+  floor_id: string | null;
+  update_id: string | null;
+  issue_id: string | null;
+  work_date: string;
+  area_label: string | null;
+  title: string;
+  description: string | null;
+  trigger_reason: string | null;
+  source: string;
+  baseline_category: string | null;
+  status: string;
+  internal_notes: string | null;
+  client_visible: boolean;
+  raised_by_name: string | null;
+  created_at: string;
+};
+
+export const scopeStatusLabel = (value: string) =>
+  SCOPE_STATUSES.find((s) => s.value === value)?.label ?? value.replace(/_/g, " ");
+
+export const scopeSourceLabel = (value: string) =>
+  SCOPE_SOURCES.find((s) => s.value === value)?.label ?? value.replace(/_/g, " ");
+
+export async function addScopeChange(input: {
+  project_id: string;
+  work_date: string;
+  title: string;
+  description?: string;
+  trigger_reason?: string;
+  floor_id?: string | null;
+  update_id?: string | null;
+  area_label?: string;
+  source?: string;
+  baseline_category?: string | null;
+  raised_by_name?: string;
+}) {
+  if (!input.title.trim()) throw new Error("Give the additional work a short title.");
+  const { data: auth } = await supabase.auth.getUser();
+  const { error } = await db.from("portal_scope_changes").insert({
+    project_id: input.project_id,
+    work_date: input.work_date,
+    title: input.title.trim(),
+    description: input.description?.trim() || null,
+    trigger_reason: input.trigger_reason?.trim() || null,
+    floor_id: input.floor_id || null,
+    update_id: input.update_id || null,
+    area_label: input.area_label?.trim() || null,
+    source: input.source ?? "site_condition",
+    baseline_category: input.baseline_category || null,
+    status: "under_review",
+    client_visible: false,
+    raised_by_name: input.raised_by_name?.trim() || null,
+    created_by: auth.user?.id ?? null,
+  });
+  if (error) throw error;
+}
+
+export async function patchScopeChange(id: string, patch: Partial<ScopeChange>) {
+  const { error } = await db.from("portal_scope_changes").update(patch).eq("id", id);
+  if (error) throw error;
+}
 
 export type ApprovalStatus = "draft" | "submitted" | "approved" | "locked";
 
@@ -56,6 +160,8 @@ export type SiteUpdate = {
   source: string;
   category: string | null;
   photos_outstanding: boolean;
+  baseline_category: string | null;
+  backdated: boolean;
   photo_evidence_required: boolean;
   photo_evidence_override_reason: string | null;
   photo_evidence_override_by: string | null;
@@ -168,7 +274,7 @@ export const clientProgressUrl = (token: string) => `${window.location.origin}/s
 /* ------------------------------------------------------------------- loaders */
 
 export async function loadSiteDelivery(projectId: string) {
-  const [floors, progress, updates, photos, issues, links, access] = await Promise.all([
+  const [floors, progress, updates, photos, issues, links, access, scope] = await Promise.all([
     db.from("portal_floors").select("id, level_number, display_name, floor_use, plan_image_path, client_visible, sort_order")
       .eq("project_id", projectId).order("sort_order"),
     db.from("portal_floor_progress").select("*").eq("project_id", projectId),
@@ -178,8 +284,9 @@ export async function loadSiteDelivery(projectId: string) {
     db.from("portal_share_links").select("id, title, link_role, assignee_label, recipient_label, expires_at, revoked_at, access_count, last_accessed_at, created_at")
       .eq("project_id", projectId).eq("resource_type", "site_delivery").order("created_at", { ascending: false }),
     db.from("portal_field_access").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
+    db.from("portal_scope_changes").select("*").eq("project_id", projectId).order("work_date", { ascending: false }),
   ]);
-  const firstError = [floors, progress, updates, photos, issues, links, access].find((r: any) => r.error)?.error;
+  const firstError = [floors, progress, updates, photos, issues, links, access, scope].find((r: any) => r.error)?.error;
   if (firstError) throw firstError;
   return {
     floors: (floors.data ?? []) as SiteFloor[],
@@ -189,6 +296,7 @@ export async function loadSiteDelivery(projectId: string) {
     issues: (issues.data ?? []) as SiteIssue[],
     links: (links.data ?? []) as DeliveryLink[],
     access: (access.data ?? []) as FieldAccess[],
+    scopeChanges: (scope.data ?? []) as ScopeChange[],
   };
 }
 
@@ -295,6 +403,12 @@ export async function setPhotoVisibility(id: string, clientVisible: boolean) {
 /** Office correction of the engineer's timestamp declaration. */
 export async function setPhotoTimestampConfirmed(id: string, confirmed: boolean) {
   const { error } = await db.from("portal_site_update_photos").update({ timestamp_confirmed: confirmed }).eq("id", id);
+  if (error) throw error;
+}
+
+/** Office-only tagging of a day against the scope baseline. */
+export async function setUpdateBaseline(id: string, category: string | null) {
+  const { error } = await db.from("portal_site_updates").update({ baseline_category: category || null }).eq("id", id);
   if (error) throw error;
 }
 
