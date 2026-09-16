@@ -211,8 +211,7 @@ export type IssueSubmission = {
   severity: string;
   floor_id: string | null;
   location_note: string;
-  reported_by_name: string;
-  photos: Omit<DraftPhoto, "previewUrl">[];
+  photos: ReadyPhoto[];
 };
 
 export const reportFieldIssue = (token: string, payload: IssueSubmission) =>
