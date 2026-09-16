@@ -231,6 +231,16 @@ const FieldJobPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answers, locked]);
 
+  // A named photo is kept with the day as soon as it has finished loading.
+  const namedPhotoKey = sendable.map((p) => `${p.storage_path}:${p.title}`).join("|");
+  useEffect(() => {
+    if (!namedPhotoKey || locked) return;
+    const t = setTimeout(() => void persist(false, true), 900);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [namedPhotoKey, locked]);
+
+
   const uploadOne = useCallback(
     async (localId: string, file: File) => {
       try {
