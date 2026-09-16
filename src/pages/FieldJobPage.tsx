@@ -539,6 +539,25 @@ const PhotoBlock: React.FC<{
                     setPhotos((list) => list.map((x) => (x.localId === p.localId ? { ...x, caption: e.target.value } : x)))
                   }
                 />
+                <label className="mt-2 flex min-h-[44px] items-center gap-2 text-xs">
+                  <input
+                    type="checkbox"
+                    className="h-5 w-5"
+                    checked={p.timestamp_confirmed}
+                    onChange={(e) =>
+                      setPhotos((list) =>
+                        list.map((x) => (x.localId === p.localId ? { ...x, timestamp_confirmed: e.target.checked } : x)),
+                      )
+                    }
+                  />
+                  <span>Taken with the Timestamp App</span>
+                </label>
+                <p className="text-[10px] text-muted-foreground">
+                  Timestamp evidence: {p.timestamp_confirmed ? "confirmed by engineer" : "not confirmed"}
+                  {p.exif_captured_at
+                    ? ` · camera time ${new Date(p.exif_captured_at).toLocaleString("en-ZA")}`
+                    : ""}
+                </p>
                 {p.status === "failed" && (
                   <div className="mt-1 flex items-center gap-2">
                     <span className="text-[11px] text-destructive">{p.errorMessage}</span>
