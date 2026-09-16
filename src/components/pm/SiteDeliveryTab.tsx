@@ -255,7 +255,9 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                     <div key={u.id} className="border border-border p-3">
                       <div className="flex flex-wrap items-center gap-2 text-sm">
                         <span className="font-medium">{u.submitted_by_name}</span>
+                        {u.category && <Chip>{u.category}</Chip>}
                         <Chip>{floorName(u.floor_id)}</Chip>
+                        {u.photos_outstanding && <Chip>Photos outstanding</Chip>}
                         {u.area_label && <Chip>{u.area_label}</Chip>}
                         <Chip>{u.progress_pct}%</Chip>
                         <Chip>{u.approval_status}</Chip>

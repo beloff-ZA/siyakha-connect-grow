@@ -122,6 +122,7 @@ const SiteProgressPage: React.FC = () => {
                   return (
                     <article key={u.id} className="border border-border p-3">
                       <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                        {u.category ? `${u.category} · ` : ""}
                         {floorName(u.floor_id)}
                         {u.area_label ? ` · ${u.area_label}` : ""} · {u.progress_pct}%
                       </p>
@@ -133,6 +134,9 @@ const SiteProgressPage: React.FC = () => {
                       )}
                       {u.next_shift_plan && (
                         <p className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">Next: {u.next_shift_plan}</p>
+                      )}
+                      {u.photos_outstanding && (
+                        <p className="mt-2 text-xs uppercase tracking-[0.14em] text-muted-foreground">Progress photos to follow</p>
                       )}
                       {!!photos.length && (
                         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">

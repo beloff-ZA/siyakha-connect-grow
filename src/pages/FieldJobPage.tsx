@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { applyGuestPrivacyMeta } from "@/lib/shareLinks";
-import { PHOTO_CATEGORIES, type PhotoCategory } from "@/lib/siteDelivery";
+import { PHOTO_CATEGORIES, UPDATE_CATEGORIES, type PhotoCategory } from "@/lib/siteDelivery";
 import {
   clearDevice,
   linkMessage,
   loadFieldJob,
+  readyPhotos,
   rememberThisDevice,
   reportFieldIssue,
   submitFieldUpdate,
@@ -27,6 +28,7 @@ type Tab = "update" | "issue" | "timeline" | "drawings";
 
 const emptyUpdate = () => ({
   shift_date: today(),
+  category: "Site Work",
   floor_id: "",
   area_label: "",
   work_completed: "",
@@ -39,21 +41,21 @@ const emptyUpdate = () => ({
   notes: "",
 });
 
+const LOCKED = new Set(["approved", "locked"]);
+
 /**
- * Mobile-first field technician page. Reached only through a secure, revocable
- * link — no financials, no other projects and no admin settings are reachable
- * from here.
+ * Mobile-first field page for an onsite engineer. Reached only through that
+ * engineer's own secure, revocable link — the engineer's identity comes from the
+ * link, and no financials, other projects or admin settings are reachable here.
  */
 const FieldJobPage: React.FC = () => {
   const { token = "" } = useParams();
   const [job, setJob] = useState<FieldJob | null>(null);
   const [tab, setTab] = useState<Tab>("update");
   const [form, setForm] = useState(emptyUpdate());
-  const [name, setName] = useState("");
   const [photos, setPhotos] = useState<DraftPhoto[]>([]);
   const [issue, setIssue] = useState({ title: "", description: "", severity: "medium", floor_id: "", location_note: "" });
   const [busy, setBusy] = useState(false);
-  const cameraRef = useRef<HTMLInputElement>(null);
   const draftKey = `siyakha_field_draft_${token}`;
 
   useEffect(() => {
@@ -63,9 +65,7 @@ const FieldJobPage: React.FC = () => {
 
   const reload = useCallback(async () => {
     try {
-      const res = await loadFieldJob(token);
-      setJob(res);
-      if (res.technician?.name) setName((n) => n || res.technician!.name);
+      setJob(await loadFieldJob(token));
     } catch {
       setJob({ state: "unavailable" });
     }
@@ -75,7 +75,7 @@ const FieldJobPage: React.FC = () => {
     reload();
   }, [reload]);
 
-  // Poor-signal safety net: the typed update survives a reload or lost tab.
+  // Poor-signal safety net: the typed update survives a reload or a lost tab.
   useEffect(() => {
     try {
       const raw = localStorage.getItem(draftKey);
@@ -93,6 +93,7 @@ const FieldJobPage: React.FC = () => {
     }
   }, [draftKey, form]);
 
+  const engineer = job?.technician?.name ?? "";
   const floors = job?.floors ?? [];
   const floorName = (id: string | null) => floors.find((f) => f.id === id)?.display_name ?? "Whole site";
   const timeline = useMemo(
@@ -100,34 +101,52 @@ const FieldJobPage: React.FC = () => {
     [job?.updates],
   );
 
+  const uploadOne = useCallback(
+    async (localId: string, file: File) => {
+      try {
+        const meta = await uploadFieldPhoto(token, file);
+        setPhotos((list) => list.map((p) => (p.localId === localId ? { ...p, ...meta, status: "ready" } : p)));
+      } catch (e: any) {
+        setPhotos((list) =>
+          list.map((p) =>
+            p.localId === localId
+              ? { ...p, status: "failed", errorMessage: e?.message ?? "Upload failed — tap retry when you have signal." }
+              : p,
+          ),
+        );
+      }
+    },
+    [token],
+  );
+
   const addPhotos = async (files: FileList | null, category: PhotoCategory) => {
     if (!files?.length) return;
-    setBusy(true);
-    try {
-      for (const file of Array.from(files).slice(0, 10)) {
-        const meta = await uploadFieldPhoto(token, file);
-        setPhotos((p) => [
-          ...p,
-          { ...meta, category, caption: "", floor_id: form.floor_id || null, previewUrl: URL.createObjectURL(file) },
-        ]);
-      }
-      toast({ title: "Photo added" });
-    } catch (e: any) {
-      toast({ title: "Photo not uploaded", description: e?.message ?? "Try again when you have signal.", variant: "destructive" });
-    } finally {
-      setBusy(false);
-    }
+    const picked = Array.from(files).slice(0, 12);
+    const drafts: DraftPhoto[] = picked.map((file) => ({
+      localId: crypto.randomUUID(),
+      status: "uploading",
+      storage_path: "",
+      category,
+      caption: "",
+      floor_id: form.floor_id || null,
+      previewUrl: URL.createObjectURL(file),
+      file,
+    }));
+    setPhotos((list) => [...list, ...drafts]);
+    for (const draft of drafts) await uploadOne(draft.localId, draft.file!);
   };
+
+  const uploading = photos.some((p) => p.status === "uploading");
+  const ready = readyPhotos(photos);
 
   const submitUpdate = async () => {
     setBusy(true);
     try {
       const res = await submitFieldUpdate(token, {
         ...form,
-        submitted_by_name: name.trim(),
         floor_id: form.floor_id || null,
         progress_pct: Number(form.progress_pct) || 0,
-        photos: photos.map(({ previewUrl, ...p }) => p),
+        photos: ready,
       });
       if (res.error) throw new Error(res.error);
       setForm(emptyUpdate());
@@ -149,8 +168,7 @@ const FieldJobPage: React.FC = () => {
       const res = await reportFieldIssue(token, {
         ...issue,
         floor_id: issue.floor_id || null,
-        reported_by_name: name.trim(),
-        photos: photos.map(({ previewUrl, ...p }) => ({ ...p, category: "issue" as PhotoCategory })),
+        photos: ready.map((p) => ({ ...p, category: "issue" as PhotoCategory })),
       });
       if (res.error) throw new Error(res.error);
       setIssue({ title: "", description: "", severity: "medium", floor_id: "", location_note: "" });
@@ -180,6 +198,10 @@ const FieldJobPage: React.FC = () => {
         <h1 className="mt-1 text-base font-semibold leading-tight">{job.project?.title}</h1>
         <p className="text-xs text-muted-foreground">
           {[job.project?.client_name, job.project?.site_name].filter(Boolean).join(" · ")}
+        </p>
+        <p className="mt-1 text-xs">
+          Signed in as <span className="font-semibold">{engineer}</span>
+          {job.technician?.role_label ? ` · ${job.technician.role_label}` : ""}
         </p>
         <nav className="mt-3 grid grid-cols-4 gap-1">
           {(
@@ -213,14 +235,15 @@ const FieldJobPage: React.FC = () => {
             </details>
           )}
 
-          <div>
-            <span className={label}>Your name</span>
-            <input className={input} value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <span className={label}>Date</span>
-              <input type="date" className={input} value={form.shift_date} onChange={(e) => setForm({ ...form, shift_date: e.target.value })} />
+              <input
+                type="date"
+                className={input}
+                value={form.shift_date}
+                onChange={(e) => setForm({ ...form, shift_date: e.target.value })}
+              />
             </div>
             <div>
               <span className={label}>Progress %</span>
@@ -234,6 +257,16 @@ const FieldJobPage: React.FC = () => {
                 onChange={(e) => setForm({ ...form, progress_pct: Number(e.target.value) })}
               />
             </div>
+          </div>
+          <div>
+            <span className={label}>Category</span>
+            <select className={input} value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
+              {UPDATE_CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <span className={label}>Floor</span>
@@ -258,7 +291,7 @@ const FieldJobPage: React.FC = () => {
               ["blockers", "Blockers / issues"],
               ["materials_required", "Materials required"],
               ["team_onsite", "Team on site"],
-              ["next_shift_plan", "Plan for tomorrow"],
+              ["next_shift_plan", "Plan for next shift"],
               ["notes", "Notes"],
             ] as [keyof typeof form, string][]
           ).map(([key, text]) => (
@@ -273,13 +306,13 @@ const FieldJobPage: React.FC = () => {
             </div>
           ))}
 
-          <PhotoBlock photos={photos} setPhotos={setPhotos} onPick={addPhotos} busy={busy} cameraRef={cameraRef} />
+          <PhotoBlock photos={photos} setPhotos={setPhotos} onPick={addPhotos} onRetry={uploadOne} defaultFloor={form.floor_id} />
 
-          <button type="button" className={action} disabled={busy || !name.trim()} onClick={submitUpdate}>
-            {busy ? "Sending…" : "Send site update"}
+          <button type="button" className={action} disabled={busy || uploading} onClick={submitUpdate}>
+            {busy ? "Sending…" : uploading ? "Waiting for photos…" : `Send site update${ready.length ? ` (${ready.length} photos)` : ""}`}
           </button>
 
-          {!job.device_remembered && (
+          {!job.device_remembered ? (
             <button
               type="button"
               className={ghost}
@@ -292,8 +325,7 @@ const FieldJobPage: React.FC = () => {
             >
               Remember this device
             </button>
-          )}
-          {job.device_remembered && (
+          ) : (
             <button
               type="button"
               className={ghost}
@@ -338,14 +370,23 @@ const FieldJobPage: React.FC = () => {
           </div>
           <div>
             <span className={label}>Where exactly</span>
-            <input className={input} value={issue.location_note} onChange={(e) => setIssue({ ...issue, location_note: e.target.value })} />
+            <input
+              className={input}
+              value={issue.location_note}
+              onChange={(e) => setIssue({ ...issue, location_note: e.target.value })}
+            />
           </div>
           <div>
             <span className={label}>Details</span>
-            <textarea rows={4} className={area} value={issue.description} onChange={(e) => setIssue({ ...issue, description: e.target.value })} />
+            <textarea
+              rows={4}
+              className={area}
+              value={issue.description}
+              onChange={(e) => setIssue({ ...issue, description: e.target.value })}
+            />
           </div>
-          <PhotoBlock photos={photos} setPhotos={setPhotos} onPick={addPhotos} busy={busy} cameraRef={cameraRef} />
-          <button type="button" className={action} disabled={busy || !issue.title.trim()} onClick={submitIssue}>
+          <PhotoBlock photos={photos} setPhotos={setPhotos} onPick={addPhotos} onRetry={uploadOne} defaultFloor={issue.floor_id} />
+          <button type="button" className={action} disabled={busy || uploading || !issue.title.trim()} onClick={submitIssue}>
             {busy ? "Sending…" : "Report issue"}
           </button>
         </div>
@@ -356,14 +397,24 @@ const FieldJobPage: React.FC = () => {
           {timeline.map((u: any) => (
             <div key={u.id} className="border border-border p-3">
               <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                {new Date(u.shift_date).toLocaleDateString("en-ZA", { day: "2-digit", month: "short" })} · {floorName(u.floor_id)} ·{" "}
-                {u.approval_status}
+                {new Date(u.shift_date).toLocaleDateString("en-ZA", { day: "2-digit", month: "short" })} ·{" "}
+                {u.category ? `${u.category} · ` : ""}
+                {floorName(u.floor_id)}
               </p>
               <p className="mt-1 text-sm font-medium">{u.submitted_by_name}</p>
               {u.work_completed && <p className="mt-1 whitespace-pre-wrap text-sm">{u.work_completed}</p>}
-              {u.work_outstanding && <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">Outstanding: {u.work_outstanding}</p>}
-              {(u.approval_status === "locked" || u.approval_status === "approved") && (
-                <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Signed off by the office — read only</p>
+              {u.work_outstanding && (
+                <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">Outstanding: {u.work_outstanding}</p>
+              )}
+              {u.photos_outstanding && (
+                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">Photos still outstanding</p>
+              )}
+              {LOCKED.has(u.approval_status) ? (
+                <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Signed off by the office — read only
+                </p>
+              ) : (
+                <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Awaiting office review</p>
               )}
             </div>
           ))}
@@ -412,17 +463,21 @@ const FieldJobPage: React.FC = () => {
   );
 };
 
+/** Camera-first photo capture with per-photo upload state, retry and captions. */
 const PhotoBlock: React.FC<{
   photos: DraftPhoto[];
   setPhotos: React.Dispatch<React.SetStateAction<DraftPhoto[]>>;
   onPick: (files: FileList | null, category: PhotoCategory) => Promise<void>;
-  busy: boolean;
-  cameraRef: React.RefObject<HTMLInputElement>;
-}> = ({ photos, setPhotos, onPick, busy, cameraRef }) => {
+  onRetry: (localId: string, file: File) => Promise<void>;
+  defaultFloor: string;
+}> = ({ photos, setPhotos, onPick, onRetry, defaultFloor }) => {
   const [category, setCategory] = useState<PhotoCategory>("during");
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const libraryRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="border border-border p-3">
-      <span className={label}>Photos</span>
+      <span className={label}>Photos of the work</span>
       <select className={input} value={category} onChange={(e) => setCategory(e.target.value as PhotoCategory)}>
         {PHOTO_CATEGORIES.map((c) => (
           <option key={c.value} value={c.value}>
@@ -430,6 +485,7 @@ const PhotoBlock: React.FC<{
           </option>
         ))}
       </select>
+
       <input
         ref={cameraRef}
         type="file"
@@ -437,30 +493,80 @@ const PhotoBlock: React.FC<{
         capture="environment"
         multiple
         className="hidden"
-        onChange={(e) => onPick(e.target.files, category)}
+        onChange={(e) => {
+          onPick(e.target.files, category);
+          e.target.value = "";
+        }}
       />
-      <button type="button" className={`${action} mt-2`} disabled={busy} onClick={() => cameraRef.current?.click()}>
-        {busy ? "Uploading…" : "Take or choose photo"}
-      </button>
+      <input
+        ref={libraryRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          onPick(e.target.files, category);
+          e.target.value = "";
+        }}
+      />
+
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <button type="button" className={action} onClick={() => cameraRef.current?.click()}>
+          Take photo
+        </button>
+        <button type="button" className={action} onClick={() => libraryRef.current?.click()}>
+          Choose photos
+        </button>
+      </div>
+
       {!!photos.length && (
         <div className="mt-3 space-y-2">
-          {photos.map((p, i) => (
-            <div key={p.storage_path} className="flex gap-2 border border-border p-2">
+          {photos.map((p) => (
+            <div key={p.localId} className="flex gap-2 border border-border p-2">
               {p.previewUrl && <img src={p.previewUrl} alt="Site photo" className="h-16 w-16 object-cover" />}
               <div className="flex-1">
-                <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{p.category}</p>
+                <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                  {p.category}
+                  {p.status === "uploading" && " · uploading…"}
+                  {p.status === "ready" && " · ready"}
+                  {p.status === "failed" && " · failed"}
+                </p>
                 <input
-                  className="mt-1 w-full min-h-[40px] border border-input bg-background px-2 text-sm"
+                  className="mt-1 min-h-[40px] w-full border border-input bg-background px-2 text-sm"
                   placeholder="Caption"
                   value={p.caption}
-                  onChange={(e) => setPhotos((list) => list.map((x, xi) => (xi === i ? { ...x, caption: e.target.value } : x)))}
+                  onChange={(e) =>
+                    setPhotos((list) => list.map((x) => (x.localId === p.localId ? { ...x, caption: e.target.value } : x)))
+                  }
                 />
+                {p.status === "failed" && (
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="text-[11px] text-destructive">{p.errorMessage}</span>
+                    <button
+                      type="button"
+                      className={ghost}
+                      onClick={() => {
+                        setPhotos((list) =>
+                          list.map((x) => (x.localId === p.localId ? { ...x, status: "uploading", errorMessage: undefined } : x)),
+                        );
+                        if (p.file) onRetry(p.localId, p.file);
+                      }}
+                    >
+                      Retry
+                    </button>
+                  </div>
+                )}
+                {p.status === "ready" && !p.floor_id && defaultFloor && (
+                  <button
+                    type="button"
+                    className={`${ghost} mt-1`}
+                    onClick={() => setPhotos((list) => list.map((x) => (x.localId === p.localId ? { ...x, floor_id: defaultFloor } : x)))}
+                  >
+                    Tag to selected floor
+                  </button>
+                )}
               </div>
-              <button
-                type="button"
-                className={ghost}
-                onClick={() => setPhotos((list) => list.filter((_, xi) => xi !== i))}
-              >
+              <button type="button" className={ghost} onClick={() => setPhotos((list) => list.filter((x) => x.localId !== p.localId))}>
                 Remove
               </button>
             </div>
