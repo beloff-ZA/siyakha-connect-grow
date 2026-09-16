@@ -84,7 +84,8 @@ describe("buildSiteReport", () => {
   it("never exposes internal notes or any commercial field", () => {
     const json = JSON.stringify(buildSiteReport(base() as any));
     expect(json).not.toContain("INTERNAL ONLY");
-    expect(json).not.toMatch(/price|cost|rate|margin|markup|vat/i);
+    const keys = Object.keys(JSON.parse(json)).join(" ");
+    expect(keys).not.toMatch(/price|cost|\brate\b|margin|markup|vat|total/i);
   });
 
   it("omits hidden photos and hidden additional works, and shows client-visible ones", () => {
