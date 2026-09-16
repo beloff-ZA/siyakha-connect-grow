@@ -288,7 +288,26 @@ const FieldJobPage: React.FC = () => {
         <p className="mt-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
           Step {step + 1} of {STEPS.length} · {STEPS[step]}
         </p>
+        <p className="text-xs text-muted-foreground">
+          {saving
+            ? "Saving…"
+            : savedAt
+              ? `Last saved: ${savedTime(savedAt)}`
+              : "Nothing saved yet for this day"}
+          {alreadySent && sentAt ? ` · Sent to office ${savedTime(sentAt)}` : ""}
+        </p>
       </header>
+
+      {locked && (
+        <div className="mt-4 flex items-start gap-2 border-2 border-foreground p-3 text-base">
+          <Lock className="mt-0.5 h-5 w-5 shrink-0" aria-hidden />
+          <p>
+            The office has checked {dateChoiceLabel(answers.work_date)}. You can look at it, but you cannot change it.
+            Choose another day to add work.
+          </p>
+        </div>
+      )}
+
 
       <main className="mt-5 space-y-4">
         {step === 0 && (
