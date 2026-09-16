@@ -363,6 +363,11 @@ Deno.serve(async (req) => {
             category: "issue",
             caption: clean(p?.caption, 300) || null,
             storage_path: str(p?.storage_path, 400),
+            original_storage_path: str(p?.original_storage_path, 400) || str(p?.storage_path, 400),
+            original_filename: clean(p?.original_filename, 240) || null,
+            original_file_size: Number.isFinite(Number(p?.original_file_size)) ? Number(p?.original_file_size) : null,
+            exif_captured_at: isoOrNull(p?.exif_captured_at),
+            timestamp_confirmed: p?.timestamp_confirmed === true,
             sort_order: i,
           })).filter((p) => p.storage_path),
         );
@@ -419,7 +424,7 @@ Deno.serve(async (req) => {
     const updates = updatesRes.data ?? [];
     const photoRes = await admin
       .from("portal_site_update_photos")
-      .select("id, update_id, issue_id, category, caption, floor_id, taken_at, storage_path, client_visible")
+      .select("id, update_id, issue_id, category, caption, floor_id, taken_at, storage_path, client_visible, timestamp_confirmed, original_filename, original_file_size, exif_captured_at, uploaded_at")
       .eq("project_id", projectId)
       .order("sort_order")
       .limit(400);
@@ -447,7 +452,7 @@ Deno.serve(async (req) => {
     floorsWithProgress(true),
     admin
       .from("portal_site_updates")
-      .select("id, shift_date, submitted_at, category, photos_outstanding, floor_id, area_label, work_completed, work_outstanding, next_shift_plan, progress_pct, approved_at, published_at")
+      .select("id, shift_date, submitted_at, category, photos_outstanding, photo_evidence_required, floor_id, area_label, work_completed, work_outstanding, next_shift_plan, progress_pct, approved_at, published_at")
       .eq("project_id", projectId)
       .eq("client_visible", true)
       .in("approval_status", ["approved", "locked"])
@@ -474,7 +479,7 @@ Deno.serve(async (req) => {
   if (approvedIds.length) {
     const { data } = await admin
       .from("portal_site_update_photos")
-      .select("id, update_id, category, caption, floor_id, taken_at, storage_path, client_visible")
+      .select("id, update_id, category, caption, floor_id, taken_at, storage_path, client_visible, timestamp_confirmed")
       .eq("project_id", projectId)
       .eq("client_visible", true)
       .in("update_id", approvedIds)
