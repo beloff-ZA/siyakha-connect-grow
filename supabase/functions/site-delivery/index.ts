@@ -360,7 +360,7 @@ Deno.serve(async (req) => {
       // office to review. Operational only — no pricing, never client visible here.
       const extraWorkText = clean(payload.extra_work_text, 1200);
       if (payload.extra_work === true && extraWorkText) {
-        await admin.from("portal_scope_changes").insert({
+        const { error: scopeError } = await admin.from("portal_scope_changes").insert({
           project_id: projectId,
           update_id: created!.id,
           floor_id: insert.floor_id,
