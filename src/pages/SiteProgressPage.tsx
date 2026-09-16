@@ -123,6 +123,8 @@ const SiteProgressPage: React.FC = () => {
                     <article key={u.id} className="border border-border p-3">
                       <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
                         {floorName(u.floor_id)}
+                        {u.category ? `${u.category} · ` : ""}
+                        {floorName(u.floor_id)}
                         {u.area_label ? ` · ${u.area_label}` : ""} · {u.progress_pct}%
                       </p>
                       {u.work_completed && <p className="mt-2 whitespace-pre-wrap text-sm">{u.work_completed}</p>}
