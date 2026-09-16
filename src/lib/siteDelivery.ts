@@ -49,6 +49,10 @@ export type SiteUpdate = {
   source: string;
   category: string | null;
   photos_outstanding: boolean;
+  photo_evidence_required: boolean;
+  photo_evidence_override_reason: string | null;
+  photo_evidence_override_by: string | null;
+  photo_evidence_override_at: string | null;
   work_completed: string | null;
   work_outstanding: string | null;
   blockers: string | null;
@@ -73,6 +77,12 @@ export type SitePhoto = {
   category: PhotoCategory;
   caption: string | null;
   storage_path: string;
+  original_storage_path: string | null;
+  original_filename: string | null;
+  original_file_size: number | null;
+  exif_captured_at: string | null;
+  uploaded_at: string;
+  timestamp_confirmed: boolean;
   taken_at: string;
   client_visible: boolean;
   sort_order: number;
