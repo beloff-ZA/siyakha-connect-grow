@@ -534,8 +534,15 @@ const FieldJobPage: React.FC = () => {
         {step === 5 && (
           <>
             <h2 className="text-xl font-bold">PHOTOS</h2>
+            {savedPhotoCount > 0 && (
+              <p className="border-2 border-border p-3 text-base">
+                {savedPhotoCount} photo{savedPhotoCount === 1 ? "" : "s"} already saved for{" "}
+                {dateChoiceLabel(answers.work_date)}.
+              </p>
+            )}
             <FieldPhotoStep
               photos={photos}
+
               timestampUsed={timestampUsed}
               onTimestampUsed={setTimestampUsed}
               onPick={addPhotos}
