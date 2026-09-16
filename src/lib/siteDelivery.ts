@@ -47,6 +47,8 @@ export type SiteUpdate = {
   submitted_at: string;
   submitted_by_name: string;
   source: string;
+  category: string | null;
+  photos_outstanding: boolean;
   work_completed: string | null;
   work_outstanding: string | null;
   blockers: string | null;
