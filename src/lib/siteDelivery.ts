@@ -160,6 +160,8 @@ export type SiteUpdate = {
   source: string;
   category: string | null;
   photos_outstanding: boolean;
+  baseline_category: string | null;
+  backdated: boolean;
   photo_evidence_required: boolean;
   photo_evidence_override_reason: string | null;
   photo_evidence_override_by: string | null;
