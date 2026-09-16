@@ -109,3 +109,58 @@ describe("possible additional work flag", () => {
     expect(Object.keys(p).join(" ")).not.toMatch(/price|cost|rate|margin/i);
   });
 });
+
+describe("one working record per technician and work date", () => {
+  const row = (p: Partial<StoredUpdate> = {}): StoredUpdate => ({
+    id: "u1",
+    shift_date: "2026-09-16",
+    field_access_id: "acc1",
+    approval_status: "draft",
+    ...p,
+  });
+
+  it("finds the technician's own record for that date", () => {
+    const rows = [row({ id: "other", field_access_id: "acc2" }), row(), row({ id: "old", shift_date: "2026-09-15" })];
+    expect(dayRecord(rows, "acc1", "2026-09-16")?.id).toBe("u1");
+  });
+
+  it("does not reuse another day's record", () => {
+    expect(dayRecord([row()], "acc1", "2026-09-15")).toBeNull();
+  });
+
+  it("treats approved or locked days as closed", () => {
+    expect(isLockedUpdate(row())).toBe(false);
+    expect(isLockedUpdate(row({ approval_status: "submitted" }))).toBe(false);
+    expect(isLockedUpdate(row({ approval_status: "approved" }))).toBe(true);
+    expect(isLockedUpdate(row({ locked_at: "2026-09-16T10:00:00Z" }))).toBe(true);
+  });
+
+  it("loads saved values back into the simple form", () => {
+    const a = answersFromUpdate(
+      row({
+        work_completed: "Pulled cable on fifth floor",
+        blockers: "Work stopped: No ceiling access",
+        materials_required: "Nothing needed",
+        next_shift_plan: "Terminate points",
+        notes: "Gate closed at 17:00 No photos attached with this update.",
+        area_label: "Lift lobby",
+      }),
+    );
+    expect(a.work_date).toBe("2026-09-16");
+    expect(a.work_text).toBe("Pulled cable on fifth floor");
+    expect(a.problem).toBe("stopped");
+    expect(a.problem_text).toBe("No ceiling access");
+    expect(a.needs_nothing).toBe(true);
+    expect(a.next_text).toBe("Terminate points");
+    expect(a.note_text).toBe("Gate closed at 17:00");
+    expect(a.area_label).toBe("Lift lobby");
+  });
+
+  it("only saves once there is something to keep, and never a future day", () => {
+    expect(readyToSave(emptyAnswers(localDate()))).toBe("Write something before saving.");
+    expect(readyToSave({ ...emptyAnswers(localDate()), work_text: "Pulled cable" })).toBeNull();
+    expect(readyToSave({ ...emptyAnswers(localDate(2)), work_text: "Pulled cable" })).toBe(
+      "Choose today or an earlier day.",
+    );
+  });
+});
