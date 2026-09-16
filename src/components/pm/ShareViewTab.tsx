@@ -68,7 +68,7 @@ const ShareViewTab: React.FC<{
     try {
       const [delivery, all] = await Promise.all([loadDeliveryLinks(id), loadShareLinks({ project_id: id })]);
       setLinks(delivery);
-      setLegacy(all.filter((l) => l.resource_type !== "site_delivery"));
+      setLegacy(all.filter((l) => String(l.resource_type) !== "site_delivery"));
     } catch (e) {
       toast({ title: "Could not load links", description: (e as Error)?.message, variant: "destructive" });
     }
