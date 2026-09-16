@@ -179,13 +179,15 @@ Deno.serve(async (req) => {
           const { data } = await admin.storage.from(DOCUMENTS_BUCKET).createSignedUrl(f.plan_image_path, 900);
           drawing_url = data?.signedUrl ?? null;
         }
+        // Nothing is assumed: a floor with no recorded progress reports null, so
+        // the reader sees "Not yet reported" rather than an invented 0%.
         return {
           id: f.id,
           level_number: f.level_number,
           display_name: f.display_name,
           floor_use: f.floor_use,
-          progress_pct: p?.progress_pct ?? 0,
-          status: p?.status ?? "not_started",
+          progress_pct: typeof p?.progress_pct === "number" ? p.progress_pct : null,
+          status: p?.status ?? null,
           note: p?.note ?? null,
           drawing_url,
         };
@@ -232,15 +234,19 @@ Deno.serve(async (req) => {
     };
   };
 
-  /** One project next-steps list, filtered by who is looking at it. */
+  /**
+   * One project next-steps list, filtered by who is looking at it. A technician
+   * only ever sees installation work — commercial or client-facing steps stay in
+   * the office.
+   */
   const nextSteps = async (audience: "technician" | "client") => {
-    const { data } = await admin
+    let q = admin
       .from("portal_project_next_steps")
       .select("id, title, detail, category, status, due_date, sort_order, technician_visible, client_visible")
       .eq("project_id", projectId)
-      .eq(audience === "technician" ? "technician_visible" : "client_visible", true)
-      .order("sort_order")
-      .limit(100);
+      .eq(audience === "technician" ? "technician_visible" : "client_visible", true);
+    if (audience === "technician") q = q.eq("category", "installation");
+    const { data } = await q.order("sort_order").limit(100);
     return (data ?? []).map((s: any) => ({
       id: s.id,
       title: s.title,
@@ -319,6 +325,10 @@ Deno.serve(async (req) => {
       };
       if (!insert.work_completed && !insert.work_outstanding && !insert.notes) {
         return json({ error: "Add what was completed or what is outstanding before submitting." }, 400);
+      }
+      // Every photo must be named, so nobody has to guess what an image shows.
+      if (submittedPhotos.some((p: any) => !clean(p?.title, 160))) {
+        return json({ error: "Give every photo a short name before sending." }, 400);
       }
       // Earlier work dates are allowed (an engineer may report a previous day),
       // future work dates are not.
@@ -453,10 +463,11 @@ Deno.serve(async (req) => {
       if (!stepId || !STEP_STATUSES.has(status)) return json({ error: "Invalid step update" }, 400);
       const { data: step } = await admin
         .from("portal_project_next_steps")
-        .select("id, project_id, technician_visible")
+        .select("id, project_id, technician_visible, category")
         .eq("id", stepId)
         .maybeSingle();
-      if (!step || step.project_id !== projectId || step.technician_visible !== true) return json({ state: "denied" });
+      if (!step || step.project_id !== projectId || step.technician_visible !== true || step.category !== "installation")
+        return json({ state: "denied" });
       await admin
         .from("portal_project_next_steps")
         .update({
@@ -574,6 +585,8 @@ Deno.serve(async (req) => {
       .eq("project_id", projectId)
       .eq("client_visible", true)
       .eq("archived", false)
+      // A superseded drawing never reaches the client as if it were current.
+      .eq("is_current", true)
       .order("document_date", { ascending: false })
       .limit(40),
     // Additional / out-of-scope works: operational fields only, never commercial.

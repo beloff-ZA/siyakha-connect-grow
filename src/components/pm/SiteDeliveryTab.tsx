@@ -25,6 +25,7 @@ import {
   patchIssue,
   patchScopeChange,
   regenerateDeliveryLink,
+  revealDeliveryLink,
   revokeDeliveryLink,
   setDocumentVisibility,
   SCOPE_SOURCES,
@@ -240,7 +241,7 @@ const SiteDeliveryTab: React.FC<{
         </p>
         <div className="grid gap-4 lg:grid-cols-2">
           {(["field", "client"] as const).map((role) => {
-            const heading = role === "field" ? "Mike — Field update link" : "Client — Progress view link";
+            const heading = role === "field" ? "TECHNICIAN LINK — site updates" : "CLIENT LINK — progress view";
             const blurb =
               role === "field"
                 ? "Daily site form for the cabling engineer. Can add updates, problems and timestamped photos."
@@ -298,7 +299,7 @@ const SiteDeliveryTab: React.FC<{
                 {url && (
                   <div className="mt-3 border border-border p-3">
                     <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      Copy this now — it is only shown here
+                      Send this address — “Show link” brings it back later
                     </p>
                     <p className="mt-1 break-all text-xs">{url}</p>
                     <div className="mt-2 flex flex-wrap gap-2">
@@ -353,9 +354,20 @@ const SiteDeliveryTab: React.FC<{
                             </>
                           )}
                           {!known && state === "active" && (
-                            <span className="text-muted-foreground">
-                              address only shown when created — use Regenerate to get a fresh one
-                            </span>
+                            <button
+                              type="button"
+                              className={btn}
+                              disabled={busy}
+                              onClick={() =>
+                                run(async () => {
+                                  const url = await revealDeliveryLink(l.id, role);
+                                  if (!url) throw new Error("This link cannot be recovered. Use Regenerate to issue a fresh one.");
+                                  setLinkUrls((prev) => ({ ...prev, [l.id]: url }));
+                                }, "Link ready to copy")
+                              }
+                            >
+                              Show link
+                            </button>
                           )}
                           {access?.device_expires_at && !access.revoked_at && (
                             <button type="button" className={btn} disabled={busy} onClick={() => run(() => forgetDevice(access.id), "Device forgotten")}>

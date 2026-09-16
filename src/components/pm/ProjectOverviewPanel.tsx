@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Panel, Stat } from "./ui";
+import EditProjectDialog from "./EditProjectDialog";
 import type { PmProject, PmWorkspace } from "@/hooks/usePmWorkspace";
 import { floorCountLabel } from "@/lib/reporting";
 
@@ -16,6 +17,7 @@ const db = supabase as unknown as { from: (t: string) => any };
  */
 const ProjectOverviewPanel: React.FC<{ ws: PmWorkspace; project: PmProject }> = ({ ws, project }) => {
   const [counts, setCounts] = useState<Counts | null>(null);
+  const [editing, setEditing] = useState(false);
   const client = ws.clients.find((c) => c.id === project.client_id) ?? null;
   const site = ws.sites.find((s) => s.id === project.site_id) ?? null;
 
@@ -74,6 +76,23 @@ const ProjectOverviewPanel: React.FC<{ ws: PmWorkspace; project: PmProject }> = 
   return (
     <div>
       <Panel title="Project details">
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            className="border border-border px-3 py-2 text-[11px] uppercase tracking-[0.18em] hover:bg-muted"
+          >
+            Edit project
+          </button>
+        </div>
+        {editing && (
+          <EditProjectDialog
+            project={project}
+            open={editing}
+            onClose={() => setEditing(false)}
+            onSaved={ws.reload}
+          />
+        )}
         <dl className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
           {facts.map(([k, v]) => (
             <div key={k}>

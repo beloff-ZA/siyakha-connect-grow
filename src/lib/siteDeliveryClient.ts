@@ -15,8 +15,9 @@ export type FieldFloor = {
   level_number: number;
   display_name: string;
   floor_use: string | null;
-  progress_pct: number;
-  status: string;
+  /** null when no progress has been recorded for this floor — never assumed to be 0. */
+  progress_pct: number | null;
+  status: string | null;
   note: string | null;
   drawing_url: string | null;
 };
@@ -30,6 +31,7 @@ export type GuestPhoto = {
   floor_id: string | null;
   taken_at: string;
   client_visible: boolean;
+  timestamp_confirmed?: boolean;
   url: string | null;
 };
 
