@@ -489,6 +489,7 @@ Deno.serve(async (req) => {
       .select("id, update_id, category, caption, floor_id, taken_at, storage_path, client_visible, timestamp_confirmed")
       .eq("project_id", projectId)
       .eq("client_visible", true)
+      .eq("timestamp_confirmed", true)
       .in("update_id", approvedIds)
       .order("sort_order")
       .limit(300);
