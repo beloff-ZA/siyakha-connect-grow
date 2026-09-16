@@ -24,7 +24,11 @@ describe("parseRecoveryLink", () => {
   });
 
   it("reads an invite token hash from the hash fragment", () => {
-    expect(parseRecoveryLink("", "#token_hash=xyz&type=invite")).toMatchObject({ kind: "invite" ? "token_hash" : "token_hash" });
+    expect(parseRecoveryLink("", "#token_hash=xyz&type=invite")).toEqual({
+      kind: "token_hash",
+      tokenHash: "xyz",
+      type: "invite",
+    });
   });
 
   it("surfaces expired-link errors", () => {
