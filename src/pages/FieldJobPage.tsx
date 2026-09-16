@@ -229,6 +229,12 @@ const FieldJobPage: React.FC = () => {
         </nav>
       </header>
 
+      <div className="mt-3 border border-foreground bg-foreground p-3 text-background">
+        <p className="text-[10px] uppercase tracking-[0.2em] opacity-80">Client requirement</p>
+        <p className="mt-1 text-sm font-semibold">{TIMESTAMP_EVIDENCE_NOTICE}</p>
+      </div>
+
+
       {tab === "update" && (
         <div className="mt-4 space-y-4">
           {job.project?.scope && (
