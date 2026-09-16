@@ -26,6 +26,13 @@ export const PHOTO_CATEGORIES: { value: PhotoCategory; label: string }[] = [
 export const ISSUE_SEVERITIES = ["low", "medium", "high", "critical"] as const;
 export const ISSUE_STATUSES = ["open", "in_progress", "resolved", "closed"] as const;
 
+/**
+ * Client requirement (written request, 15 Sep 2026): every daily report must be
+ * accompanied by site photographs taken with the approved Timestamp App.
+ */
+export const TIMESTAMP_EVIDENCE_NOTICE =
+  "Client requirement: take site photos using the approved Timestamp App, then upload them here.";
+
 /** Diary categories. Free text in the database, so this list can grow freely. */
 export const UPDATE_CATEGORIES = [
   "Site Work",
@@ -49,6 +56,10 @@ export type SiteUpdate = {
   source: string;
   category: string | null;
   photos_outstanding: boolean;
+  photo_evidence_required: boolean;
+  photo_evidence_override_reason: string | null;
+  photo_evidence_override_by: string | null;
+  photo_evidence_override_at: string | null;
   work_completed: string | null;
   work_outstanding: string | null;
   blockers: string | null;
@@ -73,6 +84,12 @@ export type SitePhoto = {
   category: PhotoCategory;
   caption: string | null;
   storage_path: string;
+  original_storage_path: string | null;
+  original_filename: string | null;
+  original_file_size: number | null;
+  exif_captured_at: string | null;
+  uploaded_at: string;
+  timestamp_confirmed: boolean;
   taken_at: string;
   client_visible: boolean;
   sort_order: number;
@@ -177,9 +194,65 @@ export async function loadSiteDelivery(projectId: string) {
 
 export type SiteDeliveryData = Awaited<ReturnType<typeof loadSiteDelivery>>;
 
+/* -------------------------------------------------------- photo evidence */
+
+export type EvidenceState = {
+  photoCount: number;
+  confirmedCount: number;
+  required: boolean;
+  overridden: boolean;
+  /** True when the day may be treated as complete / publishable to the client. */
+  satisfied: boolean;
+};
+
+export const evidenceState = (
+  update: Pick<SiteUpdate, "photo_evidence_required" | "photo_evidence_override_reason">,
+  photos: Pick<SitePhoto, "update_id" | "timestamp_confirmed">[],
+  updateId: string,
+): EvidenceState => {
+  const mine = photos.filter((p) => p.update_id === updateId);
+  const overridden = !!update.photo_evidence_override_reason?.trim();
+  const required = update.photo_evidence_required !== false;
+  return {
+    photoCount: mine.length,
+    confirmedCount: mine.filter((p) => p.timestamp_confirmed).length,
+    required,
+    overridden,
+    satisfied: !required || overridden || mine.length > 0,
+  };
+};
+
+/** Per-day compliance indicators shown on the admin dashboard. */
+export const complianceFlags = (update: SiteUpdate, evidence: EvidenceState) => [
+  { label: "Daily report submitted", done: true },
+  {
+    label: evidence.overridden && !evidence.photoCount ? "Photo evidence waived" : "Timestamped photos received",
+    done: evidence.photoCount > 0 || evidence.overridden,
+  },
+  { label: "Admin approved", done: update.approval_status === "approved" || update.approval_status === "locked" },
+  { label: "Client published", done: !!update.client_visible && !!update.published_at },
+];
+
+export const EVIDENCE_BLOCKED_MESSAGE =
+  "This daily report has no site photos yet. Attach the timestamped photos, or record an override reason first.";
+
+/** Records why the office is publishing a day without photo evidence. */
+export async function overridePhotoEvidence(id: string, reason: string) {
+  const trimmed = reason.trim();
+  if (!trimmed) throw new Error("Give a reason for waiving the photo requirement.");
+  const { data: auth } = await supabase.auth.getUser();
+  const { error } = await db.from("portal_site_updates").update({
+    photo_evidence_override_reason: trimmed,
+    photo_evidence_override_by: auth.user?.id ?? null,
+    photo_evidence_override_at: new Date().toISOString(),
+  }).eq("id", id);
+  if (error) throw error;
+}
+
 /* ------------------------------------------------------------ admin actions */
 
-export async function approveUpdate(id: string, clientVisible: boolean) {
+export async function approveUpdate(id: string, clientVisible: boolean, evidence?: EvidenceState) {
+  if (clientVisible && evidence && !evidence.satisfied) throw new Error(EVIDENCE_BLOCKED_MESSAGE);
   const now = new Date().toISOString();
   const { data: auth } = await supabase.auth.getUser();
   const { error } = await db.from("portal_site_updates").update({
@@ -192,7 +265,8 @@ export async function approveUpdate(id: string, clientVisible: boolean) {
   if (error) throw error;
 }
 
-export async function setUpdateVisibility(id: string, clientVisible: boolean) {
+export async function setUpdateVisibility(id: string, clientVisible: boolean, evidence?: EvidenceState) {
+  if (clientVisible && evidence && !evidence.satisfied) throw new Error(EVIDENCE_BLOCKED_MESSAGE);
   const { error } = await db.from("portal_site_updates")
     .update({ client_visible: clientVisible, published_at: clientVisible ? new Date().toISOString() : null })
     .eq("id", id);
@@ -215,6 +289,12 @@ export async function unlockUpdate(id: string) {
 
 export async function setPhotoVisibility(id: string, clientVisible: boolean) {
   const { error } = await db.from("portal_site_update_photos").update({ client_visible: clientVisible }).eq("id", id);
+  if (error) throw error;
+}
+
+/** Office correction of the engineer's timestamp declaration. */
+export async function setPhotoTimestampConfirmed(id: string, confirmed: boolean) {
+  const { error } = await db.from("portal_site_update_photos").update({ timestamp_confirmed: confirmed }).eq("id", id);
   if (error) throw error;
 }
 
@@ -333,6 +413,9 @@ export function deliveryCounts(data: {
     updates: data.updates.length,
     awaitingApproval: data.updates.filter((u) => u.approval_status === "submitted").length,
     photos: data.photos.length,
+    daysMissingEvidence: data.updates.filter(
+      (u) => !evidenceState(u, data.photos, u.id).satisfied,
+    ).length,
     openIssues: data.issues.filter((i) => i.status === "open" || i.status === "in_progress").length,
     blockers: data.updates.filter((u) => !!u.blockers?.trim()).length,
     outstanding: data.updates.filter((u) => !!u.work_outstanding?.trim()).length,

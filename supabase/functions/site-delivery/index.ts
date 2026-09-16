@@ -57,6 +57,13 @@ const SEVERITIES = new Set(["low", "medium", "high", "critical"]);
 
 const str = (v: unknown, max = 4000) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 const clean = (v: unknown, max = 4000) => str(v, max).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "");
+/** Accepts only a real timestamp read from the file; never invents one. */
+const isoOrNull = (v: unknown) => {
+  const s = str(v, 40);
+  if (!s) return null;
+  const d = new Date(s);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+};
 const pct = (v: unknown) => {
   const n = Number(v);
   return Number.isFinite(n) ? Math.min(100, Math.max(0, Math.round(n))) : 0;
@@ -134,11 +141,18 @@ Deno.serve(async (req) => {
         }
         return {
           id: r.id,
+          update_id: r.update_id ?? null,
+          issue_id: r.issue_id ?? null,
           category: r.category,
           caption: r.caption,
           floor_id: r.floor_id,
           taken_at: r.taken_at,
+          uploaded_at: r.uploaded_at ?? null,
           client_visible: r.client_visible,
+          timestamp_confirmed: r.timestamp_confirmed === true,
+          original_filename: r.original_filename ?? null,
+          original_file_size: r.original_file_size ?? null,
+          exif_captured_at: r.exif_captured_at ?? null,
           url,
         };
       }),
@@ -252,6 +266,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === "submit_update") {
+      const submittedPhotos = Array.isArray(payload.photos) ? payload.photos.slice(0, 40) : [];
       const insert = {
         project_id: projectId,
         floor_id: uuidOrNull(payload.floor_id),
@@ -273,6 +288,8 @@ Deno.serve(async (req) => {
         notes: clean(payload.notes) || null,
         approval_status: "submitted",
         client_visible: false,
+        photo_evidence_required: true,
+        photos_outstanding: submittedPhotos.length === 0,
       };
       if (!insert.work_completed && !insert.work_outstanding && !insert.notes) {
         return json({ error: "Add what was completed or what is outstanding before submitting." }, 400);
@@ -280,9 +297,9 @@ Deno.serve(async (req) => {
       const { data: created, error } = await admin.from("portal_site_updates").insert(insert).select("id").maybeSingle();
       if (error) return json({ error: "The update could not be saved." }, 500);
 
-      const photos = Array.isArray(payload.photos) ? payload.photos.slice(0, 40) : [];
+      const photos = submittedPhotos;
       if (photos.length) {
-        await admin.from("portal_site_update_photos").insert(
+        const { error: photoError } = await admin.from("portal_site_update_photos").insert(
           photos.map((p: any, i: number) => ({
             project_id: projectId,
             update_id: created!.id,
@@ -290,12 +307,21 @@ Deno.serve(async (req) => {
             category: PHOTO_CATEGORIES.has(str(p?.category, 20)) ? str(p?.category, 20) : "during",
             caption: clean(p?.caption, 300) || null,
             storage_path: str(p?.storage_path, 400),
+            original_storage_path: str(p?.original_storage_path, 400) || str(p?.storage_path, 400),
+            original_filename: clean(p?.original_filename, 240) || null,
+            original_file_size: Number.isFinite(Number(p?.original_file_size)) ? Number(p?.original_file_size) : null,
+            exif_captured_at: isoOrNull(p?.exif_captured_at),
+            timestamp_confirmed: p?.timestamp_confirmed === true,
             mime_type: str(p?.mime_type, 120) || null,
             file_size: Number.isFinite(Number(p?.file_size)) ? Number(p?.file_size) : null,
             sort_order: i,
           })).filter((p) => p.storage_path),
         );
+        if (photoError) {
+          await admin.from("portal_site_updates").update({ photos_outstanding: true }).eq("id", created!.id);
+        }
       }
+
 
       await admin.from("portal_activity").insert({
         project_id: projectId,
@@ -344,6 +370,11 @@ Deno.serve(async (req) => {
             category: "issue",
             caption: clean(p?.caption, 300) || null,
             storage_path: str(p?.storage_path, 400),
+            original_storage_path: str(p?.original_storage_path, 400) || str(p?.storage_path, 400),
+            original_filename: clean(p?.original_filename, 240) || null,
+            original_file_size: Number.isFinite(Number(p?.original_file_size)) ? Number(p?.original_file_size) : null,
+            exif_captured_at: isoOrNull(p?.exif_captured_at),
+            timestamp_confirmed: p?.timestamp_confirmed === true,
             sort_order: i,
           })).filter((p) => p.storage_path),
         );
@@ -367,7 +398,7 @@ Deno.serve(async (req) => {
       admin
         .from("portal_site_updates")
         .select(
-          "id, shift_date, submitted_at, submitted_by_name, category, photos_outstanding, floor_id, area_label, work_completed, work_outstanding, blockers, materials_required, team_onsite, progress_pct, next_shift_plan, notes, approval_status, client_visible",
+          "id, shift_date, submitted_at, submitted_by_name, category, photos_outstanding, photo_evidence_required, photo_evidence_override_reason, floor_id, area_label, work_completed, work_outstanding, blockers, materials_required, team_onsite, progress_pct, next_shift_plan, notes, approval_status, client_visible",
         )
         .eq("project_id", projectId)
         .order("submitted_at", { ascending: false })
@@ -400,7 +431,7 @@ Deno.serve(async (req) => {
     const updates = updatesRes.data ?? [];
     const photoRes = await admin
       .from("portal_site_update_photos")
-      .select("id, update_id, issue_id, category, caption, floor_id, taken_at, storage_path, client_visible")
+      .select("id, update_id, issue_id, category, caption, floor_id, taken_at, storage_path, client_visible, timestamp_confirmed, original_filename, original_file_size, exif_captured_at, uploaded_at")
       .eq("project_id", projectId)
       .order("sort_order")
       .limit(400);
@@ -428,7 +459,7 @@ Deno.serve(async (req) => {
     floorsWithProgress(true),
     admin
       .from("portal_site_updates")
-      .select("id, shift_date, submitted_at, category, photos_outstanding, floor_id, area_label, work_completed, work_outstanding, next_shift_plan, progress_pct, approved_at, published_at")
+      .select("id, shift_date, submitted_at, category, photos_outstanding, photo_evidence_required, floor_id, area_label, work_completed, work_outstanding, next_shift_plan, progress_pct, approved_at, published_at")
       .eq("project_id", projectId)
       .eq("client_visible", true)
       .in("approval_status", ["approved", "locked"])
@@ -455,9 +486,10 @@ Deno.serve(async (req) => {
   if (approvedIds.length) {
     const { data } = await admin
       .from("portal_site_update_photos")
-      .select("id, update_id, category, caption, floor_id, taken_at, storage_path, client_visible")
+      .select("id, update_id, category, caption, floor_id, taken_at, storage_path, client_visible, timestamp_confirmed")
       .eq("project_id", projectId)
       .eq("client_visible", true)
+      .eq("timestamp_confirmed", true)
       .in("update_id", approvedIds)
       .order("sort_order")
       .limit(300);

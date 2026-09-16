@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { applyGuestPrivacyMeta } from "@/lib/shareLinks";
-import { PHOTO_CATEGORIES, UPDATE_CATEGORIES, type PhotoCategory } from "@/lib/siteDelivery";
+import { PHOTO_CATEGORIES, TIMESTAMP_EVIDENCE_NOTICE, UPDATE_CATEGORIES, type PhotoCategory } from "@/lib/siteDelivery";
 import {
   clearDevice,
+  evidenceSummary,
   linkMessage,
   loadFieldJob,
   readyPhotos,
@@ -129,6 +130,7 @@ const FieldJobPage: React.FC = () => {
       category,
       caption: "",
       floor_id: form.floor_id || null,
+      timestamp_confirmed: false,
       previewUrl: URL.createObjectURL(file),
       file,
     }));
@@ -138,6 +140,7 @@ const FieldJobPage: React.FC = () => {
 
   const uploading = photos.some((p) => p.status === "uploading");
   const ready = readyPhotos(photos);
+  const evidence = evidenceSummary(photos);
 
   const submitUpdate = async () => {
     setBusy(true);
@@ -226,6 +229,12 @@ const FieldJobPage: React.FC = () => {
         </nav>
       </header>
 
+      <div className="mt-3 border border-foreground bg-foreground p-3 text-background">
+        <p className="text-[10px] uppercase tracking-[0.2em] opacity-80">Client requirement</p>
+        <p className="mt-1 text-sm font-semibold">{TIMESTAMP_EVIDENCE_NOTICE}</p>
+      </div>
+
+
       {tab === "update" && (
         <div className="mt-4 space-y-4">
           {job.project?.scope && (
@@ -307,6 +316,26 @@ const FieldJobPage: React.FC = () => {
           ))}
 
           <PhotoBlock photos={photos} setPhotos={setPhotos} onPick={addPhotos} onRetry={uploadOne} defaultFloor={form.floor_id} />
+
+          <div className={`border p-3 ${evidence.hasEvidence ? "border-border" : "border-destructive"}`}>
+            <p className={label}>Photo evidence checklist</p>
+            <ul className="mt-2 space-y-1 text-sm">
+              <li>{evidence.ready ? "✓" : "✗"} {evidence.ready} photo{evidence.ready === 1 ? "" : "s"} attached</li>
+              <li>
+                {evidence.timestampConfirmed === evidence.ready && evidence.ready ? "✓" : "•"} {evidence.timestampConfirmed} confirmed
+                as Timestamp App photos
+                {evidence.timestampUnconfirmed ? ` · ${evidence.timestampUnconfirmed} not confirmed` : ""}
+              </li>
+              {!!evidence.uploading && <li>• {evidence.uploading} still uploading</li>}
+              {!!evidence.failed && <li className="text-destructive">✗ {evidence.failed} failed — tap retry</li>}
+            </ul>
+            {!evidence.hasEvidence && (
+              <p className="mt-2 text-sm text-destructive">
+                No photos attached. The client requires photo evidence with every daily report — this report will be flagged as
+                photos outstanding until images are added.
+              </p>
+            )}
+          </div>
 
           <button type="button" className={action} disabled={busy || uploading} onClick={submitUpdate}>
             {busy ? "Sending…" : uploading ? "Waiting for photos…" : `Send site update${ready.length ? ` (${ready.length} photos)` : ""}`}
@@ -476,8 +505,13 @@ const PhotoBlock: React.FC<{
   const libraryRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="border border-border p-3">
-      <span className={label}>Photos of the work</span>
+    <div className="border border-foreground p-3">
+      <span className={label}>Photo evidence of the work</span>
+      <p className="mt-1 text-sm font-semibold">{TIMESTAMP_EVIDENCE_NOTICE}</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Take the photos in the Timestamp App, then choose them here. Tick the box on each photo to confirm it came from the
+        Timestamp App. Siyakha Connect never adds a timestamp to your pictures.
+      </p>
       <select className={input} value={category} onChange={(e) => setCategory(e.target.value as PhotoCategory)}>
         {PHOTO_CATEGORIES.map((c) => (
           <option key={c.value} value={c.value}>
@@ -539,6 +573,25 @@ const PhotoBlock: React.FC<{
                     setPhotos((list) => list.map((x) => (x.localId === p.localId ? { ...x, caption: e.target.value } : x)))
                   }
                 />
+                <label className="mt-2 flex min-h-[44px] items-center gap-2 text-xs">
+                  <input
+                    type="checkbox"
+                    className="h-5 w-5"
+                    checked={p.timestamp_confirmed}
+                    onChange={(e) =>
+                      setPhotos((list) =>
+                        list.map((x) => (x.localId === p.localId ? { ...x, timestamp_confirmed: e.target.checked } : x)),
+                      )
+                    }
+                  />
+                  <span>Taken with the Timestamp App</span>
+                </label>
+                <p className="text-[10px] text-muted-foreground">
+                  Timestamp evidence: {p.timestamp_confirmed ? "confirmed by engineer" : "not confirmed"}
+                  {p.exif_captured_at
+                    ? ` · camera time ${new Date(p.exif_captured_at).toLocaleString("en-ZA")}`
+                    : ""}
+                </p>
                 {p.status === "failed" && (
                   <div className="mt-1 flex items-center gap-2">
                     <span className="text-[11px] text-destructive">{p.errorMessage}</span>

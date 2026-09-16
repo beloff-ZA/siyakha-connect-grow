@@ -4725,48 +4725,66 @@ export type Database = {
           category: string
           client_visible: boolean
           created_at: string
+          exif_captured_at: string | null
           file_size: number | null
           floor_id: string | null
           id: string
           issue_id: string | null
           mime_type: string | null
+          original_file_size: number | null
+          original_filename: string | null
+          original_storage_path: string | null
           project_id: string
           sort_order: number
           storage_path: string
           taken_at: string
+          timestamp_confirmed: boolean
           update_id: string | null
+          uploaded_at: string
         }
         Insert: {
           caption?: string | null
           category?: string
           client_visible?: boolean
           created_at?: string
+          exif_captured_at?: string | null
           file_size?: number | null
           floor_id?: string | null
           id?: string
           issue_id?: string | null
           mime_type?: string | null
+          original_file_size?: number | null
+          original_filename?: string | null
+          original_storage_path?: string | null
           project_id: string
           sort_order?: number
           storage_path: string
           taken_at?: string
+          timestamp_confirmed?: boolean
           update_id?: string | null
+          uploaded_at?: string
         }
         Update: {
           caption?: string | null
           category?: string
           client_visible?: boolean
           created_at?: string
+          exif_captured_at?: string | null
           file_size?: number | null
           floor_id?: string | null
           id?: string
           issue_id?: string | null
           mime_type?: string | null
+          original_file_size?: number | null
+          original_filename?: string | null
+          original_storage_path?: string | null
           project_id?: string
           sort_order?: number
           storage_path?: string
           taken_at?: string
+          timestamp_confirmed?: boolean
           update_id?: string | null
+          uploaded_at?: string
         }
         Relationships: [
           {
@@ -4817,6 +4835,10 @@ export type Database = {
           materials_required: string | null
           next_shift_plan: string | null
           notes: string | null
+          photo_evidence_override_at: string | null
+          photo_evidence_override_by: string | null
+          photo_evidence_override_reason: string | null
+          photo_evidence_required: boolean
           photos_outstanding: boolean
           progress_pct: number
           project_id: string
@@ -4848,6 +4870,10 @@ export type Database = {
           materials_required?: string | null
           next_shift_plan?: string | null
           notes?: string | null
+          photo_evidence_override_at?: string | null
+          photo_evidence_override_by?: string | null
+          photo_evidence_override_reason?: string | null
+          photo_evidence_required?: boolean
           photos_outstanding?: boolean
           progress_pct?: number
           project_id: string
@@ -4879,6 +4905,10 @@ export type Database = {
           materials_required?: string | null
           next_shift_plan?: string | null
           notes?: string | null
+          photo_evidence_override_at?: string | null
+          photo_evidence_override_by?: string | null
+          photo_evidence_override_reason?: string | null
+          photo_evidence_required?: boolean
           photos_outstanding?: boolean
           progress_pct?: number
           project_id?: string

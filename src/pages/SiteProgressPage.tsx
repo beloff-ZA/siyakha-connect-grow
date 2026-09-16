@@ -139,7 +139,12 @@ const SiteProgressPage: React.FC = () => {
                         <p className="mt-2 text-xs uppercase tracking-[0.14em] text-muted-foreground">Progress photos to follow</p>
                       )}
                       {!!photos.length && (
-                        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                        <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                          {photos.length} timestamped photo{photos.length === 1 ? "" : "s"}
+                        </p>
+                      )}
+                      {!!photos.length && (
+                        <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
                           {photos.map((ph) => (
                             <figure key={ph.id} className="border border-border p-1">
                               {ph.url ? (
