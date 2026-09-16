@@ -71,7 +71,7 @@ const ResetPassword: React.FC = () => {
         if (!error) return { ok: true as const };
         return (await hasSession())
           ? { ok: true as const }
-          : { ok: false as const, reason: error.message };
+          : { ok: false as const, reason: friendly(error.message) };
       }
 
       if (link.kind === "code") {
@@ -80,7 +80,7 @@ const ResetPassword: React.FC = () => {
         // The client may already have exchanged the same code on start-up.
         return (await hasSession())
           ? { ok: true as const }
-          : { ok: false as const, reason: error.message };
+          : { ok: false as const, reason: friendly(error.message) };
       }
 
       const { error } = await supabase.auth.verifyOtp({
@@ -88,7 +88,7 @@ const ResetPassword: React.FC = () => {
         type: link.type === "invite" ? "invite" : link.type === "signup" ? "signup" : "recovery",
       });
       if (!error) return { ok: true as const };
-      return (await hasSession()) ? { ok: true as const } : { ok: false as const, reason: error.message };
+      return (await hasSession()) ? { ok: true as const } : { ok: false as const, reason: friendly(error.message) };
     };
 
     void (async () => {
