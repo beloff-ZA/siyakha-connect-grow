@@ -12,6 +12,7 @@ export const WORKSPACE_SECTIONS = [
   { value: "options", label: "Solution options" },
   { value: "files", label: "Documents & site images" },
   { value: "engagement", label: "Client engagement" },
+  { value: "delivery", label: "Site delivery" },
   { value: "share", label: "Reports & share" },
 ] as const;
 

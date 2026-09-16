@@ -10,6 +10,7 @@ import SolutionOptionsTab from "@/components/pm/SolutionOptionsTab";
 import ProjectFilesTab from "@/components/pm/ProjectFilesTab";
 import ReportsShareTab from "@/components/pm/ReportsShareTab";
 import ClientEngagementTab from "@/components/pm/ClientEngagementTab";
+import SiteDeliveryTab from "@/components/pm/SiteDeliveryTab";
 import { Chip } from "@/components/pm/ui";
 import { parseSection, WORKSPACE_SECTIONS, type WorkspaceSection } from "@/lib/projectWizard";
 import { ArrowLeft } from "lucide-react";
@@ -114,6 +115,9 @@ const ProjectWorkspace: React.FC = () => {
             </TabsContent>
             <TabsContent value="engagement">
               <ClientEngagementTab projectId={projectId} projectTitle={project.title} />
+            </TabsContent>
+            <TabsContent value="delivery">
+              <SiteDeliveryTab projectId={projectId} projectTitle={project.title} clientId={project.client_id} />
             </TabsContent>
             <TabsContent value="share">
               <ReportsShareTab {...fixed} />
