@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
+import ResetPassword from "./pages/ResetPassword";
+import RecoveryLinkGate from "./components/RecoveryLinkGate";
 import RegionalServices from "./pages/RegionalServices";
 import PartnerEngineers from "./pages/PartnerEngineers";
 import ManagedIT from "./pages/ManagedIT";
