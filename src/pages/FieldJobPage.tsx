@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { applyGuestPrivacyMeta } from "@/lib/shareLinks";
-import { PHOTO_CATEGORIES, UPDATE_CATEGORIES, type PhotoCategory } from "@/lib/siteDelivery";
+import { PHOTO_CATEGORIES, TIMESTAMP_EVIDENCE_NOTICE, UPDATE_CATEGORIES, type PhotoCategory } from "@/lib/siteDelivery";
 import {
   clearDevice,
+  evidenceSummary,
   linkMessage,
   loadFieldJob,
   readyPhotos,
