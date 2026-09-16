@@ -162,7 +162,7 @@ const SignIn: React.FC = () => {
     if (!validEmail(email)) return setFormError("Enter a valid email address.");
     setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}${PATH_SIGN_IN}`,
+      redirectTo: `${window.location.origin}${PATH_RESET_PASSWORD}`,
     });
     setLoading(false);
     if (error) return setFormError(error.message);
