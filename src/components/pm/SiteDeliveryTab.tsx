@@ -2,6 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Panel, Stat, Field, Chip, selectCls } from "@/components/pm/ui";
 import NextStepsPanel from "@/components/pm/NextStepsPanel";
 import SiteNotesPanel from "@/components/pm/SiteNotesPanel";
+import PrintSurface from "@/components/pm/PrintSurface";
+import DailyReportDocument from "@/components/pm/DailyReportDocument";
+import { buildSiteReport, historyLabel, reportHistory } from "@/lib/dailyReport";
+import { loadNextSteps, type NextStep } from "@/lib/nextSteps";
 import { signedUrl } from "@/lib/portalFiles";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -56,11 +60,14 @@ const fmtDay = (d: string) =>
   new Date(`${d}T00:00:00`).toLocaleDateString("en-ZA", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
 /** Daily site delivery: progress dashboard, approvals and the two guest links. */
-const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clientId: string | null }> = ({
-  projectId,
-  projectTitle,
-  clientId,
-}) => {
+const SiteDeliveryTab: React.FC<{
+  projectId: string;
+  projectTitle: string;
+  clientId: string | null;
+  projectReference?: string | null;
+  projectAddress?: string | null;
+  clientName?: string | null;
+}> = ({ projectId, projectTitle, clientId, projectReference, projectAddress, clientName }) => {
   const [data, setData] = useState<SiteDeliveryData | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +79,9 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
   const [clientLabel, setClientLabel] = useState("Digiconnect / Sun International");
   const [linkDays, setLinkDays] = useState(30);
   const [newScope, setNewScope] = useState(emptyScope());
+  const [nextSteps, setNextSteps] = useState<NextStep[]>([]);
+  const [reportDate, setReportDate] = useState("");
+  const [showReport, setShowReport] = useState(false);
 
   const reload = useCallback(async () => {
     setError(null);
