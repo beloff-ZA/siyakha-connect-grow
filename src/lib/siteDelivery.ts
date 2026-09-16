@@ -406,6 +406,12 @@ export async function setPhotoTimestampConfirmed(id: string, confirmed: boolean)
   if (error) throw error;
 }
 
+/** Office-only tagging of a day against the scope baseline. */
+export async function setUpdateBaseline(id: string, category: string | null) {
+  const { error } = await db.from("portal_site_updates").update({ baseline_category: category || null }).eq("id", id);
+  if (error) throw error;
+}
+
 export async function patchIssue(id: string, patch: Partial<SiteIssue>) {
   const { error } = await db.from("portal_site_issues").update(patch).eq("id", id);
   if (error) throw error;
