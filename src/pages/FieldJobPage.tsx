@@ -183,6 +183,10 @@ const FieldJobPage: React.FC = () => {
         const res = finalize ? await submitFieldUpdate(token, body) : await saveFieldUpdate(token, body);
         if (res.error) throw new Error(res.error);
         setSavedAt(res.saved_at ?? new Date().toISOString());
+        // Photos now stored with the day come off the pending list.
+        const kept = new Set(sendable.map((p) => p.storage_path));
+        setPhotos((list) => list.filter((p) => !kept.has(p.storage_path)));
+
         if (finalize) {
           setSentAt(res.submitted_at ?? new Date().toISOString());
           // The problem is raised with the office once, on the first submission.
