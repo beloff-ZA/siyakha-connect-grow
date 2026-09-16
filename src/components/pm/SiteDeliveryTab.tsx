@@ -4,6 +4,7 @@ import { signedUrl } from "@/lib/portalFiles";
 import { toast } from "@/hooks/use-toast";
 import {
   approveUpdate,
+  complianceFlags,
   dailyTimeline,
   deliveryCounts,
   forgetDevice,
@@ -16,6 +17,9 @@ import {
   patchIssue,
   revokeDeliveryLink,
   setFloorProgress,
+  evidenceState,
+  overridePhotoEvidence,
+  setPhotoTimestampConfirmed,
   setPhotoVisibility,
   setUpdateVisibility,
   SITE_PHOTO_BUCKET,
@@ -251,13 +255,14 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
               <div className="mt-2 space-y-3">
                 {rows.map((u) => {
                   const photos = data.photos.filter((p) => p.update_id === u.id);
+                  const evidence = evidenceState(u, data.photos, u.id);
                   return (
                     <div key={u.id} className="border border-border p-3">
                       <div className="flex flex-wrap items-center gap-2 text-sm">
                         <span className="font-medium">{u.submitted_by_name}</span>
                         {u.category && <Chip>{u.category}</Chip>}
                         <Chip>{floorName(u.floor_id)}</Chip>
-                        {u.photos_outstanding && <Chip>Photos outstanding</Chip>}
+                        <Chip>{evidence.photoCount ? `Photo evidence received (${evidence.photoCount})` : "Photos outstanding"}</Chip>
                         {u.area_label && <Chip>{u.area_label}</Chip>}
                         <Chip>{u.progress_pct}%</Chip>
                         <Chip>{u.approval_status}</Chip>
@@ -285,6 +290,22 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                           ))}
                       </dl>
 
+                      <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+                        {complianceFlags(u, evidence).map((f) => (
+                          <li key={f.label} className={f.done ? "text-foreground" : ""}>
+                            {f.done ? "✓" : "○"} {f.label}
+                          </li>
+                        ))}
+                        <li>
+                          {evidence.confirmedCount}/{evidence.photoCount} timestamp-confirmed
+                        </li>
+                      </ul>
+                      {evidence.overridden && (
+                        <p className="mt-2 border border-border p-2 text-[11px]">
+                          Photo requirement waived: {u.photo_evidence_override_reason}
+                        </p>
+                      )}
+
                       {!!photos.length && (
                         <div className="mt-3 flex flex-wrap gap-2">
                           {photos.map((p) => (
@@ -296,6 +317,20 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                               )}
                               <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{p.category}</p>
                               {p.caption && <p className="text-[11px]">{p.caption}</p>}
+                              <p className="text-[10px] text-muted-foreground">
+                                {p.timestamp_confirmed ? "Timestamp confirmed" : "Timestamp not confirmed"}
+                                {p.exif_captured_at ? ` · ${new Date(p.exif_captured_at).toLocaleString("en-ZA")}` : ""}
+                              </p>
+                              <button
+                                type="button"
+                                className="mt-1 w-full border border-border py-1 text-[10px] uppercase tracking-[0.14em]"
+                                disabled={busy}
+                                onClick={() =>
+                                  run(() => setPhotoTimestampConfirmed(p.id, !p.timestamp_confirmed), "Timestamp evidence saved")
+                                }
+                              >
+                                {p.timestamp_confirmed ? "Unconfirm timestamp" : "Confirm timestamp"}
+                              </button>
                               <button
                                 type="button"
                                 className="mt-1 w-full border border-border py-1 text-[10px] uppercase tracking-[0.14em]"
@@ -312,7 +347,12 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                       <div className="mt-3 flex flex-wrap gap-2">
                         {u.approval_status === "submitted" && (
                           <>
-                            <button type="button" className={btn} disabled={busy} onClick={() => run(() => approveUpdate(u.id, true), "Approved and published")}>
+                            <button
+                              type="button"
+                              className={btn}
+                              disabled={busy}
+                              onClick={() => run(() => approveUpdate(u.id, true, evidence), "Approved and published")}
+                            >
                               Approve + show client
                             </button>
                             <button type="button" className={btn} disabled={busy} onClick={() => run(() => approveUpdate(u.id, false), "Approved internally")}>
@@ -321,8 +361,26 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                           </>
                         )}
                         {u.approval_status !== "submitted" && (
-                          <button type="button" className={btn} disabled={busy} onClick={() => run(() => setUpdateVisibility(u.id, !u.client_visible), "Visibility saved")}>
+                          <button
+                            type="button"
+                            className={btn}
+                            disabled={busy}
+                            onClick={() => run(() => setUpdateVisibility(u.id, !u.client_visible, evidence), "Visibility saved")}
+                          >
                             {u.client_visible ? "Hide from client" : "Show client"}
+                          </button>
+                        )}
+                        {!evidence.satisfied && (
+                          <button
+                            type="button"
+                            className={btn}
+                            disabled={busy}
+                            onClick={() => {
+                              const reason = window.prompt("Why is this day being published without photo evidence?");
+                              if (reason?.trim()) run(() => overridePhotoEvidence(u.id, reason), "Override recorded");
+                            }}
+                          >
+                            Waive photo requirement
                           </button>
                         )}
                         {u.approval_status === "locked" ? (
