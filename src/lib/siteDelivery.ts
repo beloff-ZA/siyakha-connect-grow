@@ -147,6 +147,18 @@ export async function patchScopeChange(id: string, patch: Partial<ScopeChange>) 
   if (error) throw error;
 }
 
+/**
+ * Links an existing daily-activity photo to an additional-work item. The file
+ * itself is never copied — only the reference is stored.
+ */
+export async function setPhotoScopeChange(photoId: string, scopeChangeId: string | null) {
+  const { error } = await db
+    .from("portal_site_update_photos")
+    .update({ scope_change_id: scopeChangeId })
+    .eq("id", photoId);
+  if (error) throw error;
+}
+
 export type ApprovalStatus = "draft" | "submitted" | "approved" | "locked";
 
 export type SiteUpdate = {
@@ -200,6 +212,8 @@ export type SitePhoto = {
   taken_at: string;
   client_visible: boolean;
   sort_order: number;
+  /** Set when the office links this existing photo to an additional-work item. */
+  scope_change_id?: string | null;
 };
 
 export type SiteIssue = {
