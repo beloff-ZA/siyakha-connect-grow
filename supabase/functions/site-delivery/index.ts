@@ -145,6 +145,7 @@ Deno.serve(async (req) => {
           update_id: r.update_id ?? null,
           issue_id: r.issue_id ?? null,
           category: r.category,
+          title: r.title ?? null,
           caption: r.caption,
           floor_id: r.floor_id,
           taken_at: r.taken_at,
@@ -555,7 +556,7 @@ Deno.serve(async (req) => {
   if (approvedIds.length) {
     const { data } = await admin
       .from("portal_site_update_photos")
-      .select("id, update_id, category, caption, floor_id, taken_at, storage_path, client_visible, timestamp_confirmed")
+      .select("id, update_id, category, title, caption, floor_id, taken_at, storage_path, client_visible, timestamp_confirmed")
       .eq("project_id", projectId)
       .eq("client_visible", true)
       .eq("timestamp_confirmed", true)
