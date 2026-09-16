@@ -306,15 +306,28 @@ Deno.serve(async (req) => {
       return json({ state: "ok", path, token: data.token, signedUrl: data.signedUrl, bucket: PHOTO_BUCKET });
     }
 
-    if (action === "submit_update") {
+    /**
+     * One working daily record per project + technician + work date.
+     *
+     *  save_update   -> keeps the day's record up to date (draft, or a still-open
+     *                   submitted record) without ending the day.
+     *  submit_update -> saves the same values and hands that SAME row to the
+     *                   office for review. Never copies the row.
+     *
+     * Once the office approves or locks a day, the technician can no longer
+     * change it.
+     */
+    if (action === "save_update" || action === "submit_update") {
+      const finalize = action === "submit_update";
       const submittedPhotos = Array.isArray(payload.photos) ? payload.photos.slice(0, 40) : [];
-      const insert = {
+      const shiftDate = /^\d{4}-\d{2}-\d{2}$/.test(str(payload.shift_date, 10))
+        ? str(payload.shift_date, 10)
+        : new Date().toISOString().slice(0, 10);
+      const values = {
         project_id: projectId,
         floor_id: uuidOrNull(payload.floor_id),
         area_label: clean(payload.area_label, 200) || null,
-        shift_date: /^\d{4}-\d{2}-\d{2}$/.test(str(payload.shift_date, 10))
-          ? str(payload.shift_date, 10)
-          : new Date().toISOString().slice(0, 10),
+        shift_date: shiftDate,
         submitted_by_name: clean(payload.submitted_by_name, 160) || (access.technician_name as string),
         field_access_id: access.id,
         source: "field",
@@ -327,12 +340,10 @@ Deno.serve(async (req) => {
         progress_pct: pct(payload.progress_pct),
         next_shift_plan: clean(payload.next_shift_plan) || null,
         notes: clean(payload.notes) || null,
-        approval_status: "submitted",
         client_visible: false,
         photo_evidence_required: true,
-        photos_outstanding: submittedPhotos.length === 0,
       };
-      if (!insert.work_completed && !insert.work_outstanding && !insert.notes) {
+      if (finalize && !values.work_completed && !values.work_outstanding && !values.notes) {
         return json({ error: "Add what was completed or what is outstanding before submitting." }, 400);
       }
       // Every photo must be named, so nobody has to guess what an image shows.
@@ -342,19 +353,70 @@ Deno.serve(async (req) => {
       // Earlier work dates are allowed (an engineer may report a previous day),
       // future work dates are not.
       const siteToday = new Date(Date.now() + 2 * 3600000).toISOString().slice(0, 10);
-      if (insert.shift_date > siteToday) {
+      if (shiftDate > siteToday) {
         return json({ error: "Choose today or an earlier day." }, 400);
       }
-      const { data: created, error } = await admin.from("portal_site_updates").insert(insert).select("id").maybeSingle();
-      if (error) return json({ error: "The update could not be saved." }, 500);
 
-      const photos = submittedPhotos;
-      if (photos.length) {
-        const { error: photoError } = await admin.from("portal_site_update_photos").insert(
-          photos.map((p: any, i: number) => ({
+      // The technician's own record for that work date, if one already exists.
+      const { data: existing } = await admin
+        .from("portal_site_updates")
+        .select("id, approval_status, approved_at, locked_at, submitted_at")
+        .eq("project_id", projectId)
+        .eq("field_access_id", access.id)
+        .eq("shift_date", shiftDate)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (existing && (existing.locked_at || existing.approved_at || ["approved", "locked"].includes(String(existing.approval_status)))) {
+        return json({ error: "The office has approved this day. It can no longer be changed." }, 409);
+      }
+
+      let updateId = existing?.id as string | undefined;
+      let submittedAt = existing?.submitted_at as string | null | undefined;
+      if (updateId) {
+        const patch: Record<string, unknown> = { ...values };
+        if (finalize) {
+          patch.approval_status = "submitted";
+          // The first submission time is kept; later edits only move updated_at.
+          if (existing!.approval_status !== "submitted") {
+            submittedAt = new Date().toISOString();
+            patch.submitted_at = submittedAt;
+          }
+        }
+        const { error } = await admin.from("portal_site_updates").update(patch).eq("id", updateId);
+        if (error) return json({ error: "The update could not be saved." }, 500);
+      } else {
+        submittedAt = new Date().toISOString();
+        const { data: created, error } = await admin
+          .from("portal_site_updates")
+          .insert({
+            ...values,
+            approval_status: finalize ? "submitted" : "draft",
+            submitted_at: submittedAt,
+            photos_outstanding: submittedPhotos.length === 0,
+          })
+          .select("id")
+          .maybeSingle();
+        if (error || !created) return json({ error: "The update could not be saved." }, 500);
+        updateId = created.id as string;
+      }
+
+      // Photos already saved against this day stay attached; only new files are added.
+      const { data: keptPhotos } = await admin
+        .from("portal_site_update_photos")
+        .select("id, storage_path")
+        .eq("update_id", updateId);
+      const known = new Set((keptPhotos ?? []).map((p: any) => p.storage_path));
+      const fresh = submittedPhotos.filter((p: any) => str(p?.storage_path, 400) && !known.has(str(p?.storage_path, 400)));
+      let photoError: unknown = null;
+      if (fresh.length) {
+        const offset = (keptPhotos ?? []).length;
+        const res = await admin.from("portal_site_update_photos").insert(
+          fresh.map((p: any, i: number) => ({
             project_id: projectId,
-            update_id: created!.id,
-            floor_id: uuidOrNull(p?.floor_id) ?? insert.floor_id,
+            update_id: updateId,
+            floor_id: uuidOrNull(p?.floor_id) ?? values.floor_id,
             category: PHOTO_CATEGORIES.has(str(p?.category, 20)) ? str(p?.category, 20) : "during",
             title: clean(p?.title, 160) || null,
             caption: clean(p?.caption, 300) || null,
@@ -366,51 +428,72 @@ Deno.serve(async (req) => {
             timestamp_confirmed: p?.timestamp_confirmed === true,
             mime_type: str(p?.mime_type, 120) || null,
             file_size: Number.isFinite(Number(p?.file_size)) ? Number(p?.file_size) : null,
-            sort_order: i,
-          })).filter((p) => p.storage_path),
+            sort_order: offset + i,
+          })),
         );
-        if (photoError) {
-          await admin.from("portal_site_updates").update({ photos_outstanding: true }).eq("id", created!.id);
-        }
+        photoError = res.error;
       }
-
+      const savedPhotoCount = (keptPhotos ?? []).length + (photoError ? 0 : fresh.length);
+      await admin
+        .from("portal_site_updates")
+        .update({ photos_outstanding: savedPhotoCount === 0 })
+        .eq("id", updateId);
 
       // Optional engineer flag: records a possible additional-work item for the
       // office to review. Operational only — no pricing, never client visible here.
+      // Recorded once per day's record, however many times the day is updated.
       const extraWorkText = clean(payload.extra_work_text, 1200);
       if (payload.extra_work === true && extraWorkText) {
-        const { error: scopeError } = await admin.from("portal_scope_changes").insert({
-          project_id: projectId,
-          update_id: created!.id,
-          floor_id: insert.floor_id,
-          area_label: insert.area_label,
-          work_date: insert.shift_date,
-          title: extraWorkText.split(/[.\n]/)[0].slice(0, 120) || "Possible additional work",
-          description: extraWorkText,
-          trigger_reason: insert.blockers || null,
-          source: "field_update",
-          status: "identified",
-          client_visible: false,
-          raised_by_name: insert.submitted_by_name,
-        });
-        if (scopeError) console.error("scope flag not saved", scopeError.message);
+        const { data: flagged } = await admin
+          .from("portal_scope_changes")
+          .select("id")
+          .eq("update_id", updateId)
+          .limit(1)
+          .maybeSingle();
+        if (!flagged) {
+          const { error: scopeError } = await admin.from("portal_scope_changes").insert({
+            project_id: projectId,
+            update_id: updateId,
+            floor_id: values.floor_id,
+            area_label: values.area_label,
+            work_date: shiftDate,
+            title: extraWorkText.split(/[.\n]/)[0].slice(0, 120) || "Possible additional work",
+            description: extraWorkText,
+            trigger_reason: values.blockers || null,
+            source: "field_update",
+            status: "identified",
+            client_visible: false,
+            raised_by_name: values.submitted_by_name,
+          });
+          if (scopeError) console.error("scope flag not saved", scopeError.message);
+        }
       }
 
-      await admin.from("portal_activity").insert({
-        project_id: projectId,
-        entity_type: "site_update",
-        entity_id: created!.id,
-        action: "field_update_submitted",
-        detail: `${insert.submitted_by_name} submitted a site update`,
-        actor_type: "field",
-      });
+      if (finalize) {
+        await admin.from("portal_activity").insert({
+          project_id: projectId,
+          entity_type: "site_update",
+          entity_id: updateId,
+          action: "field_update_submitted",
+          detail: `${values.submitted_by_name} submitted a site update`,
+          actor_type: "field",
+        });
+      }
       await admin
         .from("portal_field_access")
         .update({ last_seen_at: new Date().toISOString() })
         .eq("id", access.id);
-      await logAccess("granted", "update submitted");
-      return json({ state: "ok", id: created!.id });
+      await logAccess("granted", finalize ? "update submitted" : "update saved");
+      return json({
+        state: "ok",
+        id: updateId,
+        approval_status: finalize ? "submitted" : existing?.approval_status ?? "draft",
+        submitted_at: finalize ? submittedAt ?? null : null,
+        saved_at: new Date().toISOString(),
+        photo_count: savedPhotoCount,
+      });
     }
+
 
     if (action === "report_issue") {
       const title = clean(payload.title, 200);
