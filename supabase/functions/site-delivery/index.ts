@@ -374,6 +374,7 @@ Deno.serve(async (req) => {
           client_visible: false,
           raised_by_name: insert.submitted_by_name,
         });
+        if (scopeError) console.error("scope flag not saved", scopeError.message);
       }
 
       await admin.from("portal_activity").insert({
