@@ -71,6 +71,7 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
   const [fieldLabel, setFieldLabel] = useState("Michael (Mike)");
   const [clientLabel, setClientLabel] = useState("Digiconnect / Sun International");
   const [linkDays, setLinkDays] = useState(30);
+  const [newScope, setNewScope] = useState(emptyScope());
 
   const reload = useCallback(async () => {
     setError(null);
