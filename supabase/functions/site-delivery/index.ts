@@ -49,7 +49,16 @@ const randomToken = () => {
 const DOCUMENTS_BUCKET = "client-documents";
 const PHOTO_BUCKET = "site-progress";
 
-const FIELD_ACTIONS = new Set(["job", "remember", "upload_url", "submit_update", "report_issue", "next_step_status"]);
+const FIELD_ACTIONS = new Set([
+  "job",
+  "remember",
+  "upload_url",
+  "save_update",
+  "submit_update",
+  "report_issue",
+  "next_step_status",
+]);
+
 const STEP_STATUSES = new Set(["pending", "in_progress", "done"]);
 const CLIENT_ACTIONS = new Set(["client_view"]);
 
