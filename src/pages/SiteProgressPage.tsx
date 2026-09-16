@@ -138,9 +138,6 @@ const SiteProgressPage: React.FC = () => {
                       {u.photos_outstanding && (
                         <p className="mt-2 text-xs uppercase tracking-[0.14em] text-muted-foreground">Progress photos to follow</p>
                       )}
-                      {false && (
-                        <p />
-                      )}
                       {!!photos.length && (
                         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
                           {photos.map((ph) => (
