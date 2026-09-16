@@ -4909,6 +4909,7 @@ export type Database = {
           storage_path: string
           taken_at: string
           timestamp_confirmed: boolean
+          title: string | null
           update_id: string | null
           uploaded_at: string
         }
@@ -4932,6 +4933,7 @@ export type Database = {
           storage_path: string
           taken_at?: string
           timestamp_confirmed?: boolean
+          title?: string | null
           update_id?: string | null
           uploaded_at?: string
         }
@@ -4955,6 +4957,7 @@ export type Database = {
           storage_path?: string
           taken_at?: string
           timestamp_confirmed?: boolean
+          title?: string | null
           update_id?: string | null
           uploaded_at?: string
         }

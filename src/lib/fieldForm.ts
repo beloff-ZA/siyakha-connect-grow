@@ -37,6 +37,8 @@ export type FieldAnswers = {
   needs_nothing: boolean;
   needs_text: string;
   next_text: string;
+  /** Optional site note kept with the day's record in the project. */
+  note_text: string;
 };
 
 export const emptyAnswers = (workDate: string): FieldAnswers => ({
@@ -52,6 +54,7 @@ export const emptyAnswers = (workDate: string): FieldAnswers => ({
   needs_nothing: false,
   needs_text: "",
   next_text: "",
+  note_text: "",
 });
 
 /** Local calendar date (site time), not UTC, so "today" matches the engineer's day. */
@@ -111,7 +114,7 @@ export function buildUpdatePayload(a: FieldAnswers, photoCount: number) {
     team_onsite: "",
     progress_pct: 0,
     next_shift_plan: a.next_text.trim(),
-    notes: photoCount ? "" : "No photos attached with this update.",
+    notes: [a.note_text.trim(), photoCount ? "" : "No photos attached with this update."].filter(Boolean).join(" "),
   };
 }
 

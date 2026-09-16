@@ -1,0 +1,1 @@
+ALTER TABLE public.portal_site_update_photos ADD COLUMN IF NOT EXISTS title text;

@@ -131,6 +131,7 @@ const FieldJobPage: React.FC = () => {
         status: "uploading",
         storage_path: "",
         category: "during",
+        title: "",
         caption: "",
         floor_id: answers.floor_id || null,
         timestamp_confirmed: timestampUsed,
@@ -143,7 +144,8 @@ const FieldJobPage: React.FC = () => {
 
   const ready = readyPhotos(photos).map((p) => ({ ...p, timestamp_confirmed: timestampUsed, floor_id: p.floor_id ?? (answers.floor_id || null) }));
   const uploading = photos.some((p) => p.status === "uploading");
-  const blocker = readyToSend(answers, ready.length, uploading);
+  const unnamed = photos.some((p) => p.status === "ready" && !p.title.trim());
+  const blocker = unnamed ? "Give every photo a short name." : readyToSend(answers, ready.length, uploading);
 
   const send = async () => {
     setBusy(true);
@@ -391,6 +393,13 @@ const FieldJobPage: React.FC = () => {
                 rows={4}
               />
             )}
+            <p className="pt-2 text-base font-semibold">Anything else about the site? (not needed)</p>
+            <VoiceTextArea
+              value={answers.note_text}
+              onChange={(note_text) => set({ note_text })}
+              placeholder="A short site note for the office."
+              rows={3}
+            />
           </>
         )}
 
@@ -404,6 +413,12 @@ const FieldJobPage: React.FC = () => {
               onPick={addPhotos}
               onSetCategory={(localId, category) =>
                 setPhotos((list) => list.map((p) => (p.localId === localId ? { ...p, category } : p)))
+              }
+              onSetTitle={(localId, title) =>
+                setPhotos((list) => list.map((p) => (p.localId === localId ? { ...p, title } : p)))
+              }
+              onSetCaption={(localId, caption) =>
+                setPhotos((list) => list.map((p) => (p.localId === localId ? { ...p, caption } : p)))
               }
               onRemove={(localId) => setPhotos((list) => list.filter((p) => p.localId !== localId))}
               onRetry={(localId) => {
@@ -524,6 +539,10 @@ const FieldJobPage: React.FC = () => {
                 {floorName(u.floor_id)}
               </p>
               {u.work_completed && <p className="mt-1 whitespace-pre-wrap">{u.work_completed}</p>}
+              {u.blockers && <p className="mt-1 whitespace-pre-wrap">Problem: {u.blockers}</p>}
+              <p className="mt-1 text-sm text-muted-foreground">
+                {(job?.photos ?? []).filter((ph: any) => ph.update_id === u.id).length} photo(s)
+              </p>
               {u.photos_outstanding && <p className="mt-1 text-sm text-muted-foreground">Photos still needed</p>}
               <p className="mt-1 text-sm text-muted-foreground">Sent {new Date(u.submitted_at).toLocaleDateString("en-ZA")}</p>
             </div>
