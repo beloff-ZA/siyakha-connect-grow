@@ -602,7 +602,16 @@ const FieldJobPage: React.FC = () => {
         )}
       </main>
 
-      <div className="mt-6 flex gap-3">
+      {/* Same day's report, kept up to date all day long. */}
+      {!locked && (
+        <button type="button" className={`${saveBtn} mt-6`} disabled={busy || saving} onClick={() => void persist(false)}>
+          <Save className="h-5 w-5" aria-hidden />
+          {saving ? "SAVING…" : alreadySent ? "UPDATE SUBMITTED REPORT" : "UPDATE"}
+        </button>
+      )}
+
+      <div className="mt-3 flex gap-3">
+
         <button type="button" className={navBtn} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>
           <ChevronLeft className="h-5 w-5" aria-hidden /> Back
         </button>
