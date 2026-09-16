@@ -505,6 +505,67 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
           {!data.issues.length && <p className="text-sm text-muted-foreground">No issues reported.</p>}
         </div>
       </Panel>
+
+      <Panel title="Additional works identified on site (operational record — no pricing)">
+        <p className="mb-3 text-xs text-muted-foreground">
+          Work identified outside the agreed scope of works. This register carries no rates, costs or totals. Items stay under
+          review until you decide otherwise.
+        </p>
+        <div className="space-y-3">
+          {data.scopeChanges.map((s) => (
+            <div key={s.id} className="border border-border p-3 text-sm">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-medium">{s.title}</span>
+                <Chip>{fmtDay(s.work_date)}</Chip>
+                <Chip>{floorName(s.floor_id)}</Chip>
+                <Chip>{scopeSourceLabel(s.source)}</Chip>
+                {s.baseline_category && <Chip>{s.baseline_category}</Chip>}
+                {s.client_visible && <Chip>Client visible</Chip>}
+              </div>
+              {s.description && <p className="mt-1 whitespace-pre-wrap">{s.description}</p>}
+              {s.trigger_reason && (
+                <p className="mt-1 text-xs text-muted-foreground">Why it came up: {s.trigger_reason}</p>
+              )}
+              {s.internal_notes && <p className="mt-1 text-xs text-muted-foreground">Office note: {s.internal_notes}</p>}
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <select
+                  className="h-9 border border-input bg-background px-2 text-sm"
+                  defaultValue={s.status}
+                  onChange={(e) => run(() => patchScopeChange(s.id, { status: e.target.value }), "Status saved")}
+                >
+                  {SCOPE_STATUSES.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  className="h-9 border border-input bg-background px-2 text-sm"
+                  defaultValue={s.source}
+                  onChange={(e) => run(() => patchScopeChange(s.id, { source: e.target.value }), "Source saved")}
+                >
+                  {SCOPE_SOURCES.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className={btn}
+                  disabled={busy}
+                  onClick={() => run(() => patchScopeChange(s.id, { client_visible: !s.client_visible }), "Visibility saved")}
+                >
+                  {s.client_visible ? "Hide from client" : "Show client"}
+                </button>
+              </div>
+            </div>
+          ))}
+          {!data.scopeChanges.length && (
+            <p className="text-sm text-muted-foreground">No additional works recorded.</p>
+          )}
+        </div>
+      </Panel>
     </div>
   );
 };
