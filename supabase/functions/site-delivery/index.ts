@@ -460,12 +460,12 @@ Deno.serve(async (req) => {
   }
 
   /* ----------------------------------------------------------- client role */
-  const [header, floors, updatesRes, issuesRes, docsRes] = await Promise.all([
+  const [header, floors, updatesRes, issuesRes, docsRes, scopeRes] = await Promise.all([
     projectHeader(),
     floorsWithProgress(true),
     admin
       .from("portal_site_updates")
-      .select("id, shift_date, submitted_at, category, photos_outstanding, photo_evidence_required, floor_id, area_label, work_completed, work_outstanding, next_shift_plan, progress_pct, approved_at, published_at")
+      .select("id, shift_date, submitted_at, submitted_by_name, category, photos_outstanding, photo_evidence_required, floor_id, area_label, work_completed, work_outstanding, next_shift_plan, progress_pct, approved_at, published_at")
       .eq("project_id", projectId)
       .eq("client_visible", true)
       .in("approval_status", ["approved", "locked"])
@@ -479,12 +479,22 @@ Deno.serve(async (req) => {
       .eq("internal_only", false)
       .order("opened_at", { ascending: false })
       .limit(60),
+    // Only documents the office has explicitly marked client-visible.
     admin
       .from("portal_documents")
       .select("id, title, category, storage_path, document_date, reference")
       .eq("project_id", projectId)
+      .eq("client_visible", true)
       .order("document_date", { ascending: false })
       .limit(40),
+    // Additional / out-of-scope works: operational fields only, never commercial.
+    admin
+      .from("portal_scope_changes")
+      .select("id, work_date, title, description, trigger_reason, status, floor_id, area_label, baseline_category")
+      .eq("project_id", projectId)
+      .eq("client_visible", true)
+      .order("work_date", { ascending: false })
+      .limit(60),
   ]);
 
   const approvedIds = (updatesRes.data ?? []).map((u: any) => u.id);
@@ -512,7 +522,7 @@ Deno.serve(async (req) => {
         const { data } = await admin.storage.from(DOCUMENTS_BUCKET).createSignedUrl(d.storage_path, 900);
         url = data?.signedUrl ?? null;
       }
-      return { id: d.id, title: d.title, category: d.category, reference: d.reference, url };
+      return { id: d.id, title: d.title, category: d.category, reference: d.reference, document_date: d.document_date, url };
     }),
   );
 
@@ -520,16 +530,24 @@ Deno.serve(async (req) => {
     ? Math.round(floors.reduce((s, f) => s + (f.progress_pct ?? 0), 0) / floors.length)
     : 0;
 
+  const latest = (updatesRes.data ?? [])[0] ?? null;
+  const nextActivity = (updatesRes.data ?? []).find((u: any) => !!u.next_shift_plan)?.next_shift_plan ?? null;
+
   await logAccess("granted", "client view");
   return json({
     state: "ok",
     role: "client",
     project: header,
     overall_progress: overall,
-    last_updated: (updatesRes.data ?? [])[0]?.shift_date ?? null,
+    last_updated: latest?.shift_date ?? null,
+    last_published_at: latest?.published_at ?? latest?.approved_at ?? null,
+    current_area: latest ? { floor_id: latest.floor_id ?? null, area_label: latest.area_label ?? null } : null,
+    next_activity: nextActivity,
+    generated_at: new Date().toISOString(),
     floors,
     updates: updatesRes.data ?? [],
     issues: issuesRes.data ?? [],
+    scope_changes: scopeRes.data ?? [],
     photos: clientPhotos,
     documents,
   });

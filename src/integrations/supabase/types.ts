@@ -2366,6 +2366,7 @@ export type Database = {
       portal_documents: {
         Row: {
           category: string
+          client_visible: boolean
           created_at: string
           document_date: string | null
           file_size: number | null
@@ -2383,6 +2384,7 @@ export type Database = {
         }
         Insert: {
           category?: string
+          client_visible?: boolean
           created_at?: string
           document_date?: string | null
           file_size?: number | null
@@ -2400,6 +2402,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          client_visible?: boolean
           created_at?: string
           document_date?: string | null
           file_size?: number | null

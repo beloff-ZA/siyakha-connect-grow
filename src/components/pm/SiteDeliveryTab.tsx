@@ -18,7 +18,9 @@ import {
   overallProgress,
   patchIssue,
   patchScopeChange,
+  regenerateDeliveryLink,
   revokeDeliveryLink,
+  setDocumentVisibility,
   SCOPE_SOURCES,
   SCOPE_STATUSES,
   scopeSourceLabel,
@@ -49,9 +51,9 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [thumbs, setThumbs] = useState<Record<string, string>>({});
-  const [issuedUrl, setIssuedUrl] = useState<string | null>(null);
-  const [linkRole, setLinkRole] = useState<"client" | "field">("field");
-  const [linkLabel, setLinkLabel] = useState("Michael");
+  const [issued, setIssued] = useState<{ field?: string; client?: string }>({});
+  const [fieldLabel, setFieldLabel] = useState("Michael (Mike)");
+  const [clientLabel, setClientLabel] = useState("Digiconnect / Sun International");
   const [linkDays, setLinkDays] = useState(30);
 
   const reload = useCallback(async () => {
@@ -165,92 +167,146 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
         </div>
       </Panel>
 
-      <Panel title="Secure links">
-        <div className="grid gap-3 sm:grid-cols-4">
-          <Field label="Link type">
-            <select className={selectCls} value={linkRole} onChange={(e) => setLinkRole(e.target.value as "client" | "field")}>
-              <option value="field">Field technician</option>
-              <option value="client">Client view</option>
-            </select>
-          </Field>
-          <Field label={linkRole === "field" ? "Technician name" : "Recipient"}>
-            <input className={selectCls} value={linkLabel} onChange={(e) => setLinkLabel(e.target.value)} />
-          </Field>
-          <Field label="Valid for (days)">
-            <input
-              type="number"
-              min={1}
-              className={selectCls}
-              value={linkDays}
-              onChange={(e) => setLinkDays(Number(e.target.value))}
-            />
-          </Field>
-          <div className="flex items-end">
-            <button
-              type="button"
-              disabled={busy}
-              className={btn}
-              onClick={() =>
-                run(async () => {
-                  const { url } = await issueDeliveryLink({
-                    project_id: projectId,
-                    client_id: clientId,
-                    title: projectTitle,
-                    role: linkRole,
-                    assignee_label: linkLabel,
-                    days: linkDays,
-                  });
-                  setIssuedUrl(url);
-                }, "Link created")
-              }
-            >
-              Create link
-            </button>
-          </div>
-        </div>
+      <Panel title="SHARE PROJECT — send these two links">
+        <p className="mb-4 text-xs text-muted-foreground">
+          Each link is a long random token, not the project address. Mike can open his link straight from WhatsApp with no
+          password. The client link is read-only and shows approved information only.
+        </p>
+        <div className="grid gap-4 lg:grid-cols-2">
+          {(["field", "client"] as const).map((role) => {
+            const heading = role === "field" ? "Mike — Field update link" : "Client — Progress view link";
+            const blurb =
+              role === "field"
+                ? "Daily site form for the cabling engineer. Can add updates, problems and timestamped photos."
+                : "Read-only progress report for Digiconnect / Sun International. No pricing, no internal notes.";
+            const live = data.links.filter((l) => l.link_role === role && !l.revoked_at && new Date(l.expires_at) > new Date());
+            const label = role === "field" ? fieldLabel : clientLabel;
+            const setLabel = role === "field" ? setFieldLabel : setClientLabel;
+            const url = issued[role];
+            const create = (regenerate: boolean) =>
+              run(async () => {
+                const input = {
+                  project_id: projectId,
+                  client_id: clientId,
+                  title: projectTitle,
+                  role,
+                  assignee_label: label,
+                  days: linkDays,
+                };
+                const res = regenerate ? await regenerateDeliveryLink(input, data.links) : await issueDeliveryLink(input);
+                setIssued((prev) => ({ ...prev, [role]: res.url }));
+              }, regenerate ? "New link created — the old one no longer works" : "Link created");
 
-        {issuedUrl && (
-          <div className="mt-3 border border-foreground p-3">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Copy this now — it is shown once</p>
-            <p className="mt-1 break-all text-sm">{issuedUrl}</p>
-            <button
-              type="button"
-              className={`${btn} mt-2`}
-              onClick={() => {
-                navigator.clipboard?.writeText(issuedUrl);
-                toast({ title: "Link copied" });
-              }}
-            >
-              Copy link
-            </button>
-          </div>
-        )}
-
-        <div className="mt-4 space-y-2">
-          {data.links.map((l) => {
-            const access = data.access.find((a) => a.share_link_id === l.id);
-            const state = l.revoked_at ? "revoked" : new Date(l.expires_at) < new Date() ? "expired" : "active";
             return (
-              <div key={l.id} className="flex flex-wrap items-center gap-3 border border-border p-3 text-sm">
-                <Chip>{l.link_role === "field" ? "Field" : "Client"}</Chip>
-                <span className="font-medium">{l.assignee_label ?? l.recipient_label ?? "Unnamed"}</span>
-                <span className="text-xs text-muted-foreground">
-                  {state} · opened {l.access_count}× · expires {new Date(l.expires_at).toLocaleDateString("en-ZA")}
-                </span>
-                {access?.device_expires_at && !access.revoked_at && (
-                  <button type="button" className={btn} disabled={busy} onClick={() => run(() => forgetDevice(access.id), "Device forgotten")}>
-                    Forget device
+              <div key={role} className="border border-foreground p-4">
+                <p className="text-sm font-semibold uppercase tracking-[0.14em]">{heading}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{blurb}</p>
+
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <Field label={role === "field" ? "Engineer" : "Recipient"}>
+                    <input className={selectCls} value={label} onChange={(e) => setLabel(e.target.value)} />
+                  </Field>
+                  <Field label="Valid for (days)">
+                    <input
+                      type="number"
+                      min={1}
+                      className={selectCls}
+                      value={linkDays}
+                      onChange={(e) => setLinkDays(Number(e.target.value))}
+                    />
+                  </Field>
+                </div>
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button type="button" disabled={busy} className={btn} onClick={() => create(false)}>
+                    {live.length ? "Create another link" : "Create link"}
                   </button>
+                  {!!live.length && (
+                    <button type="button" disabled={busy} className={btn} onClick={() => create(true)}>
+                      Regenerate (revokes old)
+                    </button>
+                  )}
+                </div>
+
+                {url && (
+                  <div className="mt-3 border border-border p-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Copy this now — it is only shown here
+                    </p>
+                    <p className="mt-1 break-all text-xs">{url}</p>
+                    <button
+                      type="button"
+                      className={`${btn} mt-2`}
+                      onClick={() => {
+                        navigator.clipboard?.writeText(url);
+                        toast({ title: "Link copied" });
+                      }}
+                    >
+                      Copy link
+                    </button>
+                  </div>
                 )}
-                {!l.revoked_at && (
-                  <button type="button" className={btn} disabled={busy} onClick={() => run(() => revokeDeliveryLink(l.id), "Link revoked")}>
-                    Revoke
-                  </button>
-                )}
+
+                <div className="mt-4 space-y-2">
+                  {data.links
+                    .filter((l) => l.link_role === role)
+                    .map((l) => {
+                      const access = data.access.find((a) => a.share_link_id === l.id);
+                      const state = l.revoked_at ? "revoked" : new Date(l.expires_at) < new Date() ? "expired" : "active";
+                      return (
+                        <div key={l.id} className="flex flex-wrap items-center gap-2 border border-border p-2 text-xs">
+                          <Chip>{state}</Chip>
+                          <span className="font-medium">{l.assignee_label ?? l.recipient_label ?? "Unnamed"}</span>
+                          <span className="text-muted-foreground">
+                            opened {l.access_count}× · expires {new Date(l.expires_at).toLocaleDateString("en-ZA")}
+                          </span>
+                          {access?.device_expires_at && !access.revoked_at && (
+                            <button type="button" className={btn} disabled={busy} onClick={() => run(() => forgetDevice(access.id), "Device forgotten")}>
+                              Forget device
+                            </button>
+                          )}
+                          {!l.revoked_at && (
+                            <button type="button" className={btn} disabled={busy} onClick={() => run(() => revokeDeliveryLink(l.id), "Link revoked")}>
+                              Revoke
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  {!data.links.some((l) => l.link_role === role) && (
+                    <p className="text-xs text-muted-foreground">No link issued yet.</p>
+                  )}
+                </div>
               </div>
             );
           })}
-          {!data.links.length && <p className="text-sm text-muted-foreground">No links issued yet.</p>}
+        </div>
+      </Panel>
+
+      <Panel title="Documents released to the client">
+        <p className="mb-3 text-xs text-muted-foreground">
+          Nothing appears on the client link until you release it here — drawings included.
+        </p>
+        <div className="space-y-2">
+          {data.documents.map((d) => (
+            <div key={d.id} className="flex flex-wrap items-center gap-3 border border-border p-3 text-sm">
+              <span className="font-medium">{d.title}</span>
+              {d.reference && <Chip>{d.reference}</Chip>}
+              {d.category && <Chip>{d.category}</Chip>}
+              {d.client_visible && <Chip>Client visible</Chip>}
+              <button
+                type="button"
+                className={btn}
+                disabled={busy}
+                onClick={() => run(() => setDocumentVisibility(d.id, !d.client_visible), "Document visibility saved")}
+              >
+                {d.client_visible ? "Hide from client" : "Release to client"}
+              </button>
+            </div>
+          ))}
+          {!data.documents.length && (
+            <p className="text-sm text-muted-foreground">No project documents uploaded yet.</p>
+          )}
         </div>
       </Panel>
 
