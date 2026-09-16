@@ -10,8 +10,8 @@ import {
   decideSignInRedirect,
   isRecoveryRequest,
   resolveAccessProfile,
-  PATH_SIGN_IN,
 } from "@/lib/authRouting";
+import { hasPendingRecoveryLink, PATH_RESET_PASSWORD } from "@/lib/recoveryLink";
 import siyakhaWordmark from "@/assets/siyakha-wordmark.png";
 
 type Mode = "signin" | "forgot" | "setup";
@@ -84,8 +84,12 @@ const SignIn: React.FC = () => {
   }, [routeAfterAuth]);
 
   useEffect(() => {
-    const isRecovery = isRecoveryRequest(window.location.search, window.location.hash);
-    if (isRecovery) setMode("setup");
+    // A genuine recovery link is handled only by /reset-password. If one is
+    // pending, this screen does nothing at all so it cannot consume the link or
+    // redirect the person into the app.
+    const isRecovery =
+      hasPendingRecoveryLink() || isRecoveryRequest(window.location.search, window.location.hash);
+    if (isRecovery) return;
 
     const mustChange = (u: { user_metadata?: Record<string, unknown> } | undefined | null) =>
       u?.user_metadata?.must_change_password === true;
