@@ -2432,6 +2432,153 @@ export type Database = {
           },
         ]
       }
+      portal_drawing_pins: {
+        Row: {
+          client_visible: boolean
+          created_at: string
+          created_by_name: string | null
+          floor_id: string | null
+          id: string
+          issue_id: string | null
+          label: string | null
+          plan_revision_id: string | null
+          project_id: string
+          update_id: string | null
+          x_norm: number | null
+          y_norm: number | null
+        }
+        Insert: {
+          client_visible?: boolean
+          created_at?: string
+          created_by_name?: string | null
+          floor_id?: string | null
+          id?: string
+          issue_id?: string | null
+          label?: string | null
+          plan_revision_id?: string | null
+          project_id: string
+          update_id?: string | null
+          x_norm?: number | null
+          y_norm?: number | null
+        }
+        Update: {
+          client_visible?: boolean
+          created_at?: string
+          created_by_name?: string | null
+          floor_id?: string | null
+          id?: string
+          issue_id?: string | null
+          label?: string | null
+          plan_revision_id?: string | null
+          project_id?: string
+          update_id?: string | null
+          x_norm?: number | null
+          y_norm?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_drawing_pins_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_drawing_pins_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "portal_site_issues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_drawing_pins_plan_revision_id_fkey"
+            columns: ["plan_revision_id"]
+            isOneToOne: false
+            referencedRelation: "portal_plan_revisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_drawing_pins_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_drawing_pins_update_id_fkey"
+            columns: ["update_id"]
+            isOneToOne: false
+            referencedRelation: "portal_site_updates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_field_access: {
+        Row: {
+          created_at: string
+          device_expires_at: string | null
+          device_label: string | null
+          device_session_hash: string | null
+          id: string
+          last_seen_at: string | null
+          project_id: string
+          revoked_at: string | null
+          role_label: string
+          share_link_id: string
+          submission_count: number
+          technician_email: string | null
+          technician_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          device_expires_at?: string | null
+          device_label?: string | null
+          device_session_hash?: string | null
+          id?: string
+          last_seen_at?: string | null
+          project_id: string
+          revoked_at?: string | null
+          role_label?: string
+          share_link_id: string
+          submission_count?: number
+          technician_email?: string | null
+          technician_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          device_expires_at?: string | null
+          device_label?: string | null
+          device_session_hash?: string | null
+          id?: string
+          last_seen_at?: string | null
+          project_id?: string
+          revoked_at?: string | null
+          role_label?: string
+          share_link_id?: string
+          submission_count?: number
+          technician_email?: string | null
+          technician_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_field_access_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_field_access_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "portal_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_floor_marker_comments: {
         Row: {
           admin_response: string | null
@@ -2720,6 +2867,57 @@ export type Database = {
           },
           {
             foreignKeyName: "portal_floor_markers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_floor_progress: {
+        Row: {
+          admin_override: boolean
+          created_at: string
+          floor_id: string
+          id: string
+          note: string | null
+          progress_pct: number
+          project_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_override?: boolean
+          created_at?: string
+          floor_id: string
+          id?: string
+          note?: string | null
+          progress_pct?: number
+          project_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_override?: boolean
+          created_at?: string
+          floor_id?: string
+          id?: string
+          note?: string | null
+          progress_pct?: number
+          project_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_floor_progress_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_floor_progress_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "portal_projects"
@@ -4269,6 +4467,7 @@ export type Database = {
         Row: {
           access_count: number
           approval_allowed: boolean
+          assignee_label: string | null
           client_id: string | null
           comments_allowed: boolean
           created_at: string
@@ -4278,6 +4477,7 @@ export type Database = {
           first_accessed_at: string | null
           id: string
           last_accessed_at: string | null
+          link_role: string
           live_project_view: boolean
           permission_scope: string
           project_id: string
@@ -4296,6 +4496,7 @@ export type Database = {
         Insert: {
           access_count?: number
           approval_allowed?: boolean
+          assignee_label?: string | null
           client_id?: string | null
           comments_allowed?: boolean
           created_at?: string
@@ -4305,6 +4506,7 @@ export type Database = {
           first_accessed_at?: string | null
           id?: string
           last_accessed_at?: string | null
+          link_role?: string
           live_project_view?: boolean
           permission_scope?: string
           project_id: string
@@ -4323,6 +4525,7 @@ export type Database = {
         Update: {
           access_count?: number
           approval_allowed?: boolean
+          assignee_label?: string | null
           client_id?: string | null
           comments_allowed?: boolean
           created_at?: string
@@ -4332,6 +4535,7 @@ export type Database = {
           first_accessed_at?: string | null
           id?: string
           last_accessed_at?: string | null
+          link_role?: string
           live_project_view?: boolean
           permission_scope?: string
           project_id?: string
@@ -4416,6 +4620,290 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "portal_site_images_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_site_issues: {
+        Row: {
+          client_visible: boolean
+          created_at: string
+          description: string | null
+          field_access_id: string | null
+          floor_id: string | null
+          id: string
+          internal_only: boolean
+          location_note: string | null
+          opened_at: string
+          project_id: string
+          reported_by_name: string | null
+          resolution_note: string | null
+          resolved_at: string | null
+          severity: string
+          status: string
+          title: string
+          update_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_visible?: boolean
+          created_at?: string
+          description?: string | null
+          field_access_id?: string | null
+          floor_id?: string | null
+          id?: string
+          internal_only?: boolean
+          location_note?: string | null
+          opened_at?: string
+          project_id: string
+          reported_by_name?: string | null
+          resolution_note?: string | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title: string
+          update_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_visible?: boolean
+          created_at?: string
+          description?: string | null
+          field_access_id?: string | null
+          floor_id?: string | null
+          id?: string
+          internal_only?: boolean
+          location_note?: string | null
+          opened_at?: string
+          project_id?: string
+          reported_by_name?: string | null
+          resolution_note?: string | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title?: string
+          update_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_site_issues_access_fk"
+            columns: ["field_access_id"]
+            isOneToOne: false
+            referencedRelation: "portal_field_access"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_site_issues_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_site_issues_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_site_issues_update_id_fkey"
+            columns: ["update_id"]
+            isOneToOne: false
+            referencedRelation: "portal_site_updates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_site_update_photos: {
+        Row: {
+          caption: string | null
+          category: string
+          client_visible: boolean
+          created_at: string
+          file_size: number | null
+          floor_id: string | null
+          id: string
+          issue_id: string | null
+          mime_type: string | null
+          project_id: string
+          sort_order: number
+          storage_path: string
+          taken_at: string
+          update_id: string | null
+        }
+        Insert: {
+          caption?: string | null
+          category?: string
+          client_visible?: boolean
+          created_at?: string
+          file_size?: number | null
+          floor_id?: string | null
+          id?: string
+          issue_id?: string | null
+          mime_type?: string | null
+          project_id: string
+          sort_order?: number
+          storage_path: string
+          taken_at?: string
+          update_id?: string | null
+        }
+        Update: {
+          caption?: string | null
+          category?: string
+          client_visible?: boolean
+          created_at?: string
+          file_size?: number | null
+          floor_id?: string | null
+          id?: string
+          issue_id?: string | null
+          mime_type?: string | null
+          project_id?: string
+          sort_order?: number
+          storage_path?: string
+          taken_at?: string
+          update_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_site_update_photos_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_site_update_photos_issue_fk"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "portal_site_issues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_site_update_photos_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_site_update_photos_update_id_fkey"
+            columns: ["update_id"]
+            isOneToOne: false
+            referencedRelation: "portal_site_updates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_site_updates: {
+        Row: {
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
+          area_label: string | null
+          blockers: string | null
+          client_visible: boolean
+          created_at: string
+          field_access_id: string | null
+          floor_id: string | null
+          id: string
+          internal_notes: string | null
+          locked_at: string | null
+          materials_required: string | null
+          next_shift_plan: string | null
+          notes: string | null
+          progress_pct: number
+          project_id: string
+          published_at: string | null
+          shift_date: string
+          source: string
+          submitted_at: string
+          submitted_by_name: string
+          submitted_by_user: string | null
+          team_onsite: string | null
+          updated_at: string
+          work_completed: string | null
+          work_outstanding: string | null
+        }
+        Insert: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          area_label?: string | null
+          blockers?: string | null
+          client_visible?: boolean
+          created_at?: string
+          field_access_id?: string | null
+          floor_id?: string | null
+          id?: string
+          internal_notes?: string | null
+          locked_at?: string | null
+          materials_required?: string | null
+          next_shift_plan?: string | null
+          notes?: string | null
+          progress_pct?: number
+          project_id: string
+          published_at?: string | null
+          shift_date?: string
+          source?: string
+          submitted_at?: string
+          submitted_by_name: string
+          submitted_by_user?: string | null
+          team_onsite?: string | null
+          updated_at?: string
+          work_completed?: string | null
+          work_outstanding?: string | null
+        }
+        Update: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          area_label?: string | null
+          blockers?: string | null
+          client_visible?: boolean
+          created_at?: string
+          field_access_id?: string | null
+          floor_id?: string | null
+          id?: string
+          internal_notes?: string | null
+          locked_at?: string | null
+          materials_required?: string | null
+          next_shift_plan?: string | null
+          notes?: string | null
+          progress_pct?: number
+          project_id?: string
+          published_at?: string | null
+          shift_date?: string
+          source?: string
+          submitted_at?: string
+          submitted_by_name?: string
+          submitted_by_user?: string | null
+          team_onsite?: string | null
+          updated_at?: string
+          work_completed?: string | null
+          work_outstanding?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_site_updates_access_fk"
+            columns: ["field_access_id"]
+            isOneToOne: false
+            referencedRelation: "portal_field_access"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_site_updates_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_site_updates_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "portal_projects"
