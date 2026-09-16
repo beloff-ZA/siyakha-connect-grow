@@ -117,6 +117,9 @@ export async function rememberThisDevice(token: string, label: string) {
 }
 
 export type DraftPhoto = {
+  /** Local id so a failed upload can be retried or removed before submitting. */
+  localId: string;
+  status: "uploading" | "ready" | "failed";
   storage_path: string;
   category: PhotoCategory;
   caption: string;
@@ -124,25 +127,68 @@ export type DraftPhoto = {
   mime_type?: string;
   file_size?: number;
   previewUrl?: string;
+  file?: File;
+  errorMessage?: string;
 };
+
+export type ReadyPhoto = Pick<DraftPhoto, "storage_path" | "category" | "caption" | "floor_id" | "mime_type" | "file_size">;
+
+export const readyPhotos = (photos: DraftPhoto[]): ReadyPhoto[] =>
+  photos
+    .filter((p) => p.status === "ready" && p.storage_path)
+    .map(({ storage_path, category, caption, floor_id, mime_type, file_size }) => ({
+      storage_path,
+      category,
+      caption,
+      floor_id,
+      mime_type,
+      file_size,
+    }));
+
+/**
+ * Shrinks a camera photo before upload so site updates go through on mobile
+ * data, while keeping enough resolution to be useful evidence. Falls back to
+ * the original file if the browser cannot decode it.
+ */
+export async function compressImage(file: File, maxEdge = 1800, quality = 0.75): Promise<File> {
+  if (!file.type.startsWith("image/") || file.type === "image/gif") return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+    if (scale === 1 && file.size < 1_200_000) return file;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close?.();
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+  } catch {
+    return file;
+  }
+}
 
 /** Uploads one photo straight from the camera into the private bucket. */
 export async function uploadFieldPhoto(token: string, file: File) {
-  const extension = (file.name.split(".").pop() ?? "jpg").toLowerCase();
+  const compressed = await compressImage(file);
+  const extension = (compressed.name.split(".").pop() ?? "jpg").toLowerCase();
   const prep = await call<{ state: LinkState; path?: string; token?: string; bucket?: string }>(token, "upload_url", {
     extension,
   });
   if (!prep.path || !prep.token) throw new Error("Upload could not be prepared. Check your signal and try again.");
   const { error } = await supabase.storage
     .from(prep.bucket ?? "site-progress")
-    .uploadToSignedUrl(prep.path, prep.token, file, { contentType: file.type || "image/jpeg" });
+    .uploadToSignedUrl(prep.path, prep.token, compressed, { contentType: compressed.type || "image/jpeg" });
   if (error) throw error;
-  return { storage_path: prep.path, mime_type: file.type, file_size: file.size };
+  return { storage_path: prep.path, mime_type: compressed.type, file_size: compressed.size };
 }
 
 export type UpdateSubmission = {
-  submitted_by_name: string;
   shift_date: string;
+  category: string;
   floor_id: string | null;
   area_label: string;
   work_completed: string;
@@ -153,7 +199,7 @@ export type UpdateSubmission = {
   progress_pct: number;
   next_shift_plan: string;
   notes: string;
-  photos: Omit<DraftPhoto, "previewUrl">[];
+  photos: ReadyPhoto[];
 };
 
 export const submitFieldUpdate = (token: string, payload: UpdateSubmission) =>
