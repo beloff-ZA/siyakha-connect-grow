@@ -560,7 +560,7 @@ const FieldJobPage: React.FC = () => {
               </div>
               <div>
                 <dt className="text-sm uppercase tracking-[0.16em] text-muted-foreground">Photos</dt>
-                <dd>{ready.length}</dd>
+                <dd>{photoTotal}</dd>
               </div>
             </dl>
 
@@ -568,13 +568,17 @@ const FieldJobPage: React.FC = () => {
 
             <button
               type="button"
-              disabled={busy || !!blocker}
-              onClick={send}
-              className="flex min-h-[76px] w-full items-center justify-center gap-3 border-2 border-accent bg-accent text-xl font-bold text-accent-foreground disabled:opacity-50"
+              disabled={busy || !!blocker || locked}
+              onClick={() => void persist(true)}
+              className={submitBtn}
             >
               <Send className="h-6 w-6" aria-hidden />
-              {busy ? "SENDING…" : "SEND DAILY UPDATE"}
+              {busy ? "SENDING…" : alreadySent ? "SUBMIT AGAIN FOR REVIEW" : "SUBMIT DAILY UPDATE"}
             </button>
+            <p className="text-base text-muted-foreground">
+              You can keep working and press UPDATE again until the office checks the day.
+            </p>
+
           </>
         )}
       </main>
