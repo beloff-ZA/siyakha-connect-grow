@@ -35,13 +35,117 @@ export const TIMESTAMP_EVIDENCE_NOTICE =
 
 /** Diary categories. Free text in the database, so this list can grow freely. */
 export const UPDATE_CATEGORIES = [
+  "Health & Safety",
+  "Cabling",
   "Site Work",
+  "Site Constraint",
   "Procurement",
+  "Additional Routing",
   "Testing & Commissioning",
   "Snagging",
   "Delay / Standing Time",
   "Other",
 ] as const;
+
+/**
+ * Scope baseline categories taken from the existing Sun International network
+ * infrastructure scope of works. Office reporting only — quantities live in the
+ * scope document and are never restated or invented here.
+ */
+export const BASELINE_CATEGORIES = [
+  "LAN Move",
+  "LAN New Install",
+  "WiFi Access Points",
+  "Surveillance Cameras",
+  "Biometric Readers",
+] as const;
+
+/* ------------------------------------------- additional / out-of-scope work */
+
+export const SCOPE_STATUSES = [
+  { value: "identified", label: "Identified" },
+  { value: "under_review", label: "Under review" },
+  { value: "approved_to_proceed", label: "Approved to proceed" },
+  { value: "completed", label: "Completed" },
+  { value: "not_proceeding", label: "Not proceeding" },
+] as const;
+
+export const SCOPE_SOURCES = [
+  { value: "field_update", label: "Field engineer update" },
+  { value: "admin_update", label: "Office update" },
+  { value: "client_instruction", label: "Client instruction" },
+  { value: "site_condition", label: "Site condition" },
+] as const;
+
+/**
+ * Operational register of additional works identified on site. Deliberately
+ * carries no rates, costs, margins or totals — commercial decisions are handled
+ * outside this project workflow.
+ */
+export type ScopeChange = {
+  id: string;
+  project_id: string;
+  floor_id: string | null;
+  update_id: string | null;
+  issue_id: string | null;
+  work_date: string;
+  area_label: string | null;
+  title: string;
+  description: string | null;
+  trigger_reason: string | null;
+  source: string;
+  baseline_category: string | null;
+  status: string;
+  internal_notes: string | null;
+  client_visible: boolean;
+  raised_by_name: string | null;
+  created_at: string;
+};
+
+export const scopeStatusLabel = (value: string) =>
+  SCOPE_STATUSES.find((s) => s.value === value)?.label ?? value.replace(/_/g, " ");
+
+export const scopeSourceLabel = (value: string) =>
+  SCOPE_SOURCES.find((s) => s.value === value)?.label ?? value.replace(/_/g, " ");
+
+export async function addScopeChange(input: {
+  project_id: string;
+  work_date: string;
+  title: string;
+  description?: string;
+  trigger_reason?: string;
+  floor_id?: string | null;
+  update_id?: string | null;
+  area_label?: string;
+  source?: string;
+  baseline_category?: string | null;
+  raised_by_name?: string;
+}) {
+  if (!input.title.trim()) throw new Error("Give the additional work a short title.");
+  const { data: auth } = await supabase.auth.getUser();
+  const { error } = await db.from("portal_scope_changes").insert({
+    project_id: input.project_id,
+    work_date: input.work_date,
+    title: input.title.trim(),
+    description: input.description?.trim() || null,
+    trigger_reason: input.trigger_reason?.trim() || null,
+    floor_id: input.floor_id || null,
+    update_id: input.update_id || null,
+    area_label: input.area_label?.trim() || null,
+    source: input.source ?? "site_condition",
+    baseline_category: input.baseline_category || null,
+    status: "under_review",
+    client_visible: false,
+    raised_by_name: input.raised_by_name?.trim() || null,
+    created_by: auth.user?.id ?? null,
+  });
+  if (error) throw error;
+}
+
+export async function patchScopeChange(id: string, patch: Partial<ScopeChange>) {
+  const { error } = await db.from("portal_scope_changes").update(patch).eq("id", id);
+  if (error) throw error;
+}
 
 export type ApprovalStatus = "draft" | "submitted" | "approved" | "locked";
 
