@@ -10,6 +10,8 @@ import useClientSiteDialogs from "./ClientSiteDialogs";
 import { DOCUMENTS_BUCKET } from "@/lib/portalFiles";
 import { FLOOR_USES, SURVEY_DISCLAIMER } from "@/lib/floorPlans";
 import { planRevisionTransaction } from "@/lib/designApi";
+import { SITE_IMAGES_BUCKET, siteImageStoragePath } from "@/lib/siteImages";
+import { parseStepLines, seedNextSteps } from "@/lib/nextSteps";
 import {
   duplicateFileWarnings,
   normalizeBuildingDetails,
@@ -68,7 +70,13 @@ const NewProjectWizard: React.FC<{
     status: "planning",
     start_date: "",
     target_date: "",
+    scope_of_work: "",
+    deliverables: "",
+    site_context: "",
+    next_steps: "",
   });
+  /** Initial / current-condition images. A name is required so each one has context. */
+  const [surveyImages, setSurveyImages] = useState<{ file: File; title: string; note: string }[]>([]);
   const [building, setBuilding] = useState({
     building_type: "",
     levels_note: "",
@@ -163,8 +171,35 @@ const NewProjectWizard: React.FC<{
    * records are reused on retry so a failed upload never duplicates a project or
    * overwrites an earlier plan revision.
    */
+  /** Initial-condition images reuse the existing secure site-image store. */
+  const uploadSurveyImages = async (projectId: string) => {
+    const today = new Date().toISOString().slice(0, 10);
+    for (const [i, img] of surveyImages.entries()) {
+      const path = siteImageStoragePath(projectId, today, img.file.name);
+      const { error: upErr } = await supabase.storage
+        .from(SITE_IMAGES_BUCKET)
+        .upload(path, img.file, { upsert: true, contentType: img.file.type || "image/jpeg" });
+      if (upErr) throw upErr;
+      const { error } = await supabase.from("portal_site_images").insert({
+        project_id: projectId,
+        storage_path: path,
+        original_filename: img.file.name,
+        title: img.title.trim(),
+        caption: img.note.trim() || null,
+        category: "Existing Conditions",
+        captured_on: today,
+        sort_order: i + 1,
+      } as never);
+      if (error) throw error;
+    }
+  };
+
   const submit = async () => {
     if (errors.length) return;
+    if (surveyImages.some((i) => !i.title.trim())) {
+      toast({ title: "Name every site image first", description: "Each image needs a short name for context." });
+      return;
+    }
     setBusy(true);
     try {
       let projectId = createdProjectId;
@@ -182,6 +217,9 @@ const NewProjectWizard: React.FC<{
             status: details.status,
             start_date: details.start_date || null,
             target_date: details.target_date || null,
+            scope_of_work: details.scope_of_work.trim() || null,
+            deliverables: details.deliverables.trim() || null,
+            site_context: details.site_context.trim() || null,
             building_details: normalizeBuildingDetails(building) as never,
           } as never)
           .select("id")
@@ -190,6 +228,8 @@ const NewProjectWizard: React.FC<{
         projectId = (data as { id: string } | null)?.id ?? null;
         if (!projectId) throw new Error("The project could not be created.");
         setCreatedProjectId(projectId);
+        await seedNextSteps(projectId, parseStepLines(details.next_steps));
+        await uploadSurveyImages(projectId);
       }
 
       // Existing floors for this project (present on retry) are reused, not duplicated.
@@ -387,6 +427,23 @@ const NewProjectWizard: React.FC<{
               <Field label="Description" className="sm:col-span-2">
                 <Textarea rows={3} value={details.description} onChange={(e) => setDetails({ ...details, description: e.target.value })} />
               </Field>
+              <Field label="Scope of work" className="sm:col-span-2">
+                <Textarea rows={3} value={details.scope_of_work} onChange={(e) => setDetails({ ...details, scope_of_work: e.target.value })} />
+              </Field>
+              <Field label="Deliverables" className="sm:col-span-2">
+                <Textarea rows={3} value={details.deliverables} onChange={(e) => setDetails({ ...details, deliverables: e.target.value })} />
+              </Field>
+              <Field label="Next steps (one per line)" className="sm:col-span-2">
+                <Textarea
+                  rows={3}
+                  value={details.next_steps}
+                  onChange={(e) => setDetails({ ...details, next_steps: e.target.value })}
+                  placeholder={"Confirm cable routes with site management\nPull cable on Ground Floor"}
+                />
+              </Field>
+              <Field label="Site notes / current condition" className="sm:col-span-2">
+                <Textarea rows={3} value={details.site_context} onChange={(e) => setDetails({ ...details, site_context: e.target.value })} />
+              </Field>
               <Field label="Total / GFA floor area (m²)">
                 <Input value={building.gfa_sqm} onChange={(e) => setBuilding({ ...building, gfa_sqm: e.target.value })} />
               </Field>
@@ -415,6 +472,56 @@ const NewProjectWizard: React.FC<{
                 Every original file is preserved. The first confirmed revision per floor becomes the
                 “{suggestRevisionLabel(0)}”; later uploads always create a new revision.
               </p>
+
+              <div className="border border-border p-4">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  Initial site / current-condition images (optional)
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Every image needs a name, for example “5th Floor – Existing Cable Route”.
+                </p>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  className="mt-3 text-sm"
+                  onChange={(e) => {
+                    const picked = Array.from(e.target.files ?? []).map((file) => ({ file, title: "", note: "" }));
+                    setSurveyImages((prev) => [...prev, ...picked]);
+                    e.target.value = "";
+                  }}
+                />
+                <div className="mt-3 space-y-2">
+                  {surveyImages.map((img, i) => (
+                    <div key={`${img.file.name}-${i}`} className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
+                      <Input
+                        value={img.title}
+                        placeholder={`Image name (required) — ${img.file.name}`}
+                        onChange={(e) =>
+                          setSurveyImages((prev) => prev.map((r, j) => (j === i ? { ...r, title: e.target.value } : r)))
+                        }
+                      />
+                      <Input
+                        value={img.note}
+                        placeholder="Description (optional)"
+                        onChange={(e) =>
+                          setSurveyImages((prev) => prev.map((r, j) => (j === i ? { ...r, note: e.target.value } : r)))
+                        }
+                      />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSurveyImages((prev) => prev.filter((_, j) => j !== i))}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                  {surveyImages.some((i) => !i.title.trim()) && (
+                    <p className="text-xs text-destructive">Name every image before creating the project.</p>
+                  )}
+                </div>
+              </div>
 
               {duplicateWarnings.map((w) => (
                 <p key={w} className="flex items-center gap-2 border border-border p-2 text-xs text-muted-foreground">

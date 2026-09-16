@@ -58,6 +58,7 @@ import LoggedCalls from "./pages/helpdesk/LoggedCalls";
 import LoggedCallView from "./pages/helpdesk/LoggedCallView";
 import LoggedCallCardView from "./pages/helpdesk/LoggedCallCardView";
 import JobCardSheet from "./pages/helpdesk/JobCardSheet";
+import HelpdeskUsers from "./pages/helpdesk/Users";
 import JobCardSignoff from "./pages/JobCardSignoff";
 
 // Client Portal
@@ -207,6 +208,7 @@ function App() {
               <Route path="/helpdesk/logged-calls/:callId" element={<AdminRoute><LoggedCallView /></AdminRoute>} />
               <Route path="/helpdesk/logged-calls/:callId/view" element={<AdminRoute><LoggedCallCardView /></AdminRoute>} />
               <Route path="/helpdesk/logged-calls/:callId/sheet" element={<AdminRoute><JobCardSheet /></AdminRoute>} />
+              <Route path="/helpdesk/users" element={<AdminRoute><HelpdeskUsers /></AdminRoute>} />
               <Route path="/helpdesk/client-portal" element={<AdminRoute><ClientPortalAdmin /></AdminRoute>} />
 
               {/* Everything else redirects home */}

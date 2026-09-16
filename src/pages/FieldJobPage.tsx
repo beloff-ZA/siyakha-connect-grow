@@ -24,6 +24,7 @@ import {
   loadFieldJob,
   readyPhotos,
   reportFieldIssue,
+  setFieldStepStatus,
   submitFieldUpdate,
   uploadFieldPhoto,
   type DraftPhoto,
@@ -90,6 +91,15 @@ const FieldJobPage: React.FC = () => {
   const engineer = job?.technician?.name ?? "";
   const floors = job?.floors ?? [];
   const floorName = (id: string | null) => floors.find((f) => f.id === id)?.display_name ?? "Whole site";
+
+  const markStep = async (id: string, status: string) => {
+    try {
+      await setFieldStepStatus(token, id, status);
+      await reload();
+    } catch {
+      /* the button simply stays as it was; he can try again */
+    }
+  };
 
   const timeline = useMemo(
     () => [...(job?.updates ?? [])].sort((a, b) => (a.shift_date < b.shift_date ? 1 : -1)),
@@ -468,6 +478,34 @@ const FieldJobPage: React.FC = () => {
           Next <ChevronRight className="h-5 w-5" aria-hidden />
         </button>
       </div>
+
+      {!!(job.next_steps ?? []).length && (
+        <div className="mt-6 space-y-3">
+          <p className="text-base font-semibold">WORK TO DO NEXT</p>
+          {(job.next_steps ?? []).map((s) => (
+            <div key={s.id} className="border-2 border-border p-3 text-base">
+              <p className="font-semibold">{s.title}</p>
+              {s.detail && <p className="mt-1 whitespace-pre-wrap text-sm">{s.detail}</p>}
+              <div className="mt-2 flex gap-2">
+                <button
+                  type="button"
+                  className={`min-h-[44px] flex-1 border-2 text-sm ${s.status === "in_progress" ? "border-foreground bg-foreground text-background" : "border-border"}`}
+                  onClick={() => void markStep(s.id, "in_progress")}
+                >
+                  Busy with it
+                </button>
+                <button
+                  type="button"
+                  className={`min-h-[44px] flex-1 border-2 text-sm ${s.status === "done" ? "border-foreground bg-foreground text-background" : "border-border"}`}
+                  onClick={() => void markStep(s.id, "done")}
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <button
         type="button"

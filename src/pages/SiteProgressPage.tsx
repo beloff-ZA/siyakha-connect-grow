@@ -311,6 +311,23 @@ const SiteProgressPage: React.FC = () => {
             ) : (
               <p className="text-sm text-muted-foreground">{NOT_REPORTED}</p>
             )}
+            {!!data.next_steps?.length && (
+              <ul className="mt-4 space-y-2 border-t border-border pt-4">
+                {data.next_steps.map((s) => (
+                  <li key={s.id} className="text-sm">
+                    <span className="font-medium">{s.title}</span>
+                    {s.due_date && (
+                      <span className="text-muted-foreground"> · target {s.due_date}</span>
+                    )}
+                    <span className="text-muted-foreground">
+                      {" "}
+                      · {s.status === "done" ? "Completed" : s.status === "in_progress" ? "In progress" : "Planned"}
+                    </span>
+                    {s.detail && <p className="mt-0.5 text-muted-foreground">{s.detail}</p>}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </section>
 

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { adminDisplayName, adminIdentityLabel } from "@/lib/adminIdentity";
 import { Button } from "@/components/ui/button";
-import { LogOut, Menu, X, ChevronRight, Briefcase, FolderKanban, Inbox, PhoneCall } from "lucide-react";
+import { LogOut, Menu, X, ChevronRight, Briefcase, FolderKanban, Inbox, PhoneCall, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 
@@ -17,6 +17,7 @@ const navSections = [
       { label: "Clients & Projects", icon: FolderKanban, path: "/helpdesk/project-management" },
       { label: "Logged Calls", icon: PhoneCall, path: "/helpdesk/logged-calls" },
       { label: "Website Enquiries", icon: Inbox, path: "/helpdesk/enquiries" },
+      { label: "Users & Access", icon: Users, path: "/helpdesk/users" },
     ],
   },
 ];

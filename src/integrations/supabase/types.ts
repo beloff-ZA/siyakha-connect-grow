@@ -3748,6 +3748,65 @@ export type Database = {
           },
         ]
       }
+      portal_project_next_steps: {
+        Row: {
+          category: string
+          client_visible: boolean
+          completed_at: string | null
+          created_at: string
+          detail: string | null
+          due_date: string | null
+          id: string
+          project_id: string
+          sort_order: number
+          status: string
+          technician_visible: boolean
+          title: string
+          updated_at: string
+          updated_by_name: string | null
+        }
+        Insert: {
+          category?: string
+          client_visible?: boolean
+          completed_at?: string | null
+          created_at?: string
+          detail?: string | null
+          due_date?: string | null
+          id?: string
+          project_id: string
+          sort_order?: number
+          status?: string
+          technician_visible?: boolean
+          title: string
+          updated_at?: string
+          updated_by_name?: string | null
+        }
+        Update: {
+          category?: string
+          client_visible?: boolean
+          completed_at?: string | null
+          created_at?: string
+          detail?: string | null
+          due_date?: string | null
+          id?: string
+          project_id?: string
+          sort_order?: number
+          status?: string
+          technician_visible?: boolean
+          title?: string
+          updated_at?: string
+          updated_by_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_project_next_steps_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_project_packs: {
         Row: {
           client_visible: boolean
@@ -3843,6 +3902,7 @@ export type Database = {
           client_id: string
           consultant: string | null
           created_at: string
+          deliverables: string | null
           description: string | null
           design_boq_id: string | null
           design_concept: string | null
@@ -3854,6 +3914,7 @@ export type Database = {
           project_approach: string | null
           reference: string | null
           risks_notes: string | null
+          scope_of_work: string | null
           site_context: string | null
           site_id: string | null
           stakeholders: string | null
@@ -3869,6 +3930,7 @@ export type Database = {
           client_id: string
           consultant?: string | null
           created_at?: string
+          deliverables?: string | null
           description?: string | null
           design_boq_id?: string | null
           design_concept?: string | null
@@ -3880,6 +3942,7 @@ export type Database = {
           project_approach?: string | null
           reference?: string | null
           risks_notes?: string | null
+          scope_of_work?: string | null
           site_context?: string | null
           site_id?: string | null
           stakeholders?: string | null
@@ -3895,6 +3958,7 @@ export type Database = {
           client_id?: string
           consultant?: string | null
           created_at?: string
+          deliverables?: string | null
           description?: string | null
           design_boq_id?: string | null
           design_concept?: string | null
@@ -3906,6 +3970,7 @@ export type Database = {
           project_approach?: string | null
           reference?: string | null
           risks_notes?: string | null
+          scope_of_work?: string | null
           site_context?: string | null
           site_id?: string | null
           stakeholders?: string | null
@@ -4678,10 +4743,12 @@ export type Database = {
           original_filename: string
           project_id: string
           sort_order: number
+          source: string
           storage_path: string
           title: string
           updated_at: string
           uploaded_by: string | null
+          uploaded_by_name: string | null
         }
         Insert: {
           area?: string | null
@@ -4694,10 +4761,12 @@ export type Database = {
           original_filename: string
           project_id: string
           sort_order?: number
+          source?: string
           storage_path: string
           title: string
           updated_at?: string
           uploaded_by?: string | null
+          uploaded_by_name?: string | null
         }
         Update: {
           area?: string | null
@@ -4710,10 +4779,12 @@ export type Database = {
           original_filename?: string
           project_id?: string
           sort_order?: number
+          source?: string
           storage_path?: string
           title?: string
           updated_at?: string
           uploaded_by?: string | null
+          uploaded_by_name?: string | null
         }
         Relationships: [
           {

@@ -37,6 +37,9 @@ export type GuestProject = {
   reference: string | null;
   status: string | null;
   scope: string | null;
+  scope_of_work?: string | null;
+  deliverables?: string | null;
+  site_notes?: string | null;
   address: string | null;
   start_date: string | null;
   target_date: string | null;
@@ -67,6 +70,16 @@ export type GuestScopeChange = {
   baseline_category: string | null;
 };
 
+/** One shared next-steps list, already filtered for this link's audience. */
+export type GuestNextStep = {
+  id: string;
+  title: string;
+  detail: string | null;
+  category: string;
+  status: string;
+  due_date: string | null;
+};
+
 export type FieldJob = {
   state: LinkState;
   role?: "field";
@@ -78,6 +91,7 @@ export type FieldJob = {
   issues?: any[];
   documents?: GuestDocument[];
   photos?: GuestPhoto[];
+  next_steps?: GuestNextStep[];
   today?: string;
 };
 
@@ -97,6 +111,7 @@ export type ClientProgress = {
   scope_changes?: GuestScopeChange[];
   photos?: GuestPhoto[];
   documents?: GuestDocument[];
+  next_steps?: GuestNextStep[];
 };
 
 const DEVICE_KEY = "siyakha_field_device";
@@ -313,6 +328,10 @@ export type IssueSubmission = {
 
 export const reportFieldIssue = (token: string, payload: IssueSubmission) =>
   call<{ state: LinkState; id?: string; error?: string }>(token, "report_issue", payload);
+
+/** Technician marks an installation step in progress or done. */
+export const setFieldStepStatus = (token: string, id: string, status: string) =>
+  call<{ state: LinkState }>(token, "next_step_status", { id, status });
 
 export const linkMessage = (state: LinkState | undefined) => {
   switch (state) {
