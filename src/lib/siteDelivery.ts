@@ -26,6 +26,16 @@ export const PHOTO_CATEGORIES: { value: PhotoCategory; label: string }[] = [
 export const ISSUE_SEVERITIES = ["low", "medium", "high", "critical"] as const;
 export const ISSUE_STATUSES = ["open", "in_progress", "resolved", "closed"] as const;
 
+/** Diary categories. Free text in the database, so this list can grow freely. */
+export const UPDATE_CATEGORIES = [
+  "Site Work",
+  "Procurement",
+  "Testing & Commissioning",
+  "Snagging",
+  "Delay / Standing Time",
+  "Other",
+] as const;
+
 export type ApprovalStatus = "draft" | "submitted" | "approved" | "locked";
 
 export type SiteUpdate = {
