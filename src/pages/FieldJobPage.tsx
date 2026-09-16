@@ -1,29 +1,36 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { CheckCircle2, ChevronLeft, ChevronRight, Send } from "lucide-react";
+import { ChevronLeft, ChevronRight, Lock, Save, Send } from "lucide-react";
 import { applyGuestPrivacyMeta } from "@/lib/shareLinks";
 import FieldPhotoStep from "@/components/site/FieldPhotoStep";
 import VoiceTextArea from "@/components/site/VoiceTextArea";
 import type { PhotoCategory } from "@/lib/siteDelivery";
 import {
+  answersFromUpdate,
   buildUpdatePayload,
   dateChoiceLabel,
+  dayRecord,
   emptyAnswers,
+  isLockedUpdate,
   localDate,
   problemSeverity,
   PROBLEM_LABELS,
   QUANTITY_UNITS,
+  readyToSave,
   readyToSend,
+  savedTime,
   workSummary,
   WORK_CHIPS,
   type FieldAnswers,
   type ProblemLevel,
+  type StoredUpdate,
 } from "@/lib/fieldForm";
 import {
   linkMessage,
   loadFieldJob,
   readyPhotos,
   reportFieldIssue,
+  saveFieldUpdate,
   setFieldStepStatus,
   submitFieldUpdate,
   uploadFieldPhoto,
@@ -36,8 +43,17 @@ import { toast } from "@/hooks/use-toast";
 const bigOption =
   "min-h-[64px] w-full border-2 px-4 text-left text-lg font-semibold flex items-center justify-between gap-3";
 const navBtn = "min-h-[56px] flex-1 border-2 border-foreground text-base font-semibold flex items-center justify-center gap-2";
+/**
+ * The two deliberate colour exceptions on this page, approved for the site form:
+ * green keeps the day's report up to date, red hands it to the office.
+ */
+const saveBtn =
+  "min-h-[64px] w-full border-2 border-[#127A3E] bg-[#127A3E] text-lg font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50";
+const submitBtn =
+  "min-h-[76px] w-full border-2 border-[#B01B1B] bg-[#B01B1B] text-xl font-bold text-white flex items-center justify-center gap-3 disabled:opacity-50";
 
 const STEPS = ["Where", "What", "How much", "Problems", "Needs", "Photos", "Next", "Send"] as const;
+
 
 const FieldJobPage: React.FC = () => {
   const { token = "" } = useParams();
@@ -47,9 +63,14 @@ const FieldJobPage: React.FC = () => {
   const [photos, setPhotos] = useState<DraftPhoto[]>([]);
   const [timestampUsed, setTimestampUsed] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [sent, setSent] = useState<null | { work_date: string; work: string; photos: number }>(null);
+  const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [sentAt, setSentAt] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
-  const draftKey = `siyakha_field_simple_${token}`;
+  const savingRef = useRef(false);
+  const hydratedRef = useRef("");
+  /** One saved draft per work date, so yesterday's answers never overwrite today's. */
+  const draftKey = `siyakha_field_simple_${token}_${answers.work_date}`;
 
   const set = (patch: Partial<FieldAnswers>) => setAnswers((a) => ({ ...a, ...patch }));
 
@@ -70,27 +91,50 @@ const FieldJobPage: React.FC = () => {
     reload();
   }, [reload]);
 
-  // Signal drops on site: keep his typing safe.
+  const engineer = job?.technician?.name ?? "";
+  const floors = job?.floors ?? [];
+  const floorName = (id: string | null) => floors.find((f) => f.id === id)?.display_name ?? "Whole site";
+
+  /** The one working record for this technician on the chosen work date. */
+  const record = useMemo(
+    () => dayRecord(job?.updates as StoredUpdate[] | undefined, job?.technician?.id, answers.work_date),
+    [job?.updates, job?.technician?.id, answers.work_date],
+  );
+  const locked = !!record && isLockedUpdate(record);
+  const alreadySent = !!sentAt || record?.approval_status === "submitted";
+  const savedPhotoCount = record ? (job?.photos ?? []).filter((p: any) => p.update_id === record.id).length : 0;
+
+  // Reopening a day loads what is already there: his own unsent typing first,
+  // otherwise the values saved on that day's record.
+  const hydrationKey = `${answers.work_date}|${record?.id ?? "none"}`;
   useEffect(() => {
+    if (hydratedRef.current === hydrationKey) return;
+    hydratedRef.current = hydrationKey;
+    let loaded: FieldAnswers | null = null;
     try {
       const raw = localStorage.getItem(draftKey);
-      if (raw) setAnswers({ ...emptyAnswers(localDate()), ...JSON.parse(raw) });
+      if (raw) loaded = { ...emptyAnswers(answers.work_date), ...JSON.parse(raw) };
     } catch {
       /* ignore */
     }
-  }, [draftKey]);
+    if (!loaded && record) loaded = answersFromUpdate(record);
+    if (loaded) setAnswers({ ...loaded, work_date: answers.work_date });
+    setSavedAt(record?.updated_at ?? null);
+    setSentAt(record?.approval_status === "submitted" ? record?.submitted_at ?? null : null);
+    setPhotos([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrationKey]);
 
+  // Signal drops on site: keep his typing safe on the phone as well.
   useEffect(() => {
+    if (hydratedRef.current !== hydrationKey) return;
+    if (readyToSave(answers)) return;
     try {
       localStorage.setItem(draftKey, JSON.stringify(answers));
     } catch {
       /* ignore */
     }
-  }, [draftKey, answers]);
-
-  const engineer = job?.technician?.name ?? "";
-  const floors = job?.floors ?? [];
-  const floorName = (id: string | null) => floors.find((f) => f.id === id)?.display_name ?? "Whole site";
+  }, [draftKey, answers, hydrationKey]);
 
   const markStep = async (id: string, status: string) => {
     try {
@@ -105,6 +149,101 @@ const FieldJobPage: React.FC = () => {
     () => [...(job?.updates ?? [])].sort((a, b) => (a.shift_date < b.shift_date ? 1 : -1)),
     [job?.updates],
   );
+
+  const ready = readyPhotos(photos).map((p) => ({
+    ...p,
+    timestamp_confirmed: timestampUsed,
+    floor_id: p.floor_id ?? (answers.floor_id || null),
+  }));
+  /** Only named photos go up; an unnamed one waits until he names it. */
+  const sendable = ready.filter((p) => p.title.trim());
+  const uploading = photos.some((p) => p.status === "uploading");
+  const unnamed = photos.some((p) => p.status === "ready" && !p.title.trim());
+  const photoTotal = sendable.length + savedPhotoCount;
+  const blocker = unnamed ? "Give every photo a short name." : readyToSend(answers, photoTotal, uploading);
+
+  /**
+   * Saves into the SAME daily record. `finalize` hands that record to the office;
+   * without it the day simply stays up to date and open.
+   */
+  const persist = useCallback(
+    async (finalize: boolean, quiet = false) => {
+      if (savingRef.current || locked) return false;
+      const stop = finalize ? blocker : readyToSave(answers);
+      if (stop) {
+        if (!quiet) toast({ title: "Not saved", description: stop, variant: "destructive" });
+        return false;
+      }
+      savingRef.current = true;
+      setSaving(true);
+      if (!quiet) setBusy(true);
+      try {
+        const payload = buildUpdatePayload(answers, photoTotal);
+        const body = { ...payload, photos: sendable };
+        const res = finalize ? await submitFieldUpdate(token, body) : await saveFieldUpdate(token, body);
+        if (res.error) throw new Error(res.error);
+        setSavedAt(res.saved_at ?? new Date().toISOString());
+        // Photos now stored with the day come off the pending list.
+        const kept = new Set(sendable.map((p) => p.storage_path));
+        setPhotos((list) => list.filter((p) => !kept.has(p.storage_path)));
+
+        if (finalize) {
+          setSentAt(res.submitted_at ?? new Date().toISOString());
+          // The problem is raised with the office once, on the first submission.
+          if (!alreadySent && answers.problem !== "none") {
+            await reportFieldIssue(token, {
+              title: `${PROBLEM_LABELS[answers.problem]} — ${floorName(answers.floor_id || null)}`,
+              description: answers.problem_text,
+              severity: problemSeverity(answers.problem),
+              floor_id: answers.floor_id || null,
+              location_note: answers.area_label,
+              photos: sendable
+                .filter((p) => p.category === "issue")
+                .map((p) => ({ ...p, category: "issue" as PhotoCategory })),
+            });
+          }
+          toast({ title: "✓ Daily update submitted" });
+        } else if (!quiet) {
+          toast({ title: "✓ Update saved" });
+        }
+        await reload();
+        return true;
+      } catch (e: any) {
+        if (!quiet) {
+          toast({
+            title: finalize ? "Not sent" : "Not saved",
+            description: e?.message ?? "Try again when you have signal.",
+            variant: "destructive",
+          });
+        }
+        return false;
+      } finally {
+        savingRef.current = false;
+        setSaving(false);
+        setBusy(false);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [answers, blocker, locked, photoTotal, sendable, token, alreadySent],
+  );
+
+  // Quiet protection: a short pause in typing keeps the same record up to date.
+  useEffect(() => {
+    if (locked || readyToSave(answers)) return;
+    const t = setTimeout(() => void persist(false, true), 1500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answers, locked]);
+
+  // A named photo is kept with the day as soon as it has finished loading.
+  const namedPhotoKey = sendable.map((p) => `${p.storage_path}:${p.title}`).join("|");
+  useEffect(() => {
+    if (!namedPhotoKey || locked) return;
+    const t = setTimeout(() => void persist(false, true), 900);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [namedPhotoKey, locked]);
+
 
   const uploadOne = useCallback(
     async (localId: string, file: File) => {
@@ -142,41 +281,6 @@ const FieldJobPage: React.FC = () => {
     for (const draft of drafts) await uploadOne(draft.localId, draft.file!);
   };
 
-  const ready = readyPhotos(photos).map((p) => ({ ...p, timestamp_confirmed: timestampUsed, floor_id: p.floor_id ?? (answers.floor_id || null) }));
-  const uploading = photos.some((p) => p.status === "uploading");
-  const unnamed = photos.some((p) => p.status === "ready" && !p.title.trim());
-  const blocker = unnamed ? "Give every photo a short name." : readyToSend(answers, ready.length, uploading);
-
-  const send = async () => {
-    setBusy(true);
-    try {
-      const payload = buildUpdatePayload(answers, ready.length);
-      const res = await submitFieldUpdate(token, { ...payload, photos: ready });
-      if (res.error) throw new Error(res.error);
-      if (answers.problem !== "none") {
-        await reportFieldIssue(token, {
-          title: `${PROBLEM_LABELS[answers.problem]} — ${floorName(answers.floor_id || null)}`,
-          description: answers.problem_text,
-          severity: problemSeverity(answers.problem),
-          floor_id: answers.floor_id || null,
-          location_note: answers.area_label,
-          photos: ready.filter((p) => p.category === "issue").map((p) => ({ ...p, category: "issue" as PhotoCategory })),
-        });
-      }
-      setSent({ work_date: answers.work_date, work: workSummary(answers), photos: ready.length });
-      setAnswers(emptyAnswers(localDate()));
-      setPhotos([]);
-      setTimestampUsed(false);
-      setStep(0);
-      localStorage.removeItem(draftKey);
-      await reload();
-    } catch (e: any) {
-      toast({ title: "Not sent", description: e?.message ?? "Try again when you have signal.", variant: "destructive" });
-    } finally {
-      setBusy(false);
-    }
-  };
-
   if (!job) return <p className="p-8 text-center text-lg">Opening your job…</p>;
   if (job.state !== "ok")
     return (
@@ -186,22 +290,6 @@ const FieldJobPage: React.FC = () => {
       </div>
     );
 
-  if (sent)
-    return (
-      <div className="mx-auto max-w-md px-4 py-10 text-center">
-        <CheckCircle2 className="mx-auto h-20 w-20" aria-hidden />
-        <h1 className="mt-4 text-2xl font-bold">UPDATE SENT</h1>
-        <p className="mt-1 text-lg">Thank you {engineer}.</p>
-        <div className="mt-6 border-2 border-border p-4 text-left text-base">
-          <p className="font-semibold">{dateChoiceLabel(sent.work_date)}</p>
-          <p className="mt-2 whitespace-pre-wrap">{sent.work}</p>
-          <p className="mt-2">{sent.photos} photo{sent.photos === 1 ? "" : "s"} sent</p>
-        </div>
-        <button type="button" className={`${navBtn} mt-6 w-full`} onClick={() => setSent(null)}>
-          Send another update
-        </button>
-      </div>
-    );
 
   return (
     <div className="mx-auto max-w-md px-4 pb-10">
@@ -214,7 +302,26 @@ const FieldJobPage: React.FC = () => {
         <p className="mt-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
           Step {step + 1} of {STEPS.length} · {STEPS[step]}
         </p>
+        <p className="text-xs text-muted-foreground">
+          {saving
+            ? "Saving…"
+            : savedAt
+              ? `Last saved: ${savedTime(savedAt)}`
+              : "Nothing saved yet for this day"}
+          {alreadySent && sentAt ? ` · Sent to office ${savedTime(sentAt)}` : ""}
+        </p>
       </header>
+
+      {locked && (
+        <div className="mt-4 flex items-start gap-2 border-2 border-foreground p-3 text-base">
+          <Lock className="mt-0.5 h-5 w-5 shrink-0" aria-hidden />
+          <p>
+            The office has checked {dateChoiceLabel(answers.work_date)}. You can look at it, but you cannot change it.
+            Choose another day to add work.
+          </p>
+        </div>
+      )}
+
 
       <main className="mt-5 space-y-4">
         {step === 0 && (
@@ -427,8 +534,15 @@ const FieldJobPage: React.FC = () => {
         {step === 5 && (
           <>
             <h2 className="text-xl font-bold">PHOTOS</h2>
+            {savedPhotoCount > 0 && (
+              <p className="border-2 border-border p-3 text-base">
+                {savedPhotoCount} photo{savedPhotoCount === 1 ? "" : "s"} already saved for{" "}
+                {dateChoiceLabel(answers.work_date)}.
+              </p>
+            )}
             <FieldPhotoStep
               photos={photos}
+
               timestampUsed={timestampUsed}
               onTimestampUsed={setTimestampUsed}
               onPick={addPhotos}
@@ -486,7 +600,7 @@ const FieldJobPage: React.FC = () => {
               </div>
               <div>
                 <dt className="text-sm uppercase tracking-[0.16em] text-muted-foreground">Photos</dt>
-                <dd>{ready.length}</dd>
+                <dd>{photoTotal}</dd>
               </div>
             </dl>
 
@@ -494,18 +608,31 @@ const FieldJobPage: React.FC = () => {
 
             <button
               type="button"
-              disabled={busy || !!blocker}
-              onClick={send}
-              className="flex min-h-[76px] w-full items-center justify-center gap-3 border-2 border-accent bg-accent text-xl font-bold text-accent-foreground disabled:opacity-50"
+              disabled={busy || !!blocker || locked}
+              onClick={() => void persist(true)}
+              className={submitBtn}
             >
               <Send className="h-6 w-6" aria-hidden />
-              {busy ? "SENDING…" : "SEND DAILY UPDATE"}
+              {busy ? "SENDING…" : alreadySent ? "SUBMIT AGAIN FOR REVIEW" : "SUBMIT DAILY UPDATE"}
             </button>
+            <p className="text-base text-muted-foreground">
+              You can keep working and press UPDATE again until the office checks the day.
+            </p>
+
           </>
         )}
       </main>
 
-      <div className="mt-6 flex gap-3">
+      {/* Same day's report, kept up to date all day long. */}
+      {!locked && (
+        <button type="button" className={`${saveBtn} mt-6`} disabled={busy || saving} onClick={() => void persist(false)}>
+          <Save className="h-5 w-5" aria-hidden />
+          {saving ? "SAVING…" : alreadySent ? "UPDATE SUBMITTED REPORT" : "UPDATE"}
+        </button>
+      )}
+
+      <div className="mt-3 flex gap-3">
+
         <button type="button" className={navBtn} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>
           <ChevronLeft className="h-5 w-5" aria-hidden /> Back
         </button>

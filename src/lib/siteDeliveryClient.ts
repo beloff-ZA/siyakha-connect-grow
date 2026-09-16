@@ -323,8 +323,24 @@ export type UpdateSubmission = {
   photos: ReadyPhoto[];
 };
 
+export type SaveResult = {
+  state: LinkState;
+  id?: string;
+  error?: string;
+  approval_status?: string;
+  submitted_at?: string | null;
+  saved_at?: string;
+  photo_count?: number;
+};
+
+/** Keeps the day's working record up to date without ending the day. */
+export const saveFieldUpdate = (token: string, payload: UpdateSubmission) =>
+  call<SaveResult>(token, "save_update", payload);
+
+/** Hands the same day's record to the office for review. */
 export const submitFieldUpdate = (token: string, payload: UpdateSubmission) =>
-  call<{ state: LinkState; id?: string; error?: string }>(token, "submit_update", payload);
+  call<SaveResult>(token, "submit_update", payload);
+
 
 export type IssueSubmission = {
   title: string;
