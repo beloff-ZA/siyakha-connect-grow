@@ -106,7 +106,7 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
           <Stat label="Today" value={updatedToday(data.updates) ? "Updated" : "Awaiting update"} />
           <Stat label="Updates" value={counts!.updates} hint={`${counts!.awaitingApproval} awaiting approval`} />
           <Stat label="Open issues" value={counts!.openIssues} />
-          <Stat label="Photos" value={counts!.photos} />
+          <Stat label="Photos" value={counts!.photos} hint={`${counts!.daysMissingEvidence} day(s) without evidence`} />
           <Stat label="Days with blockers" value={counts!.blockers} />
         </div>
       </Panel>
