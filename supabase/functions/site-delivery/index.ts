@@ -252,6 +252,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === "submit_update") {
+      const submittedPhotos = Array.isArray(payload.photos) ? payload.photos.slice(0, 40) : [];
       const insert = {
         project_id: projectId,
         floor_id: uuidOrNull(payload.floor_id),
@@ -273,6 +274,8 @@ Deno.serve(async (req) => {
         notes: clean(payload.notes) || null,
         approval_status: "submitted",
         client_visible: false,
+        photo_evidence_required: true,
+        photos_outstanding: submittedPhotos.length === 0,
       };
       if (!insert.work_completed && !insert.work_outstanding && !insert.notes) {
         return json({ error: "Add what was completed or what is outstanding before submitting." }, 400);
@@ -280,9 +283,9 @@ Deno.serve(async (req) => {
       const { data: created, error } = await admin.from("portal_site_updates").insert(insert).select("id").maybeSingle();
       if (error) return json({ error: "The update could not be saved." }, 500);
 
-      const photos = Array.isArray(payload.photos) ? payload.photos.slice(0, 40) : [];
+      const photos = submittedPhotos;
       if (photos.length) {
-        await admin.from("portal_site_update_photos").insert(
+        const { error: photoError } = await admin.from("portal_site_update_photos").insert(
           photos.map((p: any, i: number) => ({
             project_id: projectId,
             update_id: created!.id,
@@ -290,12 +293,21 @@ Deno.serve(async (req) => {
             category: PHOTO_CATEGORIES.has(str(p?.category, 20)) ? str(p?.category, 20) : "during",
             caption: clean(p?.caption, 300) || null,
             storage_path: str(p?.storage_path, 400),
+            original_storage_path: str(p?.original_storage_path, 400) || str(p?.storage_path, 400),
+            original_filename: clean(p?.original_filename, 240) || null,
+            original_file_size: Number.isFinite(Number(p?.original_file_size)) ? Number(p?.original_file_size) : null,
+            exif_captured_at: isoOrNull(p?.exif_captured_at),
+            timestamp_confirmed: p?.timestamp_confirmed === true,
             mime_type: str(p?.mime_type, 120) || null,
             file_size: Number.isFinite(Number(p?.file_size)) ? Number(p?.file_size) : null,
             sort_order: i,
           })).filter((p) => p.storage_path),
         );
+        if (photoError) {
+          await admin.from("portal_site_updates").update({ photos_outstanding: true }).eq("id", created!.id);
+        }
       }
+
 
       await admin.from("portal_activity").insert({
         project_id: projectId,
