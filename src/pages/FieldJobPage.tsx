@@ -370,6 +370,27 @@ const FieldJobPage: React.FC = () => {
                 <p className="text-base text-muted-foreground">Add a photo of the problem in the photos step.</p>
               </>
             )}
+            <p className="pt-4 text-base font-semibold">Is this maybe extra work? (not needed)</p>
+            <button
+              type="button"
+              onClick={() => set({ extra_work: !answers.extra_work, extra_work_text: "" })}
+              className={`${bigOption} ${
+                answers.extra_work ? "border-foreground bg-foreground text-background" : "border-border"
+              }`}
+            >
+              {answers.extra_work ? "Yes — maybe extra work" : "No"}
+            </button>
+            {answers.extra_work && (
+              <>
+                <VoiceTextArea
+                  value={answers.extra_work_text}
+                  onChange={(extra_work_text) => set({ extra_work_text })}
+                  placeholder="Say what the extra work is and why."
+                  rows={4}
+                />
+                <p className="text-base text-muted-foreground">The office will check this. Do not agree anything on site.</p>
+              </>
+            )}
           </>
         )}
 
@@ -458,6 +479,10 @@ const FieldJobPage: React.FC = () => {
               <div>
                 <dt className="text-sm uppercase tracking-[0.16em] text-muted-foreground">Problems</dt>
                 <dd>{answers.problem === "none" ? "No problems" : `${PROBLEM_LABELS[answers.problem]}: ${answers.problem_text}`}</dd>
+              </div>
+              <div>
+                <dt className="text-sm uppercase tracking-[0.16em] text-muted-foreground">Maybe extra work</dt>
+                <dd className="whitespace-pre-wrap">{answers.extra_work ? answers.extra_work_text || "Yes" : "No"}</dd>
               </div>
               <div>
                 <dt className="text-sm uppercase tracking-[0.16em] text-muted-foreground">Photos</dt>
