@@ -45,7 +45,27 @@ export type GuestProject = {
   site_location: string | null;
 };
 
-export type GuestDocument = { id: string; title: string; category: string | null; reference: string | null; url: string | null };
+export type GuestDocument = {
+  id: string;
+  title: string;
+  category: string | null;
+  reference: string | null;
+  document_date?: string | null;
+  url: string | null;
+};
+
+/** Additional / out-of-scope works shown to the client. Operational only — never any pricing. */
+export type GuestScopeChange = {
+  id: string;
+  work_date: string;
+  title: string;
+  description: string | null;
+  trigger_reason: string | null;
+  status: string;
+  floor_id: string | null;
+  area_label: string | null;
+  baseline_category: string | null;
+};
 
 export type FieldJob = {
   state: LinkState;
@@ -67,9 +87,14 @@ export type ClientProgress = {
   project?: GuestProject;
   overall_progress?: number;
   last_updated?: string | null;
+  last_published_at?: string | null;
+  current_area?: { floor_id: string | null; area_label: string | null } | null;
+  next_activity?: string | null;
+  generated_at?: string | null;
   floors?: FieldFloor[];
   updates?: any[];
   issues?: any[];
+  scope_changes?: GuestScopeChange[];
   photos?: GuestPhoto[];
   documents?: GuestDocument[];
 };

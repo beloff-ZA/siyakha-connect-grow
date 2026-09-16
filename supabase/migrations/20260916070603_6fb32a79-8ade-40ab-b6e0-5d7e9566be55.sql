@@ -1,0 +1,1 @@
+ALTER TABLE public.portal_documents ADD COLUMN IF NOT EXISTS client_visible boolean NOT NULL DEFAULT false;

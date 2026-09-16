@@ -273,8 +273,17 @@ export const clientProgressUrl = (token: string) => `${window.location.origin}/s
 
 /* ------------------------------------------------------------------- loaders */
 
+export type SiteDocument = {
+  id: string;
+  title: string;
+  category: string | null;
+  reference: string | null;
+  document_date: string | null;
+  client_visible: boolean;
+};
+
 export async function loadSiteDelivery(projectId: string) {
-  const [floors, progress, updates, photos, issues, links, access, scope] = await Promise.all([
+  const [floors, progress, updates, photos, issues, links, access, scope, docs] = await Promise.all([
     db.from("portal_floors").select("id, level_number, display_name, floor_use, plan_image_path, client_visible, sort_order")
       .eq("project_id", projectId).order("sort_order"),
     db.from("portal_floor_progress").select("*").eq("project_id", projectId),
@@ -285,8 +294,10 @@ export async function loadSiteDelivery(projectId: string) {
       .eq("project_id", projectId).eq("resource_type", "site_delivery").order("created_at", { ascending: false }),
     db.from("portal_field_access").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
     db.from("portal_scope_changes").select("*").eq("project_id", projectId).order("work_date", { ascending: false }),
+    db.from("portal_documents").select("id, title, category, reference, document_date, client_visible")
+      .eq("project_id", projectId).order("document_date", { ascending: false }),
   ]);
-  const firstError = [floors, progress, updates, photos, issues, links, access, scope].find((r: any) => r.error)?.error;
+  const firstError = [floors, progress, updates, photos, issues, links, access, scope, docs].find((r: any) => r.error)?.error;
   if (firstError) throw firstError;
   return {
     floors: (floors.data ?? []) as SiteFloor[],
@@ -297,7 +308,14 @@ export async function loadSiteDelivery(projectId: string) {
     links: (links.data ?? []) as DeliveryLink[],
     access: (access.data ?? []) as FieldAccess[],
     scopeChanges: (scope.data ?? []) as ScopeChange[],
+    documents: (docs.data ?? []) as SiteDocument[],
   };
+}
+
+/** Publishes or hides one project document on the client progress link. */
+export async function setDocumentVisibility(id: string, clientVisible: boolean) {
+  const { error } = await db.from("portal_documents").update({ client_visible: clientVisible }).eq("id", id);
+  if (error) throw error;
 }
 
 export type SiteDeliveryData = Awaited<ReturnType<typeof loadSiteDelivery>>;
@@ -490,6 +508,21 @@ export async function revokeDeliveryLink(id: string) {
     .update({ revoked_at: now, device_session_hash: null, device_expires_at: null })
     .eq("share_link_id", id);
 }
+
+/**
+ * Replaces the active link for one role: every live link of that role is revoked
+ * and a single fresh token is issued, so an old WhatsApp forward stops working.
+ */
+export async function regenerateDeliveryLink(
+  input: Parameters<typeof issueDeliveryLink>[0],
+  existing: DeliveryLink[],
+) {
+  const live = existing.filter((l) => l.link_role === input.role && !l.revoked_at);
+  for (const l of live) await revokeDeliveryLink(l.id);
+  return issueDeliveryLink(input);
+}
+
+
 
 export async function forgetDevice(accessId: string) {
   const { error } = await db.from("portal_field_access")
