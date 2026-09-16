@@ -262,6 +262,7 @@ Deno.serve(async (req) => {
         submitted_by_name: clean(payload.submitted_by_name, 160) || (access.technician_name as string),
         field_access_id: access.id,
         source: "field",
+        category: clean(payload.category, 60) || null,
         work_completed: clean(payload.work_completed) || null,
         work_outstanding: clean(payload.work_outstanding) || null,
         blockers: clean(payload.blockers) || null,
@@ -366,7 +367,7 @@ Deno.serve(async (req) => {
       admin
         .from("portal_site_updates")
         .select(
-          "id, shift_date, submitted_at, submitted_by_name, floor_id, area_label, work_completed, work_outstanding, blockers, materials_required, team_onsite, progress_pct, next_shift_plan, notes, approval_status, client_visible",
+          "id, shift_date, submitted_at, submitted_by_name, category, photos_outstanding, floor_id, area_label, work_completed, work_outstanding, blockers, materials_required, team_onsite, progress_pct, next_shift_plan, notes, approval_status, client_visible",
         )
         .eq("project_id", projectId)
         .order("submitted_at", { ascending: false })
@@ -427,7 +428,7 @@ Deno.serve(async (req) => {
     floorsWithProgress(true),
     admin
       .from("portal_site_updates")
-      .select("id, shift_date, submitted_at, floor_id, area_label, work_completed, work_outstanding, next_shift_plan, progress_pct, approved_at, published_at")
+      .select("id, shift_date, submitted_at, category, photos_outstanding, floor_id, area_label, work_completed, work_outstanding, next_shift_plan, progress_pct, approved_at, published_at")
       .eq("project_id", projectId)
       .eq("client_visible", true)
       .in("approval_status", ["approved", "locked"])
