@@ -4362,6 +4362,101 @@ export type Database = {
           },
         ]
       }
+      portal_scope_changes: {
+        Row: {
+          area_label: string | null
+          baseline_category: string | null
+          client_visible: boolean
+          created_at: string
+          created_by: string | null
+          description: string | null
+          floor_id: string | null
+          id: string
+          internal_notes: string | null
+          issue_id: string | null
+          project_id: string
+          raised_by_name: string | null
+          source: string
+          status: string
+          title: string
+          trigger_reason: string | null
+          update_id: string | null
+          updated_at: string
+          work_date: string
+        }
+        Insert: {
+          area_label?: string | null
+          baseline_category?: string | null
+          client_visible?: boolean
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          floor_id?: string | null
+          id?: string
+          internal_notes?: string | null
+          issue_id?: string | null
+          project_id: string
+          raised_by_name?: string | null
+          source?: string
+          status?: string
+          title: string
+          trigger_reason?: string | null
+          update_id?: string | null
+          updated_at?: string
+          work_date: string
+        }
+        Update: {
+          area_label?: string | null
+          baseline_category?: string | null
+          client_visible?: boolean
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          floor_id?: string | null
+          id?: string
+          internal_notes?: string | null
+          issue_id?: string | null
+          project_id?: string
+          raised_by_name?: string | null
+          source?: string
+          status?: string
+          title?: string
+          trigger_reason?: string | null
+          update_id?: string | null
+          updated_at?: string
+          work_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_scope_changes_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_scope_changes_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "portal_site_issues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_scope_changes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portal_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_scope_changes_update_id_fkey"
+            columns: ["update_id"]
+            isOneToOne: false
+            referencedRelation: "portal_site_updates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_share_acceptances: {
         Row: {
           accepted_at: string
@@ -4735,6 +4830,7 @@ export type Database = {
           original_filename: string | null
           original_storage_path: string | null
           project_id: string
+          scope_change_id: string | null
           sort_order: number
           storage_path: string
           taken_at: string
@@ -4757,6 +4853,7 @@ export type Database = {
           original_filename?: string | null
           original_storage_path?: string | null
           project_id: string
+          scope_change_id?: string | null
           sort_order?: number
           storage_path: string
           taken_at?: string
@@ -4779,6 +4876,7 @@ export type Database = {
           original_filename?: string | null
           original_storage_path?: string | null
           project_id?: string
+          scope_change_id?: string | null
           sort_order?: number
           storage_path?: string
           taken_at?: string
@@ -4809,6 +4907,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "portal_site_update_photos_scope_change_id_fkey"
+            columns: ["scope_change_id"]
+            isOneToOne: false
+            referencedRelation: "portal_scope_changes"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "portal_site_update_photos_update_id_fkey"
             columns: ["update_id"]
             isOneToOne: false
@@ -4823,6 +4928,8 @@ export type Database = {
           approved_at: string | null
           approved_by: string | null
           area_label: string | null
+          backdated: boolean
+          baseline_category: string | null
           blockers: string | null
           category: string | null
           client_visible: boolean
@@ -4858,6 +4965,8 @@ export type Database = {
           approved_at?: string | null
           approved_by?: string | null
           area_label?: string | null
+          backdated?: boolean
+          baseline_category?: string | null
           blockers?: string | null
           category?: string | null
           client_visible?: boolean
@@ -4893,6 +5002,8 @@ export type Database = {
           approved_at?: string | null
           approved_by?: string | null
           area_label?: string | null
+          backdated?: boolean
+          baseline_category?: string | null
           blockers?: string | null
           category?: string | null
           client_visible?: boolean
