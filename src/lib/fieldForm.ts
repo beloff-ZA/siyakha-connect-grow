@@ -139,3 +139,81 @@ export function readyToSend(a: FieldAnswers, readyPhotoCount: number, uploading:
   if (readyPhotoCount === 0) return "Client needs photos. Add photos before sending.";
   return null;
 }
+
+/* ------------------------------------------------------------------------- */
+/* One working record per technician + work date                              */
+/* ------------------------------------------------------------------------- */
+
+/** The fields of a saved daily record the phone form needs back. */
+export type StoredUpdate = {
+  id: string;
+  shift_date: string;
+  field_access_id?: string | null;
+  approval_status?: string | null;
+  approved_at?: string | null;
+  locked_at?: string | null;
+  submitted_at?: string | null;
+  updated_at?: string | null;
+  floor_id?: string | null;
+  area_label?: string | null;
+  work_completed?: string | null;
+  blockers?: string | null;
+  materials_required?: string | null;
+  next_shift_plan?: string | null;
+  notes?: string | null;
+};
+
+/** Once the office approves or locks a day, nobody on site may change it. */
+export const isLockedUpdate = (u: StoredUpdate) =>
+  !!u.locked_at || !!u.approved_at || u.approval_status === "approved" || u.approval_status === "locked";
+
+/**
+ * This technician's own record for that work date — draft or already submitted.
+ * Used so the form reopens the same day instead of starting a new report.
+ */
+export function dayRecord(
+  updates: StoredUpdate[] | undefined,
+  accessId: string | undefined,
+  workDate: string,
+): StoredUpdate | null {
+  if (!updates?.length || !accessId) return null;
+  return (
+    updates.find((u) => u.shift_date === workDate && u.field_access_id === accessId) ?? null
+  );
+}
+
+const NO_PHOTO_NOTE = "No photos attached with this update.";
+
+/** Rebuilds the simple answers from a saved record, inventing nothing. */
+export function answersFromUpdate(u: StoredUpdate): FieldAnswers {
+  const a = emptyAnswers(u.shift_date);
+  a.floor_id = u.floor_id ?? "";
+  a.area_label = u.area_label ?? "";
+  a.work_text = u.work_completed ?? "";
+  const blockers = (u.blockers ?? "").trim();
+  if (blockers) {
+    const stopped = blockers.startsWith(PROBLEM_LABELS.stopped);
+    a.problem = stopped ? "stopped" : "small";
+    a.problem_text = blockers.replace(/^[^:]*:\s*/, "");
+  }
+  const needs = (u.materials_required ?? "").trim();
+  if (needs === "Nothing needed") a.needs_nothing = true;
+  else a.needs_text = needs;
+  a.next_text = u.next_shift_plan ?? "";
+  a.note_text = (u.notes ?? "").replace(NO_PHOTO_NOTE, "").trim();
+  return a;
+}
+
+/** Blocks a quiet or deliberate save until there is something worth keeping. */
+export const readyToSave = (a: FieldAnswers): string | null => {
+  if (isFutureDate(a.work_date)) return "Choose today or an earlier day.";
+  if (!workSummary(a) && !a.note_text.trim() && !a.problem_text.trim() && !a.needs_text.trim()) {
+    return "Write something before saving.";
+  }
+  return null;
+};
+
+/** Short local time for the "Last saved" line. */
+export const savedTime = (iso: string) =>
+  new Date(iso).toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" });
+
