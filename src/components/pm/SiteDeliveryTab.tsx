@@ -86,7 +86,9 @@ const SiteDeliveryTab: React.FC<{
   const reload = useCallback(async () => {
     setError(null);
     try {
-      setData(await loadSiteDelivery(projectId));
+      const [delivery, steps] = await Promise.all([loadSiteDelivery(projectId), loadNextSteps(projectId).catch(() => [])]);
+      setData(delivery);
+      setNextSteps(steps as NextStep[]);
     } catch (e: any) {
       setError(e?.message ?? "Could not load site delivery.");
     }
@@ -132,6 +134,42 @@ const SiteDeliveryTab: React.FC<{
   const counts = useMemo(() => (data ? deliveryCounts(data) : null), [data]);
   const floorName = (id: string | null) => data?.floors.find((f) => f.id === id)?.display_name ?? "Whole site";
   const timeline = useMemo(() => (data ? dailyTimeline(data.updates) : []), [data]);
+  const history = useMemo(() => (data ? reportHistory(data.updates) : []), [data]);
+  const activeReportDate = reportDate || history[0]?.date || "";
+
+  /** One report object drives the preview, the print/PDF output and the client link. */
+  const report = useMemo(
+    () =>
+      data && activeReportDate
+        ? buildSiteReport({
+            project: { title: projectTitle, reference: projectReference, address: projectAddress },
+            client_name: clientName,
+            from: activeReportDate,
+            floors: data.floors,
+            updates: data.updates,
+            photos: data.photos,
+            issues: data.issues,
+            scopeChanges: data.scopeChanges,
+            nextSteps,
+            progress: data.progress,
+          })
+        : null,
+    [data, activeReportDate, nextSteps, projectTitle, projectReference, projectAddress, clientName],
+  );
+
+  /** Approves and publishes every update recorded for the selected work date. */
+  const publishDay = (publish: boolean) => {
+    if (!data || !activeReportDate) return;
+    const rows = data.updates.filter((u) => u.shift_date === activeReportDate);
+    if (!rows.length) return;
+    run(async () => {
+      for (const u of rows) {
+        const evidence = evidenceState(u, data.photos, u.id);
+        if (u.approval_status === "submitted") await approveUpdate(u.id, publish, publish ? evidence : undefined);
+        else await setUpdateVisibility(u.id, publish, publish ? evidence : undefined);
+      }
+    }, publish ? "Client report published" : "Client report unpublished");
+  };
 
   if (error) return <p className="border border-destructive p-3 text-sm text-destructive">{error}</p>;
   if (!data) return <p className="text-sm text-muted-foreground">Loading site delivery…</p>;
