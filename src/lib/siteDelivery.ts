@@ -26,6 +26,13 @@ export const PHOTO_CATEGORIES: { value: PhotoCategory; label: string }[] = [
 export const ISSUE_SEVERITIES = ["low", "medium", "high", "critical"] as const;
 export const ISSUE_STATUSES = ["open", "in_progress", "resolved", "closed"] as const;
 
+/**
+ * Client requirement (written request, 15 Sep 2026): every daily report must be
+ * accompanied by site photographs taken with the approved Timestamp App.
+ */
+export const TIMESTAMP_EVIDENCE_NOTICE =
+  "Client requirement: take site photos using the approved Timestamp App, then upload them here.";
+
 /** Diary categories. Free text in the database, so this list can grow freely. */
 export const UPDATE_CATEGORIES = [
   "Site Work",
