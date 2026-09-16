@@ -152,6 +152,7 @@ const SiteDeliveryTab: React.FC<{
             scopeChanges: data.scopeChanges,
             nextSteps,
             progress: data.progress,
+            documents: data.documents,
           })
         : null,
     [data, activeReportDate, nextSteps, projectTitle, projectReference, projectAddress, clientName],

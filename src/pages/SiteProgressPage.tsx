@@ -349,6 +349,7 @@ const SiteProgressPage: React.FC = () => {
                       ) : (
                         d.title
                       )}
+                      {d.revision ? <span className="text-muted-foreground"> · Rev {d.revision}</span> : null}
                       {d.reference ? <span className="text-muted-foreground"> · {d.reference}</span> : null}
                     </span>
                     <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{fmtDate(d.document_date)}</span>

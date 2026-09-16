@@ -1,5 +1,6 @@
 import type { FloorProgress, ScopeChange, SiteIssue, SitePhoto, SiteUpdate } from "@/lib/siteDelivery";
 import type { NextStep } from "@/lib/nextSteps";
+import { documentLabel } from "@/lib/projectDocuments";
 
 /**
  * Assembles a client-facing site progress report from data that is ALREADY
@@ -66,6 +67,17 @@ export type SiteReport = {
   floor_progress: { floor: string; progress_pct: number; status: string }[];
   overall_progress: number | null;
   published: boolean;
+  /** Titles/references/revisions only — the report references drawings, it never embeds them. */
+  drawing_references: string[];
+};
+
+export type ReportDocument = {
+  title: string;
+  reference?: string | null;
+  version?: string | null;
+  client_visible?: boolean;
+  is_current?: boolean;
+  archived?: boolean;
 };
 
 export type ReportInput = {
@@ -80,6 +92,8 @@ export type ReportInput = {
   scopeChanges: ScopeChange[];
   nextSteps: NextStep[];
   progress: FloorProgress[];
+  /** Project documents; only released, current ones are referenced in the report. */
+  documents?: ReportDocument[];
   /** Client reports hide anything not released; internal previews show the same data minus internal notes. */
   audience?: "client";
 };
@@ -182,7 +196,12 @@ export function buildSiteReport(input: ReportInput): SiteReport {
     .map((p) => ({ floor: floorName(p.floor_id) ?? "Site", progress_pct: p.progress_pct, status: p.status }))
     .filter((p) => !!p.floor);
 
+  const drawing_references = (input.documents ?? [])
+    .filter((d) => d.client_visible !== false && d.is_current !== false && d.archived !== true)
+    .map((d) => documentLabel(d));
+
   return {
+    drawing_references,
     project_title: input.project.title,
     project_reference: clean(input.project.reference),
     client_name: clean(input.client_name),

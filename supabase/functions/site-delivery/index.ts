@@ -487,10 +487,14 @@ Deno.serve(async (req) => {
         .eq("project_id", projectId)
         .order("opened_at", { ascending: false })
         .limit(60),
+      // Read-only: only current, non-archived documents the office released to the technician.
       admin
         .from("portal_documents")
-        .select("id, title, category, storage_path, document_date, reference")
+        .select("id, title, category, storage_path, document_date, reference, version, floor_id, is_current")
         .eq("project_id", projectId)
+        .eq("technician_visible", true)
+        .eq("archived", false)
+        .eq("is_current", true)
         .order("document_date", { ascending: false })
         .limit(40),
       nextSteps("technician"),
@@ -503,9 +507,19 @@ Deno.serve(async (req) => {
           const { data } = await admin.storage.from(DOCUMENTS_BUCKET).createSignedUrl(d.storage_path, 900);
           url = data?.signedUrl ?? null;
         }
-        return { id: d.id, title: d.title, category: d.category, reference: d.reference, url };
+        return {
+          id: d.id,
+          title: d.title,
+          category: d.category,
+          reference: d.reference,
+          revision: d.version,
+          floor_id: d.floor_id,
+          document_date: d.document_date,
+          url,
+        };
       }),
     );
+
 
     const updates = updatesRes.data ?? [];
     const photoRes = await admin
@@ -553,12 +567,13 @@ Deno.serve(async (req) => {
       .eq("internal_only", false)
       .order("opened_at", { ascending: false })
       .limit(60),
-    // Only documents the office has explicitly marked client-visible.
+    // Only documents the office has explicitly released to the client, and never archived history.
     admin
       .from("portal_documents")
-      .select("id, title, category, storage_path, document_date, reference")
+      .select("id, title, category, storage_path, document_date, reference, version, floor_id, is_current")
       .eq("project_id", projectId)
       .eq("client_visible", true)
+      .eq("archived", false)
       .order("document_date", { ascending: false })
       .limit(40),
     // Additional / out-of-scope works: operational fields only, never commercial.
@@ -597,7 +612,16 @@ Deno.serve(async (req) => {
         const { data } = await admin.storage.from(DOCUMENTS_BUCKET).createSignedUrl(d.storage_path, 900);
         url = data?.signedUrl ?? null;
       }
-      return { id: d.id, title: d.title, category: d.category, reference: d.reference, document_date: d.document_date, url };
+      return {
+        id: d.id,
+        title: d.title,
+        category: d.category,
+        reference: d.reference,
+        revision: d.version,
+        floor_id: d.floor_id,
+        document_date: d.document_date,
+        url,
+      };
     }),
   );
 

@@ -150,6 +150,22 @@ const DailyReportDocument: React.FC<{ report: SiteReport; photoUrls?: Record<str
         </section>
       )}
 
+      {/* Reference only — the drawing itself is issued separately, never embedded here. */}
+      {!!report.drawing_references.length && (
+        <section className="print-block mb-6">
+          <p className="mb-1 text-[10pt] font-semibold uppercase tracking-[0.1em]">Drawing references</p>
+          <ul className="text-[9pt]">
+            {report.drawing_references.map((r) => (
+              <li key={r} className="mb-0.5">
+                {r}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+
+
       <footer className="mt-6 border-t border-neutral-300 pt-2 text-[7.5pt] text-neutral-500">
         Compiled from site records captured on site. Report generated {new Date(report.generated_at).toLocaleString("en-ZA")}.
       </footer>

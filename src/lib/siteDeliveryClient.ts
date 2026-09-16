@@ -54,6 +54,8 @@ export type GuestDocument = {
   title: string;
   category: string | null;
   reference: string | null;
+  revision?: string | null;
+  floor_id?: string | null;
   document_date?: string | null;
   url: string | null;
 };
