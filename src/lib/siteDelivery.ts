@@ -292,6 +292,12 @@ export async function setPhotoVisibility(id: string, clientVisible: boolean) {
   if (error) throw error;
 }
 
+/** Office correction of the engineer's timestamp declaration. */
+export async function setPhotoTimestampConfirmed(id: string, confirmed: boolean) {
+  const { error } = await db.from("portal_site_update_photos").update({ timestamp_confirmed: confirmed }).eq("id", id);
+  if (error) throw error;
+}
+
 export async function patchIssue(id: string, patch: Partial<SiteIssue>) {
   const { error } = await db.from("portal_site_issues").update(patch).eq("id", id);
   if (error) throw error;
@@ -407,6 +413,9 @@ export function deliveryCounts(data: {
     updates: data.updates.length,
     awaitingApproval: data.updates.filter((u) => u.approval_status === "submitted").length,
     photos: data.photos.length,
+    daysMissingEvidence: data.updates.filter(
+      (u) => !evidenceState(u, data.photos, u.id).satisfied,
+    ).length,
     openIssues: data.issues.filter((i) => i.status === "open" || i.status === "in_progress").length,
     blockers: data.updates.filter((u) => !!u.blockers?.trim()).length,
     outstanding: data.updates.filter((u) => !!u.work_outstanding?.trim()).length,
