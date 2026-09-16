@@ -63,9 +63,14 @@ const FieldJobPage: React.FC = () => {
   const [photos, setPhotos] = useState<DraftPhoto[]>([]);
   const [timestampUsed, setTimestampUsed] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [sent, setSent] = useState<null | { work_date: string; work: string; photos: number }>(null);
+  const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [sentAt, setSentAt] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
-  const draftKey = `siyakha_field_simple_${token}`;
+  const savingRef = useRef(false);
+  const hydratedRef = useRef("");
+  /** One saved draft per work date, so yesterday's answers never overwrite today's. */
+  const draftKey = `siyakha_field_simple_${token}_${answers.work_date}`;
 
   const set = (patch: Partial<FieldAnswers>) => setAnswers((a) => ({ ...a, ...patch }));
 
@@ -86,27 +91,50 @@ const FieldJobPage: React.FC = () => {
     reload();
   }, [reload]);
 
-  // Signal drops on site: keep his typing safe.
+  const engineer = job?.technician?.name ?? "";
+  const floors = job?.floors ?? [];
+  const floorName = (id: string | null) => floors.find((f) => f.id === id)?.display_name ?? "Whole site";
+
+  /** The one working record for this technician on the chosen work date. */
+  const record = useMemo(
+    () => dayRecord(job?.updates as StoredUpdate[] | undefined, job?.technician?.id, answers.work_date),
+    [job?.updates, job?.technician?.id, answers.work_date],
+  );
+  const locked = !!record && isLockedUpdate(record);
+  const alreadySent = !!sentAt || record?.approval_status === "submitted";
+  const savedPhotoCount = record ? (job?.photos ?? []).filter((p: any) => p.update_id === record.id).length : 0;
+
+  // Reopening a day loads what is already there: his own unsent typing first,
+  // otherwise the values saved on that day's record.
+  const hydrationKey = `${answers.work_date}|${record?.id ?? "none"}`;
   useEffect(() => {
+    if (hydratedRef.current === hydrationKey) return;
+    hydratedRef.current = hydrationKey;
+    let loaded: FieldAnswers | null = null;
     try {
       const raw = localStorage.getItem(draftKey);
-      if (raw) setAnswers({ ...emptyAnswers(localDate()), ...JSON.parse(raw) });
+      if (raw) loaded = { ...emptyAnswers(answers.work_date), ...JSON.parse(raw) };
     } catch {
       /* ignore */
     }
-  }, [draftKey]);
+    if (!loaded && record) loaded = answersFromUpdate(record);
+    if (loaded) setAnswers({ ...loaded, work_date: answers.work_date });
+    setSavedAt(record?.updated_at ?? null);
+    setSentAt(record?.approval_status === "submitted" ? record?.submitted_at ?? null : null);
+    setPhotos([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrationKey]);
 
+  // Signal drops on site: keep his typing safe on the phone as well.
   useEffect(() => {
+    if (hydratedRef.current !== hydrationKey) return;
+    if (readyToSave(answers)) return;
     try {
       localStorage.setItem(draftKey, JSON.stringify(answers));
     } catch {
       /* ignore */
     }
-  }, [draftKey, answers]);
-
-  const engineer = job?.technician?.name ?? "";
-  const floors = job?.floors ?? [];
-  const floorName = (id: string | null) => floors.find((f) => f.id === id)?.display_name ?? "Whole site";
+  }, [draftKey, answers, hydrationKey]);
 
   const markStep = async (id: string, status: string) => {
     try {
@@ -121,6 +149,87 @@ const FieldJobPage: React.FC = () => {
     () => [...(job?.updates ?? [])].sort((a, b) => (a.shift_date < b.shift_date ? 1 : -1)),
     [job?.updates],
   );
+
+  const ready = readyPhotos(photos).map((p) => ({
+    ...p,
+    timestamp_confirmed: timestampUsed,
+    floor_id: p.floor_id ?? (answers.floor_id || null),
+  }));
+  /** Only named photos go up; an unnamed one waits until he names it. */
+  const sendable = ready.filter((p) => p.title.trim());
+  const uploading = photos.some((p) => p.status === "uploading");
+  const unnamed = photos.some((p) => p.status === "ready" && !p.title.trim());
+  const photoTotal = sendable.length + savedPhotoCount;
+  const blocker = unnamed ? "Give every photo a short name." : readyToSend(answers, photoTotal, uploading);
+
+  /**
+   * Saves into the SAME daily record. `finalize` hands that record to the office;
+   * without it the day simply stays up to date and open.
+   */
+  const persist = useCallback(
+    async (finalize: boolean, quiet = false) => {
+      if (savingRef.current || locked) return false;
+      const stop = finalize ? blocker : readyToSave(answers);
+      if (stop) {
+        if (!quiet) toast({ title: "Not saved", description: stop, variant: "destructive" });
+        return false;
+      }
+      savingRef.current = true;
+      setSaving(true);
+      if (!quiet) setBusy(true);
+      try {
+        const payload = buildUpdatePayload(answers, photoTotal);
+        const body = { ...payload, photos: sendable };
+        const res = finalize ? await submitFieldUpdate(token, body) : await saveFieldUpdate(token, body);
+        if (res.error) throw new Error(res.error);
+        setSavedAt(res.saved_at ?? new Date().toISOString());
+        if (finalize) {
+          setSentAt(res.submitted_at ?? new Date().toISOString());
+          // The problem is raised with the office once, on the first submission.
+          if (!alreadySent && answers.problem !== "none") {
+            await reportFieldIssue(token, {
+              title: `${PROBLEM_LABELS[answers.problem]} — ${floorName(answers.floor_id || null)}`,
+              description: answers.problem_text,
+              severity: problemSeverity(answers.problem),
+              floor_id: answers.floor_id || null,
+              location_note: answers.area_label,
+              photos: sendable
+                .filter((p) => p.category === "issue")
+                .map((p) => ({ ...p, category: "issue" as PhotoCategory })),
+            });
+          }
+          toast({ title: "✓ Daily update submitted" });
+        } else if (!quiet) {
+          toast({ title: "✓ Update saved" });
+        }
+        await reload();
+        return true;
+      } catch (e: any) {
+        if (!quiet) {
+          toast({
+            title: finalize ? "Not sent" : "Not saved",
+            description: e?.message ?? "Try again when you have signal.",
+            variant: "destructive",
+          });
+        }
+        return false;
+      } finally {
+        savingRef.current = false;
+        setSaving(false);
+        setBusy(false);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [answers, blocker, locked, photoTotal, sendable, token, alreadySent],
+  );
+
+  // Quiet protection: a short pause in typing keeps the same record up to date.
+  useEffect(() => {
+    if (locked || readyToSave(answers)) return;
+    const t = setTimeout(() => void persist(false, true), 1500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answers, locked]);
 
   const uploadOne = useCallback(
     async (localId: string, file: File) => {
@@ -158,41 +267,6 @@ const FieldJobPage: React.FC = () => {
     for (const draft of drafts) await uploadOne(draft.localId, draft.file!);
   };
 
-  const ready = readyPhotos(photos).map((p) => ({ ...p, timestamp_confirmed: timestampUsed, floor_id: p.floor_id ?? (answers.floor_id || null) }));
-  const uploading = photos.some((p) => p.status === "uploading");
-  const unnamed = photos.some((p) => p.status === "ready" && !p.title.trim());
-  const blocker = unnamed ? "Give every photo a short name." : readyToSend(answers, ready.length, uploading);
-
-  const send = async () => {
-    setBusy(true);
-    try {
-      const payload = buildUpdatePayload(answers, ready.length);
-      const res = await submitFieldUpdate(token, { ...payload, photos: ready });
-      if (res.error) throw new Error(res.error);
-      if (answers.problem !== "none") {
-        await reportFieldIssue(token, {
-          title: `${PROBLEM_LABELS[answers.problem]} — ${floorName(answers.floor_id || null)}`,
-          description: answers.problem_text,
-          severity: problemSeverity(answers.problem),
-          floor_id: answers.floor_id || null,
-          location_note: answers.area_label,
-          photos: ready.filter((p) => p.category === "issue").map((p) => ({ ...p, category: "issue" as PhotoCategory })),
-        });
-      }
-      setSent({ work_date: answers.work_date, work: workSummary(answers), photos: ready.length });
-      setAnswers(emptyAnswers(localDate()));
-      setPhotos([]);
-      setTimestampUsed(false);
-      setStep(0);
-      localStorage.removeItem(draftKey);
-      await reload();
-    } catch (e: any) {
-      toast({ title: "Not sent", description: e?.message ?? "Try again when you have signal.", variant: "destructive" });
-    } finally {
-      setBusy(false);
-    }
-  };
-
   if (!job) return <p className="p-8 text-center text-lg">Opening your job…</p>;
   if (job.state !== "ok")
     return (
@@ -202,22 +276,6 @@ const FieldJobPage: React.FC = () => {
       </div>
     );
 
-  if (sent)
-    return (
-      <div className="mx-auto max-w-md px-4 py-10 text-center">
-        <CheckCircle2 className="mx-auto h-20 w-20" aria-hidden />
-        <h1 className="mt-4 text-2xl font-bold">UPDATE SENT</h1>
-        <p className="mt-1 text-lg">Thank you {engineer}.</p>
-        <div className="mt-6 border-2 border-border p-4 text-left text-base">
-          <p className="font-semibold">{dateChoiceLabel(sent.work_date)}</p>
-          <p className="mt-2 whitespace-pre-wrap">{sent.work}</p>
-          <p className="mt-2">{sent.photos} photo{sent.photos === 1 ? "" : "s"} sent</p>
-        </div>
-        <button type="button" className={`${navBtn} mt-6 w-full`} onClick={() => setSent(null)}>
-          Send another update
-        </button>
-      </div>
-    );
 
   return (
     <div className="mx-auto max-w-md px-4 pb-10">
