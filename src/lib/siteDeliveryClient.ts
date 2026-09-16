@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { fileCaptureTime } from "@/lib/exifDate";
 import type { PhotoCategory } from "@/lib/siteDelivery";
 
 /**
@@ -120,10 +121,18 @@ export type DraftPhoto = {
   /** Local id so a failed upload can be retried or removed before submitting. */
   localId: string;
   status: "uploading" | "ready" | "failed";
+  /** Display copy (a smaller derivative when compression helped, else the original). */
   storage_path: string;
+  /** The untouched uploaded file, kept as the evidentiary original. */
+  original_storage_path?: string;
   category: PhotoCategory;
   caption: string;
   floor_id: string | null;
+  /** Engineer's own declaration that this image came from the approved Timestamp App. */
+  timestamp_confirmed: boolean;
+  original_filename?: string;
+  original_file_size?: number;
+  exif_captured_at?: string | null;
   mime_type?: string;
   file_size?: number;
   previewUrl?: string;
@@ -131,59 +140,122 @@ export type DraftPhoto = {
   errorMessage?: string;
 };
 
-export type ReadyPhoto = Pick<DraftPhoto, "storage_path" | "category" | "caption" | "floor_id" | "mime_type" | "file_size">;
+export type ReadyPhoto = Pick<
+  DraftPhoto,
+  | "storage_path"
+  | "original_storage_path"
+  | "category"
+  | "caption"
+  | "floor_id"
+  | "timestamp_confirmed"
+  | "original_filename"
+  | "original_file_size"
+  | "exif_captured_at"
+  | "mime_type"
+  | "file_size"
+>;
 
 export const readyPhotos = (photos: DraftPhoto[]): ReadyPhoto[] =>
   photos
     .filter((p) => p.status === "ready" && p.storage_path)
-    .map(({ storage_path, category, caption, floor_id, mime_type, file_size }) => ({
-      storage_path,
-      category,
-      caption,
-      floor_id,
-      mime_type,
-      file_size,
+    .map((p) => ({
+      storage_path: p.storage_path,
+      original_storage_path: p.original_storage_path,
+      category: p.category,
+      caption: p.caption,
+      floor_id: p.floor_id,
+      timestamp_confirmed: p.timestamp_confirmed,
+      original_filename: p.original_filename,
+      original_file_size: p.original_file_size,
+      exif_captured_at: p.exif_captured_at ?? null,
+      mime_type: p.mime_type,
+      file_size: p.file_size,
     }));
 
+/** Photo-evidence checklist shown to the engineer before sending an update. */
+export const evidenceSummary = (photos: DraftPhoto[]) => {
+  const ready = photos.filter((p) => p.status === "ready");
+  const confirmed = ready.filter((p) => p.timestamp_confirmed).length;
+  return {
+    total: photos.length,
+    ready: ready.length,
+    uploading: photos.filter((p) => p.status === "uploading").length,
+    failed: photos.filter((p) => p.status === "failed").length,
+    timestampConfirmed: confirmed,
+    timestampUnconfirmed: ready.length - confirmed,
+    hasEvidence: ready.length > 0,
+  };
+};
+
 /**
- * Shrinks a camera photo before upload so site updates go through on mobile
- * data, while keeping enough resolution to be useful evidence. Falls back to
- * the original file if the browser cannot decode it.
+ * Shrinks a camera photo for on-screen use so site updates load quickly on
+ * mobile data. This is a derivative only — the original file is always uploaded
+ * and kept as the evidence copy. Returns null when shrinking is not worthwhile.
  */
-export async function compressImage(file: File, maxEdge = 1800, quality = 0.75): Promise<File> {
-  if (!file.type.startsWith("image/") || file.type === "image/gif") return file;
+export async function compressImage(file: File, maxEdge = 1800, quality = 0.75): Promise<File | null> {
+  if (!file.type.startsWith("image/") || file.type === "image/gif") return null;
   try {
     const bitmap = await createImageBitmap(file);
     const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
-    if (scale === 1 && file.size < 1_200_000) return file;
+    if (scale === 1 && file.size < 1_200_000) return null;
     const canvas = document.createElement("canvas");
     canvas.width = Math.round(bitmap.width * scale);
     canvas.height = Math.round(bitmap.height * scale);
     const ctx = canvas.getContext("2d");
-    if (!ctx) return file;
+    if (!ctx) return null;
     ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
     bitmap.close?.();
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
-    if (!blob || blob.size >= file.size) return file;
-    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+    if (!blob || blob.size >= file.size) return null;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + "-preview.jpg", { type: "image/jpeg" });
   } catch {
-    return file;
+    return null;
   }
 }
 
-/** Uploads one photo straight from the camera into the private bucket. */
-export async function uploadFieldPhoto(token: string, file: File) {
-  const compressed = await compressImage(file);
-  const extension = (compressed.name.split(".").pop() ?? "jpg").toLowerCase();
+async function putFile(token: string, file: File) {
+  const extension = (file.name.split(".").pop() ?? "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
   const prep = await call<{ state: LinkState; path?: string; token?: string; bucket?: string }>(token, "upload_url", {
     extension,
   });
   if (!prep.path || !prep.token) throw new Error("Upload could not be prepared. Check your signal and try again.");
   const { error } = await supabase.storage
     .from(prep.bucket ?? "site-progress")
-    .uploadToSignedUrl(prep.path, prep.token, compressed, { contentType: compressed.type || "image/jpeg" });
+    .uploadToSignedUrl(prep.path, prep.token, file, { contentType: file.type || "image/jpeg" });
   if (error) throw error;
-  return { storage_path: prep.path, mime_type: compressed.type, file_size: compressed.size };
+  return prep.path;
+}
+
+/**
+ * Uploads one photo. The original file goes up untouched as the evidentiary
+ * copy; a smaller preview is uploaded as well when it helps, and only ever used
+ * for display.
+ */
+export async function uploadFieldPhoto(token: string, file: File) {
+  const exif_captured_at = await fileCaptureTime(file);
+  const original_storage_path = await putFile(token, file);
+  let storage_path = original_storage_path;
+  let mime_type = file.type;
+  let file_size = file.size;
+  const preview = await compressImage(file);
+  if (preview) {
+    try {
+      storage_path = await putFile(token, preview);
+      mime_type = preview.type;
+      file_size = preview.size;
+    } catch {
+      /* preview is optional — the original is already safely stored */
+    }
+  }
+  return {
+    storage_path,
+    original_storage_path,
+    original_filename: file.name.slice(0, 240),
+    original_file_size: file.size,
+    exif_captured_at,
+    mime_type,
+    file_size,
+  };
 }
 
 export type UpdateSubmission = {
