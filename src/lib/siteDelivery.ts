@@ -293,8 +293,12 @@ export type SiteDocument = {
   title: string;
   category: string | null;
   reference: string | null;
+  version: string | null;
   document_date: string | null;
   client_visible: boolean;
+  technician_visible: boolean;
+  is_current: boolean;
+  archived: boolean;
 };
 
 export async function loadSiteDelivery(projectId: string) {
@@ -309,7 +313,8 @@ export async function loadSiteDelivery(projectId: string) {
       .eq("project_id", projectId).eq("resource_type", "site_delivery").order("created_at", { ascending: false }),
     db.from("portal_field_access").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
     db.from("portal_scope_changes").select("*").eq("project_id", projectId).order("work_date", { ascending: false }),
-    db.from("portal_documents").select("id, title, category, reference, document_date, client_visible")
+    db.from("portal_documents")
+      .select("id, title, category, reference, version, document_date, client_visible, technician_visible, is_current, archived")
       .eq("project_id", projectId).order("document_date", { ascending: false }),
   ]);
   const firstError = [floors, progress, updates, photos, issues, links, access, scope, docs].find((r: any) => r.error)?.error;

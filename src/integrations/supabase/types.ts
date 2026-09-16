@@ -2365,60 +2365,79 @@ export type Database = {
       }
       portal_documents: {
         Row: {
+          archived: boolean
           category: string
           client_visible: boolean
           created_at: string
           document_date: string | null
           file_size: number | null
+          floor_id: string | null
           id: string
+          is_current: boolean
           mime_type: string | null
           notes: string | null
           phase_id: string | null
           project_id: string
           reference: string | null
           storage_path: string | null
+          technician_visible: boolean
           title: string
           updated_at: string
           uploaded_by: string | null
           version: string | null
         }
         Insert: {
+          archived?: boolean
           category?: string
           client_visible?: boolean
           created_at?: string
           document_date?: string | null
           file_size?: number | null
+          floor_id?: string | null
           id?: string
+          is_current?: boolean
           mime_type?: string | null
           notes?: string | null
           phase_id?: string | null
           project_id: string
           reference?: string | null
           storage_path?: string | null
+          technician_visible?: boolean
           title: string
           updated_at?: string
           uploaded_by?: string | null
           version?: string | null
         }
         Update: {
+          archived?: boolean
           category?: string
           client_visible?: boolean
           created_at?: string
           document_date?: string | null
           file_size?: number | null
+          floor_id?: string | null
           id?: string
+          is_current?: boolean
           mime_type?: string | null
           notes?: string | null
           phase_id?: string | null
           project_id?: string
           reference?: string | null
           storage_path?: string | null
+          technician_visible?: boolean
           title?: string
           updated_at?: string
           uploaded_by?: string | null
           version?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "portal_documents_floor_id_fkey"
+            columns: ["floor_id"]
+            isOneToOne: false
+            referencedRelation: "portal_floors"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "portal_documents_phase_id_fkey"
             columns: ["phase_id"]

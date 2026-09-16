@@ -594,6 +594,31 @@ const FieldJobPage: React.FC = () => {
             ))}
         </div>
       )}
+
+      {/* Read-only: drawings and instructions the office released to the technician. */}
+      {!!(job?.documents ?? []).length && (
+        <div className="mt-6 space-y-2">
+          <p className="text-base font-semibold">Drawings &amp; documents</p>
+          {(job?.documents ?? []).map((d) => (
+            <a
+              key={d.id}
+              href={d.url ?? "#"}
+              target="_blank"
+              rel="noreferrer"
+              className="flex min-h-[52px] flex-col justify-center border-2 border-border px-3 py-2 text-base"
+            >
+              <span>
+                {d.title}
+                {d.revision ? ` — Rev ${d.revision}` : ""}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {[d.category, d.floor_id ? floorName(d.floor_id) : "Whole project", d.reference].filter(Boolean).join(" · ")}
+              </span>
+            </a>
+          ))}
+          <p className="text-sm text-muted-foreground">View only — the office manages the official drawings.</p>
+        </div>
+      )}
     </div>
   );
 };
