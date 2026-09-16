@@ -258,9 +258,7 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
         <div className="space-y-5">
           {timeline.map(({ date, rows }) => (
             <div key={date}>
-              <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                {new Date(date).toLocaleDateString("en-ZA", { weekday: "short", day: "2-digit", month: "short", year: "numeric" })}
-              </p>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Work date · {fmtDay(date)}</p>
               <div className="mt-2 space-y-3">
                 {rows.map((u) => {
                   const photos = data.photos.filter((p) => p.update_id === u.id);
@@ -275,10 +273,54 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                         {u.area_label && <Chip>{u.area_label}</Chip>}
                         <Chip>{u.progress_pct}%</Chip>
                         <Chip>{u.approval_status}</Chip>
+                        {u.backdated && <Chip>Backdated</Chip>}
                         {u.client_visible && <Chip>Client visible</Chip>}
                         <span className="text-xs text-muted-foreground">
-                          submitted {new Date(u.submitted_at).toLocaleString("en-ZA")}
+                          Work date {fmtDay(u.shift_date)} · Submitted on {new Date(u.submitted_at).toLocaleString("en-ZA")}
                         </span>
+                      </div>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Scope baseline</span>
+                        <select
+                          className="h-9 border border-input bg-background px-2 text-sm"
+                          defaultValue={u.baseline_category ?? ""}
+                          onChange={(e) => run(() => setUpdateBaseline(u.id, e.target.value), "Baseline category saved")}
+                        >
+                          <option value="">Not tagged</option>
+                          {BASELINE_CATEGORIES.map((c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          type="button"
+                          className={btn}
+                          disabled={busy}
+                          onClick={() => {
+                            const title = window.prompt("Short title for the additional work identified on this day");
+                            if (!title?.trim()) return;
+                            run(
+                              () =>
+                                addScopeChange({
+                                  project_id: projectId,
+                                  work_date: u.shift_date,
+                                  title,
+                                  description: u.work_completed ?? undefined,
+                                  trigger_reason: u.blockers ?? undefined,
+                                  floor_id: u.floor_id,
+                                  update_id: u.id,
+                                  area_label: u.area_label ?? undefined,
+                                  source: u.source === "field" ? "field_update" : "admin_update",
+                                  baseline_category: u.baseline_category,
+                                  raised_by_name: u.submitted_by_name,
+                                }),
+                              "Recorded as additional work, under review",
+                            );
+                          }}
+                        >
+                          Flag as additional work
+                        </button>
                       </div>
                       <dl className="mt-2 grid gap-2 text-sm sm:grid-cols-2">
                         {[
