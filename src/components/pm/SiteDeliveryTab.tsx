@@ -410,6 +410,55 @@ const SiteDeliveryTab: React.FC<{
         </div>
       </Panel>
 
+      <Panel title="Client report">
+        <p className="mb-3 text-xs text-muted-foreground">
+          The report is built from what was already recorded for the work date — nothing is added or estimated. Anything not
+          reported is shown as “Not reported”. Publishing shows the day on the client link; the print view saves the same
+          report as a PDF for email or WhatsApp.
+        </p>
+        <div className="flex flex-wrap items-end gap-3">
+          <Field label="Work date">
+            <select className={selectCls} value={activeReportDate} onChange={(e) => setReportDate(e.target.value)}>
+              {!history.length && <option value="">No updates yet</option>}
+              {history.map((h) => (
+                <option key={h.date} value={h.date}>
+                  {fmtDay(h.date)}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <button type="button" className={btn} disabled={!report} onClick={() => setShowReport(true)}>
+            Preview client report
+          </button>
+          <button type="button" className={btn} disabled={busy || !report} onClick={() => publishDay(true)}>
+            Approve &amp; publish
+          </button>
+          <button type="button" className={btn} disabled={busy || !report} onClick={() => publishDay(false)}>
+            Unpublish
+          </button>
+        </div>
+
+        <div className="mt-4 space-y-1">
+          {history.map((h) => (
+            <p key={h.date} className="flex flex-wrap items-center gap-2 border-b border-border py-1 text-sm">
+              <span className="font-medium">{fmtDay(h.date)}</span>
+              <span className="text-muted-foreground">{historyLabel(h)}</span>
+            </p>
+          ))}
+          {!history.length && <p className="text-sm text-muted-foreground">No site updates submitted yet.</p>}
+        </div>
+      </Panel>
+
+      {report && (
+        <PrintSurface
+          open={showReport}
+          title={`${projectTitle} — daily site progress report`}
+          onClose={() => setShowReport(false)}
+        >
+          <DailyReportDocument report={report} photoUrls={thumbs} />
+        </PrintSurface>
+      )}
+
       <Panel title="Daily updates & approvals">
         <div className="space-y-5">
           {timeline.map(({ date, rows }) => (
