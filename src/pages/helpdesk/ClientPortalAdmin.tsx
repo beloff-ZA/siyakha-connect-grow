@@ -200,7 +200,7 @@ const ClientPortalAdmin: React.FC = () => {
     const { data, error } = await supabase.functions.invoke("invite-client-user", {
       body: {
         client_user_id: clientUserId,
-        redirect_to: redirectTo ?? `${window.location.origin}/sign-in`,
+        redirect_to: redirectTo ?? `${window.location.origin}/reset-password`,
       },
     });
     setBusy(false);
