@@ -82,3 +82,24 @@ describe("ready to send", () => {
     expect(readyToSend(base(), 2, false)).toBeNull();
   });
 });
+
+describe("possible additional work flag", () => {
+  const base = () => ({ ...emptyAnswers(localDate()), chips: ["Pulled cable"] });
+
+  it("stays off by default and sends nothing", () => {
+    const p = buildUpdatePayload(base(), 1);
+    expect(p.extra_work).toBe(false);
+    expect(p.extra_work_text).toBe("");
+  });
+
+  it("asks for a description before sending", () => {
+    expect(readyToSend({ ...base(), extra_work: true }, 1, false)).toBe("Tell us what the extra work is.");
+  });
+
+  it("passes the engineer's own words through, with no pricing fields", () => {
+    const p = buildUpdatePayload({ ...base(), extra_work: true, extra_work_text: " Extra trunking needed " }, 1);
+    expect(p.extra_work).toBe(true);
+    expect(p.extra_work_text).toBe("Extra trunking needed");
+    expect(Object.keys(p).join(" ")).not.toMatch(/price|cost|rate|margin/i);
+  });
+});

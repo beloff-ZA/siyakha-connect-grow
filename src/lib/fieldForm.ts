@@ -39,6 +39,9 @@ export type FieldAnswers = {
   next_text: string;
   /** Optional site note kept with the day's record in the project. */
   note_text: string;
+  /** Engineer flags work that may be extra. The office decides, never the form. */
+  extra_work: boolean;
+  extra_work_text: string;
 };
 
 export const emptyAnswers = (workDate: string): FieldAnswers => ({
@@ -55,6 +58,8 @@ export const emptyAnswers = (workDate: string): FieldAnswers => ({
   needs_text: "",
   next_text: "",
   note_text: "",
+  extra_work: false,
+  extra_work_text: "",
 });
 
 /** Local calendar date (site time), not UTC, so "today" matches the engineer's day. */
@@ -115,6 +120,12 @@ export function buildUpdatePayload(a: FieldAnswers, photoCount: number) {
     progress_pct: 0,
     next_shift_plan: a.next_text.trim(),
     notes: [a.note_text.trim(), photoCount ? "" : "No photos attached with this update."].filter(Boolean).join(" "),
+    /**
+     * Operational flag only. It records that the engineer thinks the work may be
+     * extra; it carries no pricing and makes no contractual decision.
+     */
+    extra_work: a.extra_work && !!a.extra_work_text.trim(),
+    extra_work_text: a.extra_work ? a.extra_work_text.trim() : "",
   };
 }
 
@@ -123,6 +134,7 @@ export function readyToSend(a: FieldAnswers, readyPhotoCount: number, uploading:
   if (!workSummary(a)) return "Tell us what you did today.";
   if (isFutureDate(a.work_date)) return "Choose today or an earlier day.";
   if (a.problem !== "none" && !a.problem_text.trim()) return "Tell us what happened.";
+  if (a.extra_work && !a.extra_work_text.trim()) return "Tell us what the extra work is.";
   if (uploading) return "Wait for your photos to finish loading.";
   if (readyPhotoCount === 0) return "Client needs photos. Add photos before sending.";
   return null;

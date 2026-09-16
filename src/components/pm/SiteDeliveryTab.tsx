@@ -30,6 +30,7 @@ import {
   setUpdateBaseline,
   evidenceState,
   overridePhotoEvidence,
+  setPhotoScopeChange,
   setPhotoTimestampConfirmed,
   setPhotoVisibility,
   setUpdateVisibility,
@@ -40,6 +41,17 @@ import {
 } from "@/lib/siteDelivery";
 
 const btn = "border border-border px-3 py-2 text-[11px] uppercase tracking-[0.18em] hover:bg-muted";
+
+/** Blank additional-work item. Operational fields only — never any pricing. */
+const emptyScope = () => ({
+  title: "",
+  description: "",
+  trigger_reason: "",
+  floor_id: "",
+  source: "admin_update",
+  raised_by_name: "",
+  work_date: new Date().toISOString().slice(0, 10),
+});
 const fmtDay = (d: string) =>
   new Date(`${d}T00:00:00`).toLocaleDateString("en-ZA", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
@@ -59,6 +71,7 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
   const [fieldLabel, setFieldLabel] = useState("Michael (Mike)");
   const [clientLabel, setClientLabel] = useState("Digiconnect / Sun International");
   const [linkDays, setLinkDays] = useState(30);
+  const [newScope, setNewScope] = useState(emptyScope());
 
   const reload = useCallback(async () => {
     setError(null);
@@ -607,22 +620,190 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
           Work identified outside the agreed scope of works. This register carries no rates, costs or totals. Items stay under
           review until you decide otherwise.
         </p>
+
+        <div className="mb-4 grid gap-2 border border-border p-3 sm:grid-cols-2">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:col-span-2">
+            Record an item
+          </span>
+          <input
+            className="h-9 border border-input bg-background px-2 text-sm"
+            placeholder="Short title"
+            value={newScope.title}
+            onChange={(e) => setNewScope({ ...newScope, title: e.target.value })}
+          />
+          <input
+            type="date"
+            className="h-9 border border-input bg-background px-2 text-sm"
+            value={newScope.work_date}
+            onChange={(e) => setNewScope({ ...newScope, work_date: e.target.value })}
+          />
+          <select
+            className="h-9 border border-input bg-background px-2 text-sm"
+            value={newScope.floor_id}
+            onChange={(e) => setNewScope({ ...newScope, floor_id: e.target.value })}
+          >
+            <option value="">Whole site</option>
+            {data.floors.map((f) => (
+              <option key={f.id} value={f.id}>
+                {f.display_name}
+              </option>
+            ))}
+          </select>
+          <select
+            className="h-9 border border-input bg-background px-2 text-sm"
+            value={newScope.source}
+            onChange={(e) => setNewScope({ ...newScope, source: e.target.value })}
+          >
+            {SCOPE_SOURCES.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+          <textarea
+            className="min-h-[70px] border border-input bg-background p-2 text-sm sm:col-span-2"
+            placeholder="What the additional work is"
+            value={newScope.description}
+            onChange={(e) => setNewScope({ ...newScope, description: e.target.value })}
+          />
+          <input
+            className="h-9 border border-input bg-background px-2 text-sm"
+            placeholder="Reason / trigger"
+            value={newScope.trigger_reason}
+            onChange={(e) => setNewScope({ ...newScope, trigger_reason: e.target.value })}
+          />
+          <input
+            className="h-9 border border-input bg-background px-2 text-sm"
+            placeholder="Raised by (name)"
+            value={newScope.raised_by_name}
+            onChange={(e) => setNewScope({ ...newScope, raised_by_name: e.target.value })}
+          />
+          <div className="sm:col-span-2">
+            <button
+              type="button"
+              className={btn}
+              disabled={busy || !newScope.title.trim()}
+              onClick={() =>
+                run(async () => {
+                  await addScopeChange({
+                    project_id: projectId,
+                    work_date: newScope.work_date,
+                    title: newScope.title,
+                    description: newScope.description,
+                    trigger_reason: newScope.trigger_reason,
+                    floor_id: newScope.floor_id || null,
+                    source: newScope.source,
+                    raised_by_name: newScope.raised_by_name,
+                  });
+                  setNewScope(emptyScope());
+                }, "Item recorded, under review")
+              }
+            >
+              Add to register
+            </button>
+          </div>
+        </div>
+
         <div className="space-y-3">
           {data.scopeChanges.map((s) => (
             <div key={s.id} className="border border-border p-3 text-sm">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-medium">{s.title}</span>
-                <Chip>{fmtDay(s.work_date)}</Chip>
-                <Chip>{floorName(s.floor_id)}</Chip>
+                <input
+                  className="h-9 min-w-[220px] flex-1 border border-input bg-background px-2 text-sm font-medium"
+                  defaultValue={s.title}
+                  onBlur={(e) =>
+                    e.target.value.trim() && e.target.value !== s.title
+                      ? run(() => patchScopeChange(s.id, { title: e.target.value.trim() }), "Title saved")
+                      : undefined
+                  }
+                />
+                <input
+                  type="date"
+                  className="h-9 border border-input bg-background px-2 text-sm"
+                  defaultValue={s.work_date}
+                  onChange={(e) =>
+                    e.target.value ? run(() => patchScopeChange(s.id, { work_date: e.target.value }), "Work date saved") : undefined
+                  }
+                />
+                <select
+                  className="h-9 border border-input bg-background px-2 text-sm"
+                  defaultValue={s.floor_id ?? ""}
+                  onChange={(e) => run(() => patchScopeChange(s.id, { floor_id: e.target.value || null }), "Area saved")}
+                >
+                  <option value="">Whole site</option>
+                  {data.floors.map((f) => (
+                    <option key={f.id} value={f.id}>
+                      {f.display_name}
+                    </option>
+                  ))}
+                </select>
                 <Chip>{scopeSourceLabel(s.source)}</Chip>
                 {s.baseline_category && <Chip>{s.baseline_category}</Chip>}
                 {s.client_visible && <Chip>Client visible</Chip>}
               </div>
-              {s.description && <p className="mt-1 whitespace-pre-wrap">{s.description}</p>}
-              {s.trigger_reason && (
-                <p className="mt-1 text-xs text-muted-foreground">Why it came up: {s.trigger_reason}</p>
+              <textarea
+                className="mt-2 min-h-[60px] w-full border border-input bg-background p-2 text-sm"
+                defaultValue={s.description ?? ""}
+                placeholder="Description of the additional work"
+                onBlur={(e) =>
+                  e.target.value !== (s.description ?? "")
+                    ? run(() => patchScopeChange(s.id, { description: e.target.value.trim() || null }), "Description saved")
+                    : undefined
+                }
+              />
+              <input
+                className="mt-2 h-9 w-full border border-input bg-background px-2 text-sm"
+                defaultValue={s.trigger_reason ?? ""}
+                placeholder="Reason / trigger"
+                onBlur={(e) =>
+                  e.target.value !== (s.trigger_reason ?? "")
+                    ? run(() => patchScopeChange(s.id, { trigger_reason: e.target.value.trim() || null }), "Reason saved")
+                    : undefined
+                }
+              />
+              {s.raised_by_name && (
+                <p className="mt-1 text-xs text-muted-foreground">Raised by {s.raised_by_name}</p>
               )}
               {s.internal_notes && <p className="mt-1 text-xs text-muted-foreground">Office note: {s.internal_notes}</p>}
+
+              <div className="mt-2">
+                <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Supporting photos</span>
+                <div className="mt-1 flex flex-wrap items-center gap-2">
+                  {data.photos
+                    .filter((p) => p.scope_change_id === s.id)
+                    .map((p) => (
+                      <span key={p.id} className="flex items-center gap-1 border border-border px-2 py-1 text-xs">
+                        {p.title || p.caption || "Site photo"}
+                        <button
+                          type="button"
+                          className="uppercase tracking-[0.12em] text-muted-foreground"
+                          disabled={busy}
+                          onClick={() => run(() => setPhotoScopeChange(p.id, null), "Photo unlinked")}
+                        >
+                          remove
+                        </button>
+                      </span>
+                    ))}
+                  <select
+                    className="h-9 border border-input bg-background px-2 text-sm"
+                    value=""
+                    onChange={(e) =>
+                      e.target.value ? run(() => setPhotoScopeChange(e.target.value, s.id), "Photo linked") : undefined
+                    }
+                  >
+                    <option value="">Link an existing site photo…</option>
+                    {data.photos
+                      .filter((p) => !p.scope_change_id)
+                      .slice(0, 60)
+                      .map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {(p.title || p.caption || "Site photo").slice(0, 60)} · {fmtDay(p.taken_at.slice(0, 10))}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <select
                   className="h-9 border border-input bg-background px-2 text-sm"

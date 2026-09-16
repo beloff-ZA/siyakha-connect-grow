@@ -356,6 +356,27 @@ Deno.serve(async (req) => {
       }
 
 
+      // Optional engineer flag: records a possible additional-work item for the
+      // office to review. Operational only — no pricing, never client visible here.
+      const extraWorkText = clean(payload.extra_work_text, 1200);
+      if (payload.extra_work === true && extraWorkText) {
+        const { error: scopeError } = await admin.from("portal_scope_changes").insert({
+          project_id: projectId,
+          update_id: created!.id,
+          floor_id: insert.floor_id,
+          area_label: insert.area_label,
+          work_date: insert.shift_date,
+          title: extraWorkText.split(/[.\n]/)[0].slice(0, 120) || "Possible additional work",
+          description: extraWorkText,
+          trigger_reason: insert.blockers || null,
+          source: "field_update",
+          status: "identified",
+          client_visible: false,
+          raised_by_name: insert.submitted_by_name,
+        });
+        if (scopeError) console.error("scope flag not saved", scopeError.message);
+      }
+
       await admin.from("portal_activity").insert({
         project_id: projectId,
         entity_type: "site_update",
