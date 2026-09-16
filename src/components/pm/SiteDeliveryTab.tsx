@@ -2,6 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Panel, Stat, Field, Chip, selectCls } from "@/components/pm/ui";
 import NextStepsPanel from "@/components/pm/NextStepsPanel";
 import SiteNotesPanel from "@/components/pm/SiteNotesPanel";
+import PrintSurface from "@/components/pm/PrintSurface";
+import DailyReportDocument from "@/components/pm/DailyReportDocument";
+import { buildSiteReport, historyLabel, reportHistory } from "@/lib/dailyReport";
+import { loadNextSteps, type NextStep } from "@/lib/nextSteps";
 import { signedUrl } from "@/lib/portalFiles";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -56,11 +60,14 @@ const fmtDay = (d: string) =>
   new Date(`${d}T00:00:00`).toLocaleDateString("en-ZA", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
 /** Daily site delivery: progress dashboard, approvals and the two guest links. */
-const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clientId: string | null }> = ({
-  projectId,
-  projectTitle,
-  clientId,
-}) => {
+const SiteDeliveryTab: React.FC<{
+  projectId: string;
+  projectTitle: string;
+  clientId: string | null;
+  projectReference?: string | null;
+  projectAddress?: string | null;
+  clientName?: string | null;
+}> = ({ projectId, projectTitle, clientId, projectReference, projectAddress, clientName }) => {
   const [data, setData] = useState<SiteDeliveryData | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,11 +79,16 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
   const [clientLabel, setClientLabel] = useState("Digiconnect / Sun International");
   const [linkDays, setLinkDays] = useState(30);
   const [newScope, setNewScope] = useState(emptyScope());
+  const [nextSteps, setNextSteps] = useState<NextStep[]>([]);
+  const [reportDate, setReportDate] = useState("");
+  const [showReport, setShowReport] = useState(false);
 
   const reload = useCallback(async () => {
     setError(null);
     try {
-      setData(await loadSiteDelivery(projectId));
+      const [delivery, steps] = await Promise.all([loadSiteDelivery(projectId), loadNextSteps(projectId).catch(() => [])]);
+      setData(delivery);
+      setNextSteps(steps as NextStep[]);
     } catch (e: any) {
       setError(e?.message ?? "Could not load site delivery.");
     }
@@ -122,6 +134,42 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
   const counts = useMemo(() => (data ? deliveryCounts(data) : null), [data]);
   const floorName = (id: string | null) => data?.floors.find((f) => f.id === id)?.display_name ?? "Whole site";
   const timeline = useMemo(() => (data ? dailyTimeline(data.updates) : []), [data]);
+  const history = useMemo(() => (data ? reportHistory(data.updates) : []), [data]);
+  const activeReportDate = reportDate || history[0]?.date || "";
+
+  /** One report object drives the preview, the print/PDF output and the client link. */
+  const report = useMemo(
+    () =>
+      data && activeReportDate
+        ? buildSiteReport({
+            project: { title: projectTitle, reference: projectReference, address: projectAddress },
+            client_name: clientName,
+            from: activeReportDate,
+            floors: data.floors,
+            updates: data.updates,
+            photos: data.photos,
+            issues: data.issues,
+            scopeChanges: data.scopeChanges,
+            nextSteps,
+            progress: data.progress,
+          })
+        : null,
+    [data, activeReportDate, nextSteps, projectTitle, projectReference, projectAddress, clientName],
+  );
+
+  /** Approves and publishes every update recorded for the selected work date. */
+  const publishDay = (publish: boolean) => {
+    if (!data || !activeReportDate) return;
+    const rows = data.updates.filter((u) => u.shift_date === activeReportDate);
+    if (!rows.length) return;
+    run(async () => {
+      for (const u of rows) {
+        const evidence = evidenceState(u, data.photos, u.id);
+        if (u.approval_status === "submitted") await approveUpdate(u.id, publish, publish ? evidence : undefined);
+        else await setUpdateVisibility(u.id, publish, publish ? evidence : undefined);
+      }
+    }, publish ? "Client report published" : "Client report unpublished");
+  };
 
   if (error) return <p className="border border-destructive p-3 text-sm text-destructive">{error}</p>;
   if (!data) return <p className="text-sm text-muted-foreground">Loading site delivery…</p>;
@@ -361,6 +409,55 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
           )}
         </div>
       </Panel>
+
+      <Panel title="Client report">
+        <p className="mb-3 text-xs text-muted-foreground">
+          The report is built from what was already recorded for the work date — nothing is added or estimated. Anything not
+          reported is shown as “Not reported”. Publishing shows the day on the client link; the print view saves the same
+          report as a PDF for email or WhatsApp.
+        </p>
+        <div className="flex flex-wrap items-end gap-3">
+          <Field label="Work date">
+            <select className={selectCls} value={activeReportDate} onChange={(e) => setReportDate(e.target.value)}>
+              {!history.length && <option value="">No updates yet</option>}
+              {history.map((h) => (
+                <option key={h.date} value={h.date}>
+                  {fmtDay(h.date)}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <button type="button" className={btn} disabled={!report} onClick={() => setShowReport(true)}>
+            Preview client report
+          </button>
+          <button type="button" className={btn} disabled={busy || !report} onClick={() => publishDay(true)}>
+            Approve &amp; publish
+          </button>
+          <button type="button" className={btn} disabled={busy || !report} onClick={() => publishDay(false)}>
+            Unpublish
+          </button>
+        </div>
+
+        <div className="mt-4 space-y-1">
+          {history.map((h) => (
+            <p key={h.date} className="flex flex-wrap items-center gap-2 border-b border-border py-1 text-sm">
+              <span className="font-medium">{fmtDay(h.date)}</span>
+              <span className="text-muted-foreground">{historyLabel(h)}</span>
+            </p>
+          ))}
+          {!history.length && <p className="text-sm text-muted-foreground">No site updates submitted yet.</p>}
+        </div>
+      </Panel>
+
+      {report && (
+        <PrintSurface
+          open={showReport}
+          title={`${projectTitle} — daily site progress report`}
+          onClose={() => setShowReport(false)}
+        >
+          <DailyReportDocument report={report} photoUrls={thumbs} />
+        </PrintSurface>
+      )}
 
       <Panel title="Daily updates & approvals">
         <div className="space-y-5">
