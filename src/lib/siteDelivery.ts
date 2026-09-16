@@ -272,7 +272,7 @@ export const clientProgressUrl = (token: string) => `${window.location.origin}/s
 /* ------------------------------------------------------------------- loaders */
 
 export async function loadSiteDelivery(projectId: string) {
-  const [floors, progress, updates, photos, issues, links, access] = await Promise.all([
+  const [floors, progress, updates, photos, issues, links, access, scope] = await Promise.all([
     db.from("portal_floors").select("id, level_number, display_name, floor_use, plan_image_path, client_visible, sort_order")
       .eq("project_id", projectId).order("sort_order"),
     db.from("portal_floor_progress").select("*").eq("project_id", projectId),
@@ -282,8 +282,9 @@ export async function loadSiteDelivery(projectId: string) {
     db.from("portal_share_links").select("id, title, link_role, assignee_label, recipient_label, expires_at, revoked_at, access_count, last_accessed_at, created_at")
       .eq("project_id", projectId).eq("resource_type", "site_delivery").order("created_at", { ascending: false }),
     db.from("portal_field_access").select("*").eq("project_id", projectId).order("created_at", { ascending: false }),
+    db.from("portal_scope_changes").select("*").eq("project_id", projectId).order("work_date", { ascending: false }),
   ]);
-  const firstError = [floors, progress, updates, photos, issues, links, access].find((r: any) => r.error)?.error;
+  const firstError = [floors, progress, updates, photos, issues, links, access, scope].find((r: any) => r.error)?.error;
   if (firstError) throw firstError;
   return {
     floors: (floors.data ?? []) as SiteFloor[],
@@ -293,6 +294,7 @@ export async function loadSiteDelivery(projectId: string) {
     issues: (issues.data ?? []) as SiteIssue[],
     links: (links.data ?? []) as DeliveryLink[],
     access: (access.data ?? []) as FieldAccess[],
+    scopeChanges: (scope.data ?? []) as ScopeChange[],
   };
 }
 
