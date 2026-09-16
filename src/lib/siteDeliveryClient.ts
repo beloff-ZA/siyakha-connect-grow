@@ -25,6 +25,7 @@ export type GuestPhoto = {
   id: string;
   update_id?: string | null;
   category: PhotoCategory;
+  title?: string | null;
   caption: string | null;
   floor_id: string | null;
   taken_at: string;
@@ -166,6 +167,8 @@ export type DraftPhoto = {
   /** The untouched uploaded file, kept as the evidentiary original. */
   original_storage_path?: string;
   category: PhotoCategory;
+  /** Required image name, mirroring the named-image rule used for project site images. */
+  title: string;
   caption: string;
   floor_id: string | null;
   /** Engineer's own declaration that this image came from the approved Timestamp App. */
@@ -185,6 +188,7 @@ export type ReadyPhoto = Pick<
   | "storage_path"
   | "original_storage_path"
   | "category"
+  | "title"
   | "caption"
   | "floor_id"
   | "timestamp_confirmed"
@@ -202,6 +206,7 @@ export const readyPhotos = (photos: DraftPhoto[]): ReadyPhoto[] =>
       storage_path: p.storage_path,
       original_storage_path: p.original_storage_path,
       category: p.category,
+      title: p.title,
       caption: p.caption,
       floor_id: p.floor_id,
       timestamp_confirmed: p.timestamp_confirmed,

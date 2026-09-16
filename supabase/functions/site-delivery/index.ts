@@ -336,6 +336,7 @@ Deno.serve(async (req) => {
             update_id: created!.id,
             floor_id: uuidOrNull(p?.floor_id) ?? insert.floor_id,
             category: PHOTO_CATEGORIES.has(str(p?.category, 20)) ? str(p?.category, 20) : "during",
+            title: clean(p?.title, 160) || null,
             caption: clean(p?.caption, 300) || null,
             storage_path: str(p?.storage_path, 400),
             original_storage_path: str(p?.original_storage_path, 400) || str(p?.storage_path, 400),
@@ -399,6 +400,7 @@ Deno.serve(async (req) => {
             issue_id: created!.id,
             floor_id: uuidOrNull(p?.floor_id) ?? uuidOrNull(payload.floor_id),
             category: "issue",
+            title: clean(p?.title, 160) || null,
             caption: clean(p?.caption, 300) || null,
             storage_path: str(p?.storage_path, 400),
             original_storage_path: str(p?.original_storage_path, 400) || str(p?.storage_path, 400),
@@ -486,7 +488,7 @@ Deno.serve(async (req) => {
     const updates = updatesRes.data ?? [];
     const photoRes = await admin
       .from("portal_site_update_photos")
-      .select("id, update_id, issue_id, category, caption, floor_id, taken_at, storage_path, client_visible, timestamp_confirmed, original_filename, original_file_size, exif_captured_at, uploaded_at")
+      .select("id, update_id, issue_id, category, title, caption, floor_id, taken_at, storage_path, client_visible, timestamp_confirmed, original_filename, original_file_size, exif_captured_at, uploaded_at")
       .eq("project_id", projectId)
       .order("sort_order")
       .limit(400);
