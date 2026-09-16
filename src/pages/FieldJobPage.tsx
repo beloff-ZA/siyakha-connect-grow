@@ -140,6 +140,7 @@ const FieldJobPage: React.FC = () => {
 
   const uploading = photos.some((p) => p.status === "uploading");
   const ready = readyPhotos(photos);
+  const evidence = evidenceSummary(photos);
 
   const submitUpdate = async () => {
     setBusy(true);
@@ -309,6 +310,26 @@ const FieldJobPage: React.FC = () => {
           ))}
 
           <PhotoBlock photos={photos} setPhotos={setPhotos} onPick={addPhotos} onRetry={uploadOne} defaultFloor={form.floor_id} />
+
+          <div className={`border p-3 ${evidence.hasEvidence ? "border-border" : "border-destructive"}`}>
+            <p className={label}>Photo evidence checklist</p>
+            <ul className="mt-2 space-y-1 text-sm">
+              <li>{evidence.ready ? "✓" : "✗"} {evidence.ready} photo{evidence.ready === 1 ? "" : "s"} attached</li>
+              <li>
+                {evidence.timestampConfirmed === evidence.ready && evidence.ready ? "✓" : "•"} {evidence.timestampConfirmed} confirmed
+                as Timestamp App photos
+                {evidence.timestampUnconfirmed ? ` · ${evidence.timestampUnconfirmed} not confirmed` : ""}
+              </li>
+              {!!evidence.uploading && <li>• {evidence.uploading} still uploading</li>}
+              {!!evidence.failed && <li className="text-destructive">✗ {evidence.failed} failed — tap retry</li>}
+            </ul>
+            {!evidence.hasEvidence && (
+              <p className="mt-2 text-sm text-destructive">
+                No photos attached. The client requires photo evidence with every daily report — this report will be flagged as
+                photos outstanding until images are added.
+              </p>
+            )}
+          </div>
 
           <button type="button" className={action} disabled={busy || uploading} onClick={submitUpdate}>
             {busy ? "Sending…" : uploading ? "Waiting for photos…" : `Send site update${ready.length ? ` (${ready.length} photos)` : ""}`}
