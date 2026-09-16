@@ -120,6 +120,12 @@ export function buildUpdatePayload(a: FieldAnswers, photoCount: number) {
     progress_pct: 0,
     next_shift_plan: a.next_text.trim(),
     notes: [a.note_text.trim(), photoCount ? "" : "No photos attached with this update."].filter(Boolean).join(" "),
+    /**
+     * Operational flag only. It records that the engineer thinks the work may be
+     * extra; it carries no pricing and makes no contractual decision.
+     */
+    extra_work: a.extra_work && !!a.extra_work_text.trim(),
+    extra_work_text: a.extra_work ? a.extra_work_text.trim() : "",
   };
 }
 
@@ -128,6 +134,7 @@ export function readyToSend(a: FieldAnswers, readyPhotoCount: number, uploading:
   if (!workSummary(a)) return "Tell us what you did today.";
   if (isFutureDate(a.work_date)) return "Choose today or an earlier day.";
   if (a.problem !== "none" && !a.problem_text.trim()) return "Tell us what happened.";
+  if (a.extra_work && !a.extra_work_text.trim()) return "Tell us what the extra work is.";
   if (uploading) return "Wait for your photos to finish loading.";
   if (readyPhotoCount === 0) return "Client needs photos. Add photos before sending.";
   return null;
