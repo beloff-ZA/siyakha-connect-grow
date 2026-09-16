@@ -141,11 +141,18 @@ Deno.serve(async (req) => {
         }
         return {
           id: r.id,
+          update_id: r.update_id ?? null,
+          issue_id: r.issue_id ?? null,
           category: r.category,
           caption: r.caption,
           floor_id: r.floor_id,
           taken_at: r.taken_at,
+          uploaded_at: r.uploaded_at ?? null,
           client_visible: r.client_visible,
+          timestamp_confirmed: r.timestamp_confirmed === true,
+          original_filename: r.original_filename ?? null,
+          original_file_size: r.original_file_size ?? null,
+          exif_captured_at: r.exif_captured_at ?? null,
           url,
         };
       }),
@@ -391,7 +398,7 @@ Deno.serve(async (req) => {
       admin
         .from("portal_site_updates")
         .select(
-          "id, shift_date, submitted_at, submitted_by_name, category, photos_outstanding, floor_id, area_label, work_completed, work_outstanding, blockers, materials_required, team_onsite, progress_pct, next_shift_plan, notes, approval_status, client_visible",
+          "id, shift_date, submitted_at, submitted_by_name, category, photos_outstanding, photo_evidence_required, photo_evidence_override_reason, floor_id, area_label, work_completed, work_outstanding, blockers, materials_required, team_onsite, progress_pct, next_shift_plan, notes, approval_status, client_visible",
         )
         .eq("project_id", projectId)
         .order("submitted_at", { ascending: false })
