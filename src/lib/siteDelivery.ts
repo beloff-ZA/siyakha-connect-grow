@@ -194,9 +194,65 @@ export async function loadSiteDelivery(projectId: string) {
 
 export type SiteDeliveryData = Awaited<ReturnType<typeof loadSiteDelivery>>;
 
+/* -------------------------------------------------------- photo evidence */
+
+export type EvidenceState = {
+  photoCount: number;
+  confirmedCount: number;
+  required: boolean;
+  overridden: boolean;
+  /** True when the day may be treated as complete / publishable to the client. */
+  satisfied: boolean;
+};
+
+export const evidenceState = (
+  update: Pick<SiteUpdate, "photo_evidence_required" | "photo_evidence_override_reason">,
+  photos: Pick<SitePhoto, "update_id" | "timestamp_confirmed">[],
+  updateId: string,
+): EvidenceState => {
+  const mine = photos.filter((p) => p.update_id === updateId);
+  const overridden = !!update.photo_evidence_override_reason?.trim();
+  const required = update.photo_evidence_required !== false;
+  return {
+    photoCount: mine.length,
+    confirmedCount: mine.filter((p) => p.timestamp_confirmed).length,
+    required,
+    overridden,
+    satisfied: !required || overridden || mine.length > 0,
+  };
+};
+
+/** Per-day compliance indicators shown on the admin dashboard. */
+export const complianceFlags = (update: SiteUpdate, evidence: EvidenceState) => [
+  { label: "Daily report submitted", done: true },
+  {
+    label: evidence.overridden && !evidence.photoCount ? "Photo evidence waived" : "Timestamped photos received",
+    done: evidence.photoCount > 0 || evidence.overridden,
+  },
+  { label: "Admin approved", done: update.approval_status === "approved" || update.approval_status === "locked" },
+  { label: "Client published", done: !!update.client_visible && !!update.published_at },
+];
+
+export const EVIDENCE_BLOCKED_MESSAGE =
+  "This daily report has no site photos yet. Attach the timestamped photos, or record an override reason first.";
+
+/** Records why the office is publishing a day without photo evidence. */
+export async function overridePhotoEvidence(id: string, reason: string) {
+  const trimmed = reason.trim();
+  if (!trimmed) throw new Error("Give a reason for waiving the photo requirement.");
+  const { data: auth } = await supabase.auth.getUser();
+  const { error } = await db.from("portal_site_updates").update({
+    photo_evidence_override_reason: trimmed,
+    photo_evidence_override_by: auth.user?.id ?? null,
+    photo_evidence_override_at: new Date().toISOString(),
+  }).eq("id", id);
+  if (error) throw error;
+}
+
 /* ------------------------------------------------------------ admin actions */
 
-export async function approveUpdate(id: string, clientVisible: boolean) {
+export async function approveUpdate(id: string, clientVisible: boolean, evidence?: EvidenceState) {
+  if (clientVisible && evidence && !evidence.satisfied) throw new Error(EVIDENCE_BLOCKED_MESSAGE);
   const now = new Date().toISOString();
   const { data: auth } = await supabase.auth.getUser();
   const { error } = await db.from("portal_site_updates").update({
@@ -209,7 +265,8 @@ export async function approveUpdate(id: string, clientVisible: boolean) {
   if (error) throw error;
 }
 
-export async function setUpdateVisibility(id: string, clientVisible: boolean) {
+export async function setUpdateVisibility(id: string, clientVisible: boolean, evidence?: EvidenceState) {
+  if (clientVisible && evidence && !evidence.satisfied) throw new Error(EVIDENCE_BLOCKED_MESSAGE);
   const { error } = await db.from("portal_site_updates")
     .update({ client_visible: clientVisible, published_at: clientVisible ? new Date().toISOString() : null })
     .eq("id", id);
