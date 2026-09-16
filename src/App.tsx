@@ -100,6 +100,7 @@ function App() {
           <Router>
             <AnalyticsScripts />
             <ScrollToTop />
+            <RecoveryLinkGate />
             <CartSyncMount />
             <Routes>
               {/* Single public page */}
@@ -111,6 +112,9 @@ function App() {
               <Route path="/sign-in" element={<SignIn />} />
               <Route path="/auth" element={<SignIn />} />
               <Route path="/client-login" element={<SignIn />} />
+
+              {/* Dedicated password-recovery screen */}
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               {/* Client portal */}
 
