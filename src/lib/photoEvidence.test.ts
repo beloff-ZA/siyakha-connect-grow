@@ -22,6 +22,7 @@ const draft = (over: Partial<DraftPhoto> = {}): DraftPhoto => ({
   status: "ready",
   storage_path: "a.jpg",
   category: "during",
+  title: "Test photo",
   caption: "",
   floor_id: null,
   timestamp_confirmed: true,
