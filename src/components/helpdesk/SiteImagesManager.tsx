@@ -47,6 +47,15 @@ const SiteImagesManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   }, [load]);
 
   const upload = async (file: File) => {
+    // Every image must carry its own context, so a name is required.
+    if (!meta.title.trim()) {
+      toast({
+        title: "Give the image a name first",
+        description: 'For example "5th Floor – Existing Cable Route".',
+        variant: "destructive" as never,
+      });
+      return;
+    }
     setBusy(true);
     try {
       const path = siteImageStoragePath(projectId, meta.captured_on, file.name);
@@ -131,7 +140,7 @@ const SiteImagesManager: React.FC<{ projectId: string }> = ({ projectId }) => {
           Upload site image — {images.length} on record
         </h3>
         <div className="grid sm:grid-cols-3 gap-3">
-          <Input className={inputCls} placeholder="Title" value={meta.title} onChange={(e) => setMeta({ ...meta, title: e.target.value })} />
+          <Input className={inputCls} placeholder="Image name (required) — e.g. 5th Floor – Existing Cable Route" value={meta.title} onChange={(e) => setMeta({ ...meta, title: e.target.value })} aria-label="Image name" />
           <Input className={inputCls} placeholder="Area" value={meta.area} onChange={(e) => setMeta({ ...meta, area: e.target.value })} />
           <Input className={inputCls} placeholder="Category" value={meta.category} onChange={(e) => setMeta({ ...meta, category: e.target.value })} />
           <Input className={inputCls} type="date" aria-label="Captured on" value={meta.captured_on} onChange={(e) => setMeta({ ...meta, captured_on: e.target.value })} />

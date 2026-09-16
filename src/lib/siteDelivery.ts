@@ -497,7 +497,7 @@ export async function issueDeliveryLink(input: {
     if (accessError) throw accessError;
   }
 
-  return { url: input.role === "field" ? fieldUrl(token) : clientProgressUrl(token) };
+  return { id: data.id as string, url: input.role === "field" ? fieldUrl(token) : clientProgressUrl(token) };
 }
 
 export async function revokeDeliveryLink(id: string) {

@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Panel, Stat, Field, Chip, selectCls } from "@/components/pm/ui";
+import NextStepsPanel from "@/components/pm/NextStepsPanel";
+import SiteNotesPanel from "@/components/pm/SiteNotesPanel";
 import { signedUrl } from "@/lib/portalFiles";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -52,6 +54,8 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
   const [error, setError] = useState<string | null>(null);
   const [thumbs, setThumbs] = useState<Record<string, string>>({});
   const [issued, setIssued] = useState<{ field?: string; client?: string }>({});
+  // Link addresses exist only in this session: the database stores a hash, never the link itself.
+  const [linkUrls, setLinkUrls] = useState<Record<string, string>>({});
   const [fieldLabel, setFieldLabel] = useState("Michael (Mike)");
   const [clientLabel, setClientLabel] = useState("Digiconnect / Sun International");
   const [linkDays, setLinkDays] = useState(30);
@@ -195,6 +199,7 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                 };
                 const res = regenerate ? await regenerateDeliveryLink(input, data.links) : await issueDeliveryLink(input);
                 setIssued((prev) => ({ ...prev, [role]: res.url }));
+                setLinkUrls((prev) => ({ ...prev, [res.id]: res.url }));
               }, regenerate ? "New link created — the old one no longer works" : "Link created");
 
             return (
@@ -234,16 +239,21 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                       Copy this now — it is only shown here
                     </p>
                     <p className="mt-1 break-all text-xs">{url}</p>
-                    <button
-                      type="button"
-                      className={`${btn} mt-2`}
-                      onClick={() => {
-                        navigator.clipboard?.writeText(url);
-                        toast({ title: "Link copied" });
-                      }}
-                    >
-                      Copy link
-                    </button>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        className={btn}
+                        onClick={() => {
+                          navigator.clipboard?.writeText(url);
+                          toast({ title: "Link copied" });
+                        }}
+                      >
+                        Copy link
+                      </button>
+                      <a className={btn} href={url} target="_blank" rel="noreferrer">
+                        Open link
+                      </a>
+                    </div>
                   </div>
                 )}
 
@@ -253,13 +263,38 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
                     .map((l) => {
                       const access = data.access.find((a) => a.share_link_id === l.id);
                       const state = l.revoked_at ? "revoked" : new Date(l.expires_at) < new Date() ? "expired" : "active";
+                      const known = linkUrls[l.id];
                       return (
                         <div key={l.id} className="flex flex-wrap items-center gap-2 border border-border p-2 text-xs">
+                          <Chip>{role === "field" ? "Technician" : "Client"}</Chip>
                           <Chip>{state}</Chip>
                           <span className="font-medium">{l.assignee_label ?? l.recipient_label ?? "Unnamed"}</span>
                           <span className="text-muted-foreground">
-                            opened {l.access_count}× · expires {new Date(l.expires_at).toLocaleDateString("en-ZA")}
+                            created {new Date(l.created_at).toLocaleDateString("en-ZA")} · opened {l.access_count}× ·
+                            expires {new Date(l.expires_at).toLocaleDateString("en-ZA")}
                           </span>
+                          {known && state === "active" && (
+                            <>
+                              <button
+                                type="button"
+                                className={btn}
+                                onClick={() => {
+                                  navigator.clipboard?.writeText(known);
+                                  toast({ title: "Link copied" });
+                                }}
+                              >
+                                Copy
+                              </button>
+                              <a className={btn} href={known} target="_blank" rel="noreferrer">
+                                Open
+                              </a>
+                            </>
+                          )}
+                          {!known && state === "active" && (
+                            <span className="text-muted-foreground">
+                              address only shown when created — use Regenerate to get a fresh one
+                            </span>
+                          )}
                           {access?.device_expires_at && !access.revoked_at && (
                             <button type="button" className={btn} disabled={busy} onClick={() => run(() => forgetDevice(access.id), "Device forgotten")}>
                               Forget device
@@ -282,6 +317,10 @@ const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clien
           })}
         </div>
       </Panel>
+
+      <SiteNotesPanel projectId={projectId} />
+
+      <NextStepsPanel projectId={projectId} />
 
       <Panel title="Documents released to the client">
         <p className="mb-3 text-xs text-muted-foreground">

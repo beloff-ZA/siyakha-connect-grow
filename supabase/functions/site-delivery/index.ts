@@ -49,7 +49,8 @@ const randomToken = () => {
 const DOCUMENTS_BUCKET = "client-documents";
 const PHOTO_BUCKET = "site-progress";
 
-const FIELD_ACTIONS = new Set(["job", "remember", "upload_url", "submit_update", "report_issue"]);
+const FIELD_ACTIONS = new Set(["job", "remember", "upload_url", "submit_update", "report_issue", "next_step_status"]);
+const STEP_STATUSES = new Set(["pending", "in_progress", "done"]);
 const CLIENT_ACTIONS = new Set(["client_view"]);
 
 const PHOTO_CATEGORIES = new Set(["before", "during", "after", "issue", "completed"]);
@@ -195,7 +196,9 @@ Deno.serve(async (req) => {
     const [{ data: project }, { data: client }] = await Promise.all([
       admin
         .from("portal_projects")
-        .select("id, title, reference, address, status, description, start_date, target_date, site_id")
+        .select(
+          "id, title, reference, address, status, description, scope_of_work, deliverables, site_context, start_date, target_date, site_id",
+        )
         .eq("id", projectId)
         .maybeSingle(),
       link.client_id
@@ -216,6 +219,9 @@ Deno.serve(async (req) => {
       reference: project?.reference ?? null,
       status: project?.status ?? null,
       scope: project?.description ?? null,
+      scope_of_work: project?.scope_of_work ?? null,
+      deliverables: project?.deliverables ?? null,
+      site_notes: project?.site_context ?? null,
       address: project?.address ?? site?.address ?? null,
       start_date: project?.start_date ?? null,
       target_date: project?.target_date ?? null,
@@ -223,6 +229,25 @@ Deno.serve(async (req) => {
       site_name: site?.name ?? null,
       site_location: [site?.city, site?.province].filter(Boolean).join(", ") || null,
     };
+  };
+
+  /** One project next-steps list, filtered by who is looking at it. */
+  const nextSteps = async (audience: "technician" | "client") => {
+    const { data } = await admin
+      .from("portal_project_next_steps")
+      .select("id, title, detail, category, status, due_date, sort_order, technician_visible, client_visible")
+      .eq("project_id", projectId)
+      .eq(audience === "technician" ? "technician_visible" : "client_visible", true)
+      .order("sort_order")
+      .limit(100);
+    return (data ?? []).map((s: any) => ({
+      id: s.id,
+      title: s.title,
+      detail: s.detail,
+      category: s.category,
+      status: s.status,
+      due_date: s.due_date,
+    }));
   };
 
   /* ------------------------------------------------------------ field role */
@@ -397,8 +422,31 @@ Deno.serve(async (req) => {
       return json({ state: "ok", id: created!.id });
     }
 
+    // Technician may only move an installation step the office shared with them.
+    if (action === "next_step_status") {
+      const stepId = uuidOrNull(payload.id);
+      const status = str(payload.status, 20);
+      if (!stepId || !STEP_STATUSES.has(status)) return json({ error: "Invalid step update" }, 400);
+      const { data: step } = await admin
+        .from("portal_project_next_steps")
+        .select("id, project_id, technician_visible")
+        .eq("id", stepId)
+        .maybeSingle();
+      if (!step || step.project_id !== projectId || step.technician_visible !== true) return json({ state: "denied" });
+      await admin
+        .from("portal_project_next_steps")
+        .update({
+          status,
+          completed_at: status === "done" ? new Date().toISOString() : null,
+          updated_by_name: access.technician_name,
+        })
+        .eq("id", stepId);
+      await logAccess("granted", "next step updated");
+      return json({ state: "ok" });
+    }
+
     // action === "job"
-    const [header, floors, updatesRes, issuesRes, docsRes] = await Promise.all([
+    const [header, floors, updatesRes, issuesRes, docsRes, steps] = await Promise.all([
       projectHeader(),
       floorsWithProgress(false),
       admin
@@ -421,6 +469,7 @@ Deno.serve(async (req) => {
         .eq("project_id", projectId)
         .order("document_date", { ascending: false })
         .limit(40),
+      nextSteps("technician"),
     ]);
 
     const documents = await Promise.all(
@@ -454,13 +503,14 @@ Deno.serve(async (req) => {
       updates,
       issues: issuesRes.data ?? [],
       documents,
+      next_steps: steps,
       photos: photos.map((p) => ({ ...p, update_id: (photoRes.data ?? []).find((r: any) => r.id === p.id)?.update_id ?? null })),
       today: new Date().toISOString().slice(0, 10),
     });
   }
 
   /* ----------------------------------------------------------- client role */
-  const [header, floors, updatesRes, issuesRes, docsRes, scopeRes] = await Promise.all([
+  const [header, floors, updatesRes, issuesRes, docsRes, scopeRes, clientSteps] = await Promise.all([
     projectHeader(),
     floorsWithProgress(true),
     admin
@@ -495,6 +545,7 @@ Deno.serve(async (req) => {
       .eq("client_visible", true)
       .order("work_date", { ascending: false })
       .limit(60),
+    nextSteps("client"),
   ]);
 
   const approvedIds = (updatesRes.data ?? []).map((u: any) => u.id);
@@ -548,6 +599,7 @@ Deno.serve(async (req) => {
     updates: updatesRes.data ?? [],
     issues: issuesRes.data ?? [],
     scope_changes: scopeRes.data ?? [],
+    next_steps: clientSteps,
     photos: clientPhotos,
     documents,
   });
