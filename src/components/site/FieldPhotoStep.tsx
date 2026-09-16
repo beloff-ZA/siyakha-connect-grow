@@ -20,9 +20,11 @@ const FieldPhotoStep: React.FC<{
   onTimestampUsed: (value: boolean) => void;
   onPick: (files: FileList | null) => void;
   onSetCategory: (localId: string, category: PhotoCategory) => void;
+  onSetTitle: (localId: string, title: string) => void;
+  onSetCaption: (localId: string, caption: string) => void;
   onRemove: (localId: string) => void;
   onRetry: (localId: string) => void;
-}> = ({ photos, timestampUsed, onTimestampUsed, onPick, onSetCategory, onRemove, onRetry }) => {
+}> = ({ photos, timestampUsed, onTimestampUsed, onPick, onSetCategory, onSetTitle, onSetCaption, onRemove, onRetry }) => {
   const camera = useRef<HTMLInputElement>(null);
   const library = useRef<HTMLInputElement>(null);
 
@@ -80,6 +82,23 @@ const FieldPhotoStep: React.FC<{
                 {p.status === "ready" && "Saved"}
                 {p.status === "failed" && (p.errorMessage ?? "Did not load")}
               </p>
+              <label className="mt-2 block text-sm font-semibold">
+                Photo name
+                <input
+                  value={p.title}
+                  onChange={(e) => onSetTitle(p.localId, e.target.value)}
+                  placeholder="Example: Fifth floor pipe"
+                  className="mt-1 min-h-[52px] w-full border-2 border-border px-3 text-base"
+                />
+              </label>
+              <label className="mt-2 block text-sm">
+                More about the photo (not needed)
+                <input
+                  value={p.caption}
+                  onChange={(e) => onSetCaption(p.localId, e.target.value)}
+                  className="mt-1 min-h-[52px] w-full border-2 border-border px-3 text-base"
+                />
+              </label>
               <div className="mt-2 grid grid-cols-4 gap-2">
                 {SIMPLE_CATEGORIES.map((c) => (
                   <button
