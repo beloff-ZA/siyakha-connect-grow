@@ -3,7 +3,9 @@ import { Panel, Stat, Field, Chip, selectCls } from "@/components/pm/ui";
 import { signedUrl } from "@/lib/portalFiles";
 import { toast } from "@/hooks/use-toast";
 import {
+  addScopeChange,
   approveUpdate,
+  BASELINE_CATEGORIES,
   complianceFlags,
   dailyTimeline,
   deliveryCounts,
@@ -15,8 +17,13 @@ import {
   lockUpdate,
   overallProgress,
   patchIssue,
+  patchScopeChange,
   revokeDeliveryLink,
+  SCOPE_SOURCES,
+  SCOPE_STATUSES,
+  scopeSourceLabel,
   setFloorProgress,
+  setUpdateBaseline,
   evidenceState,
   overridePhotoEvidence,
   setPhotoTimestampConfirmed,
@@ -29,6 +36,8 @@ import {
 } from "@/lib/siteDelivery";
 
 const btn = "border border-border px-3 py-2 text-[11px] uppercase tracking-[0.18em] hover:bg-muted";
+const fmtDay = (d: string) =>
+  new Date(`${d}T00:00:00`).toLocaleDateString("en-ZA", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
 /** Daily site delivery: progress dashboard, approvals and the two guest links. */
 const SiteDeliveryTab: React.FC<{ projectId: string; projectTitle: string; clientId: string | null }> = ({
