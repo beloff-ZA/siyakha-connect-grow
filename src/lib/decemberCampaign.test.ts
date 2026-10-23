@@ -4,7 +4,10 @@ import {
   buildCampaignPayload,
   emptyCampaignForm,
   isCampaignFormValid,
-  isDecemberDate,
+  isCampaignOpen,
+  isRequestableDate,
+  minRequestDate,
+  todaySAST,
   validateCampaignForm,
 } from "./decemberCampaign";
 import { CAMPAIGN } from "@/content/decemberCleanup";
@@ -32,39 +35,71 @@ const validForm = () => ({
   consent: true,
 });
 
+// Fixed "today" values make every boundary test deterministic.
+const BEFORE_DEC = "2026-10-23";
+const IN_DEC = "2026-12-10";
+const AFTER_DEC = "2027-01-05";
+
+describe("SAST today", () => {
+  it("resolves the Africa/Johannesburg calendar date", () => {
+    // 2026-12-01 00:30 SAST is still 30 Nov UTC — SAST must already be December.
+    expect(todaySAST(new Date("2026-11-30T22:30:00.000Z"))).toBe("2026-12-01");
+    expect(todaySAST(new Date("2026-10-23T12:00:00.000Z"))).toBe("2026-10-23");
+  });
+});
+
 describe("December date rules", () => {
-  it("accepts the inclusive December 2026 boundaries", () => {
-    expect(isDecemberDate("2026-12-01")).toBe(true);
-    expect(isDecemberDate("2026-12-31")).toBe(true);
-    expect(isDecemberDate("2026-12-15")).toBe(true);
+  it("accepts the inclusive December 2026 boundaries before December", () => {
+    expect(isRequestableDate("2026-12-01", BEFORE_DEC)).toBe(true);
+    expect(isRequestableDate("2026-12-31", BEFORE_DEC)).toBe(true);
+    expect(isRequestableDate("2026-12-15", BEFORE_DEC)).toBe(true);
   });
 
-  it("rejects past, future and out-of-month dates", () => {
-    expect(isDecemberDate("2026-11-30")).toBe(false);
-    expect(isDecemberDate("2027-01-01")).toBe(false);
-    expect(isDecemberDate("2025-12-10")).toBe(false);
-    expect(isDecemberDate("08/12/2026")).toBe(false);
-    expect(isDecemberDate("")).toBe(false);
+  it("rejects out-of-month and malformed dates", () => {
+    expect(isRequestableDate("2026-11-30", BEFORE_DEC)).toBe(false);
+    expect(isRequestableDate("2027-01-01", BEFORE_DEC)).toBe(false);
+    expect(isRequestableDate("2025-12-10", BEFORE_DEC)).toBe(false);
+    expect(isRequestableDate("08/12/2026", BEFORE_DEC)).toBe(false);
+    expect(isRequestableDate("", BEFORE_DEC)).toBe(false);
+  });
+
+  it("once December begins, past days are no longer requestable", () => {
+    expect(minRequestDate(IN_DEC)).toBe("2026-12-10");
+    expect(isRequestableDate("2026-12-01", IN_DEC)).toBe(false);
+    expect(isRequestableDate("2026-12-09", IN_DEC)).toBe(false);
+    expect(isRequestableDate("2026-12-10", IN_DEC)).toBe(true);
+    expect(isRequestableDate("2026-12-31", IN_DEC)).toBe(true);
+  });
+
+  it("before December the minimum is 1 December", () => {
+    expect(minRequestDate(BEFORE_DEC)).toBe("2026-12-01");
+  });
+
+  it("closes the campaign after December ends", () => {
+    expect(isCampaignOpen(AFTER_DEC)).toBe(false);
+    expect(isCampaignOpen("2026-12-31")).toBe(true);
+    const errors = validateCampaignForm(validForm(), AFTER_DEC);
+    expect(errors.preferred_date).toBe("December 2026 bookings have closed.");
   });
 
   it("blocks identical primary and alternate dates", () => {
-    const errors = validateCampaignForm({ ...validForm(), alternate_date: "2026-12-08" });
+    const errors = validateCampaignForm({ ...validForm(), alternate_date: "2026-12-08" }, BEFORE_DEC);
     expect(errors.alternate_date).toBeTruthy();
   });
 
   it("allows a blank alternate date", () => {
-    expect(validateCampaignForm({ ...validForm(), alternate_date: "" }).alternate_date).toBeUndefined();
+    expect(validateCampaignForm({ ...validForm(), alternate_date: "" }, BEFORE_DEC).alternate_date).toBeUndefined();
   });
 });
 
 describe("campaign form validation", () => {
   it("accepts a complete booking request", () => {
-    expect(validateCampaignForm(validForm())).toEqual({});
-    expect(isCampaignFormValid(validForm())).toBe(true);
+    expect(validateCampaignForm(validForm(), BEFORE_DEC)).toEqual({});
+    expect(isCampaignFormValid(validForm(), BEFORE_DEC)).toBe(true);
   });
 
   it("requires scope, region, city and a December preferred date", () => {
-    const errors = validateCampaignForm(emptyCampaignForm());
+    const errors = validateCampaignForm(emptyCampaignForm(), BEFORE_DEC);
     expect(errors.scope).toBeTruthy();
     expect(errors.location).toBeTruthy();
     expect(errors.city).toBeTruthy();
@@ -73,15 +108,15 @@ describe("campaign form validation", () => {
   });
 
   it("rejects invalid email and phone", () => {
-    const errors = validateCampaignForm({ ...validForm(), work_email: "nope", phone: "abc" });
+    const errors = validateCampaignForm({ ...validForm(), work_email: "nope", phone: "abc" }, BEFORE_DEC);
     expect(errors.work_email).toBeTruthy();
     expect(errors.phone).toBeTruthy();
   });
 
   it("keeps rack count optional but sane", () => {
-    expect(validateCampaignForm({ ...validForm(), rack_count: "" }).rack_count).toBeUndefined();
-    expect(validateCampaignForm({ ...validForm(), rack_count: "0" }).rack_count).toBeTruthy();
-    expect(validateCampaignForm({ ...validForm(), rack_count: "2.5" }).rack_count).toBeTruthy();
+    expect(validateCampaignForm({ ...validForm(), rack_count: "" }, BEFORE_DEC).rack_count).toBeUndefined();
+    expect(validateCampaignForm({ ...validForm(), rack_count: "0" }, BEFORE_DEC).rack_count).toBeTruthy();
+    expect(validateCampaignForm({ ...validForm(), rack_count: "2.5" }, BEFORE_DEC).rack_count).toBeTruthy();
   });
 });
 
@@ -113,6 +148,11 @@ describe("campaign payload mapping", () => {
     expect(description).not.toContain("confirmed booking");
   });
 
+  it("carries the honeypot through to the payload", () => {
+    expect(buildCampaignPayload(validForm(), {}).honeypot).toBe("");
+    expect(buildCampaignPayload({ ...validForm(), honeypot: "spammy" }, {}).honeypot).toBe("spammy");
+  });
+
   it("keeps the description within payload limits even with long notes", () => {
     const description = buildCampaignDescription({ ...validForm(), notes: "x".repeat(1500) });
     expect(description.length).toBeLessThanOrEqual(4000);
@@ -136,6 +176,14 @@ describe("submitLead transport contract (mocked)", () => {
 
   it("surfaces backend failures without marking success", async () => {
     invokeMock.mockResolvedValue({ data: null, error: new Error("FunctionsHttpError: 500") });
+    const result = await submitLead(buildCampaignPayload(validForm(), {}));
+    expect(result.ok).toBe(false);
+    expect(result.error).toBeTruthy();
+  });
+
+  it("surfaces network failures without marking success", async () => {
+    // supabase-js resolves network failures as { data: null, error }.
+    invokeMock.mockResolvedValue({ data: null, error: new Error("FunctionsFetchError: Failed to fetch") });
     const result = await submitLead(buildCampaignPayload(validForm(), {}));
     expect(result.ok).toBe(false);
     expect(result.error).toBeTruthy();
