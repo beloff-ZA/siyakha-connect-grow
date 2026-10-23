@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
+import DecemberCleanup from "./pages/DecemberCleanup";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
 import ResetPassword from "./pages/ResetPassword";
