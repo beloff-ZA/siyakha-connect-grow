@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
+import DecemberCleanup from "./pages/DecemberCleanup";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
 import ResetPassword from "./pages/ResetPassword";
@@ -106,6 +107,9 @@ function App() {
             <Routes>
               {/* Single public page */}
               <Route path="/" element={<Index />} />
+
+              {/* December 2026 cabinet clean-up campaign */}
+              <Route path="/december-cleanup" element={<DecemberCleanup />} />
 
               {/* Single unified secure access screen. /auth and /client-login are
                   legacy aliases that render the same component so old bookmarks and
