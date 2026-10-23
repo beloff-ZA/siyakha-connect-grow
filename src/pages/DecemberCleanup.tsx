@@ -12,12 +12,12 @@ import { BRAND } from "@/lib/brand";
 import { CONTACT, telHref } from "@/lib/contact";
 
 const INCLUDED = [
-  "Assessment of the cabinet, then proposed cable organisation, re-dress and labelling",
-  "Cleaning, airflow and thermal tidy-up within the agreed maintenance scope",
-  "Switch, router and UPS health checks, documented for your team",
-  "Patch-lead replacement planning, quoted before anything is replaced",
+  "Assessment of the cabinet, then proposed cable organisation, re-dress and labelling.",
+  "Cleaning, airflow and thermal tidy-up within the agreed maintenance scope.",
+  "Switch, router and UPS health checks, documented for your team.",
+  "Patch-lead replacement planning, quoted before anything is replaced.",
   "Firmware and configuration assessment; any changes subject to the agreed quotation and maintenance window.",
-  "A working record of what was checked and what was agreed",
+  "A working record of what was checked and what was agreed.",
 ] as const;
 
 const DecemberCleanup = () => {
