@@ -132,18 +132,22 @@ const DecemberCleanup = () => {
           </div>
         </section>
 
-        {/* What's included */}
+        {/* Plan your maintenance visit */}
         <section className="container mx-auto px-6 lg:px-10 py-16 md:py-24">
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
             <div>
-              <p className="overline mb-4">What a visit covers</p>
+              <p className="overline mb-4">Plan your maintenance visit</p>
               <h2 className="font-display font-light text-3xl md:text-4xl tracking-[-0.02em] text-foreground leading-tight">
-                One visit. A cabinet that finally makes sense.
+                A cabinet that finally makes sense — planned around your site.
               </h2>
               <p className="mt-4 text-sm md:text-base text-muted-foreground leading-relaxed">
                 Whether it's a single wall cabinet in a practice or a full comms room in a multi-tenant
-                building, the goal is the same: labelled, documented, cool-running infrastructure your team
-                can support without guesswork.
+                building, the aim is the same: a labelled, documented, cool-running cabinet your team can
+                support without guesswork. What we propose is based on an assessment of your site, so the
+                work is never assumed.
+              </p>
+              <p className="mt-4 text-sm md:text-base text-foreground leading-relaxed">
+                Scope and any downtime agreed in your quotation before work begins.
               </p>
               <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
                 {CAMPAIGN.ctaFollow}
