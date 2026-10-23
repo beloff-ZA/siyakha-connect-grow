@@ -12,12 +12,12 @@ import { BRAND } from "@/lib/brand";
 import { CONTACT, telHref } from "@/lib/contact";
 
 const INCLUDED = [
-  "Full cabinet strip-down, re-dress and cable management",
-  "Patch-lead replacement planning and labelling",
-  "Switch, router and UPS health checks",
-  "Dust removal, airflow and thermal tidy-up",
-  "Network maintenance: firmware, config review and documentation",
-  "A tidy cabinet your team can actually work in",
+  "Assessment of the cabinet, then proposed cable organisation, re-dress and labelling",
+  "Cleaning, airflow and thermal tidy-up within the agreed maintenance scope",
+  "Switch, router and UPS health checks, documented for your team",
+  "Patch-lead replacement planning, quoted before anything is replaced",
+  "Firmware and configuration assessment; any changes subject to the agreed quotation and maintenance window.",
+  "A working record of what was checked and what was agreed",
 ] as const;
 
 const DecemberCleanup = () => {
@@ -94,8 +94,9 @@ const DecemberCleanup = () => {
               {CAMPAIGN.phrase}
             </h1>
             <p className="mt-6 max-w-xl text-base md:text-lg text-background/85 leading-relaxed">
-              End the year with a cabinet you're proud to open. Siyakha's engineers strip, re-dress, label and
-              document your server cabinet — and give your network the maintenance it skipped all year.
+              End the year with a cabinet you're proud to open. Siyakha assesses your server cabinet, proposes
+              the cable organisation, cleaning and network maintenance it needs, and confirms scope and
+              quotation with you before any work begins.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
