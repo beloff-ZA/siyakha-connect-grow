@@ -44,10 +44,11 @@ export function validatePhotoBytes(bytes: Uint8Array, mime: string): string {
 export function decodeCabinetPhoto(photo: CabinetPhoto): { bytes: Uint8Array; extension: string } {
   if (typeof photo?.base64 !== "string" || typeof photo?.mime !== "string" ||
     photo.base64.length > Math.ceil(PHOTO_MAX_BYTES / 3) * 4 || photo.base64.length % 4 !== 0 ||
-    !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(photo.base64)) {
+    !/^[A-Za-z0-9+/]*={0,2}$/.test(photo.base64)) {
     throw new Error("Invalid cabinet photo encoding.");
   }
   const binary = atob(photo.base64);
+  if (btoa(binary) !== photo.base64) throw new Error("Invalid cabinet photo encoding.");
   const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
   return { bytes, extension: validatePhotoBytes(bytes, photo.mime) };
 }

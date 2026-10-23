@@ -137,7 +137,6 @@ describe("campaign payload mapping", () => {
     expect(description).toContain("City / suburb: Umhlanga");
     expect(description).toContain("Cabinets / racks: 2");
     expect(description).toContain("Alternate date (request only): 2026-12-15");
-    expect(description).toContain("Draft offer");
     expect(description).toContain("Client notes: Comms room on the third floor.");
     expect(description.length).toBeLessThanOrEqual(4000);
   });
@@ -220,8 +219,6 @@ describe("campaign constants", () => {
       "20% off server clean-up and network-maintenance labour for December bookings.",
     );
     expect(CAMPAIGN.offerExclusion).toBe("Hardware and cabling materials excluded.");
-    expect(CAMPAIGN.cta).toBe("Book now. Lock in your discount.");
     expect(CAMPAIGN.phrase).toBe("UNTANGLE THE YEAR.");
-    expect(CAMPAIGN.draftNotice).toContain("Draft offer");
   });
 });

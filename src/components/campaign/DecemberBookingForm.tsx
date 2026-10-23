@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, ImagePlus, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import type { CabinetPhoto } from "../../../supabase/functions/submit-lead/campaignPhoto";
 import { CAMPAIGN, CAMPAIGN_SCOPES } from "@/content/decemberCleanup";
 import {
   buildCampaignPayload,
   emptyCampaignForm,
   isCampaignOpen,
   minRequestDate,
+  readCampaignPhoto,
   validateCampaignForm,
   type CampaignFieldErrors,
   type CampaignFormValues,
@@ -40,6 +43,13 @@ const DecemberBookingForm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<CabinetPhoto | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [photoReading, setPhotoReading] = useState(false);
+  const [notificationStatus, setNotificationStatus] = useState<string | undefined>();
+  const photoInput = useRef<HTMLInputElement | null>(null);
+  const photoVersion = useRef(0);
   const startedAt = useRef<number | null>(null);
   // Synchronous lock: blocks duplicate submits even before state re-renders.
   const inFlight = useRef(false);
@@ -50,6 +60,27 @@ const DecemberBookingForm = () => {
   useEffect(() => {
     captureAttribution();
   }, []);
+
+  useEffect(() => () => { if (photoPreview) URL.revokeObjectURL(photoPreview); }, [photoPreview]);
+
+  const choosePhoto = async (file?: File) => {
+    if (!file || inFlight.current) return;
+    const version = ++photoVersion.current;
+    setPhotoReading(true);
+    setPhotoError(null);
+    setPhoto(null);
+    setPhotoPreview(null);
+    try {
+      const validated = await readCampaignPhoto(file);
+      if (version !== photoVersion.current) return;
+      setPhoto(validated);
+      setPhotoPreview(URL.createObjectURL(file));
+    } catch (error) {
+      if (version === photoVersion.current) setPhotoError(error instanceof Error ? error.message : "Could not read the photo. Please try again.");
+    } finally {
+      if (version === photoVersion.current) setPhotoReading(false);
+    }
+  };
 
   const set = <K extends keyof CampaignFormValues>(key: K, value: CampaignFormValues[K]) => {
     if (startedAt.current === null) startedAt.current = Date.now();
@@ -73,13 +104,19 @@ const DecemberBookingForm = () => {
   };
 
   const next = () => {
+    if (step === 0 && (!photo || photoReading)) {
+      setPhotoError("Add one cabinet photo before continuing.");
+      validateStep(step);
+      return;
+    }
     if (validateStep(step)) setStep((s) => Math.min(s + 1, STEPS.length - 1));
   };
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (inFlight.current || submitted) return;
+    if (inFlight.current || submitted || photoReading) return;
+    if (!photo) { setPhotoError("Add one cabinet photo before requesting a quote."); setStep(0); return; }
     const all = validateCampaignForm(values);
     setErrors(all);
     if (Object.keys(all).length) {
@@ -92,10 +129,10 @@ const DecemberBookingForm = () => {
     setFormError(null);
     inFlight.current = true;
     setSubmitting(true);
-    const payload = buildCampaignPayload(values, getAttribution(), {
+    const payload = { ...buildCampaignPayload(values, getAttribution(), {
       pagePath: `${location.pathname}${location.search}`,
       formStartedAt: startedAt.current,
-    });
+    }), cabinet_photo: photo };
     const result = await submitLead(payload);
     inFlight.current = false;
     setSubmitting(false);
@@ -106,7 +143,7 @@ const DecemberBookingForm = () => {
         result.error ??
           `Something went wrong. Please call ${CONTACT.phoneDisplay} or WhatsApp ${CONTACT.whatsappDisplay}.`,
       );
-      toast.error("We could not send your booking request — please try again or call us.");
+      toast.error("We could not store your photo quote request — please try again or call us.");
       return;
     }
 
@@ -121,7 +158,8 @@ const DecemberBookingForm = () => {
       });
     }
     setSubmitted(true);
-    toast.success("Thanks — your booking request is with us.");
+    setNotificationStatus(result.notificationStatus);
+    toast.success("Thanks — your cabinet photo quote request is stored.");
   };
 
   const inputCls =
@@ -144,9 +182,9 @@ const DecemberBookingForm = () => {
   if (submitted) {
     return (
       <div role="status" aria-live="polite" className="border border-accent/30 bg-card p-8 rounded-sm">
-        <p className="text-[11px] uppercase tracking-[0.28em] text-accent mb-4">Booking request received</p>
+        <p className="text-[11px] uppercase tracking-[0.28em] text-accent mb-4">Photo quote request stored</p>
         <h3 className="font-display font-light text-2xl md:text-3xl leading-snug text-foreground">
-          Thank you — we have your December request.
+          Thank you — we have your cabinet photo and quote request.
         </h3>
         <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
           Siyakha will contact you to confirm scope, quotation and availability. If it is urgent, call{" "}
@@ -155,6 +193,13 @@ const DecemberBookingForm = () => {
           </a>{" "}
           or WhatsApp {CONTACT.whatsappDisplay}.
         </p>
+        {notificationStatus !== "sent" && (
+          <p className="mt-3 text-sm text-muted-foreground">
+            Your request and photo are saved, but email notification to the full quote team is not confirmed.
+            Please call or WhatsApp us if you need prompt assistance.
+          </p>
+        )}
+        {notificationStatus === "sent" && <p className="mt-3 text-xs text-muted-foreground">Quote-team notifications accepted for sending; inbox delivery is not confirmed.</p>}
       </div>
     );
   }
@@ -179,7 +224,7 @@ const DecemberBookingForm = () => {
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-6">
       <div aria-live="polite" className="sr-only">
-        {submitting ? "Sending your booking request" : ""}
+        {submitting ? "Sending your photo quote request" : ""}
       </div>
 
       {/* Step indicator */}
@@ -292,6 +337,25 @@ const DecemberBookingForm = () => {
               {...aria("city")}
             />
             {errorText("city")}
+          </div>
+          <div>
+            <label className={labelCls} htmlFor="dec-photo">Cabinet photo *</label>
+            <input ref={photoInput} id="dec-photo" type="file" accept="image/jpeg,image/png,image/webp"
+              disabled={submitting || photoReading} className="sr-only" aria-describedby="dec-photo-help"
+              onChange={(event) => { void choosePhoto(event.target.files?.[0]); event.target.value = ""; }} />
+            <Button type="button" variant="outline" disabled={submitting || photoReading}
+              onClick={() => photoInput.current?.click()} className="min-h-[48px] h-auto whitespace-normal rounded-sm">
+              {photoReading ? <Loader2 className="animate-spin" /> : <ImagePlus />}
+              {photoReading ? "Checking photo…" : photo ? "Replace cabinet photo" : "Choose cabinet photo"}
+            </Button>
+            <p id="dec-photo-help" className="mt-2 text-xs text-muted-foreground">One JPG, PNG or WebP, up to 5MB. Choose from your camera or photo library.</p>
+            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{CAMPAIGN.photoPrivacy}</p>
+            {photoPreview && <div className="mt-3 flex items-start gap-3">
+              <img src={photoPreview} alt="Selected cabinet photo" className="h-36 w-48 max-w-[70%] object-contain border border-border rounded-sm" />
+              <Button type="button" variant="outline" size="icon" aria-label="Remove cabinet photo" title="Remove cabinet photo" disabled={submitting}
+                onClick={() => { photoVersion.current++; setPhoto(null); setPhotoPreview(null); setPhotoError(null); }}><Trash2 /></Button>
+            </div>}
+            {photoError && <p role="alert" className="mt-2 text-xs text-destructive">{photoError}</p>}
           </div>
         </fieldset>
       )}
@@ -449,8 +513,8 @@ const DecemberBookingForm = () => {
               {...aria("consent")}
             />
             <span>
-              I consent to Siyakha Technology contacting me about this booking request and storing these
-              details for that purpose (POPIA).
+              I consent to my details, request and cabinet photo being stored and sent to the Siyakha quote team at
+              nikita@siyakhatechnology.co.za and Ben@siyakhatechnology.co.za for assessment and contact about my quote (POPIA).
             </span>
           </label>
           {errorText("consent")}
@@ -465,32 +529,32 @@ const DecemberBookingForm = () => {
 
       <div className="flex items-center gap-3">
         {step > 0 && (
-          <button
+          <Button
             type="button"
             onClick={back}
             disabled={submitting}
             className="inline-flex items-center gap-2 border border-foreground/30 text-foreground px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-foreground/[0.06] transition-colors min-h-[48px] rounded-sm disabled:opacity-50"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back
-          </button>
+          </Button>
         )}
         {step < STEPS.length - 1 ? (
-          <button
+          <Button
             type="button"
             onClick={next}
             className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-8 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-accent-hover transition-colors min-h-[48px] rounded-sm"
           >
             Continue <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || photoReading}
             className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-8 py-4 text-[12px] uppercase tracking-[0.24em] hover:bg-accent-hover transition-colors disabled:opacity-50 min-h-[48px] rounded-sm"
           >
             {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
             {submitting ? "Sending…" : CAMPAIGN.cta}
-          </button>
+          </Button>
         )}
       </div>
       {step === STEPS.length - 1 && (
