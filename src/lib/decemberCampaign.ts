@@ -19,6 +19,7 @@ export interface CampaignFormValues {
   phone: string;
   notes: string;
   consent: boolean;
+  honeypot: string;
 }
 
 export const emptyCampaignForm = (): CampaignFormValues => ({
@@ -34,6 +35,7 @@ export const emptyCampaignForm = (): CampaignFormValues => ({
   phone: "",
   notes: "",
   consent: false,
+  honeypot: "",
 });
 
 export type CampaignFieldErrors = Partial<Record<keyof CampaignFormValues, string>>;
@@ -42,10 +44,28 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_RE = /^[+\d][\d\s()-]{6,25}$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
-export const isDecemberDate = (value: string): boolean =>
-  DATE_RE.test(value) && value >= CAMPAIGN.minDate && value <= CAMPAIGN.maxDate;
+/** Today's date in Africa/Johannesburg (SAST, UTC+2), as YYYY-MM-DD. */
+export const todaySAST = (now: Date = new Date()): string =>
+  now.toLocaleDateString("en-CA", { timeZone: "Africa/Johannesburg" });
 
-export function validateCampaignForm(values: CampaignFormValues): CampaignFieldErrors {
+/** True while December 2026 booking requests can still be made. */
+export const isCampaignOpen = (today: string = todaySAST()): boolean => today <= CAMPAIGN.maxDate;
+
+/** Earliest requestable date: 1 December 2026, or today once December begins. */
+export const minRequestDate = (today: string = todaySAST()): string =>
+  today > CAMPAIGN.minDate ? today : CAMPAIGN.minDate;
+
+/** A date inside December 2026 that is not in the past (SAST). */
+export const isRequestableDate = (value: string, today: string = todaySAST()): boolean =>
+  DATE_RE.test(value) &&
+  value >= CAMPAIGN.minDate &&
+  value <= CAMPAIGN.maxDate &&
+  value >= minRequestDate(today);
+
+export function validateCampaignForm(
+  values: CampaignFormValues,
+  today: string = todaySAST(),
+): CampaignFieldErrors {
   const errors: CampaignFieldErrors = {};
 
   if (!(CAMPAIGN_SCOPES as readonly string[]).includes(values.scope)) {
@@ -63,16 +83,20 @@ export function validateCampaignForm(values: CampaignFormValues): CampaignFieldE
   if (!values.city.trim()) errors.city = "Tell us the city or suburb.";
   else if (values.city.trim().length > 120) errors.city = "City / suburb is too long.";
 
-  if (!values.preferred_date) {
-    errors.preferred_date = "Request a preferred December 2026 date.";
-  } else if (!isDecemberDate(values.preferred_date)) {
-    errors.preferred_date = `Choose a date in ${CAMPAIGN.monthLabel} (1–31 December).`;
-  }
-  if (values.alternate_date) {
-    if (!isDecemberDate(values.alternate_date)) {
-      errors.alternate_date = `Choose a date in ${CAMPAIGN.monthLabel} (1–31 December).`;
-    } else if (values.alternate_date === values.preferred_date) {
-      errors.alternate_date = "Pick a different day from your preferred date.";
+  if (!isCampaignOpen(today)) {
+    errors.preferred_date = "December 2026 bookings have closed.";
+  } else {
+    if (!values.preferred_date) {
+      errors.preferred_date = "Request a preferred December 2026 date.";
+    } else if (!isRequestableDate(values.preferred_date, today)) {
+      errors.preferred_date = `Choose an upcoming date in ${CAMPAIGN.monthLabel}.`;
+    }
+    if (values.alternate_date) {
+      if (!isRequestableDate(values.alternate_date, today)) {
+        errors.alternate_date = `Choose an upcoming date in ${CAMPAIGN.monthLabel}.`;
+      } else if (values.alternate_date === values.preferred_date) {
+        errors.alternate_date = "Pick a different day from your preferred date.";
+      }
     }
   }
 
@@ -93,8 +117,8 @@ export function validateCampaignForm(values: CampaignFormValues): CampaignFieldE
   return errors;
 }
 
-export const isCampaignFormValid = (values: CampaignFormValues) =>
-  Object.keys(validateCampaignForm(values)).length === 0;
+export const isCampaignFormValid = (values: CampaignFormValues, today?: string) =>
+  Object.keys(validateCampaignForm(values, today)).length === 0;
 
 const scopeLabel = (scope: string): CampaignScope =>
   (CAMPAIGN_SCOPES as readonly string[]).includes(scope) ? (scope as CampaignScope) : "Both — clean-up and maintenance";
@@ -142,7 +166,7 @@ export function buildCampaignPayload(
       timeline: `Requested date: ${values.preferred_date} (December 2026, not confirmed)`,
       project_description: buildCampaignDescription(values),
       consent: values.consent,
-      honeypot: "",
+      honeypot: values.honeypot,
     },
     { ...attribution, source: CAMPAIGN.leadSource },
     extra,
