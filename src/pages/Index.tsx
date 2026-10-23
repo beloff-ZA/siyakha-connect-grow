@@ -1,6 +1,10 @@
 import { useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import Header from "@/components/Header";
 import HomeHero from "@/components/site/HomeHero";
+import DecemberPopup from "@/components/campaign/DecemberPopup";
+import { CAMPAIGN } from "@/content/decemberCleanup";
 import DivisionsBand from "@/components/site/DivisionsBand";
 import IndustriesBand from "@/components/site/IndustriesBand";
 import TrustBand from "@/components/site/TrustBand";
@@ -123,6 +127,28 @@ const Index = () => {
       <Header />
       <main>
         <HomeHero />
+        {/* December 2026 campaign banner — reopen path for the popup */}
+        <section className="border-y border-border bg-secondary/60">
+          <div className="container mx-auto px-6 lg:px-10 py-8 md:py-10 flex flex-col md:flex-row md:items-center gap-5 md:gap-10">
+            <div className="flex-1">
+              <p className="text-[11px] uppercase tracking-[0.28em] text-accent mb-2">
+                {CAMPAIGN.monthLabel} · Draft offer
+              </p>
+              <p className="font-display font-light text-2xl md:text-3xl tracking-[-0.02em] text-foreground leading-tight">
+                {CAMPAIGN.phrase}
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground max-w-xl">
+                {CAMPAIGN.offerHeadline} {CAMPAIGN.offerExclusion}
+              </p>
+            </div>
+            <Link
+              to={CAMPAIGN.path}
+              className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-accent-hover transition-colors min-h-[48px] rounded-sm self-start md:self-center"
+            >
+              {CAMPAIGN.cta} <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
         <DivisionsBand />
         <IndustriesBand />
         <TrustBand />
@@ -132,6 +158,7 @@ const Index = () => {
       </main>
       <Footer />
       <StickyContactBar />
+      <DecemberPopup />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationJson) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJson) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJson) }} />

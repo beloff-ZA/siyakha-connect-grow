@@ -116,7 +116,10 @@ const DecemberCleanup = () => {
 
         {/* Draft offer card */}
         <section className="container mx-auto px-6 lg:px-10 -mt-10 relative z-20">
-          <div className="max-w-3xl mx-auto bg-card border border-accent/25 rounded-sm p-6 md:p-8 shadow-medium">
+          <div
+            className="max-w-3xl mx-auto bg-card border border-accent/25 rounded-sm p-6 md:p-8"
+            style={{ boxShadow: "var(--shadow-medium)" }}
+          >
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent mb-3">December offer — draft</p>
             <p className="font-display text-xl md:text-2xl text-foreground leading-snug">
               {CAMPAIGN.offerHeadline}

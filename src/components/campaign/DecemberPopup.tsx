@@ -66,7 +66,8 @@ const DecemberPopup = () => {
         role="dialog"
         aria-modal="true"
         aria-labelledby="dec-popup-title"
-        className="relative w-full max-w-lg bg-background border border-border rounded-sm overflow-hidden shadow-strong motion-safe:animate-[fadeIn_0.5s_ease-out]"
+        className="relative w-full max-w-lg bg-background border border-border rounded-sm overflow-hidden motion-safe:animate-[fadeIn_0.5s_ease-out]"
+        style={{ boxShadow: "var(--shadow-strong)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
