@@ -4,6 +4,13 @@ export const REQUEST_MAX_BYTES = 7_050_000;
 export const CAMPAIGN_SOURCE = "december-cleanup-2026";
 export interface CabinetPhoto { mime: string; base64: string }
 
+export function assertCampaignEnvelope(raw: unknown): void {
+  if (!raw || typeof raw !== "object") throw new Error("Invalid quote request.");
+  if (["to", "cc", "bcc", "recipients", "reply_to", "photo_path", "photo_url"].some(key => key in raw)) {
+    throw new Error("Recipients and photo storage are managed by Siyakha.");
+  }
+}
+
 export function validatePhotoBytes(bytes: Uint8Array, mime: string): string {
   if (!bytes.length || bytes.length > PHOTO_MAX_BYTES) throw new Error("Choose one cabinet photo up to 5MB.");
   const matches = (offset: number, values: number[]) => values.every((v, i) => bytes[offset + i] === v);

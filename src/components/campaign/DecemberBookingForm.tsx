@@ -63,6 +63,10 @@ const DecemberBookingForm = () => {
 
   useEffect(() => () => { if (photoPreview) URL.revokeObjectURL(photoPreview); }, [photoPreview]);
 
+  useEffect(() => {
+    if (submitted) document.getElementById("book")?.scrollIntoView({ behavior: "auto", block: "start" });
+  }, [submitted]);
+
   const choosePhoto = async (file?: File) => {
     if (!file || inFlight.current) return;
     const version = ++photoVersion.current;
@@ -143,7 +147,7 @@ const DecemberBookingForm = () => {
         result.error ??
           `Something went wrong. Please call ${CONTACT.phoneDisplay} or WhatsApp ${CONTACT.whatsappDisplay}.`,
       );
-      toast.error("We could not store your photo quote request — please try again or call us.");
+      toast.error("We could not store your photo quote request — please try again or call us.", { id: "december-photo-quote" });
       return;
     }
 
@@ -159,7 +163,7 @@ const DecemberBookingForm = () => {
     }
     setSubmitted(true);
     setNotificationStatus(result.notificationStatus);
-    toast.success("Thanks — your cabinet photo quote request is stored.");
+    toast.success("Thanks — your cabinet photo quote request is stored.", { id: "december-photo-quote" });
   };
 
   const inputCls =

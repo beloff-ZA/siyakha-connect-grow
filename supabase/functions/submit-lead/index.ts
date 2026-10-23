@@ -14,7 +14,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
-import { CAMPAIGN_SOURCE, PHOTO_MAX_BYTES, readBoundedJson } from "./campaignPhoto.ts";
+import { assertCampaignEnvelope, CAMPAIGN_SOURCE, PHOTO_MAX_BYTES, readBoundedJson } from "./campaignPhoto.ts";
 import { submitCampaignQuote } from "./campaignQuote.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
@@ -182,9 +182,9 @@ serve(async (req: Request) => {
     }
     const input = parsed.data;
     const campaign = input.source === CAMPAIGN_SOURCE;
-    if (campaign && raw && typeof raw === "object" &&
-      ["to", "cc", "bcc", "recipients", "reply_to", "photo_path", "photo_url"].some(key => key in raw)) {
-      return json({ error: "Recipients and photo storage are managed by Siyakha." }, 400);
+    if (campaign) {
+      try { assertCampaignEnvelope(raw); }
+      catch { return json({ error: "Recipients and photo storage are managed by Siyakha." }, 400); }
     }
     if (campaign && (!input.cabinet_photo || input.service !== "Office Networking & Structured Cabling")) {
       return json({ error: "A cabinet photo is required for this quote request." }, 400);

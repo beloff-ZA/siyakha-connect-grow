@@ -53,7 +53,8 @@ export async function submitCampaignQuote(row: Record<string, unknown>, photo: C
       } catch { /* Continue independently; never log photos/contact data. */ }
     }
     notificationStatus = accepted === 2 ? "sent" : accepted === 1 ? "partial" : "failed";
-    await deps.updateNotification(lead.id, notificationStatus);
+    try { await deps.updateNotification(lead.id, notificationStatus); }
+    catch { notificationStatus = "unknown"; } // Persistence succeeded; do not misreport a storage failure.
   } else if (!deps.emailConfigured) notificationStatus = "skipped";
   return { lead_id: lead.id, duplicate, status: "stored", photo_stored: true,
     notification_status: notificationStatus, email_delivered: false,
