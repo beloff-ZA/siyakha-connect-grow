@@ -18,7 +18,23 @@ export function validatePhotoBytes(bytes: Uint8Array, mime: string): string {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   if (mime === "image/png" && bytes.length >= 45 && matches(0, [137,80,78,71,13,10,26,10]) &&
     view.getUint32(8) === 13 && text(12, 4) === "IHDR" && view.getUint32(16) > 0 && view.getUint32(20) > 0 &&
-    matches(bytes.length - 12, [0,0,0,0,73,69,78,68,174,66,96,130])) return "png";
+    matches(bytes.length - 12, [0,0,0,0,73,69,78,68,174,66,96,130])) {
+    let offset = 8, image = false;
+    while (offset + 12 <= bytes.length) {
+      const size = view.getUint32(offset), kind = text(offset + 4, 4);
+      if (offset + 12 + size > bytes.length) break;
+      // Validate every chunk checksum, not just PNG's opening/closing signatures.
+      let crc = 0xffffffff;
+      for (let i = offset + 4; i < offset + 8 + size; i++) {
+        crc ^= bytes[i];
+        for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+      }
+      if (((crc ^ 0xffffffff) >>> 0) !== view.getUint32(offset + 8 + size)) break;
+      if (kind === "IDAT" && size > 0) image = true;
+      offset += 12 + size;
+    }
+    if (image && offset === bytes.length) return "png";
+  }
   if (mime === "image/jpeg" && bytes.length >= 20 && matches(0, [255,216,255]) &&
     matches(bytes.length - 2, [255,217])) {
     // Require a dimension-bearing frame and scan, not just a renamed signature.

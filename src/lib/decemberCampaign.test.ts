@@ -173,6 +173,14 @@ describe("submitLead transport contract (mocked)", () => {
     expect(result.ok).toBe(false);
   });
 
+  it("a photo quote requires confirmed photo storage as well as a lead ID", async () => {
+    const payload = { ...buildCampaignPayload(validForm(), {}), cabinet_photo: { mime: "image/png", base64: "mock" } };
+    invokeMock.mockResolvedValue({ data: { lead_id: "test-id", status: "stored" }, error: null });
+    expect((await submitLead(payload)).ok).toBe(false);
+    invokeMock.mockResolvedValue({ data: { lead_id: "test-id", photo_stored: true, notification_status: "failed", email_delivered: false }, error: null });
+    expect(await submitLead(payload)).toMatchObject({ ok: true, photoStored: true, emailDelivered: false, notificationStatus: "failed" });
+  });
+
   it("surfaces backend failures without marking success", async () => {
     invokeMock.mockResolvedValue({ data: null, error: new Error("FunctionsHttpError: 500") });
     const result = await submitLead(buildCampaignPayload(validForm(), {}));

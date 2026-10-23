@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { decodeCabinetPhoto, readBoundedJson, PHOTO_MAX_BYTES, REQUEST_MAX_BYTES } from "../../supabase/functions/submit-lead/campaignPhoto";
+import { assertCampaignEnvelope, decodeCabinetPhoto, readBoundedJson, PHOTO_MAX_BYTES, REQUEST_MAX_BYTES } from "../../supabase/functions/submit-lead/campaignPhoto";
 import { submitCampaignQuote, type QuoteDependencies } from "../../supabase/functions/submit-lead/campaignQuote";
 import { buildLeadEmailRequests } from "../../supabase/functions/submit-lead/leadEmail";
 const photos = {"png": {"mime": "image/png", "base64": "iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAIAAADZSiLoAAAAF0lEQVR4nGMUCdBgYGBgYGBgYoABBAsAD7QAkhTqwv0AAAAASUVORK5CYII="}, "jpeg": {"mime": "image/jpeg", "base64": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAADAAMDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDzmiiiuY8c/9k="}, "webp": {"mime": "image/webp", "base64": "UklGRjIAAABXRUJQVlA4ICYAAABwAQCdASoDAAMAAUAmJZgCdAFAAAD++AQ/BskU3I/8B/Ev7AsQAA=="}};
@@ -17,6 +17,17 @@ const setup = () => {
   return deps;
 };
 describe("cabinet image safety", () => {
+  it("rejects every public recipient, URL or path injection", () => {
+    for (const key of ["to", "cc", "bcc", "recipients", "reply_to", "photo_url", "photo_path"]) {
+      expect(() => assertCampaignEnvelope({ ...row, [key]: "attacker" })).toThrow();
+    }
+    expect(() => assertCampaignEnvelope(row)).not.toThrow();
+  });
+  it("rejects a corrupt PNG with intact opening and closing signatures", () => {
+    const bytes = Uint8Array.from(atob(photos.png.base64), c => c.charCodeAt(0));
+    bytes[45] ^= 1;
+    expect(() => decodeCabinetPhoto({ ...photos.png, base64: btoa(String.fromCharCode(...bytes)) })).toThrow();
+  });
   it.each(Object.values(photos))("accepts genuine bounded $mime bytes", photo => {
     expect(decodeCabinetPhoto(photo).bytes.length).toBeGreaterThan(0);
   });
