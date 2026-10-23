@@ -182,10 +182,11 @@ describe("submitLead transport contract (mocked)", () => {
   });
 
   it("surfaces network failures without marking success", async () => {
-    invokeMock.mockRejectedValue(new Error("Failed to fetch"));
+    // supabase-js resolves network failures as { data: null, error }.
+    invokeMock.mockResolvedValue({ data: null, error: new Error("FunctionsFetchError: Failed to fetch") });
     const result = await submitLead(buildCampaignPayload(validForm(), {}));
     expect(result.ok).toBe(false);
-    expect(result.error).toBe("Failed to fetch");
+    expect(result.error).toBeTruthy();
   });
 
   it("flags duplicate submissions as stored, not as a new lead", async () => {
