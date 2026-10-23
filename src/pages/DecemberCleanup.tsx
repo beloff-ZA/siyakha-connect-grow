@@ -74,7 +74,7 @@ const DecemberCleanup = () => {
           <div className="absolute inset-0">
             <img
               src={rackPoster.url}
-              alt="Professionally managed server cabinet with clean cabling"
+              alt="Server cabinet with organised network cabling"
               className="absolute inset-0 h-full w-full object-cover"
               decoding="async"
             />

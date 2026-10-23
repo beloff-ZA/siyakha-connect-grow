@@ -6,6 +6,8 @@ import { CAMPAIGN, CAMPAIGN_SCOPES } from "@/content/decemberCleanup";
 import {
   buildCampaignPayload,
   emptyCampaignForm,
+  isCampaignOpen,
+  minRequestDate,
   validateCampaignForm,
   type CampaignFieldErrors,
   type CampaignFormValues,
@@ -39,6 +41,11 @@ const DecemberBookingForm = () => {
   const [submitted, setSubmitted] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const startedAt = useRef<number | null>(null);
+  // Synchronous lock: blocks duplicate submits even before state re-renders.
+  const inFlight = useRef(false);
+
+  const minDate = minRequestDate();
+  const campaignOpen = isCampaignOpen();
 
   useEffect(() => {
     captureAttribution();
@@ -72,7 +79,7 @@ const DecemberBookingForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submitting || submitted) return;
+    if (inFlight.current || submitted) return;
     const all = validateCampaignForm(values);
     setErrors(all);
     if (Object.keys(all).length) {
@@ -83,15 +90,18 @@ const DecemberBookingForm = () => {
       return;
     }
     setFormError(null);
+    inFlight.current = true;
     setSubmitting(true);
     const payload = buildCampaignPayload(values, getAttribution(), {
       pagePath: `${location.pathname}${location.search}`,
       formStartedAt: startedAt.current,
     });
     const result = await submitLead(payload);
+    inFlight.current = false;
     setSubmitting(false);
 
     if (!result.ok) {
+      // Values stay in state — nothing is lost on API or network failure.
       setFormError(
         result.error ??
           `Something went wrong. Please call ${CONTACT.phoneDisplay} or WhatsApp ${CONTACT.whatsappDisplay}.`,
@@ -139,12 +149,28 @@ const DecemberBookingForm = () => {
           Thank you — we have your December request.
         </h3>
         <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-          {CAMPAIGN.ctaFollow} {CONTACT.ownerName} will reply personally within one business day. If it is
-          urgent, call{" "}
+          Siyakha will contact you to confirm scope, quotation and availability. If it is urgent, call{" "}
           <a className="underline" href={`tel:${CONTACT.phoneE164}`}>
             {CONTACT.phoneDisplay}
           </a>{" "}
           or WhatsApp {CONTACT.whatsappDisplay}.
+        </p>
+      </div>
+    );
+  }
+
+  if (!campaignOpen) {
+    return (
+      <div className="border border-border bg-card p-8 rounded-sm">
+        <h3 className="font-display font-light text-2xl leading-snug text-foreground">
+          December 2026 bookings have closed.
+        </h3>
+        <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+          We still handle cabinet clean-ups and network maintenance year-round — call{" "}
+          <a className="underline" href={`tel:${CONTACT.phoneE164}`}>
+            {CONTACT.phoneDisplay}
+          </a>{" "}
+          or WhatsApp {CONTACT.whatsappDisplay} and we'll help.
         </p>
       </div>
     );
@@ -185,24 +211,29 @@ const DecemberBookingForm = () => {
             <p className={labelCls} id="dec-scope-label">
               What do you need done? *
             </p>
+            {/* Native radio inputs: full keyboard support (arrows move selection). */}
             <div role="radiogroup" aria-labelledby="dec-scope-label" className="grid gap-2 sm:grid-cols-3">
               {CAMPAIGN_SCOPES.map((scope) => {
                 const active = values.scope === scope;
                 return (
-                  <button
+                  <label
                     key={scope}
-                    type="button"
-                    role="radio"
-                    aria-checked={active}
-                    onClick={() => set("scope", scope)}
-                    className={`border px-4 py-4 text-left text-sm rounded-sm transition-colors min-h-[56px] ${
+                    className={`relative flex items-center border px-4 py-4 text-left text-sm rounded-sm transition-colors min-h-[56px] cursor-pointer has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring ${
                       active
                         ? "border-accent bg-accent/5 text-foreground"
                         : "border-border bg-card text-muted-foreground hover:border-foreground/30"
                     }`}
                   >
+                    <input
+                      type="radio"
+                      name="dec-scope"
+                      value={scope}
+                      checked={active}
+                      onChange={() => set("scope", scope)}
+                      className="sr-only"
+                    />
                     {scope}
-                  </button>
+                  </label>
                 );
               })}
             </div>
@@ -279,7 +310,7 @@ const DecemberBookingForm = () => {
               <input
                 id="dec-preferred"
                 type="date"
-                min={CAMPAIGN.minDate}
+                min={minDate}
                 max={CAMPAIGN.maxDate}
                 value={values.preferred_date}
                 onChange={(e) => set("preferred_date", e.target.value)}
@@ -295,7 +326,7 @@ const DecemberBookingForm = () => {
               <input
                 id="dec-alternate"
                 type="date"
-                min={CAMPAIGN.minDate}
+                min={minDate}
                 max={CAMPAIGN.maxDate}
                 value={values.alternate_date}
                 onChange={(e) => set("alternate_date", e.target.value)}
@@ -396,6 +427,19 @@ const DecemberBookingForm = () => {
             {errorText("notes")}
           </div>
 
+          {/* Honeypot — hidden from users and screen readers, filled only by bots. */}
+          <div className="hidden" aria-hidden="true">
+            <label htmlFor="dec-website-url">Website</label>
+            <input
+              id="dec-website-url"
+              name="website_url"
+              tabIndex={-1}
+              autoComplete="off"
+              value={values.honeypot}
+              onChange={(e) => setValues((prev) => ({ ...prev, honeypot: e.target.value }))}
+            />
+          </div>
+
           <label className="flex items-start gap-3 text-[13px] text-muted-foreground leading-relaxed cursor-pointer">
             <input
               type="checkbox"
@@ -406,7 +450,7 @@ const DecemberBookingForm = () => {
             />
             <span>
               I consent to Siyakha Technology contacting me about this booking request and storing these
-              details for that purpose (POPIA). We never sell or share your information.
+              details for that purpose (POPIA).
             </span>
           </label>
           {errorText("consent")}
