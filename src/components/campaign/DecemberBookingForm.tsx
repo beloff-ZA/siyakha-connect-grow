@@ -1,0 +1,462 @@
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { toast } from "sonner";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { CAMPAIGN, CAMPAIGN_SCOPES } from "@/content/decemberCleanup";
+import {
+  buildCampaignPayload,
+  emptyCampaignForm,
+  validateCampaignForm,
+  type CampaignFieldErrors,
+  type CampaignFormValues,
+} from "@/lib/decemberCampaign";
+import { LEAD_LOCATIONS } from "@/lib/leadForm";
+import { submitLead } from "@/lib/leadsApi";
+import { captureAttribution, getAttribution } from "@/lib/attribution";
+import { trackEvent } from "@/lib/analytics";
+import { CONTACT } from "@/lib/contact";
+
+/**
+ * Guided December 2026 booking-request form. Three short steps; values live
+ * only in component state (never localStorage) so errors and back navigation
+ * preserve everything without persisting PII. Success shows only after the
+ * server confirms a stored lead.
+ */
+const STEPS = ["Scope & site", "Preferred dates", "Your details"] as const;
+
+const STEP_FIELDS: Record<number, (keyof CampaignFormValues)[]> = {
+  0: ["scope", "rack_count", "location", "city"],
+  1: ["preferred_date", "alternate_date"],
+  2: ["full_name", "company", "work_email", "phone", "notes", "consent"],
+};
+
+const DecemberBookingForm = () => {
+  const location = useLocation();
+  const [step, setStep] = useState(0);
+  const [values, setValues] = useState<CampaignFormValues>(emptyCampaignForm);
+  const [errors, setErrors] = useState<CampaignFieldErrors>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const startedAt = useRef<number | null>(null);
+
+  useEffect(() => {
+    captureAttribution();
+  }, []);
+
+  const set = <K extends keyof CampaignFormValues>(key: K, value: CampaignFormValues[K]) => {
+    if (startedAt.current === null) startedAt.current = Date.now();
+    setValues((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: undefined }));
+  };
+
+  const validateStep = (index: number): boolean => {
+    const all = validateCampaignForm(values);
+    const keys = STEP_FIELDS[index];
+    const stepErrors: CampaignFieldErrors = {};
+    keys.forEach((k) => {
+      if (all[k]) stepErrors[k] = all[k];
+    });
+    setErrors((prev) => {
+      const next = { ...prev };
+      keys.forEach((k) => delete next[k]);
+      return { ...next, ...stepErrors };
+    });
+    return Object.keys(stepErrors).length === 0;
+  };
+
+  const next = () => {
+    if (validateStep(step)) setStep((s) => Math.min(s + 1, STEPS.length - 1));
+  };
+  const back = () => setStep((s) => Math.max(s - 1, 0));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (submitting || submitted) return;
+    const all = validateCampaignForm(values);
+    setErrors(all);
+    if (Object.keys(all).length) {
+      setFormError("Please correct the highlighted fields.");
+      // Jump back to the first step that has an error.
+      const firstBad = STEPS.findIndex((_, i) => STEP_FIELDS[i].some((k) => all[k]));
+      if (firstBad >= 0) setStep(firstBad);
+      return;
+    }
+    setFormError(null);
+    setSubmitting(true);
+    const payload = buildCampaignPayload(values, getAttribution(), {
+      pagePath: `${location.pathname}${location.search}`,
+      formStartedAt: startedAt.current,
+    });
+    const result = await submitLead(payload);
+    setSubmitting(false);
+
+    if (!result.ok) {
+      setFormError(
+        result.error ??
+          `Something went wrong. Please call ${CONTACT.phoneDisplay} or WhatsApp ${CONTACT.whatsappDisplay}.`,
+      );
+      toast.error("We could not send your booking request — please try again or call us.");
+      return;
+    }
+
+    if (!result.duplicate) {
+      trackEvent("generate_lead", {
+        lead_id: result.leadId,
+        service: CAMPAIGN.service,
+        lead_location: values.location,
+        timeline: values.preferred_date,
+        currency: "ZAR",
+        value: 0,
+      });
+    }
+    setSubmitted(true);
+    toast.success("Thanks — your booking request is with us.");
+  };
+
+  const inputCls =
+    "w-full border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none transition-colors min-h-[44px] rounded-sm";
+  const selectCls = `${inputCls} [color-scheme:light]`;
+  const labelCls = "block text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-2";
+
+  const errorText = (key: keyof CampaignFormValues) =>
+    errors[key] ? (
+      <p id={`dec-${key}-error`} role="alert" className="mt-1 text-xs text-destructive">
+        {errors[key]}
+      </p>
+    ) : null;
+
+  const aria = (key: keyof CampaignFormValues) => ({
+    "aria-invalid": errors[key] ? true : undefined,
+    "aria-describedby": errors[key] ? `dec-${key}-error` : undefined,
+  });
+
+  if (submitted) {
+    return (
+      <div role="status" aria-live="polite" className="border border-accent/30 bg-card p-8 rounded-sm">
+        <p className="text-[11px] uppercase tracking-[0.28em] text-accent mb-4">Booking request received</p>
+        <h3 className="font-display font-light text-2xl md:text-3xl leading-snug text-foreground">
+          Thank you — we have your December request.
+        </h3>
+        <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+          {CAMPAIGN.ctaFollow} {CONTACT.ownerName} will reply personally within one business day. If it is
+          urgent, call{" "}
+          <a className="underline" href={`tel:${CONTACT.phoneE164}`}>
+            {CONTACT.phoneDisplay}
+          </a>{" "}
+          or WhatsApp {CONTACT.whatsappDisplay}.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} noValidate className="space-y-6">
+      <div aria-live="polite" className="sr-only">
+        {submitting ? "Sending your booking request" : ""}
+      </div>
+
+      {/* Step indicator */}
+      <ol className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+        {STEPS.map((label, i) => (
+          <li key={label} className="flex items-center gap-2">
+            <span
+              className={`inline-flex h-6 w-6 items-center justify-center rounded-full border text-[10px] ${
+                i === step
+                  ? "border-accent bg-accent text-accent-foreground"
+                  : i < step
+                    ? "border-accent/50 text-accent"
+                    : "border-border"
+              }`}
+              aria-current={i === step ? "step" : undefined}
+            >
+              {i + 1}
+            </span>
+            <span className={i === step ? "text-foreground" : "hidden sm:inline"}>{label}</span>
+            {i < STEPS.length - 1 && <span className="h-px w-4 bg-border" aria-hidden="true" />}
+          </li>
+        ))}
+      </ol>
+
+      {step === 0 && (
+        <fieldset className="space-y-5">
+          <legend className="sr-only">Scope and site</legend>
+          <div>
+            <p className={labelCls} id="dec-scope-label">
+              What do you need done? *
+            </p>
+            <div role="radiogroup" aria-labelledby="dec-scope-label" className="grid gap-2 sm:grid-cols-3">
+              {CAMPAIGN_SCOPES.map((scope) => {
+                const active = values.scope === scope;
+                return (
+                  <button
+                    key={scope}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => set("scope", scope)}
+                    className={`border px-4 py-4 text-left text-sm rounded-sm transition-colors min-h-[56px] ${
+                      active
+                        ? "border-accent bg-accent/5 text-foreground"
+                        : "border-border bg-card text-muted-foreground hover:border-foreground/30"
+                    }`}
+                  >
+                    {scope}
+                  </button>
+                );
+              })}
+            </div>
+            {errorText("scope")}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className={labelCls} htmlFor="dec-racks">
+                Cabinets / racks (optional)
+              </label>
+              <input
+                id="dec-racks"
+                inputMode="numeric"
+                value={values.rack_count}
+                onChange={(e) => set("rack_count", e.target.value)}
+                placeholder="e.g. 2"
+                className={inputCls}
+                {...aria("rack_count")}
+              />
+              {errorText("rack_count")}
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="dec-region">
+                Site region *
+              </label>
+              <select
+                id="dec-region"
+                value={values.location}
+                onChange={(e) => set("location", e.target.value)}
+                className={selectCls}
+                {...aria("location")}
+              >
+                <option value="">Select a region…</option>
+                {LEAD_LOCATIONS.map((l) => (
+                  <option key={l} value={l}>
+                    {l}
+                  </option>
+                ))}
+              </select>
+              {errorText("location")}
+            </div>
+          </div>
+
+          <div>
+            <label className={labelCls} htmlFor="dec-city">
+              City / suburb *
+            </label>
+            <input
+              id="dec-city"
+              value={values.city}
+              onChange={(e) => set("city", e.target.value)}
+              maxLength={120}
+              placeholder="e.g. Umhlanga, Sandton CBD"
+              className={inputCls}
+              {...aria("city")}
+            />
+            {errorText("city")}
+          </div>
+        </fieldset>
+      )}
+
+      {step === 1 && (
+        <fieldset className="space-y-5">
+          <legend className="sr-only">Preferred dates</legend>
+          <p className="text-sm text-muted-foreground leading-relaxed border border-border bg-secondary/60 px-4 py-3 rounded-sm">
+            {CAMPAIGN.dateDisclaimer}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className={labelCls} htmlFor="dec-preferred">
+                Preferred date — {CAMPAIGN.monthLabel} *
+              </label>
+              <input
+                id="dec-preferred"
+                type="date"
+                min={CAMPAIGN.minDate}
+                max={CAMPAIGN.maxDate}
+                value={values.preferred_date}
+                onChange={(e) => set("preferred_date", e.target.value)}
+                className={selectCls}
+                {...aria("preferred_date")}
+              />
+              {errorText("preferred_date")}
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="dec-alternate">
+                Alternate date (optional)
+              </label>
+              <input
+                id="dec-alternate"
+                type="date"
+                min={CAMPAIGN.minDate}
+                max={CAMPAIGN.maxDate}
+                value={values.alternate_date}
+                onChange={(e) => set("alternate_date", e.target.value)}
+                className={selectCls}
+                {...aria("alternate_date")}
+              />
+              {errorText("alternate_date")}
+            </div>
+          </div>
+        </fieldset>
+      )}
+
+      {step === 2 && (
+        <fieldset className="space-y-4">
+          <legend className="sr-only">Your details</legend>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className={labelCls} htmlFor="dec-name">
+                Full name *
+              </label>
+              <input
+                id="dec-name"
+                value={values.full_name}
+                onChange={(e) => set("full_name", e.target.value)}
+                maxLength={120}
+                autoComplete="name"
+                className={inputCls}
+                {...aria("full_name")}
+              />
+              {errorText("full_name")}
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="dec-company">
+                Company / organisation
+              </label>
+              <input
+                id="dec-company"
+                value={values.company}
+                onChange={(e) => set("company", e.target.value)}
+                maxLength={160}
+                autoComplete="organization"
+                className={inputCls}
+                {...aria("company")}
+              />
+              {errorText("company")}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className={labelCls} htmlFor="dec-email">
+                Email *
+              </label>
+              <input
+                id="dec-email"
+                type="email"
+                value={values.work_email}
+                onChange={(e) => set("work_email", e.target.value)}
+                maxLength={200}
+                autoComplete="email"
+                className={inputCls}
+                {...aria("work_email")}
+              />
+              {errorText("work_email")}
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="dec-phone">
+                Phone *
+              </label>
+              <input
+                id="dec-phone"
+                type="tel"
+                value={values.phone}
+                onChange={(e) => set("phone", e.target.value)}
+                maxLength={40}
+                autoComplete="tel"
+                className={inputCls}
+                {...aria("phone")}
+              />
+              {errorText("phone")}
+            </div>
+          </div>
+
+          <div>
+            <label className={labelCls} htmlFor="dec-notes">
+              Anything we should know? (optional)
+            </label>
+            <textarea
+              id="dec-notes"
+              rows={3}
+              value={values.notes}
+              onChange={(e) => set("notes", e.target.value)}
+              maxLength={1500}
+              placeholder="Access times, floor, current issues…"
+              className={`${inputCls} resize-none`}
+              {...aria("notes")}
+            />
+            {errorText("notes")}
+          </div>
+
+          <label className="flex items-start gap-3 text-[13px] text-muted-foreground leading-relaxed cursor-pointer">
+            <input
+              type="checkbox"
+              checked={values.consent}
+              onChange={(e) => set("consent", e.target.checked)}
+              className="mt-1 h-4 w-4 accent-accent"
+              {...aria("consent")}
+            />
+            <span>
+              I consent to Siyakha Technology contacting me about this booking request and storing these
+              details for that purpose (POPIA). We never sell or share your information.
+            </span>
+          </label>
+          {errorText("consent")}
+        </fieldset>
+      )}
+
+      {formError && (
+        <p role="alert" className="border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-foreground rounded-sm">
+          {formError}
+        </p>
+      )}
+
+      <div className="flex items-center gap-3">
+        {step > 0 && (
+          <button
+            type="button"
+            onClick={back}
+            disabled={submitting}
+            className="inline-flex items-center gap-2 border border-foreground/30 text-foreground px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-foreground/[0.06] transition-colors min-h-[48px] rounded-sm disabled:opacity-50"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back
+          </button>
+        )}
+        {step < STEPS.length - 1 ? (
+          <button
+            type="button"
+            onClick={next}
+            className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-8 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-accent-hover transition-colors min-h-[48px] rounded-sm"
+          >
+            Continue <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+        ) : (
+          <button
+            type="submit"
+            disabled={submitting}
+            className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-8 py-4 text-[12px] uppercase tracking-[0.24em] hover:bg-accent-hover transition-colors disabled:opacity-50 min-h-[48px] rounded-sm"
+          >
+            {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+            {submitting ? "Sending…" : CAMPAIGN.cta}
+          </button>
+        )}
+      </div>
+      {step === STEPS.length - 1 && (
+        <p className="text-xs text-muted-foreground">
+          {CAMPAIGN.ctaFollow} Prefer to talk? Call {CONTACT.phoneDisplay} or WhatsApp{" "}
+          {CONTACT.whatsappDisplay}.
+        </p>
+      )}
+    </form>
+  );
+};
+
+export default DecemberBookingForm;
