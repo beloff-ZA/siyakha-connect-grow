@@ -1,5 +1,10 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## December campaign photo quotes
+- [x] Extend approved quote copy and required private cabinet-photo picker.
+- [x] Extend existing endpoint with validated private storage, campaign-only recipients and retry-safe notifications.
+- [x] Mock outbound QA and inspect existing security read-only; deployment/publication and real delivery checks remain intentionally deferred for review.
+
 ## Done (16 Sep)
 - [x] Simple phone daily site form for field engineers (plain English wizard, photos, voice, autosave)
 - [x] Backdated work dates: Today / Yesterday / Choose date; submitted-on kept separate; future dates blocked (form, API and database)

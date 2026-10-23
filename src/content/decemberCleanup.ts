@@ -1,9 +1,7 @@
 /**
  * December 2026 server cabinet clean-up & network maintenance campaign.
  *
- * The offer is a DRAFT pending owner confirmation — every public surface must
- * carry the draft notice and must never invent prices, deadlines, slot counts
- * or countdowns.
+ * Owner-approved labour offer; quote requests never confirm work or availability.
  */
 export const CAMPAIGN = {
   slug: "december-cleanup",
@@ -15,13 +13,12 @@ export const CAMPAIGN = {
   service: "Office Networking & Structured Cabling",
   offerHeadline: "20% off server clean-up and network-maintenance labour for December bookings.",
   offerExclusion: "Hardware and cabling materials excluded.",
-  draftNotice:
-    "Draft offer — pending owner confirmation. Final terms are confirmed on your written quotation.",
-  cta: "Book now. Lock in your discount.",
+  cta: "Request a quote",
   ctaFollow:
-    "Request your preferred date; Siyakha will confirm availability, scope and quotation. No payment or confirmed appointment at this stage.",
+    "Send a cabinet photo and request your preferred date; Siyakha will confirm scope, quotation and availability. No payment or confirmed appointment at this stage.",
   dateDisclaimer:
-    "Dates are requests, not confirmed availability. Your discount is only reserved once your quotation is confirmed.",
+    "Dates are requests, not confirmed availability. Scope, any downtime and offer terms are agreed in your quotation before work begins.",
+  photoPrivacy: "Your contact details, request and cabinet photo go to the Siyakha quote team at nikita@siyakhatechnology.co.za and Ben@siyakhatechnology.co.za for assessment. Do not include people, credentials or confidential labels in your photo.",
   monthLabel: "December 2026",
   /** Inclusive booking window (ISO dates). */
   minDate: "2026-12-01",

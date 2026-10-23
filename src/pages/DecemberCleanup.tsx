@@ -24,7 +24,7 @@ const DecemberCleanup = () => {
   useEffect(() => {
     const title = `${CAMPAIGN.title} | ${BRAND.name}`;
     const description =
-      "December 2026 server cabinet clean-up and network maintenance for Johannesburg, Sandton, Durban and KZN businesses. Request your preferred date — Siyakha confirms availability, scope and quotation.";
+      "December 2026 server cabinet clean-up and network maintenance for Johannesburg, Sandton, Durban and KZN businesses. Send a cabinet photo to request a quote — scope and availability subject to agreement.";
     document.title = title;
     const ensureMeta = (key: "name" | "property", value: string, content: string) => {
       let tag = document.head.querySelector(`meta[${key}='${value}']`) as HTMLMetaElement | null;
@@ -57,7 +57,7 @@ const DecemberCleanup = () => {
       "@type": "Service",
       name: CAMPAIGN.title,
       description:
-        "Server cabinet clean-up and network maintenance bookings for December 2026 in Johannesburg, Sandton, Durban and KZN.",
+        "Server cabinet clean-up and network maintenance photo quote requests for December 2026 in Johannesburg, Sandton, Durban and KZN.",
       provider: { "@id": `${BRAND.origin}/#organization` },
       areaServed: ["Johannesburg", "Sandton", "Durban", "KwaZulu-Natal"],
       url: `${BRAND.origin}${CAMPAIGN.path}`,
@@ -115,19 +115,19 @@ const DecemberCleanup = () => {
           </div>
         </section>
 
-        {/* Draft offer card */}
+        {/* Approved labour offer */}
         <section className="container mx-auto px-6 lg:px-10 -mt-10 relative z-20">
           <div
             className="max-w-3xl mx-auto bg-card border border-accent/25 rounded-sm p-6 md:p-8"
             style={{ boxShadow: "var(--shadow-medium)" }}
           >
-            <p className="text-[11px] uppercase tracking-[0.28em] text-accent mb-3">December offer — draft</p>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-accent mb-3">December labour offer</p>
             <p className="font-display text-xl md:text-2xl text-foreground leading-snug">
               {CAMPAIGN.offerHeadline}
             </p>
             <p className="mt-2 text-sm text-muted-foreground">{CAMPAIGN.offerExclusion}</p>
             <p className="mt-4 text-xs text-muted-foreground italic border-t border-border pt-4">
-              {CAMPAIGN.draftNotice} {CAMPAIGN.dateDisclaimer}
+              {CAMPAIGN.dateDisclaimer}
             </p>
           </div>
         </section>
@@ -170,7 +170,7 @@ const DecemberCleanup = () => {
         <section id="book" className="bg-secondary/50 border-y border-border scroll-mt-24">
           <div className="container mx-auto px-6 lg:px-10 py-16 md:py-24">
             <div className="max-w-3xl mx-auto">
-              <p className="overline mb-4">Request your December date</p>
+              <p className="overline mb-4">Your cabinet photo quote</p>
               <h2 className="font-display font-light text-3xl md:text-4xl tracking-[-0.02em] text-foreground leading-tight mb-3">
                 {CAMPAIGN.cta}
               </h2>

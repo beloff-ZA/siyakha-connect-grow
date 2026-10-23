@@ -63,10 +63,9 @@ const DecemberPopup = () => {
             {CAMPAIGN.offerHeadline} <span className="text-muted-foreground">{CAMPAIGN.offerExclusion}</span>
           </DialogDescription>
           <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-            Request your preferred date — Siyakha will confirm availability, scope and quotation. Nothing is
-            booked or confirmed at this stage.
+            Send a cabinet photo to request a quote — Siyakha will confirm scope, quotation and availability.
+            No appointment is confirmed at this stage.
           </p>
-          <p className="mt-2 text-xs text-muted-foreground italic">{CAMPAIGN.draftNotice}</p>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <Link

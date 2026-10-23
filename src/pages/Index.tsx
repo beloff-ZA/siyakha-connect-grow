@@ -132,7 +132,7 @@ const Index = () => {
           <div className="container mx-auto px-6 lg:px-10 py-8 md:py-10 flex flex-col md:flex-row md:items-center gap-5 md:gap-10">
             <div className="flex-1">
               <p className="text-[11px] uppercase tracking-[0.28em] text-accent mb-2">
-                {CAMPAIGN.monthLabel} · Draft offer
+                {CAMPAIGN.monthLabel} · Cabinet photo quotes
               </p>
               <p className="font-display font-light text-2xl md:text-3xl tracking-[-0.02em] text-foreground leading-tight">
                 {CAMPAIGN.phrase}

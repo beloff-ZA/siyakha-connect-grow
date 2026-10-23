@@ -7,6 +7,7 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 import type { LeadSubmissionPayload } from "./leadForm";
+import type { CabinetPhoto } from "../../supabase/functions/submit-lead/campaignPhoto";
 
 export const LEAD_STATUSES = ["new", "contacted", "qualified", "won", "lost"] as const;
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
@@ -49,21 +50,25 @@ export interface SubmitLeadResult {
   duplicate?: boolean;
   emailDelivered?: boolean;
   error?: string;
+  photoStored?: boolean;
+  notificationStatus?: string;
 }
 
 /** Submits a validated enquiry. Resolves `ok: true` only on a confirmed DB write. */
-export async function submitLead(payload: LeadSubmissionPayload): Promise<SubmitLeadResult> {
+export async function submitLead(payload: LeadSubmissionPayload & { cabinet_photo?: CabinetPhoto }): Promise<SubmitLeadResult> {
   try {
     const { data, error } = await supabase.functions.invoke("submit-lead", { body: payload });
     if (error) return { ok: false, error: error.message || "Submission failed" };
     const body = (data ?? {}) as Record<string, unknown>;
     if (body.error) return { ok: false, error: String(body.error) };
-    if (!body.lead_id) return { ok: false, error: "The enquiry was not stored. Please try again." };
+    if (typeof body.lead_id !== "string" || !body.lead_id.trim()) return { ok: false, error: "The enquiry was not stored. Please try again." };
+    if (payload.cabinet_photo && body.photo_stored !== true) return { ok: false, error: "The cabinet photo was not confirmed stored. Please try again." };
     return {
       ok: true,
       leadId: String(body.lead_id),
       duplicate: body.duplicate === true,
       emailDelivered: body.email_delivered === true,
+      ...(payload.cabinet_photo ? { photoStored: body.photo_stored === true, notificationStatus: String(body.notification_status || "unknown") } : {}),
     };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Network error" };

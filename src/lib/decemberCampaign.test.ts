@@ -137,7 +137,6 @@ describe("campaign payload mapping", () => {
     expect(description).toContain("City / suburb: Umhlanga");
     expect(description).toContain("Cabinets / racks: 2");
     expect(description).toContain("Alternate date (request only): 2026-12-15");
-    expect(description).toContain("Draft offer");
     expect(description).toContain("Client notes: Comms room on the third floor.");
     expect(description.length).toBeLessThanOrEqual(4000);
   });
@@ -172,6 +171,14 @@ describe("submitLead transport contract (mocked)", () => {
     invokeMock.mockResolvedValue({ data: { status: "stored" }, error: null });
     const result = await submitLead(buildCampaignPayload(validForm(), {}));
     expect(result.ok).toBe(false);
+  });
+
+  it("a photo quote requires confirmed photo storage as well as a lead ID", async () => {
+    const payload = { ...buildCampaignPayload(validForm(), {}), cabinet_photo: { mime: "image/png", base64: "mock" } };
+    invokeMock.mockResolvedValue({ data: { lead_id: "test-id", status: "stored" }, error: null });
+    expect((await submitLead(payload)).ok).toBe(false);
+    invokeMock.mockResolvedValue({ data: { lead_id: "test-id", photo_stored: true, notification_status: "failed", email_delivered: false }, error: null });
+    expect(await submitLead(payload)).toMatchObject({ ok: true, photoStored: true, emailDelivered: false, notificationStatus: "failed" });
   });
 
   it("surfaces backend failures without marking success", async () => {
@@ -220,8 +227,6 @@ describe("campaign constants", () => {
       "20% off server clean-up and network-maintenance labour for December bookings.",
     );
     expect(CAMPAIGN.offerExclusion).toBe("Hardware and cabling materials excluded.");
-    expect(CAMPAIGN.cta).toBe("Book now. Lock in your discount.");
     expect(CAMPAIGN.phrase).toBe("UNTANGLE THE YEAR.");
-    expect(CAMPAIGN.draftNotice).toContain("Draft offer");
   });
 });

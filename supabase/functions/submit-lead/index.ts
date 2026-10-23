@@ -14,6 +14,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
+import { assertCampaignEnvelope, CAMPAIGN_SOURCE, PHOTO_MAX_BYTES, readBoundedJson } from "./campaignPhoto.ts";
+import { submitCampaignQuote } from "./campaignQuote.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
@@ -85,6 +87,10 @@ const LeadSchema = z.object({
   referrer: nullableText(300),
   source: z.string().trim().max(120).optional().default("website"),
   page_path: nullableText(300),
+  cabinet_photo: z.object({
+    mime: z.enum(["image/jpeg", "image/png", "image/webp"]),
+    base64: z.string().max(Math.ceil(PHOTO_MAX_BYTES / 3) * 4),
+  }).strict().optional(),
 });
 
 function esc(value: unknown) {
@@ -105,7 +111,7 @@ function buildEmail(lead: Record<string, unknown>) {
     `<tr><td style="padding:6px 12px 6px 0;color:#555;white-space:nowrap">${esc(label)}</td><td style="padding:6px 0;color:#111"><strong>${esc(value)}</strong></td></tr>`;
   return `
   <div style="font-family:Arial,Helvetica,sans-serif;color:#111;max-width:680px">
-    <h2 style="margin:0 0 4px">New project enquiry</h2>
+    <h2 style="margin:0 0 4px">${lead.source === CAMPAIGN_SOURCE ? "December cabinet photo — please prepare a quote" : "New project enquiry"}</h2>
     <p style="margin:0 0 16px;color:#555">${esc(lead.service)} · ${esc(lead.location)} · ${esc(lead.created_at)}</p>
     <table cellpadding="0" cellspacing="0" style="font-size:14px">
       ${row("Name", lead.full_name)}
@@ -157,7 +163,17 @@ serve(async (req: Request) => {
   if (!SUPABASE_URL || !SERVICE_ROLE) return json({ error: "Server not configured" }, 500);
 
   try {
-    const parsed = LeadSchema.safeParse(await req.json());
+    let raw: unknown;
+    let requestSize = 0;
+    try {
+      const bounded = await readBoundedJson(req);
+      raw = bounded.body;
+      requestSize = bounded.size;
+    } catch (error) {
+      return json({ error: error instanceof Error ? error.message : "Invalid request." },
+        error instanceof Error && error.message === "Request too large." ? 413 : 400);
+    }
+    const parsed = LeadSchema.safeParse(raw);
     if (!parsed.success) {
       return json(
         { error: "Please check the highlighted fields and try again.", fields: parsed.error.flatten().fieldErrors },
@@ -165,6 +181,15 @@ serve(async (req: Request) => {
       );
     }
     const input = parsed.data;
+    const campaign = input.source === CAMPAIGN_SOURCE;
+    if (campaign) {
+      try { assertCampaignEnvelope(raw); }
+      catch { return json({ error: "Recipients and photo storage are managed by Siyakha." }, 400); }
+    }
+    if (campaign && (!input.cabinet_photo || input.service !== "Office Networking & Structured Cabling")) {
+      return json({ error: "A cabinet photo is required for this quote request." }, 400);
+    }
+    if (!campaign && (input.cabinet_photo || requestSize > 32_000)) return json({ error: "Unexpected attachment or request too large." }, 400);
 
     // Spam gates: hidden honeypot field, and submissions faster than a human.
     if (input.honeypot && input.honeypot.trim().length > 0) {
@@ -185,12 +210,13 @@ serve(async (req: Request) => {
 
     // Rate limit: max 5 enquiries per hashed IP per hour.
     const sinceIso = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const { count } = await admin
+    const { count, error: rateError } = await admin
       .from("website_leads")
       .select("id", { count: "exact", head: true })
       .eq("ip_hash", ipHash)
       .gte("created_at", sinceIso);
-    if ((count ?? 0) >= 5) {
+    if (campaign && rateError) return json({ error: "Please try again shortly." }, 503);
+    if (!campaign && (count ?? 0) >= 5) {
       return json({ error: "Too many enquiries from this connection. Please email or WhatsApp us instead." }, 429);
     }
 
@@ -232,6 +258,50 @@ serve(async (req: Request) => {
       dedupe_key: dedupeKey,
       notification_status: RESEND_API_KEY ? "pending" : "skipped",
     };
+
+    if (campaign && input.cabinet_photo) {
+      try {
+        const result = await submitCampaignQuote(insertRow, input.cabinet_photo, {
+          hash: sha256,
+          randomId: () => crypto.randomUUID(),
+          emailConfigured: Boolean(RESEND_API_KEY),
+          emailHtml: buildEmail,
+          find: async (key) => {
+            const { data, error } = await admin.from("website_leads").select("*").eq("dedupe_key", key).maybeSingle();
+            if (error) throw new Error("Unable to check quote request. Please retry.");
+            return data;
+          },
+          store: async (path, bytes, mime) => {
+            if ((count ?? 0) >= 5) throw new Error("Too many enquiries from this connection. Please email or WhatsApp us instead.");
+            const { error } = await admin.storage.from("website-orders").upload(path, bytes, { contentType: mime, upsert: false });
+            if (error) throw new Error("Your cabinet photo could not be stored. Please retry; no photo quote has been confirmed.");
+          },
+          remove: async (path) => { await admin.storage.from("website-orders").remove([path]); },
+          insert: async (row) => {
+            const { data, error } = await admin.from("website_leads").insert(row).select("*").single();
+            if (error && error.code !== "23505") throw new Error("Your photo quote could not be stored. Please retry.");
+            return data;
+          },
+          notify: async (request, key) => {
+            const response = await fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json", "Idempotency-Key": key },
+              body: JSON.stringify(request),
+            });
+            // Consume responses without logging provider bodies containing customer data.
+            const text = await response.text();
+            if (!response.ok) return false;
+            try { return Boolean(JSON.parse(text).id); } catch { return false; }
+          },
+          updateNotification: async (id, status) => {
+            await admin.from("website_leads").update({ notification_status: status, notification_error: status === "sent" ? null : "Quote email not accepted by every recipient; retry supported." }).eq("id", id);
+          },
+        });
+        return json(result);
+      } catch (error) {
+        return json({ error: error instanceof Error ? error.message : "Photo quote could not be stored. Please retry." }, 400);
+      }
+    }
 
     const { data: inserted, error: insertError } = await admin
       .from("website_leads")

@@ -5,6 +5,19 @@
  */
 import { CAMPAIGN, CAMPAIGN_SCOPES, type CampaignScope } from "@/content/decemberCleanup";
 import { LEAD_LOCATIONS, buildLeadPayload, type LeadSubmissionPayload } from "./leadForm";
+import { PHOTO_MAX_BYTES, validatePhotoBytes, type CabinetPhoto } from "../../supabase/functions/submit-lead/campaignPhoto";
+
+export async function readCampaignPhoto(file: File): Promise<CabinetPhoto> {
+  if (file.size > PHOTO_MAX_BYTES) throw new Error("Choose one cabinet photo up to 5MB.");
+  if (!/\.(jpe?g|png|webp)$/i.test(file.name)) throw new Error("Choose a JPG, PNG or WebP photo.");
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const extension = validatePhotoBytes(bytes, file.type);
+  const expected = extension === "jpg" ? /\.jpe?g$/i : new RegExp(`\\.${extension}$`, "i");
+  if (!expected.test(file.name)) throw new Error("The photo filename must match its image type.");
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 8192) binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+  return { mime: file.type, base64: btoa(binary) };
+}
 
 export interface CampaignFormValues {
   scope: string;
@@ -108,11 +121,11 @@ export function validateCampaignForm(
   if (!EMAIL_RE.test(email)) errors.work_email = "Enter a valid email address.";
   else if (email.length > 200) errors.work_email = "Email is too long.";
 
-  if (!values.phone.trim()) errors.phone = "Add a phone number so we can confirm your booking.";
+  if (!values.phone.trim()) errors.phone = "Add a phone number so we can discuss your quote.";
   else if (!PHONE_RE.test(values.phone.trim())) errors.phone = "Enter a valid contact number.";
 
   if (values.notes.trim().length > 1500) errors.notes = "Keep notes under 1,500 characters.";
-  if (!values.consent) errors.consent = "Please confirm we may contact you about this booking request.";
+  if (!values.consent) errors.consent = "Please confirm we may assess your photo and contact you about this quote request.";
 
   return errors;
 }
@@ -136,7 +149,7 @@ export function buildCampaignDescription(values: CampaignFormValues): string {
     `Cabinets / racks: ${values.rack_count.trim() || "Not specified"}`,
     `Preferred service date (request only): ${values.preferred_date}`,
     `Alternate date (request only): ${values.alternate_date || "None"}`,
-    `Offer note: ${CAMPAIGN.offerHeadline} ${CAMPAIGN.offerExclusion} ${CAMPAIGN.draftNotice}`,
+    `Offer note: ${CAMPAIGN.offerHeadline} ${CAMPAIGN.offerExclusion} ${CAMPAIGN.dateDisclaimer}`,
   ];
   const notes = values.notes.trim();
   if (notes) lines.push(`Client notes: ${notes}`);
