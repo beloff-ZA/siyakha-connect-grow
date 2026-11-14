@@ -34,7 +34,7 @@ export interface CaseStudy {
   results: string[];
   services: string[];
   quote?: { text: string; author: string };
-  gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number }[];
+  gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number; enhanced?: boolean }[];
   /** Fact-only entries: replaces problem/solution/process/results sections. */
   factual?: { overview: string; scope: string[]; galleryLabel?: string };
   sequence?: {
@@ -76,7 +76,7 @@ export const CASE_STUDIES: CaseStudy[] = [
       { src: capitalAirClose.url, caption: "Building exterior", alt: "Close view of the Capital Air building exterior in Randburg", width: 1152, height: 1536 },
       { src: capitalAirWide.url, caption: "Wider exterior view", alt: "Wider view of the Capital Air building exterior and driveway", width: 1152, height: 1536 },
       { src: capitalAirInterior.url, caption: "Selected installation view", alt: "Interior of the Capital Air warehouse space", width: 1152, height: 1536 },
-      { src: capitalAirCabinet.url, caption: "Installation cabinet · visual enhanced; wall finish illustrated", alt: "Wall-mounted installation cabinet with patched network cabling at Capital Air; enhanced concept visual — the painted wall finish is illustrated, not completed work", width: 1086, height: 1448 },
+      { src: capitalAirCabinet.url, caption: "Installation cabinet · visual enhanced; wall finish illustrated", alt: "Wall-mounted installation cabinet with patched network cabling at Capital Air; enhanced concept visual — the painted wall finish is illustrated, not completed work", width: 1086, height: 1448, enhanced: true },
     ],
   },
   {

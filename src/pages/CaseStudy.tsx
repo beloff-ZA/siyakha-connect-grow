@@ -119,7 +119,7 @@ const CaseStudy = () => {
               {study.factual?.galleryLabel ?? "On-Site Gallery"}
             </p>
             <div className={`grid sm:grid-cols-2 ${study.factual ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-px bg-foreground/15 border border-foreground/15`}>
-              {study.gallery.map((g) => (
+              {study.gallery.filter((g) => !g.enhanced).map((g) => (
                 <figure key={g.src} className="bg-background">
                   <div className="aspect-[4/5] overflow-hidden">
                     <img
@@ -138,6 +138,27 @@ const CaseStudy = () => {
                 </figure>
               ))}
             </div>
+            {study.gallery.filter((g) => g.enhanced).map((g) => (
+              <figure key={g.src} className="mt-12 border border-foreground/15 bg-background">
+                <p className="px-4 pt-4 text-[11px] uppercase tracking-[0.28em] text-foreground/60">
+                  Enhanced visual · not a project photograph
+                </p>
+                <div className="p-4 flex justify-center">
+                  <img
+                    src={g.src}
+                    alt={g.alt ?? g.caption}
+                    width={g.width}
+                    height={g.height}
+                    className="block w-auto max-w-full h-auto max-h-[85vh] object-contain"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <figcaption className="px-4 pb-4 text-[11px] uppercase tracking-[0.22em] text-foreground/70">
+                  {g.caption}
+                </figcaption>
+              </figure>
+            ))}
           </div>
         </section>
       )}
