@@ -116,17 +116,20 @@ const CaseStudy = () => {
         <section className="bg-background border-t border-foreground/10">
           <div className="container mx-auto px-6 lg:px-10 py-16">
             <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-8">
-              On-Site Gallery
+              {study.factual?.galleryLabel ?? "On-Site Gallery"}
             </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/15 border border-foreground/15">
+            <div className={`grid sm:grid-cols-2 ${study.factual ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-px bg-foreground/15 border border-foreground/15`}>
               {study.gallery.map((g) => (
                 <figure key={g.src} className="bg-background">
                   <div className="aspect-[4/5] overflow-hidden">
                     <img
                       src={g.src}
-                      alt={g.caption}
+                      alt={g.alt ?? g.caption}
+                      width={g.width}
+                      height={g.height}
                       className="w-full h-full object-cover grayscale"
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <figcaption className="px-4 py-3 text-[11px] uppercase tracking-[0.22em] text-foreground/70">
@@ -177,6 +180,30 @@ const CaseStudy = () => {
         </section>
       )}
 
+      {study.factual ? (
+        <section className="bg-background border-t border-foreground/10">
+          <div className="container mx-auto px-6 lg:px-10 py-20">
+            <div className="grid lg:grid-cols-2 gap-12">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-4">Project overview</p>
+                <p className="text-base md:text-lg text-foreground/80 leading-relaxed">{study.factual.overview}</p>
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-6">Installation scope</p>
+                <ul className="space-y-4">
+                  {study.factual.scope.map((r) => (
+                    <li key={r} className="flex items-start gap-3 text-foreground/85 text-base md:text-lg">
+                      <CheckCircle2 className="w-5 h-5 mt-1 flex-shrink-0" strokeWidth={1.5} />
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <>
       <section className="bg-background border-t border-foreground/10">
         <div className="container mx-auto px-6 lg:px-10 py-20">
           <div className="grid lg:grid-cols-2 gap-12">
@@ -236,17 +263,33 @@ const CaseStudy = () => {
         </div>
       </section>
 
+        </>
+      )}
+
       <section className="bg-foreground text-background">
         <div className="container mx-auto px-6 lg:px-10 py-20 md:py-24">
           <div className="max-w-3xl">
             <h2 className="font-display font-light text-3xl md:text-5xl tracking-[-0.02em] leading-[1.05]">
-              Want results like this for <span className="italic font-extralight">your site</span>?
+              {study.factual ? (
+                <>Planning a project for <span className="italic font-extralight">your site</span>?</>
+              ) : (
+                <>Want results like this for <span className="italic font-extralight">your site</span>?</>
+              )}
             </h2>
             <p className="mt-6 text-base md:text-lg text-background/75 leading-relaxed max-w-2xl">
-              Book a free site assessment. We'll walk your premises, audit what you have and design
-              the right infrastructure for your next chapter.
+              {study.factual
+                ? "Tell us about your site and Siyakha will be in touch to discuss your requirements."
+                : "Book a free site assessment. We'll walk your premises, audit what you have and design the right infrastructure for your next chapter."}
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
+              {study.factual ? (
+                <Link
+                  to="/contact"
+                  className="bg-background text-foreground px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-background/90 transition-colors"
+                >
+                  Contact Siyakha
+                </Link>
+              ) : (
               <LeadMagnetDialog
                 kind="Free Site Assessment"
                 context={`Case study CTA: ${study.client}`}
@@ -256,6 +299,7 @@ const CaseStudy = () => {
                   </button>
                 }
               />
+              )}
               <Link
                 to="/managed-it"
                 className="border border-background/40 text-background px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-background/10 transition-colors"

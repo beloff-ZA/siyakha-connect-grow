@@ -9,6 +9,7 @@ import DivisionsBand from "@/components/site/DivisionsBand";
 import IndustriesBand from "@/components/site/IndustriesBand";
 import TrustBand from "@/components/site/TrustBand";
 import CaseStudiesTriad from "@/components/site/CaseStudiesTriad";
+import LatestProjectFeature from "@/components/site/LatestProjectFeature";
 import FaqBand from "@/components/site/FaqBand";
 import QualifyForm from "@/components/site/QualifyForm";
 import StickyContactBar from "@/components/site/StickyContactBar";
@@ -152,6 +153,7 @@ const Index = () => {
         <DivisionsBand />
         <IndustriesBand />
         <TrustBand />
+        <LatestProjectFeature />
         <CaseStudiesTriad />
         <FaqBand />
         <QualifyForm />

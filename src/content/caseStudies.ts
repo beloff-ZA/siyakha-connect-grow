@@ -13,6 +13,10 @@ import franchiseCabinetCleanup2 from "@/assets/case-franchise-cabinet-cleanup-2.
 import franchiseCabinetCleanup3 from "@/assets/case-franchise-cabinet-cleanup-3.jpg";
 import kwamashuTrainingImg from "@/assets/case-kwamashu-training-room.jpg";
 import jhbComputerLabImg from "@/assets/case-jhb-computer-lab.jpg";
+import capitalAirHero from "@/assets/capital-air-exterior-hero.jpg.asset.json";
+import capitalAirClose from "@/assets/capital-air-exterior-close.jpg.asset.json";
+import capitalAirWide from "@/assets/capital-air-exterior-wide.jpg.asset.json";
+import capitalAirInterior from "@/assets/capital-air-interior-wide.jpg.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -29,7 +33,9 @@ export interface CaseStudy {
   results: string[];
   services: string[];
   quote?: { text: string; author: string };
-  gallery?: { src: string; caption: string }[];
+  gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number }[];
+  /** Fact-only entries: replaces problem/solution/process/results sections. */
+  factual?: { overview: string; scope: string[]; galleryLabel?: string };
   sequence?: {
     title: string;
     caption?: string;
@@ -44,6 +50,33 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "capital-air-randburg",
+    client: "Capital Air",
+    title: "Capital Air: CCTV & Alarm Installation",
+    industry: "Commercial Security",
+    location: "Randburg, Johannesburg",
+    year: "2026",
+    hero: capitalAirHero.url,
+    summary:
+      "A brand-new security installation for Capital Air in Randburg, delivered by Siyakha Technology Solutions: 32 Hikvision PT CCTV cameras and a Paradox alarm system.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: ["CCTV Installation", "Alarm Installation"],
+    factual: {
+      overview:
+        "Siyakha Technology Solutions has carried out a brand-new security installation for Capital Air in Randburg.",
+      scope: ["32 Hikvision PT CCTV cameras", "Paradox alarm system"],
+      galleryLabel: "On-site photographs",
+    },
+    gallery: [
+      { src: capitalAirClose.url, caption: "Building exterior", alt: "Close view of the Capital Air building exterior in Randburg", width: 1152, height: 1536 },
+      { src: capitalAirWide.url, caption: "Wider exterior view", alt: "Wider view of the Capital Air building exterior and driveway", width: 1152, height: 1536 },
+      { src: capitalAirInterior.url, caption: "Selected installation view", alt: "Interior of the Capital Air warehouse space", width: 1152, height: 1536 },
+    ],
+  },
   {
     slug: "kwamashu-training-facility",
     client: "Kwamashu Training Facility",
