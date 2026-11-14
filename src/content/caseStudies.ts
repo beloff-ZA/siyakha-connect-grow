@@ -76,7 +76,7 @@ export const CASE_STUDIES: CaseStudy[] = [
       { src: capitalAirClose.url, caption: "Building exterior", alt: "Close view of the Capital Air building exterior in Randburg", width: 1152, height: 1536 },
       { src: capitalAirWide.url, caption: "Wider exterior view", alt: "Wider view of the Capital Air building exterior and driveway", width: 1152, height: 1536 },
       { src: capitalAirInterior.url, caption: "Selected installation view", alt: "Interior of the Capital Air warehouse space", width: 1152, height: 1536 },
-      { src: capitalAirCabinet.url, caption: "Installation cabinet · wall finish illustrated", alt: "Wall-mounted installation cabinet with patched network cabling at Capital Air; the painted wall finish is illustrated in this visual and is not a photograph of completed painting", width: 1086, height: 1448, enhanced: true },
+      { src: capitalAirCabinet.url, caption: "Installation cabinet · wall finish illustrated", alt: "Capital Air installation cabinet with illustrated wall finish", width: 1086, height: 1448, enhanced: true },
     ],
   },
   {

@@ -140,9 +140,6 @@ const CaseStudy = () => {
             </div>
             {study.gallery.filter((g) => g.enhanced).map((g) => (
               <figure key={g.src} className="mt-12 border border-foreground/15 bg-background">
-                <p className="px-4 pt-4 text-[11px] uppercase tracking-[0.28em] text-foreground/60">
-                  Enhanced visual · not a project photograph
-                </p>
                 <div className="p-4 flex justify-center">
                   <img
                     src={g.src}
