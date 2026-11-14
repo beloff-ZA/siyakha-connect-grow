@@ -17,7 +17,7 @@ import capitalAirHero from "@/assets/capital-air-exterior-hero.jpg.asset.json";
 import capitalAirClose from "@/assets/capital-air-exterior-close.jpg.asset.json";
 import capitalAirWide from "@/assets/capital-air-exterior-wide.jpg.asset.json";
 import capitalAirInterior from "@/assets/capital-air-interior-wide.jpg.asset.json";
-import capitalAirCabinet from "@/assets/capital-air-painted-wall-visual.png.asset.json";
+import capitalAirCabinet from "@/assets/capital-air-cabinet-painted-wall.png.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -76,7 +76,7 @@ export const CASE_STUDIES: CaseStudy[] = [
       { src: capitalAirClose.url, caption: "Building exterior", alt: "Close view of the Capital Air building exterior in Randburg", width: 1152, height: 1536 },
       { src: capitalAirWide.url, caption: "Wider exterior view", alt: "Wider view of the Capital Air building exterior and driveway", width: 1152, height: 1536 },
       { src: capitalAirInterior.url, caption: "Selected installation view", alt: "Interior of the Capital Air warehouse space", width: 1152, height: 1536 },
-      { src: capitalAirCabinet.url, caption: "Installation cabinet · visual enhanced; wall finish illustrated", alt: "Wall-mounted installation cabinet with patched network cabling at Capital Air; enhanced concept visual — the painted wall finish is illustrated, not completed work", width: 1086, height: 1448, enhanced: true },
+      { src: capitalAirCabinet.url, caption: "Installation cabinet · wall finish illustrated", alt: "Wall-mounted installation cabinet with patched network cabling at Capital Air; the painted wall finish is illustrated in this visual and is not a photograph of completed painting", width: 1086, height: 1448, enhanced: true },
     ],
   },
   {
