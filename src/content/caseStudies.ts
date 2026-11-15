@@ -32,6 +32,7 @@ import campuskeyCable from "@/assets/campuskey-cable-management.webp.asset.json"
 import campuskeyHero from "@/assets/campuskey-building-exterior.webp.asset.json";
 import campuskeyCommonArea from "@/assets/campuskey-common-area.webp.asset.json";
 import impalaHero from "@/assets/impala-rollout-privacy.webp.asset.json";
+import forumHero from "@/assets/angolan-mining-forum-event.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -69,6 +70,32 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "angolan-mining-business-forum",
+    client: "Angolan Mining Business Forum",
+    title: "Angolan Mining Business Forum: Digital Event Systems",
+    industry: "Events & Conferences",
+    location: "",
+    hero: forumHero.url,
+    heroPhoto: {
+      alt: "Wide event-context photograph with conference seating and Angolan Mining Business Forum signage",
+      caption: "Angolan Mining Business Forum · event context",
+      width: 1560,
+      height: 878,
+      portrait: false,
+      preserveFullScene: true,
+    },
+    summary: "Siyakha Technology Solutions worked on the formulation of digital systems and software tools to assist event management for the Angolan Mining Business Forum.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: ["Digital systems formulation", "Event-management software tools"],
+    factual: {
+      overview: "Siyakha Technology Solutions worked on the formulation of digital systems and software tools to assist event management for the Angolan Mining Business Forum.",
+      scope: ["Digital systems formulation", "Event-management software tools"],
+    },
+  },
   {
     slug: "impala-platinum-laptop-rollout",
     client: "Impala Platinum",
@@ -586,6 +613,7 @@ export function getCaseStudy(slug: string) {
 }
 
 export const LATEST_PROJECT_SLUGS = [
+  "angolan-mining-business-forum",
   "impala-platinum-laptop-rollout",
   "campuskey-port-elizabeth",
   "sapath-network-infrastructure",

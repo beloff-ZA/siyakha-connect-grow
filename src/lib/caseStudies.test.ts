@@ -2,6 +2,21 @@ import { describe, expect, it } from "vitest";
 import { CASE_STUDIES, getCaseStudy, LATEST_PROJECT_SLUGS } from "@/content/caseStudies";
 
 describe("confirmed project scope", () => {
+  it("limits the forum to formulation without implying a deployed platform, venue or event delivery services", () => {
+    const study = getCaseStudy("angolan-mining-business-forum");
+    expect(study?.location).toBe("");
+    expect(study?.industry).toBe("Events & Conferences");
+    expect(study?.services).toEqual(["Digital systems formulation", "Event-management software tools"]);
+    expect(study?.factual?.scope).toEqual(study?.services);
+    expect(study?.year).toBeUndefined();
+    expect(study?.quote).toBeUndefined();
+    expect(study?.equipment).toBeUndefined();
+    expect(study?.factual?.scopeMetric).toBeUndefined();
+    expect(study?.results).toEqual([]);
+    expect(study?.process).toEqual([]);
+    expect(JSON.stringify(study)).not.toMatch(/launched|deployed|ticketing|payment|dashboard|registration|QR|CRM|staging|screenshots|South Africa/i);
+    expect(CASE_STUDIES.filter((s) => s.slug === "angolan-mining-business-forum")).toHaveLength(1);
+  });
   it("records Impala's wider rollout scale without claiming Siyakha completed or allocated every machine", () => {
     const study = getCaseStudy("impala-platinum-laptop-rollout");
     expect(study?.factual?.scopeMetric).toEqual({ value: "1,000+", label: "Machines in the wider rollout project" });
@@ -49,9 +64,10 @@ describe("confirmed project scope", () => {
     expect(study?.beforeAfter).toBeUndefined();
   });
 
-  it("retains all nine recent projects with one St Joseph's entry", () => {
+  it("retains all ten recent projects with one St Joseph's entry", () => {
     expect(CASE_STUDIES.filter((study) => study.slug === "st-josephs-marist-cape-town")).toHaveLength(1);
     expect(LATEST_PROJECT_SLUGS).toEqual([
+      "angolan-mining-business-forum",
       "impala-platinum-laptop-rollout",
       "campuskey-port-elizabeth",
       "sapath-network-infrastructure",

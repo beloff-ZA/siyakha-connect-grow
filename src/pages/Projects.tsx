@@ -7,29 +7,10 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { CASE_STUDIES } from "@/content/caseStudies";
 import { Button } from "@/components/ui/button";
 import ProjectTypeCover from "@/components/site/ProjectTypeCover";
+import { inferClientType, inferRegion } from "@/lib/projectFilters";
 
-const CLIENT_TYPES = ["All", "Estates", "Student Accommodation", "Commercial", "Retail", "Hospitality", "Healthcare", "Education", "Government", "Mining"] as const;
+const CLIENT_TYPES = ["All", "Estates", "Student Accommodation", "Commercial", "Retail", "Hospitality", "Healthcare", "Education", "Government", "Mining", "Events"] as const;
 const REGIONS = ["All", "South Africa", "GCC", "UK"] as const;
-
-function inferClientType(industry: string): string {
-  const i = industry.toLowerCase();
-  if (i.includes("mining")) return "Mining";
-  if (i.includes("healthcare")) return "Healthcare";
-  if (i.includes("hospitality") || i.includes("restaurant")) return "Hospitality";
-  if (i.includes("retail") || i.includes("franchise")) return "Retail";
-  if (i.includes("school") || i.includes("training") || i.includes("education")) return "Education";
-  if (i.includes("student")) return "Student Accommodation";
-  if (i.includes("estate") || i.includes("residential")) return "Estates";
-  if (i.includes("government") || i.includes("border")) return "Government";
-  return "Commercial";
-}
-
-function inferRegion(location: string): string {
-  const l = location.toLowerCase();
-  if (l.includes("dubai") || l.includes("riyadh") || l.includes("doha") || l.includes("uae") || l.includes("qatar") || l.includes("saudi")) return "GCC";
-  if (l.includes("london") || l.includes("uk")) return "UK";
-  return "South Africa";
-}
 
 const Projects = () => {
   const [clientType, setClientType] = useState<string>("All");
@@ -121,7 +102,7 @@ const Projects = () => {
                   </div>
                   <div className="p-6 flex flex-col flex-1">
                     <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/50 mb-3">
-                      {inferClientType(s.industry)} · {inferRegion(s.location)}
+                      {[inferClientType(s.industry), inferRegion(s.location)].filter(Boolean).join(" · ")}
                     </p>
                     <div className="font-display text-lg text-foreground tracking-tight leading-snug mb-3">
                       {s.title}

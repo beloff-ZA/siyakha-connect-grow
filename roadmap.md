@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Angolan Mining Business Forum — unpublished preview
+- [x] Added formulation-only factual project, optimized actual context photo, unspecified location, Events filter, static sitemap with no fabricated lastmod and ten recent projects.
+- [x] 18 focused / all 396 tests and automatic preview build passed. All ten routes, Events/region filtering, prior scopes/photos, paired desktop/mobile layouts and no overflow/page errors/rejected diagram requests verified at 1280/390 widths. Existing projects/campaign/backend/settings unchanged; no publication. Local image checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run.
+
 ## Impala Platinum — unpublished preview
 - [x] Replaced only Impala’s cover with the metadata-stripped supplied privacy-edited photo, full 4:3 scene and exact caption; 14 focused / all 392 tests, automatic preview build and nine-route desktop/mobile checks passed without page errors or rejected-diagram requests. Scope and wider-rollout metric unchanged; CampusKey supplement and previous content preserved. Local layout checks use exact supplied asset bytes; hosted-page layout and standalone build/typecheck not run. Nothing published.
 - [x] Added confirmed rollout-support scope, wider-project 1,000+ metric and native typographic cover; Mining filter, static sitemap (no lastmod source or values) and nine recent projects with no invented photography or completion claims.
