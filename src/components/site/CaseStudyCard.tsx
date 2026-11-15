@@ -23,7 +23,7 @@ const CaseStudyCard = ({ study }: Props) => (
     </div>
     <div className="p-6 md:p-8">
       <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/55 mb-3">
-        {study.industry} · {study.location} · {study.year}
+        {[study.industry, study.location, study.year].filter(Boolean).join(" · ")}
       </p>
       <h3 className="font-display text-xl md:text-2xl font-light text-foreground tracking-tight">
         {study.client}

@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Sun International public case study — unpublished preview
+- [x] Reuse factual case-study mode and metadata-stripped exterior photo; add listing and paired homepage cards.
+- [x] Verified both case studies, commercial filter, enquiry links and desktop/mobile presentation; 380 tests and automatic preview build passed (standalone typecheck/build not run).
+
 ## December campaign photo quotes
 - [x] Extend approved quote copy and required private cabinet-photo picker.
 - [x] Extend existing endpoint with validated private storage, campaign-only recipients and retry-safe notifications.

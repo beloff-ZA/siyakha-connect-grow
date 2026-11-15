@@ -16,7 +16,7 @@ const CaseStudy = () => {
     "@type": "Article",
     headline: `${study.client} — ${study.title}`,
     image: study.hero,
-    datePublished: study.year,
+    ...(study.year ? { datePublished: study.year } : {}),
     author: { "@type": "Organization", name: "Siyakha Technology" },
     publisher: { "@type": "Organization", name: "Siyakha Technology" },
   };
@@ -40,7 +40,7 @@ const CaseStudy = () => {
             <ArrowLeft className="h-3.5 w-3.5" /> Back home
           </Link>
           <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-5">
-            Case Study · {study.industry} · {study.location} · {study.year}
+            {["Case Study", study.industry, study.location, study.year].filter(Boolean).join(" · ")}
           </p>
           <h1 className="font-display font-light text-4xl md:text-6xl tracking-[-0.02em] text-foreground leading-[1.05] max-w-4xl">
             {study.client}
@@ -56,15 +56,18 @@ const CaseStudy = () => {
 
       <section className="bg-background">
         <div className="container mx-auto px-6 lg:px-10 py-16">
-          <div className="aspect-[16/9] overflow-hidden border border-foreground/15">
+          <figure className={study.heroPhoto?.portrait ? "max-w-2xl mx-auto" : ""}>
+          <div className={study.heroPhoto?.portrait ? "aspect-[3/4] overflow-hidden border border-foreground/15" : "aspect-[16/9] overflow-hidden border border-foreground/15"}>
             <img
               src={study.hero}
-              alt={`${study.client} — ${study.title}`}
-              width={1920}
-              height={1080}
-              className="w-full h-full object-cover grayscale"
+              alt={study.heroPhoto?.alt ?? `${study.client} — ${study.title}`}
+              width={study.heroPhoto?.width ?? 1920}
+              height={study.heroPhoto?.height ?? 1080}
+              className={study.heroPhoto?.portrait ? "w-full h-full object-contain" : "w-full h-full object-cover grayscale"}
             />
           </div>
+          {study.heroPhoto?.caption && <figcaption className="mt-3 text-sm text-foreground/60">{study.heroPhoto.caption}</figcaption>}
+          </figure>
         </div>
       </section>
 
@@ -204,6 +207,12 @@ const CaseStudy = () => {
             <div className="grid lg:grid-cols-2 gap-12">
               <div>
                 <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-4">Project overview</p>
+                {study.factual.scopeMetric && (
+                  <div className="mb-8">
+                    <p className="font-display text-6xl md:text-7xl font-light text-foreground">{study.factual.scopeMetric.value}</p>
+                    <p className="mt-2 text-sm text-foreground/60">{study.factual.scopeMetric.label}</p>
+                  </div>
+                )}
                 <p className="text-base md:text-lg text-foreground/80 leading-relaxed">{study.factual.overview}</p>
               </div>
               <div>

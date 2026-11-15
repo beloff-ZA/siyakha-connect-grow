@@ -18,6 +18,7 @@ import capitalAirClose from "@/assets/capital-air-exterior-close.jpg.asset.json"
 import capitalAirWide from "@/assets/capital-air-exterior-wide.jpg.asset.json";
 import capitalAirInterior from "@/assets/capital-air-interior-wide.jpg.asset.json";
 import capitalAirCabinet from "@/assets/capital-air-cabinet-painted-wall.png.asset.json";
+import sunInternationalHero from "@/assets/sun-international-head-office.jpg.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -25,8 +26,9 @@ export interface CaseStudy {
   title: string;
   industry: string;
   location: string;
-  year: string;
+  year?: string;
   hero: string;
+  heroPhoto?: { alt: string; caption: string; width: number; height: number; portrait: boolean };
   summary: string;
   problem: string;
   solution: string;
@@ -36,7 +38,7 @@ export interface CaseStudy {
   quote?: { text: string; author: string };
   gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number; enhanced?: boolean }[];
   /** Fact-only entries: replaces problem/solution/process/results sections. */
-  factual?: { overview: string; scope: string[]; galleryLabel?: string };
+  factual?: { overview: string; scope: string[]; galleryLabel?: string; scopeMetric?: { value: number; label: string } };
   sequence?: {
     title: string;
     caption?: string;
@@ -51,6 +53,32 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "sun-international-head-office",
+    client: "Sun International Head Office",
+    title: "Sun International Head Office: Building-Wide Network Cabling",
+    industry: "Commercial & Corporate Offices",
+    location: "",
+    hero: sunInternationalHero.url,
+    heroPhoto: {
+      alt: "Sun International head office exterior with the office building and entrance landscaping",
+      caption: "Sun International head office exterior",
+      width: 1152,
+      height: 1536,
+      portrait: true,
+    },
+    summary: "The Sun International head office project: 980 network points, complete building-wide network cabling and rerouting of all cabling.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: ["Network Cabling", "Cable Rerouting"],
+    factual: {
+      overview: "Siyakha Technology Solutions' Sun International head office project covers complete building-wide network cabling, with 980 network points and rerouting of all cabling.",
+      scope: ["980 network points", "Building-wide network cabling", "Rerouting of all cabling"],
+      scopeMetric: { value: 980, label: "Network points · installation scope" },
+    },
+  },
   {
     slug: "capital-air-randburg",
     client: "Capital Air",
