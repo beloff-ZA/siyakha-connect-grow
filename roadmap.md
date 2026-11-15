@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## CampusKey — unpublished preview
+- [x] Add specific Port Elizabeth case study with exact Exmile attribution, confirmed scope and metadata-stripped approved cable-run photo; Student Accommodation filter and static sitemap entry without fabricated lastmod.
+- [x] 13 focused / all 391 tests passed; automatic preview build OK. All eight routes, exact CampusKey attribution, Student Accommodation plus existing filters, safe photo/logo and paired desktop rows/mobile stack passed at 1280/390 widths; no overflow/page errors or rejected-diagram requests. Generic Exmile overview, campaign and backend/settings unchanged. Local media checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run. No submissions or publication.
+
 ## SAPath — unpublished main preview
 - [x] Add four confirmed services, Cape Town/Healthcare identity, only the metadata-stripped safe ceiling crop, listing and static sitemap (no lastmod fallback exists).
 - [x] 11 focused / all 389 tests passed, automatic preview build OK. All seven routes, Healthcare/Hospitality/Retail filters, prior attribution, safe image/logo rendering and balanced lead + paired desktop rows/mobile stack passed at 1280/390 widths; no overflow, page errors or rejected-diagram requests. No hospital/equipment/result claims added. Local media checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run. No submissions, backend/settings changes or publication.

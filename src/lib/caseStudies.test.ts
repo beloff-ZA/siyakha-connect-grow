@@ -32,9 +32,10 @@ describe("confirmed project scope", () => {
     expect(study?.beforeAfter).toBeUndefined();
   });
 
-  it("retains all seven recent projects with one St Joseph's entry", () => {
+  it("retains all eight recent projects with one St Joseph's entry", () => {
     expect(CASE_STUDIES.filter((study) => study.slug === "st-josephs-marist-cape-town")).toHaveLength(1);
     expect(LATEST_PROJECT_SLUGS).toEqual([
+      "campuskey-port-elizabeth",
       "sapath-network-infrastructure",
       "catch-22-connectivity",
       "nomination-italy-waterfront",
@@ -97,6 +98,33 @@ describe("confirmed project scope", () => {
     for (const slug of LATEST_PROJECT_SLUGS.filter((s) => s !== "tiger-brands-boardroom-technology")) {
       expect(JSON.stringify(getCaseStudy(slug))).not.toContain("Design Code Interior Designers");
     }
+  });
+
+  it("limits CampusKey to the specific confirmed work, separate from the generic Exmile overview", () => {
+    const study = getCaseStudy("campuskey-port-elizabeth");
+    expect(study?.client).toBe("CampusKey");
+    expect(study?.location).toBe("Port Elizabeth");
+    expect(study?.industry).toBe("Student Accommodation");
+    expect(study?.factual?.scope).toEqual(["Data environment recabling", "Major data-point cleanup", "CAT6 cabling"]);
+    expect(study?.services).toEqual(study?.factual?.scope);
+    expect(study?.year).toBeUndefined();
+    expect(study?.equipment).toBeUndefined();
+    expect(study?.clientIdentity).toBeUndefined();
+    expect(study?.quote).toBeUndefined();
+    expect(study?.factual?.scopeMetric).toBeUndefined();
+    expect(study?.process).toEqual([]);
+    expect(study?.results).toEqual([]);
+    expect(study?.gallery).toBeUndefined();
+    expect(study?.hero).toMatch(/\/campuskey-cable-management\.webp$/);
+    expect(JSON.stringify(study)).not.toMatch(/Fluke|certif|speed|performance|Radisson|CAT6A|CAT6 \/ CAT6A/i);
+    expect(getCaseStudy("exmile-student-accommodation")?.factual).toBeUndefined();
+    expect(CASE_STUDIES.filter((s) => s.slug === "campuskey-port-elizabeth")).toHaveLength(1);
+  });
+
+  it("attributes CampusKey work to Exmile as connectivity partner rather than direct appointment", () => {
+    const study = getCaseStudy("campuskey-port-elizabeth");
+    expect(study?.summary.startsWith("Working on behalf of Exmile, CampusKey’s connectivity partner,")).toBe(true);
+    expect(study?.factual?.overview.startsWith("Working on behalf of Exmile, CampusKey’s connectivity partner,")).toBe(true);
   });
 
   it("limits SAPath to the four confirmed services and Cape Town without hospital, equipment or results claims", () => {

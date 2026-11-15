@@ -28,6 +28,7 @@ import nominationHero from "@/assets/nomination-italy-waterfront-storefront.webp
 import nominationLogo from "@/assets/nomination-official-logo.svg.asset.json";
 import catch22Hero from "@/assets/catch-22-exterior.webp.asset.json";
 import sapathHero from "@/assets/sapath-site-interior.webp.asset.json";
+import campuskeyHero from "@/assets/campuskey-cable-management.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -64,6 +65,31 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "campuskey-port-elizabeth",
+    client: "CampusKey",
+    title: "CampusKey: CAT6 Recabling & Data-Point Cleanup",
+    industry: "Student Accommodation",
+    location: "Port Elizabeth",
+    hero: campuskeyHero.url,
+    heroPhoto: {
+      alt: "Cable runs secured along a cable tray at the CampusKey project, with no people or readable network labels",
+      caption: "Cable management from the CampusKey project",
+      width: 659,
+      height: 878,
+      portrait: true,
+    },
+    summary: "Working on behalf of Exmile, CampusKey’s connectivity partner, Siyakha Technology Solutions recabled the data environment and carried out major data-point cleanup and CAT6 cabling at CampusKey student accommodation in Port Elizabeth.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: ["Data environment recabling", "Major data-point cleanup", "CAT6 cabling"],
+    factual: {
+      overview: "Working on behalf of Exmile, CampusKey’s connectivity partner, Siyakha Technology Solutions recabled the data environment and carried out major data-point cleanup and CAT6 cabling at CampusKey student accommodation in Port Elizabeth.",
+      scope: ["Data environment recabling", "Major data-point cleanup", "CAT6 cabling"],
+    },
+  },
   {
     slug: "sapath-network-infrastructure",
     client: "SAPath",
@@ -512,6 +538,7 @@ export function getCaseStudy(slug: string) {
 }
 
 export const LATEST_PROJECT_SLUGS = [
+  "campuskey-port-elizabeth",
   "sapath-network-infrastructure",
   "catch-22-connectivity",
   "nomination-italy-waterfront",
