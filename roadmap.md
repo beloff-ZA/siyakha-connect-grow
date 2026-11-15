@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Generic-shell canonical correction — coordinated unpublished SEO scope
+- [x] Remove only the hardcoded homepage canonical and two homepage hreflang tags from index.html; retain runtime Index/SiteSEO ownership and all other metadata/behavior.
+- [x] 14 focused / all 414 tests and automatic preview build passed. Browser verified exactly one correct https://siyakhatechnology.co.za canonical on all fourteen direct routes and project → homepage → projects transitions; initial shell contains neither canonical nor hreflang. Other metadata/behavior untouched; no deployment, changes reach live on next coordinator publish. Hosted crawler/per-page social-preview behavior and standalone build/typecheck not checked.
+
 ## Automatic homepage popup removal — authorized unpublished scope
 - [x] Remove DecemberPopup import/render from homepage only; preserve campaign banner/page/forms, intentionally opened dialogs and queued project corrections. Include in eventual coordinator publication scope; do not deploy here.
 - [x] Fresh desktop/mobile sessions remained modal-free through seven seconds; December banner opens the intact campaign form, no page errors. All 400 tests and automatic preview build passed; only Index.tsx and this scope record changed, preserving project work and intentionally opened dialogs. No submissions or deployment.
