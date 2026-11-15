@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import Header from "@/components/Header";
 import HomeHero from "@/components/site/HomeHero";
-import DecemberPopup from "@/components/campaign/DecemberPopup";
 import { CAMPAIGN } from "@/content/decemberCleanup";
 import DivisionsBand from "@/components/site/DivisionsBand";
 import IndustriesBand from "@/components/site/IndustriesBand";
@@ -128,7 +127,7 @@ const Index = () => {
       <Header />
       <main>
         <HomeHero />
-        {/* December 2026 campaign banner — reopen path for the popup */}
+        {/* December 2026 campaign banner */}
         <section className="border-y border-border bg-secondary/60">
           <div className="container mx-auto px-6 lg:px-10 py-8 md:py-10 flex flex-col md:flex-row md:items-center gap-5 md:gap-10">
             <div className="flex-1">
@@ -160,7 +159,6 @@ const Index = () => {
       </main>
       <Footer />
       <StickyContactBar />
-      <DecemberPopup />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationJson) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJson) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJson) }} />

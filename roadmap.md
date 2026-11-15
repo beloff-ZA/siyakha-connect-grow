@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Automatic homepage popup removal — authorized unpublished scope
+- [x] Remove DecemberPopup import/render from homepage only; preserve campaign banner/page/forms, intentionally opened dialogs and queued project corrections. Include in eventual coordinator publication scope; do not deploy here.
+- [x] Fresh desktop/mobile sessions remained modal-free through seven seconds; December banner opens the intact campaign form, no page errors. All 400 tests and automatic preview build passed; only Index.tsx and this scope record changed, preserving project work and intentionally opened dialogs. No submissions or deployment.
+
 ## Retail ICT partner support correction — unpublished preview
 - [x] Reframe the existing retail entry and shared cards as ICT-company project support; retain Coricraft in explicit subcontractor/partner-support context, existing service scope and existing imagery only. Remove unsupported problem/results, nationwide/date claims; retain twelve recent showcases and enquiry destination.
 - [x] All 400 tests and automatic preview build passed; desktop/mobile retail detail, shared homepage card, project listing and existing /#enquiry destination checked without overflow/page errors. No submissions, backend changes, unrelated SEO edits or deployment; existing image assets retained, no fresh photos imported or generated. Hosted-preview checks and standalone build/typecheck not run.
