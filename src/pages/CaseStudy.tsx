@@ -121,7 +121,7 @@ const CaseStudy = () => {
             <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-8">
               {study.factual?.galleryLabel ?? "On-Site Gallery"}
             </p>
-            <div className={`grid sm:grid-cols-2 ${study.factual ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-px bg-foreground/15 border border-foreground/15`}>
+            {study.gallery.some((g) => !g.enhanced) && <div className={`grid sm:grid-cols-2 ${study.factual ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-px bg-foreground/15 border border-foreground/15`}>
               {study.gallery.filter((g) => !g.enhanced).map((g) => (
                 <figure key={g.src} className="bg-background">
                   <div className="aspect-[4/5] overflow-hidden">
@@ -140,7 +140,7 @@ const CaseStudy = () => {
                   </figcaption>
                 </figure>
               ))}
-            </div>
+            </div>}
             {study.gallery.filter((g) => g.enhanced).map((g) => (
               <figure key={g.src} className="mt-12 border border-foreground/15 bg-background">
                 <div className="p-4 flex justify-center">

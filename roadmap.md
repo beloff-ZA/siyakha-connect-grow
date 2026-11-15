@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Tiger Brands case study — unpublished preview
+- [x] Add factual entry and supplied metadata-stripped boardroom/privacy-detail photos; keep all three latest projects.
+- [x] Verified three routes, commercial filter, homepage cards, scope/captions, contact links and desktop/mobile overflow; photo screenshots inspected using original asset bytes. 380 tests and automatic preview build passed; standalone typecheck/build and hosted-page checks not run.
+
 ## Capital Air equipment identities — unpublished preview
 - [x] Verify authentic manufacturer logos against official homepages and add Capital Air-only Equipment used display.
 - [x] Desktop/mobile logo screenshots inspected; Capital Air scope/caption and Sun International categories preserved; 56 focused tests and automatic preview build passed. Standalone typecheck/build and hosted-page verification not run; supplied Hikvision PDF blocked, official homepage logo used.

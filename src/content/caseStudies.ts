@@ -21,6 +21,8 @@ import capitalAirCabinet from "@/assets/capital-air-cabinet-painted-wall.png.ass
 import sunInternationalHero from "@/assets/sun-international-head-office.jpg.asset.json";
 import hikvisionLogo from "@/assets/hikvision-official-logo.svg.asset.json";
 import paradoxLogo from "@/assets/paradox-official-logo.png.asset.json";
+import tigerBrandsHero from "@/assets/tiger-brands-boardroom.jpg.asset.json";
+import tigerBrandsDetail from "@/assets/tiger-brands-screen-privacy.jpg.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -56,6 +58,38 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "tiger-brands-boardroom-technology",
+    client: "Tiger Brands",
+    title: "Tiger Brands: Smart Board, TV & Paradox Installation",
+    industry: "Commercial & Corporate Offices",
+    location: "",
+    hero: tigerBrandsHero.url,
+    heroPhoto: {
+      alt: "Tiger Brands boardroom with conference table, seating and a display; Tiger Brands signage appears in the room",
+      caption: "Tiger Brands boardroom",
+      width: 1086,
+      height: 1448,
+      portrait: true,
+    },
+    summary: "A Tiger Brands project by the Siyakha Technology Solutions team: smart board installation, TVs and a Paradox system.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: ["Smart Board Installation", "TV Installation", "Paradox System"],
+    equipment: [
+      { name: "Paradox", logo: paradoxLogo.url, width: 2560, height: 291, source: "https://www.paradox.com/web/" },
+    ],
+    factual: {
+      overview: "The Siyakha Technology Solutions team carried out smart board installation, TV installation and installation of a Paradox system for the Tiger Brands project.",
+      scope: ["Smart board installation", "TVs", "Paradox system"],
+      galleryLabel: "Installation detail",
+    },
+    gallery: [
+      { src: tigerBrandsDetail.url, caption: "Smart board installation · site clutter removed; display blurred for privacy", alt: "Tiger Brands wall-mounted smart board with display content blurred for privacy and temporary site clutter removed; unfinished ceiling remains visible", width: 941, height: 1672, enhanced: true },
+    ],
+  },
   {
     slug: "sun-international-head-office",
     client: "Sun International Head Office",
