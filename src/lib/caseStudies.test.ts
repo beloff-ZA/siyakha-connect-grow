@@ -24,12 +24,12 @@ describe("confirmed project scope", () => {
     expect(study?.results).toEqual([]);
   });
 
-  it("keeps the conceptual overview separate from installation evidence", () => {
+  it("keeps St Joseph's public imagery limited to the actual outdoor photo, without diagrams or maps", () => {
     const study = getCaseStudy("st-josephs-marist-cape-town");
-    expect(study?.gallery).toHaveLength(1);
-    expect(study?.gallery?.[0].illustrative).toBe(true);
-    expect(study?.gallery?.[0].enhanced).toBeUndefined();
-    expect(study?.hero).not.toBe(study?.gallery?.[0].src);
+    expect(study?.hero).toMatch(/\/st-joseph-outdoor-installation\.webp$/);
+    expect(study?.gallery).toBeUndefined();
+    expect(study?.sequence).toBeUndefined();
+    expect(study?.beforeAfter).toBeUndefined();
   });
 
   it("adds one St Joseph's entry while retaining the other three latest projects", () => {

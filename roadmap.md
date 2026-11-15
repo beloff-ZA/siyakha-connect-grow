@@ -1,7 +1,8 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
 ## St Joseph’s case study — unpublished main preview
-- [x] Add confirmed factual entry, optimized supplied photo and explicitly illustrative full-width diagram; preserve existing projects and campaign.
+- [x] Add confirmed factual entry and optimized supplied outdoor photo; preserve existing projects and campaign.
+- [x] Remove rejected St Joseph’s diagram, captions, section and asset pointer from current source; 5 focused / 383 full tests and automatic build passed. Desktop/mobile case study, homepage, listing and requests contain no diagram; actual photo retained. No publication or backend changes.
 - [x] Add Education listing, sitemap and four-card 2×2 homepage selection.
 - [x] 75 focused / 383 full tests and automatic preview build passed; four desktop/mobile routes, images, Education filter and 2×2/stacked cards checked. Hosted image endpoints returned images; local image checks used those exact bytes. Existing Contact Siyakha link redirects from /contact to home, left unchanged under preservation constraint; no submissions or publication. Standalone build/typecheck and hosted-page layout not run.
 

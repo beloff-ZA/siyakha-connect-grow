@@ -24,7 +24,6 @@ import paradoxLogo from "@/assets/paradox-official-logo.png.asset.json";
 import tigerBrandsHero from "@/assets/tiger-brands-boardroom.jpg.asset.json";
 import tigerBrandsDetail from "@/assets/tiger-brands-screen-privacy.jpg.asset.json";
 import stJosephHero from "@/assets/st-joseph-outdoor-installation.webp.asset.json";
-import stJosephOverview from "@/assets/st-joseph-illustrative-overview.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -43,7 +42,7 @@ export interface CaseStudy {
   services: string[];
   equipment?: { name: string; logo: string; width: number; height: number; source: string }[];
   quote?: { text: string; author: string };
-  gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number; enhanced?: boolean; illustrative?: boolean }[];
+  gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number; enhanced?: boolean }[];
   /** Fact-only entries: replaces problem/solution/process/results sections. */
   factual?: { overview: string; scope: string[]; galleryLabel?: string; scopeMetric?: { value: number; label: string } };
   sequence?: {
@@ -83,18 +82,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     factual: {
       overview: "At St Joseph’s Marist Brothers in Cape Town, Siyakha Technology Solutions completed a fibre-integrated turnkey CCTV rollout involving multiple cameras. The complete turnkey delivery brought the CCTV rollout and fibre integration together as one project.",
       scope: ["CCTV rollout", "Fibre integration", "Turnkey delivery"],
-      galleryLabel: "Illustrative service overview",
     },
-    gallery: [
-      {
-        src: stJosephOverview.url,
-        caption: "Illustrative service overview, not an as-built security plan",
-        alt: "Conceptual illustration of CCTV rollout, fibre integration and turnkey delivery; drawn buildings, cameras, connections and central device do not represent the actual campus layout, wiring, equipment or quantities. On-image disclaimer: Illustrative overview · Not an as-built security plan",
-        width: 1672,
-        height: 941,
-        illustrative: true,
-      },
-    ],
   },
   {
     slug: "tiger-brands-boardroom-technology",
