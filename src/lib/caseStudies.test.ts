@@ -41,7 +41,7 @@ describe("confirmed project scope", () => {
     expect(study?.industry).toBe("Beauty & Wellness");
     expect(study?.location).toBe("");
     expect(study?.year).toBeUndefined();
-    expect(study?.hero).toMatch(/\/afro-muse-in-progress-interior\.webp$/);
+    expect(study?.hero).toMatch(/\/afro-muse-interior-enhanced\.webp$/);
     expect(study?.typeCover).toBeUndefined();
     expect(study?.heroPhoto?.preserveFullScene).toBe(true);
     expect(study?.results).toEqual([]);

@@ -35,7 +35,7 @@ import campuskeyCommonArea from "@/assets/campuskey-common-area.webp.asset.json"
 import impalaHero from "@/assets/impala-rollout-privacy.webp.asset.json";
 import forumHero from "@/assets/angolan-mining-forum-event.webp.asset.json";
 import tctsHero from "@/assets/tcts-autobody-premises.webp.asset.json";
-import afroMuseHero from "@/assets/afro-muse-in-progress-interior.webp.asset.json";
+import afroMuseHero from "@/assets/afro-muse-interior-enhanced.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -106,7 +106,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     status: "Project in progress",
     hero: afroMuseHero.url,
     heroPhoto: {
-      alt: "Original contextual photograph of the empty Afro Muse Hair and Beauty salon interior during works",
+      alt: "Enhanced photograph of the Afro Muse Hair and Beauty salon interior during works",
       caption: "Afro Muse Hair and Beauty interior · project in progress",
       width: 1280,
       height: 960,
