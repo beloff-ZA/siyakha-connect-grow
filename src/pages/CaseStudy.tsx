@@ -68,13 +68,13 @@ const CaseStudy = () => {
       <section className="bg-background">
         <div className="container mx-auto px-6 lg:px-10 py-16">
           <figure className={study.heroPhoto?.portrait ? "max-w-2xl mx-auto" : ""}>
-          <div className={study.heroPhoto?.portrait ? "aspect-[3/4] overflow-hidden border border-foreground/15" : "aspect-[16/9] overflow-hidden border border-foreground/15"}>
+          <div className={study.heroPhoto?.preserveFullScene ? "border border-foreground/15" : study.heroPhoto?.portrait ? "aspect-[3/4] overflow-hidden border border-foreground/15" : "aspect-[16/9] overflow-hidden border border-foreground/15"}>
             {study.typeCover ? <ProjectTypeCover client={study.client} subtitle={study.typeCover.subtitle} /> : <img
               src={study.hero}
               alt={study.heroPhoto?.alt ?? `${study.client} — ${study.title}`}
               width={study.heroPhoto?.width ?? 1920}
               height={study.heroPhoto?.height ?? 1080}
-              className={study.heroPhoto?.portrait ? "w-full h-full object-contain" : "w-full h-full object-cover grayscale"}
+              className={study.heroPhoto?.preserveFullScene ? "block w-full h-auto object-contain" : study.heroPhoto?.portrait ? "w-full h-full object-contain" : "w-full h-full object-cover grayscale"}
             />}
           </div>
           {study.heroPhoto?.caption && <figcaption className="mt-3 text-sm text-foreground/60">{study.heroPhoto.caption}</figcaption>}

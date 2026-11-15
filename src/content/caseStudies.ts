@@ -31,6 +31,7 @@ import sapathHero from "@/assets/sapath-site-interior.webp.asset.json";
 import campuskeyCable from "@/assets/campuskey-cable-management.webp.asset.json";
 import campuskeyHero from "@/assets/campuskey-building-exterior.webp.asset.json";
 import campuskeyCommonArea from "@/assets/campuskey-common-area.webp.asset.json";
+import impalaHero from "@/assets/impala-rollout-privacy.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -41,7 +42,7 @@ export interface CaseStudy {
   year?: string;
   hero: string;
   typeCover?: { subtitle: string; caption: string };
-  heroPhoto?: { alt: string; caption: string; width: number; height: number; portrait: boolean };
+  heroPhoto?: { alt: string; caption: string; width: number; height: number; portrait: boolean; preserveFullScene?: boolean };
   summary: string;
   problem: string;
   solution: string;
@@ -74,8 +75,15 @@ export const CASE_STUDIES: CaseStudy[] = [
     title: "Impala Platinum: Laptop Rollout Support",
     industry: "Mining",
     location: "North West, South Africa",
-    hero: "",
-    typeCover: { subtitle: "Laptop Rollout Support", caption: "Impala Platinum · typographic project cover" },
+    hero: impalaHero.url,
+    heroPhoto: {
+      alt: "Privacy-edited on-site photograph from the Impala Platinum rollout support project, with faces, whiteboard and paperwork blurred",
+      caption: "On-site rollout support · faces and operational information blurred for privacy",
+      width: 1448,
+      height: 1086,
+      portrait: false,
+      preserveFullScene: true,
+    },
     summary: "Siyakha Technology Solutions deployed resources to assist with laptop allocation for an Impala Platinum mine rollout project involving more than 1,000 machines in North West.",
     problem: "",
     solution: "",

@@ -12,8 +12,8 @@ describe("confirmed project scope", () => {
     expect(study?.year).toBeUndefined();
     expect(study?.equipment).toBeUndefined();
     expect(study?.gallery).toBeUndefined();
-    expect(study?.hero).toBe("");
-    expect(study?.typeCover).toBeDefined();
+    expect(study?.hero).toMatch(/\/impala-rollout-privacy\.webp$/);
+    expect(study?.typeCover).toBeUndefined();
     expect(study?.results).toEqual([]);
     expect(JSON.stringify(study)).not.toMatch(/completed|configuration|imaging|enrollment|testing|setup|allocated all/i);
     expect(CASE_STUDIES.filter((s) => s.slug === "impala-platinum-laptop-rollout")).toHaveLength(1);

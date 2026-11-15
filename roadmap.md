@@ -1,6 +1,7 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
 ## Impala Platinum — unpublished preview
+- [x] Replaced only Impala’s cover with the metadata-stripped supplied privacy-edited photo, full 4:3 scene and exact caption; 14 focused / all 392 tests, automatic preview build and nine-route desktop/mobile checks passed without page errors or rejected-diagram requests. Scope and wider-rollout metric unchanged; CampusKey supplement and previous content preserved. Local layout checks use exact supplied asset bytes; hosted-page layout and standalone build/typecheck not run. Nothing published.
 - [x] Added confirmed rollout-support scope, wider-project 1,000+ metric and native typographic cover; Mining filter, static sitemap (no lastmod source or values) and nine recent projects with no invented photography or completion claims.
 - [x] 14 focused / all 392 tests and automatic preview build passed; all nine routes, Mining/previous filters, CampusKey photo supplement, typography and desktop/mobile layouts verified at 1280/390 widths without overflow/page errors or rejected diagram requests. Existing content, campaign/backend/settings preserved; no publication. Local prior-photo checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run.
 
