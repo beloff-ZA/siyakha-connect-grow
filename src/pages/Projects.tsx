@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { CASE_STUDIES } from "@/content/caseStudies";
 import { Button } from "@/components/ui/button";
 import ProjectTypeCover from "@/components/site/ProjectTypeCover";
+import ShareCaseStudy from "@/components/site/ShareCaseStudy";
 import { inferClientType, inferRegion } from "@/lib/projectFilters";
 
 const CLIENT_TYPES = ["All", "Estates", "Student Accommodation", "Commercial", "Retail", "Hospitality", "Healthcare", "Education", "Government", "Mining", "Events", "Automotive", "Beauty & Wellness"] as const;
@@ -92,10 +93,13 @@ const Projects = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-foreground/15 border border-foreground/15">
               {filtered.map((s) => (
-                <Link
+                <div
                   key={s.slug}
+                  className="group relative bg-background hover:bg-foreground/[0.03] transition-colors flex flex-col"
+                >
+                <Link
                   to={`/case-studies/${s.slug}`}
-                  className="group bg-background hover:bg-foreground/[0.03] transition-colors flex flex-col"
+                  className="flex flex-col flex-1"
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-foreground/5">
                     {s.typeCover ? <ProjectTypeCover client={s.client} subtitle={s.typeCover.subtitle} /> : <img src={s.hero} alt={s.title} className="w-full h-full object-cover grayscale group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />}
