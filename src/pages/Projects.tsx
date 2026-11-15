@@ -118,6 +118,8 @@ const Projects = () => {
                     </div>
                   </div>
                 </Link>
+                <ShareCaseStudy study={s} className="absolute top-3 right-3 z-10" />
+                </div>
               ))}
             </div>
           )}

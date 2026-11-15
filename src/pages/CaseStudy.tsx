@@ -6,6 +6,7 @@ import LeadMagnetDialog from "@/components/leads/LeadMagnetDialog";
 import { getCaseStudy } from "@/content/caseStudies";
 import { ArrowLeft, CheckCircle2, Circle } from "lucide-react";
 import ProjectTypeCover from "@/components/site/ProjectTypeCover";
+import ShareCaseStudy from "@/components/site/ShareCaseStudy";
 
 const CaseStudy = () => {
   const { slug = "" } = useParams();
@@ -64,6 +65,7 @@ const CaseStudy = () => {
           <p className="mt-8 text-base md:text-lg text-foreground/75 leading-relaxed max-w-2xl">
             {study.summary}
           </p>
+          <ShareCaseStudy study={study} variant="full" className="mt-10" />
         </div>
       </section>
 

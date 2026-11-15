@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Shareable project references — requested before publish
+- [x] Add share controls to the projects listing and case study detail pages (copy link / WhatsApp / native share), monochrome, no backend changes.
+- [x] All 423 tests passed; browser verified 18 listing share buttons (desktop + mobile) copy the correct link without navigating, detail Copy link/WhatsApp actions work, no page errors. Ready to publish the whole queued scope.
+
 ## Confirmed KZN service coverage — authorized unpublished scope
 - [x] Add four confirmed KZN areas to shared homepage enquiry/footer coverage and relevant runtime/static areaServed data, retaining existing coverage; no branches, address, hours, map pins or city pages.
 - [x] All 418 tests and automatic preview build passed; desktop/mobile enquiry/footer copy inspected, four KZN areas present in every homepage business schema, no street address or automatic popup and one canonical retained. Prior project facts/images untouched; no submissions, backend changes or deployment. Live update waits for coordinator publication.
