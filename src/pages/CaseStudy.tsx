@@ -343,7 +343,7 @@ const CaseStudy = () => {
             <div className="mt-10 flex flex-wrap gap-3">
               {study.factual ? (
                 <Link
-                  to="/contact"
+                  to="/#enquiry"
                   className="bg-background text-foreground px-6 py-3 text-[12px] uppercase tracking-[0.24em] hover:bg-background/90 transition-colors"
                 >
                   Contact Siyakha

@@ -145,6 +145,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     factual: {
       overview: "Siyakha Technology Solutions worked on the formulation of digital systems and software tools to assist event management for the Angolan Mining Business Forum.",
       scope: ["Digital systems formulation", "Event-management software tools"],
+      scopeLabel: "Project scope",
     },
   },
   {
@@ -171,6 +172,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     factual: {
       overview: "Siyakha Technology Solutions deployed resources to assist with laptop allocation for an Impala Platinum mine rollout project involving more than 1,000 machines in North West.",
       scope: ["On-site rollout resources", "Laptop allocation assistance"],
+      scopeLabel: "Support scope",
       scopeMetric: { value: "1,000+", label: "Machines in the wider rollout project" },
     },
   },

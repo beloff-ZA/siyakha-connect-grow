@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Project enquiry CTA QA — unpublished preview
+- [x] Routed only factual-project contact CTA to /#enquiry using existing hash scrolling; actual clicks showed enquiry fields at 1280x1800 and 390x844/1800. /managed-it is an existing route and clicked through to Managed IT Services, so retained unchanged.
+- [x] Forum/TCTS use Project scope and Impala Support scope; all 399 tests and automatic preview build passed. All twelve project facts/images and in-progress salon unchanged. No form/backend/contact/unrelated-page changes, lead submissions or deployment.
+
 ## Afro Muse final photo supplement — unpublished preview
 - [x] Replaced only Afro Muse cover with metadata-stripped original salon photograph, full unchanged 4:3 scene, exact caption and preserved in-progress scope/status; no retouching or new service claims.
 - [x] All 399 tests and automatic preview build passed; twelve routes, status/filters, prior photos/attributions and desktop/mobile layout passed at 1280/390 widths with no page errors or rejected diagram requests. Production /december-cleanup verified read-only with current offer. Diff against 851ec2da1d823e20dbde0d102a8e0a338b42c24b remains showcase plus existing generated previewAuthStorage hostname parser and north-star metadata; no backend/campaign changes. Local media QA uses exact supplied bytes; hosted-preview images/layout and standalone build/typecheck not run. Existing /contact redirect home unchanged; no submissions or deployment.
