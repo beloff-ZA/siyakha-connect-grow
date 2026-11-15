@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Catch 22 — unpublished preview
+- [x] Add confirmed connectivity assistance and guest Wi-Fi testing scope, optimized metadata-stripped contextual exterior, Hospitality listing and static sitemap entry. Official website confirms the Table View address; sitemap contains no lastmod values or generation mechanism to repair.
+- [x] 10 focused tests and all 388 tests passed; automatic preview build OK. All six routes, Hospitality/Retail filters, exact Catch 22 summary, Tiger appointment, photo/logo rendering, two-column desktop and mobile stack passed at 1280/390 widths, without overflow/page errors or rejected-diagram requests. Local media checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run. No submissions, backend changes or publication.
+
 ## Nomination Italy — unpublished preview
 - [x] Add factual Waterfront case study, approved storefront, official homepage SVG logo with exact source URL, Retail filter and sitemap.
 - [x] Retain previous four homepage projects with balanced lead card and paired rows/phone stack; 78 focused / 386 full tests and automatic preview build passed. All five routes, scope regressions, logo/photo, Retail filter and no-overflow/no-diagram checks passed at 1280/390 widths. Hosted image endpoints returned 200; local layout checks used exact asset bytes. Existing /contact destination unchanged; no submissions, backend changes or publication. Standalone build/typecheck and hosted-page layout not run.

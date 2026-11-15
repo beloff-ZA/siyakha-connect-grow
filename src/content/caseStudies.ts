@@ -26,6 +26,7 @@ import tigerBrandsDetail from "@/assets/tiger-brands-screen-privacy.jpg.asset.js
 import stJosephHero from "@/assets/st-joseph-outdoor-installation.webp.asset.json";
 import nominationHero from "@/assets/nomination-italy-waterfront-storefront.webp.asset.json";
 import nominationLogo from "@/assets/nomination-official-logo.svg.asset.json";
+import catch22Hero from "@/assets/catch-22-exterior.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -62,6 +63,31 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "catch-22-connectivity",
+    client: "Catch 22",
+    title: "Catch 22: Connectivity & Guest Wi-Fi Testing",
+    industry: "Hospitality",
+    location: "Corner Beach Boulevard and Porterfield Road, Table View, Cape Town",
+    hero: catch22Hero.url,
+    heroPhoto: {
+      alt: "Contextual exterior photograph showing Catch 22 restaurant signage in Table View, Cape Town",
+      caption: "Catch 22 restaurant exterior · Table View, Cape Town",
+      width: 1170,
+      height: 878,
+      portrait: false,
+    },
+    summary: "Siyakha Technology Solutions assisted Catch 22 with a connectivity solution and testing Wi-Fi solutions for guests.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: ["Connectivity solution assistance", "Guest Wi-Fi solution testing"],
+    factual: {
+      overview: "Siyakha Technology Solutions assisted Catch 22 with a connectivity solution and testing Wi-Fi solutions for guests.",
+      scope: ["Connectivity solution assistance", "Guest Wi-Fi solution testing"],
+    },
+  },
   {
     slug: "nomination-italy-waterfront",
     client: "Nomination Italy",
@@ -460,6 +486,7 @@ export function getCaseStudy(slug: string) {
 }
 
 export const LATEST_PROJECT_SLUGS = [
+  "catch-22-connectivity",
   "nomination-italy-waterfront",
   "st-josephs-marist-cape-town",
   "tiger-brands-boardroom-technology",

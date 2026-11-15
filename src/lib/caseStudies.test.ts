@@ -32,9 +32,10 @@ describe("confirmed project scope", () => {
     expect(study?.beforeAfter).toBeUndefined();
   });
 
-  it("adds one St Joseph's entry while retaining the other three latest projects", () => {
+  it("retains all six recent projects with one St Joseph's entry", () => {
     expect(CASE_STUDIES.filter((study) => study.slug === "st-josephs-marist-cape-town")).toHaveLength(1);
     expect(LATEST_PROJECT_SLUGS).toEqual([
+      "catch-22-connectivity",
       "nomination-italy-waterfront",
       "st-josephs-marist-cape-town", "tiger-brands-boardroom-technology",
       "sun-international-head-office", "capital-air-randburg",
@@ -69,5 +70,31 @@ describe("confirmed project scope", () => {
   it("preserves Capital Air and Tiger Brands confirmed installation scopes", () => {
     expect(getCaseStudy("capital-air-randburg")?.factual?.scope).toEqual(["32 Hikvision PT CCTV cameras", "Paradox alarm system"]);
     expect(getCaseStudy("tiger-brands-boardroom-technology")?.factual?.scope).toEqual(["Smart board installation", "TVs", "Paradox system"]);
+  });
+
+  it("limits Catch 22 to assistance and guest Wi-Fi testing, without asserting installed equipment or results", () => {
+    const study = getCaseStudy("catch-22-connectivity");
+    expect(study?.factual?.scope).toEqual(["Connectivity solution assistance", "Guest Wi-Fi solution testing"]);
+    expect(study?.services).toEqual(study?.factual?.scope);
+    expect(study?.industry).toBe("Hospitality");
+    expect(study?.location).toBe("Corner Beach Boulevard and Porterfield Road, Table View, Cape Town");
+    expect(study?.year).toBeUndefined();
+    expect(study?.equipment).toBeUndefined();
+    expect(study?.quote).toBeUndefined();
+    expect(study?.factual?.scopeMetric).toBeUndefined();
+    expect(study?.process).toEqual([]);
+    expect(study?.results).toEqual([]);
+    expect(study?.gallery).toBeUndefined();
+    expect(study?.hero).toMatch(/\/catch-22-exterior\.webp$/);
+    expect(CASE_STUDIES.filter((s) => s.slug === "catch-22-connectivity")).toHaveLength(1);
+  });
+
+  it("keeps Design Code Interior Designers as Tiger Brands' appointing party only", () => {
+    const tiger = getCaseStudy("tiger-brands-boardroom-technology");
+    expect(tiger?.summary.startsWith("Appointed by Design Code Interior Designers,")).toBe(true);
+    expect(tiger?.factual?.overview.startsWith("Appointed by Design Code Interior Designers,")).toBe(true);
+    for (const slug of LATEST_PROJECT_SLUGS.filter((s) => s !== "tiger-brands-boardroom-technology")) {
+      expect(JSON.stringify(getCaseStudy(slug))).not.toContain("Design Code Interior Designers");
+    }
   });
 });
