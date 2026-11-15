@@ -264,4 +264,14 @@ describe("confirmed project scope", () => {
     expect(study?.gallery?.[0]?.src).toMatch(/\/marist-supermicro-server-delivery\.webp$/);
     expect(JSON.stringify(study?.results)).not.toMatch(/storage|server|virtual/i);
   });
+
+  it("adds hospitality TV solutions and concepts to the restaurant project without claiming a hotel deployment", () => {
+    const study = getCaseStudy("northern-johannesburg-restaurant-av-wifi");
+    expect(study?.services).toContain("Hospitality TV Solutions & Concepts");
+    expect(study?.solution).toContain("hospitality TV solutions and concepts for restaurants");
+    expect(study?.gallery).toHaveLength(1);
+    expect(study?.gallery?.[0]?.src).toMatch(/\/hospitality-tv-welcome-concept\.webp$/);
+    expect(study?.gallery?.[0]?.caption).toContain("concept");
+    expect(JSON.stringify(study)).not.toMatch(/Palazzo|hotel chain|Sun International/i);
+  });
 });

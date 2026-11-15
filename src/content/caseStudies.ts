@@ -40,6 +40,7 @@ import maristSupermicroDelivery from "@/assets/marist-supermicro-server-delivery
 import incoNasDelivery from "@/assets/inco-creative-nas-delivery.webp.asset.json";
 import incoNasUnit from "@/assets/inco-creative-nas-unit.webp.asset.json";
 import impalaMineTeam from "@/assets/impala-mine-team.webp.asset.json";
+import hospitalityTvConcept from "@/assets/hospitality-tv-welcome-concept.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -513,7 +514,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     problem:
       "The restaurant needed to enhance its technology end-to-end so it could open and trade — proper data points throughout the venue, a Hikvision CCTV system for safety and oversight, and an AV solution that worked with the existing amplifier already on site.",
     solution:
-      "Siyakha installed all data points across the restaurant, deployed a full Hikvision CCTV system with coverage across the floor, entrance and back-of-house, and built out an AV solution — mounting audio speakers and integrating them cleanly into the existing amplifier for zoned in-venue sound.",
+      "Siyakha installed all data points across the restaurant, deployed a full Hikvision CCTV system with coverage across the floor, entrance and back-of-house, and built out an AV solution — mounting audio speakers and integrating them cleanly into the existing amplifier for zoned in-venue sound. Siyakha also provides hospitality TV solutions and concepts for restaurants, including welcome-screen and in-venue display concepts.",
     process: [
       "On-site walk-through and venue technology audit",
       "Installation of all data points across the restaurant",
@@ -535,6 +536,16 @@ export const CASE_STUDIES: CaseStudy[] = [
       "AV Installation",
       "Speaker & Amplifier Integration",
       "Structured Cabling",
+      "Hospitality TV Solutions & Concepts",
+    ],
+    gallery: [
+      {
+        src: hospitalityTvConcept.url,
+        caption: "Hospitality TV welcome-screen concept for restaurants",
+        alt: "Wall-mounted hospitality TV showing a welcome-screen concept with in-venue menu options",
+        width: 720,
+        height: 1280,
+      },
     ],
   },
   {

@@ -113,3 +113,7 @@
 - [x] New Inco Creative case study: scoped + supplied high-performance on-prem & cloud-accessible storage (UGREEN NASync DXP8800 Plus), fact-only, 2 supplied photos, sitemap entry
 - [x] Marist Brothers: added scoped+supplied Supermicro storage server (virtualised workloads) to summary/solution/services + delivery photo gallery
 - [x] 425 tests pass; pages verified desktop/mobile; CDN photos confirmed serving on preview
+
+## Hospitality TV solutions for restaurants (pending placement)
+- [x] Mine team photo added to Impala Platinum gallery (faces published as-is, user-approved)
+- [x] Hospitality TV solutions & concepts added to Restaurant Solutions project (northern-johannesburg-restaurant-av-wifi) with welcome-screen concept photo
