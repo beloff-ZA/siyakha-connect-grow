@@ -1,8 +1,7 @@
 import maristImg from "@/assets/case-marist-network.jpg";
 import exmileImg from "@/assets/case-exmile-rack.jpg";
-import franchiseImg from "@/assets/case-franchise-wifi.jpg";
+import retailPartnerHero from "@/assets/retail-partner-project-context.webp.asset.json";
 import tasteMozImg from "@/assets/case-taste-mozambique.jpg";
-import franchiseKfcImg from "@/assets/case-franchise-kfc.jpg";
 import franchiseWifiPortalImg from "@/assets/case-franchise-wifi-portal.jpg";
 import franchiseSignageImg from "@/assets/case-franchise-digital-signage.jpg";
 import franchisePosImg from "@/assets/case-franchise-pos.jpg";
@@ -565,7 +564,15 @@ export const CASE_STUDIES: CaseStudy[] = [
     title: "Retail Project Support for ICT Companies",
     industry: "Retail & Franchise",
     location: "South Africa",
-    hero: franchiseImg,
+    hero: retailPartnerHero.url,
+    heroPhoto: {
+      alt: "Privacy-edited real retail premises photograph, shown as ICT partner project context only",
+      caption: "Retail project context · people and vehicle identifiers obscured for privacy",
+      width: 1672,
+      height: 941,
+      portrait: false,
+      preserveFullScene: true,
+    },
     summary:
       "Siyakha Technology Solutions assists ICT companies with their retail projects, providing on-site support for connectivity, store technology and signage.",
     problem: "", solution: "", process: [], results: [],
@@ -598,7 +605,7 @@ export const CASE_STUDIES: CaseStudy[] = [
       },
     },
     gallery: [
-      { src: franchiseKfcImg, caption: "Retail site context · ICT partner project support" },
+      { src: retailPartnerHero.url, caption: "Retail project context · people and vehicle identifiers obscured for privacy", alt: "Privacy-edited retail premises view · ICT partner support context", width: 1672, height: 941 },
       { src: franchiseWifiPortalImg, caption: "Guest Wi-Fi · ICT partner project support" },
       { src: franchiseSignageImg, caption: "Store signage and CCTV · ICT partner project support" },
       { src: franchisePosImg, caption: "Store technology · ICT partner project support" },

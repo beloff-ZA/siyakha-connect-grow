@@ -15,6 +15,9 @@ describe("confirmed project scope", () => {
     expect(study?.clientIdentity).toBeUndefined();
     expect(study?.equipment).toBeUndefined();
     expect(study?.factual?.scopeMetric).toBeUndefined();
+    expect(study?.hero).toMatch(/\/retail-partner-project-context\.webp$/);
+    expect(study?.heroPhoto?.preserveFullScene).toBe(true);
+    expect(study?.gallery?.[0]?.src).toBe(study?.hero);
   });
   it("limits TCTS to the supplied business systems without invented product specifications or other services", () => {
     const study = getCaseStudy("tcts-autobody-randburg");
