@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Impala Platinum — unpublished preview
+- [x] Added confirmed rollout-support scope, wider-project 1,000+ metric and native typographic cover; Mining filter, static sitemap (no lastmod source or values) and nine recent projects with no invented photography or completion claims.
+- [x] 14 focused / all 392 tests and automatic preview build passed; all nine routes, Mining/previous filters, CampusKey photo supplement, typography and desktop/mobile layouts verified at 1280/390 widths without overflow/page errors or rejected diagram requests. Existing content, campaign/backend/settings preserved; no publication. Local prior-photo checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run.
+
 ## CampusKey — unpublished preview
 - [x] Supplemented the same CampusKey entry with optimized approved exterior hero and communal-area/cable gallery, exact captions and unchanged attribution/scope; 13 focused / all 391 tests passed and eight routes/filters checked at 1280/390 widths. No rejected diagram requests or page errors. Local layout checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run. No publication or backend/settings changes.
 - [x] Add specific Port Elizabeth case study with exact Exmile attribution, confirmed scope and metadata-stripped approved cable-run photo; Student Accommodation filter and static sitemap entry without fabricated lastmod.

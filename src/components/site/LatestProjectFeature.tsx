@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { getCaseStudy, LATEST_PROJECT_SLUGS } from "@/content/caseStudies";
+import ProjectTypeCover from "@/components/site/ProjectTypeCover";
 
 const LatestProjectFeature = () => {
   const studies = LATEST_PROJECT_SLUGS.flatMap((slug) => {
@@ -20,7 +21,7 @@ const LatestProjectFeature = () => {
           className={`group flex flex-col min-w-0 bg-background border border-foreground/15 ${index === 0 && studies.length % 2 === 1 ? "md:col-span-2 md:grid md:grid-cols-2" : ""}`}
         >
           <div className="aspect-[4/3] overflow-hidden bg-background">
-            <img
+            {study.typeCover ? <ProjectTypeCover client={study.client} subtitle={study.typeCover.subtitle} /> : <img
               src={study.hero}
               alt={study.heroPhoto?.alt ?? "Exterior of the Capital Air building in Randburg"}
               width={study.heroPhoto?.width ?? 1152}
@@ -28,7 +29,7 @@ const LatestProjectFeature = () => {
               loading="lazy"
               decoding="async"
               className={`w-full h-full ${index === 0 && studies.length % 2 === 1 ? "object-contain" : "object-cover"}`}
-            />
+            />}
           </div>
           <div className="bg-background p-6 md:p-8 flex flex-col flex-1">
             <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-4">

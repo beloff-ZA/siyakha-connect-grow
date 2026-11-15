@@ -6,12 +6,14 @@ import SiteSEO from "@/components/site/SiteSEO";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { CASE_STUDIES } from "@/content/caseStudies";
 import { Button } from "@/components/ui/button";
+import ProjectTypeCover from "@/components/site/ProjectTypeCover";
 
-const CLIENT_TYPES = ["All", "Estates", "Student Accommodation", "Commercial", "Retail", "Hospitality", "Healthcare", "Education", "Government"] as const;
+const CLIENT_TYPES = ["All", "Estates", "Student Accommodation", "Commercial", "Retail", "Hospitality", "Healthcare", "Education", "Government", "Mining"] as const;
 const REGIONS = ["All", "South Africa", "GCC", "UK"] as const;
 
 function inferClientType(industry: string): string {
   const i = industry.toLowerCase();
+  if (i.includes("mining")) return "Mining";
   if (i.includes("healthcare")) return "Healthcare";
   if (i.includes("hospitality") || i.includes("restaurant")) return "Hospitality";
   if (i.includes("retail") || i.includes("franchise")) return "Retail";
@@ -115,7 +117,7 @@ const Projects = () => {
                   className="group bg-background hover:bg-foreground/[0.03] transition-colors flex flex-col"
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-foreground/5">
-                    <img src={s.hero} alt={s.title} className="w-full h-full object-cover grayscale group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
+                    {s.typeCover ? <ProjectTypeCover client={s.client} subtitle={s.typeCover.subtitle} /> : <img src={s.hero} alt={s.title} className="w-full h-full object-cover grayscale group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />}
                   </div>
                   <div className="p-6 flex flex-col flex-1">
                     <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/50 mb-3">

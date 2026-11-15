@@ -5,6 +5,7 @@ import SiteSEO from "@/components/site/SiteSEO";
 import LeadMagnetDialog from "@/components/leads/LeadMagnetDialog";
 import { getCaseStudy } from "@/content/caseStudies";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import ProjectTypeCover from "@/components/site/ProjectTypeCover";
 
 const CaseStudy = () => {
   const { slug = "" } = useParams();
@@ -15,7 +16,7 @@ const CaseStudy = () => {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: `${study.client} — ${study.title}`,
-    image: study.hero,
+    ...(study.hero ? { image: study.hero } : {}),
     ...(study.year ? { datePublished: study.year } : {}),
     author: { "@type": "Organization", name: "Siyakha Technology" },
     publisher: { "@type": "Organization", name: "Siyakha Technology" },
@@ -68,15 +69,16 @@ const CaseStudy = () => {
         <div className="container mx-auto px-6 lg:px-10 py-16">
           <figure className={study.heroPhoto?.portrait ? "max-w-2xl mx-auto" : ""}>
           <div className={study.heroPhoto?.portrait ? "aspect-[3/4] overflow-hidden border border-foreground/15" : "aspect-[16/9] overflow-hidden border border-foreground/15"}>
-            <img
+            {study.typeCover ? <ProjectTypeCover client={study.client} subtitle={study.typeCover.subtitle} /> : <img
               src={study.hero}
               alt={study.heroPhoto?.alt ?? `${study.client} — ${study.title}`}
               width={study.heroPhoto?.width ?? 1920}
               height={study.heroPhoto?.height ?? 1080}
               className={study.heroPhoto?.portrait ? "w-full h-full object-contain" : "w-full h-full object-cover grayscale"}
-            />
+            />}
           </div>
           {study.heroPhoto?.caption && <figcaption className="mt-3 text-sm text-foreground/60">{study.heroPhoto.caption}</figcaption>}
+          {study.typeCover && <figcaption className="mt-3 text-sm text-foreground/60">{study.typeCover.caption}</figcaption>}
           </figure>
         </div>
       </section>

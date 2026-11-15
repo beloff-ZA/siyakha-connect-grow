@@ -2,6 +2,23 @@ import { describe, expect, it } from "vitest";
 import { CASE_STUDIES, getCaseStudy, LATEST_PROJECT_SLUGS } from "@/content/caseStudies";
 
 describe("confirmed project scope", () => {
+  it("records Impala's wider rollout scale without claiming Siyakha completed or allocated every machine", () => {
+    const study = getCaseStudy("impala-platinum-laptop-rollout");
+    expect(study?.factual?.scopeMetric).toEqual({ value: "1,000+", label: "Machines in the wider rollout project" });
+    expect(study?.services).toEqual(["On-site rollout resources", "Laptop allocation assistance"]);
+    expect(study?.factual?.scope).toEqual(study?.services);
+    expect(study?.location).toBe("North West, South Africa");
+    expect(study?.industry).toBe("Mining");
+    expect(study?.year).toBeUndefined();
+    expect(study?.equipment).toBeUndefined();
+    expect(study?.gallery).toBeUndefined();
+    expect(study?.hero).toBe("");
+    expect(study?.typeCover).toBeDefined();
+    expect(study?.results).toEqual([]);
+    expect(JSON.stringify(study)).not.toMatch(/completed|configuration|imaging|enrollment|testing|setup|allocated all/i);
+    expect(CASE_STUDIES.filter((s) => s.slug === "impala-platinum-laptop-rollout")).toHaveLength(1);
+  });
+
   it("records Sun International's 980 network points as scope, not a performance result", () => {
     const study = getCaseStudy("sun-international-head-office");
     expect(study?.factual?.scopeMetric?.value).toBe(980);
@@ -32,9 +49,10 @@ describe("confirmed project scope", () => {
     expect(study?.beforeAfter).toBeUndefined();
   });
 
-  it("retains all eight recent projects with one St Joseph's entry", () => {
+  it("retains all nine recent projects with one St Joseph's entry", () => {
     expect(CASE_STUDIES.filter((study) => study.slug === "st-josephs-marist-cape-town")).toHaveLength(1);
     expect(LATEST_PROJECT_SLUGS).toEqual([
+      "impala-platinum-laptop-rollout",
       "campuskey-port-elizabeth",
       "sapath-network-infrastructure",
       "catch-22-connectivity",

@@ -40,6 +40,7 @@ export interface CaseStudy {
   location: string;
   year?: string;
   hero: string;
+  typeCover?: { subtitle: string; caption: string };
   heroPhoto?: { alt: string; caption: string; width: number; height: number; portrait: boolean };
   summary: string;
   problem: string;
@@ -52,7 +53,7 @@ export interface CaseStudy {
   quote?: { text: string; author: string };
   gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number; enhanced?: boolean }[];
   /** Fact-only entries: replaces problem/solution/process/results sections. */
-  factual?: { overview: string; scope: string[]; galleryLabel?: string; scopeMetric?: { value: number; label: string } };
+  factual?: { overview: string; scope: string[]; galleryLabel?: string; scopeMetric?: { value: number | string; label: string } };
   sequence?: {
     title: string;
     caption?: string;
@@ -67,6 +68,26 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "impala-platinum-laptop-rollout",
+    client: "Impala Platinum",
+    title: "Impala Platinum: Laptop Rollout Support",
+    industry: "Mining",
+    location: "North West, South Africa",
+    hero: "",
+    typeCover: { subtitle: "Laptop Rollout Support", caption: "Impala Platinum · typographic project cover" },
+    summary: "Siyakha Technology Solutions deployed resources to assist with laptop allocation for an Impala Platinum mine rollout project involving more than 1,000 machines in North West.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: ["On-site rollout resources", "Laptop allocation assistance"],
+    factual: {
+      overview: "Siyakha Technology Solutions deployed resources to assist with laptop allocation for an Impala Platinum mine rollout project involving more than 1,000 machines in North West.",
+      scope: ["On-site rollout resources", "Laptop allocation assistance"],
+      scopeMetric: { value: "1,000+", label: "Machines in the wider rollout project" },
+    },
+  },
   {
     slug: "campuskey-port-elizabeth",
     client: "CampusKey",
@@ -557,6 +578,7 @@ export function getCaseStudy(slug: string) {
 }
 
 export const LATEST_PROJECT_SLUGS = [
+  "impala-platinum-laptop-rollout",
   "campuskey-port-elizabeth",
   "sapath-network-infrastructure",
   "catch-22-connectivity",
