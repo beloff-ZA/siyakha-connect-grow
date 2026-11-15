@@ -11,6 +11,7 @@ const CaseStudy = () => {
   const { slug = "" } = useParams();
   const study = getCaseStudy(slug);
   if (!study) return <Navigate to="/" replace />;
+  const isRetailPartnerSupport = study.slug === "franchise-firewall-wifi-rollout";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -329,14 +330,18 @@ const CaseStudy = () => {
         <div className="container mx-auto px-6 lg:px-10 py-20 md:py-24">
           <div className="max-w-3xl">
             <h2 className="font-display font-light text-3xl md:text-5xl tracking-[-0.02em] leading-[1.05]">
-              {study.factual ? (
+              {isRetailPartnerSupport ? (
+                <>Need on-site support for <span className="italic font-extralight">your retail project</span>?</>
+              ) : study.factual ? (
                 <>Planning a project for <span className="italic font-extralight">your site</span>?</>
               ) : (
                 <>Want results like this for <span className="italic font-extralight">your site</span>?</>
               )}
             </h2>
             <p className="mt-6 text-base md:text-lg text-background/75 leading-relaxed max-w-2xl">
-              {study.factual
+              {isRetailPartnerSupport
+                ? "Tell us about your ICT company's retail project and the on-site support you need."
+                : study.factual
                 ? "Tell us about your site and Siyakha will be in touch to discuss your requirements."
                 : "Book a free site assessment. We'll walk your premises, audit what you have and design the right infrastructure for your next chapter."}
             </p>

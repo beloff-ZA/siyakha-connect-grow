@@ -4,7 +4,7 @@ import { getCaseStudy } from "@/content/caseStudies";
 
 const SLOTS = [
   { audience: "Estates", slug: "exmile-student-accommodation" },
-  { audience: "Commercial", slug: "franchise-firewall-wifi-rollout" },
+  { audience: "ICT partner retail support", slug: "franchise-firewall-wifi-rollout" },
   { audience: "Schools", slug: "marist-brothers-linmeyer" },
 ];
 

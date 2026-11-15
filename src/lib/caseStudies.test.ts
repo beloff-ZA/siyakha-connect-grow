@@ -2,6 +2,20 @@ import { describe, expect, it } from "vitest";
 import { CASE_STUDIES, getCaseStudy, LATEST_PROJECT_SLUGS } from "@/content/caseStudies";
 
 describe("confirmed project scope", () => {
+  it("keeps the existing retail entry as partner support without invented outcomes or dates", () => {
+    const study = getCaseStudy("franchise-firewall-wifi-rollout");
+    expect(CASE_STUDIES.filter(s => s.slug === "franchise-firewall-wifi-rollout")).toHaveLength(1);
+    expect(study?.factual?.scope).toEqual(["In-Store IT Support", "Guest Wi-Fi Solutions", "Desktop & Printer Support", "Network Rebuilds", "Comms-Cabinet Re-Cabling", "Store Signage Support", "CCTV Installation Support"]);
+    expect(study?.services).toEqual(study?.factual?.scope);
+    expect(study?.year).toBeUndefined();
+    expect(study?.location).toBe("South Africa");
+    expect(study?.process).toEqual([]);
+    expect(study?.results).toEqual([]);
+    expect(study?.quote).toBeUndefined();
+    expect(study?.clientIdentity).toBeUndefined();
+    expect(study?.equipment).toBeUndefined();
+    expect(study?.factual?.scopeMetric).toBeUndefined();
+  });
   it("limits TCTS to the supplied business systems without invented product specifications or other services", () => {
     const study = getCaseStudy("tcts-autobody-randburg");
     expect(study?.services).toEqual(["VoIP", "Website", "Telephony", "Microsoft packages", "Support console to manage them"]);

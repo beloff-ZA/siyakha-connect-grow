@@ -561,43 +561,33 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     slug: "franchise-firewall-wifi-rollout",
-    client: "Franchise & Retail Stores",
-    title: "Retail & Store Signage, Connectivity & CCTV — Turnkey Technology",
+    client: "ICT Partner Retail Projects",
+    title: "Retail Project Support for ICT Companies",
     industry: "Retail & Franchise",
-    location: "Stores nationwide · South Africa",
-    year: "2024–2025",
+    location: "South Africa",
     hero: franchiseImg,
     summary:
-      "Making sure your clients' hardware stays connected. Complete turnkey technology — from signage installs to network support, as well as CCTV installation — for franchise and retail stores. Including a comms cabinet rebuild for Coricraft, shown before and after.",
-    problem:
-      "Franchise and retail stores were running on ageing, tangled comms cabinets, inconsistent Wi-Fi and unreliable desktop and printer setups — slowing staff down on the floor, frustrating customers and exposing POS systems.",
-    solution:
-      "Siyakha provides in-store resources for retail spaces — guest Wi-Fi solutions, desktop and printer support, network rebuilds and full re-cabling of comms cabinets. For Coricraft we stripped and rebuilt the comms cabinet end-to-end, taking it from a tangled legacy install to a clean, labelled, serviceable rack.",
-    process: [
-      "On-site assessment of cabinet, cabling, Wi-Fi and store IT",
-      "Guest Wi-Fi solution with captive-portal sign-in",
-      "Desktop, POS and printer support for store staff",
-      "Network rebuilds — switches, patch panels and routing tidied",
-      "Full re-cabling of comms cabinets and floor data points",
-      "Coricraft cabinet rebuild — strip-out, re-rack, re-cable, label and test",
-    ],
-    results: [
-      "Clean, serviceable comms cabinets in every store",
-      "Reliable guest Wi-Fi for customers on the floor",
-      "Faster, more dependable desktops, POS and printers",
-      "A single in-store IT partner for franchise and retail estates",
-    ],
+      "Siyakha Technology Solutions assists ICT companies with their retail projects, providing on-site support for connectivity, store technology and signage.",
+    problem: "", solution: "", process: [], results: [],
     services: [
       "In-Store IT Support",
       "Guest Wi-Fi Solutions",
       "Desktop & Printer Support",
       "Network Rebuilds",
       "Comms-Cabinet Re-Cabling",
+      "Store Signage Support",
+      "CCTV Installation Support",
     ],
+    factual: {
+      overview: "Siyakha Technology Solutions assists ICT companies with their retail projects, providing on-site support for connectivity, store technology and signage. This includes comms-cabinet rebuild and re-cabling work at Coricraft in a subcontractor/partner-support capacity. Retail brands pictured are project context, not a claim of direct retailer appointment or endorsement.",
+      scope: ["In-Store IT Support", "Guest Wi-Fi Solutions", "Desktop & Printer Support", "Network Rebuilds", "Comms-Cabinet Re-Cabling", "Store Signage Support", "CCTV Installation Support"],
+      scopeLabel: "Support scope",
+      galleryLabel: "ICT partner retail project context",
+    },
     beforeAfter: {
-      title: "Coricraft comms cabinet — before & after",
+      title: "Coricraft comms cabinet — partner-support work",
       caption:
-        "We stripped out the legacy cabinet, re-racked the active equipment and re-cabled every patch — taking it from a tangled mess to a clean, labelled, serviceable rack.",
+        "Before and after the cabinet rebuild and re-cabling work carried out in a subcontractor/partner-support capacity at Coricraft; no direct retailer appointment is implied.",
       before: {
         src: franchiseCabinetBefore,
         alt: "Coricraft comms cabinet before — tangled cabling, unmanaged patch leads and stacked equipment",
@@ -608,19 +598,19 @@ export const CASE_STUDIES: CaseStudy[] = [
       },
     },
     gallery: [
-      { src: franchiseKfcImg, caption: "On-site at a national franchise store" },
-      { src: franchiseWifiPortalImg, caption: "Branded guest Wi-Fi captive portal" },
-      { src: franchiseSignageImg, caption: "In-store digital signage and CCTV" },
-      { src: franchisePosImg, caption: "POS, desktop and printer support" },
+      { src: franchiseKfcImg, caption: "Retail site context · ICT partner project support" },
+      { src: franchiseWifiPortalImg, caption: "Guest Wi-Fi · ICT partner project support" },
+      { src: franchiseSignageImg, caption: "Store signage and CCTV · ICT partner project support" },
+      { src: franchisePosImg, caption: "Store technology · ICT partner project support" },
     ],
     sequence: {
-      title: "Coricraft cabinet cleanup — full sequence",
+      title: "Coricraft cabinet cleanup — partner-support sequence",
       caption:
-        "Three stages of the rebuild: strip-out, re-rack and final dress. Every patch labelled, every cable accounted for.",
+        "Existing photographs of the cabinet rebuild stages at Coricraft, carried out in a subcontractor/partner-support capacity.",
       items: [
         { src: franchiseCabinetCleanup1, caption: "Cabinet stripped — old gear removed, ready for rebuild" },
         { src: franchiseCabinetCleanup2, caption: "Active equipment re-racked, patch leads being dressed" },
-        { src: franchiseCabinetCleanup3, caption: "Final rebuild — labelled, dressed and serviceable" },
+        { src: franchiseCabinetCleanup3, caption: "Cabinet rebuild — equipment and cabling arranged" },
       ],
     },
   },

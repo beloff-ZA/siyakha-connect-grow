@@ -1,5 +1,10 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Retail ICT partner support correction — unpublished preview
+- [x] Reframe the existing retail entry and shared cards as ICT-company project support; retain Coricraft in explicit subcontractor/partner-support context, existing service scope and existing imagery only. Remove unsupported problem/results, nationwide/date claims; retain twelve recent showcases and enquiry destination.
+- [x] All 400 tests and automatic preview build passed; desktop/mobile retail detail, shared homepage card, project listing and existing /#enquiry destination checked without overflow/page errors. No submissions, backend changes, unrelated SEO edits or deployment; existing image assets retained, no fresh photos imported or generated. Hosted-preview checks and standalone build/typecheck not run.
+- [ ] Replace the retail exterior image when the separately promised privacy-safe supplement arrives; blocked on the supplied image, existing assets remain unchanged meanwhile.
+
 ## Enquiry destination consistency sweep — unpublished preview
 - [x] Reviewed shared enquiryHref/hash scrolling, header/footer/home/sticky CTAs, service/division/industry/audience/capability/project links, Brand Wi-Fi local form anchors and submission handling. Active links conform; server/public references contain no obsolete contact route. Corrected eight obsolete links in five currently unused legacy banners, so reusing them cannot reintroduce the problem. Dormant SmartEstateHero has no mounted screen; existing local-anchor behavior unchanged.
 - [x] All 399 tests and automatic preview build passed; desktop/mobile actual visible links from managed IT, digital services, student accommodation, AI capability and project pages reach visible homepage enquiry fields, Brand Wi-Fi reaches its local form. Dormant banners checked in source only. No forms/backend/settings/records changed, submissions sent or deployment.
