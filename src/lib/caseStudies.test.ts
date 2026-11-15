@@ -5,8 +5,11 @@ describe("confirmed project scope", () => {
   it("keeps the existing retail entry as partner support without invented outcomes or dates", () => {
     const study = getCaseStudy("franchise-firewall-wifi-rollout");
     expect(CASE_STUDIES.filter(s => s.slug === "franchise-firewall-wifi-rollout")).toHaveLength(1);
-    expect(study?.factual?.scope).toEqual(["In-Store IT Support", "Guest Wi-Fi Solutions", "Desktop & Printer Support", "Network Rebuilds", "Comms-Cabinet Re-Cabling", "Store Signage Support", "CCTV Installation Support"]);
+    expect(study?.client).toBe("eXmile Technologies");
+    expect(study?.factual?.scope).toEqual(["National multi-site field support", "Firewall installations", "Maintenance and new connectivity installs", "In-Store IT Support", "Guest Wi-Fi Solutions", "Desktop & Printer Support", "Network Rebuilds", "Comms-Cabinet Re-Cabling", "Store Signage Support", "CCTV Installation Support"]);
     expect(study?.services).toEqual(study?.factual?.scope);
+    expect(study?.summary).toContain("national multi-site field support");
+    expect(study?.factual?.overview).toContain("eXmile Technologies");
     expect(study?.year).toBeUndefined();
     expect(study?.location).toBe("South Africa");
     expect(study?.process).toEqual([]);

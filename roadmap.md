@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## National multi-site field support + Marist Brothers photos — requested before publish
+- [ ] Add national multi-site field support narrative (firewall installs, maintenance → new connectivity installs, for eXmile Technologies) to the Marist Brothers "Complete Technology Solutions for Primary & High Schools" entry; review 6 uploaded photos for privacy safety before use.
+- [ ] Tests + browser check, then publish the whole queued scope.
+
 ## Shareable project references — requested before publish
 - [x] Add share controls to the projects listing and case study detail pages (copy link / WhatsApp / native share), monochrome, no backend changes.
 - [x] All 423 tests passed; browser verified 18 listing share buttons (desktop + mobile) copy the correct link without navigating, detail Copy link/WhatsApp actions work, no page errors. Ready to publish the whole queued scope.

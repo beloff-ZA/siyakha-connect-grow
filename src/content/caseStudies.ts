@@ -1,6 +1,8 @@
 import maristImg from "@/assets/case-marist-network.jpg";
 import exmileImg from "@/assets/case-exmile-rack.jpg";
 import retailPartnerHero from "@/assets/retail-partner-project-context.webp.asset.json";
+import retailSiteInteriorWindow from "@/assets/retail-site-interior-window.webp.asset.json";
+import retailSiteExterior from "@/assets/retail-site-exterior.webp.asset.json";
 import tasteMozImg from "@/assets/case-taste-mozambique.jpg";
 import franchiseWifiPortalImg from "@/assets/case-franchise-wifi-portal.jpg";
 import franchiseSignageImg from "@/assets/case-franchise-digital-signage.jpg";
@@ -560,7 +562,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     slug: "franchise-firewall-wifi-rollout",
-    client: "ICT Partner Retail Projects",
+    client: "eXmile Technologies",
     title: "Retail Project Support for ICT Companies",
     industry: "Retail & Franchise",
     location: "South Africa",
@@ -574,9 +576,12 @@ export const CASE_STUDIES: CaseStudy[] = [
       preserveFullScene: true,
     },
     summary:
-      "Siyakha Technology Solutions assists ICT companies with their retail projects, providing on-site support for connectivity, store technology and signage.",
+      "Siyakha Technology Solutions provides national multi-site field support across South Africa for eXmile Technologies, one of Africa's biggest managed connectivity solutions providers — from firewall installations and maintenance to new connectivity installs across retail sites.",
     problem: "", solution: "", process: [], results: [],
     services: [
+      "National multi-site field support",
+      "Firewall installations",
+      "Maintenance and new connectivity installs",
       "In-Store IT Support",
       "Guest Wi-Fi Solutions",
       "Desktop & Printer Support",
@@ -586,8 +591,8 @@ export const CASE_STUDIES: CaseStudy[] = [
       "CCTV Installation Support",
     ],
     factual: {
-      overview: "Siyakha Technology Solutions assists ICT companies with their retail projects, providing on-site support for connectivity, store technology and signage. This includes comms-cabinet rebuild and re-cabling work at Coricraft in a subcontractor/partner-support capacity. Retail brands pictured are project context, not a claim of direct retailer appointment or endorsement.",
-      scope: ["In-Store IT Support", "Guest Wi-Fi Solutions", "Desktop & Printer Support", "Network Rebuilds", "Comms-Cabinet Re-Cabling", "Store Signage Support", "CCTV Installation Support"],
+      overview: "Siyakha Technology Solutions provides national multi-site field support across South Africa for eXmile Technologies, one of Africa's biggest managed connectivity solutions providers. The work runs across many retail sites and ranges from firewall installations and ongoing maintenance to new connectivity installs, alongside on-site support for connectivity, store technology and signage. This includes comms-cabinet rebuild and re-cabling work at Coricraft in a subcontractor/partner-support capacity. Retail brands pictured are project context, not a claim of direct retailer appointment or endorsement.",
+      scope: ["National multi-site field support", "Firewall installations", "Maintenance and new connectivity installs", "In-Store IT Support", "Guest Wi-Fi Solutions", "Desktop & Printer Support", "Network Rebuilds", "Comms-Cabinet Re-Cabling", "Store Signage Support", "CCTV Installation Support"],
       scopeLabel: "Support scope",
       galleryLabel: "ICT partner retail project context",
     },
@@ -606,6 +611,8 @@ export const CASE_STUDIES: CaseStudy[] = [
     },
     gallery: [
       { src: retailPartnerHero.url, caption: "Retail project context · people and vehicle identifiers obscured for privacy", alt: "Privacy-edited retail premises view · ICT partner support context", width: 1672, height: 941 },
+      { src: retailSiteExterior.url, caption: "Retail site context · national multi-site field support", alt: "Retail premises exterior · ICT partner project support context", width: 1170, height: 878 },
+      { src: retailSiteInteriorWindow.url, caption: "Retail site interior · national multi-site field support", alt: "Retail site interior · ICT partner project support context", width: 494, height: 878 },
       { src: franchiseWifiPortalImg, caption: "Guest Wi-Fi · ICT partner project support" },
       { src: franchiseSignageImg, caption: "Store signage and CCTV · ICT partner project support" },
       { src: franchisePosImg, caption: "Store technology · ICT partner project support" },
