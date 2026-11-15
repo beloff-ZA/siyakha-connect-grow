@@ -72,7 +72,7 @@ export const CASE_STUDIES: CaseStudy[] = [
       height: 1448,
       portrait: true,
     },
-    summary: "A Tiger Brands project by the Siyakha Technology Solutions team: smart board installation, TVs and a Paradox system.",
+    summary: "Appointed by Design Code Interior Designers, Siyakha Technology Solutions delivered smart board installation, TVs and a Paradox system for the Tiger Brands project.",
     problem: "",
     solution: "",
     process: [],
@@ -82,7 +82,7 @@ export const CASE_STUDIES: CaseStudy[] = [
       { name: "Paradox", logo: paradoxLogo.url, width: 2560, height: 291, source: "https://www.paradox.com/web/" },
     ],
     factual: {
-      overview: "The Siyakha Technology Solutions team carried out smart board installation, TV installation and installation of a Paradox system for the Tiger Brands project.",
+      overview: "Appointed by Design Code Interior Designers, Siyakha Technology Solutions delivered smart board installation, TVs and a Paradox system for the Tiger Brands project.",
       scope: ["Smart board installation", "TVs", "Paradox system"],
       galleryLabel: "Installation detail",
     },
