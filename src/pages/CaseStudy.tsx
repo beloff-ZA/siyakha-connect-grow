@@ -121,8 +121,8 @@ const CaseStudy = () => {
             <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-8">
               {study.factual?.galleryLabel ?? "On-Site Gallery"}
             </p>
-            {study.gallery.some((g) => !g.enhanced) && <div className={`grid sm:grid-cols-2 ${study.factual ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-px bg-foreground/15 border border-foreground/15`}>
-              {study.gallery.filter((g) => !g.enhanced).map((g) => (
+            {study.gallery.some((g) => !g.enhanced && !g.illustrative) && <div className={`grid sm:grid-cols-2 ${study.factual ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-px bg-foreground/15 border border-foreground/15`}>
+              {study.gallery.filter((g) => !g.enhanced && !g.illustrative).map((g) => (
                 <figure key={g.src} className="bg-background">
                   <div className="aspect-[4/5] overflow-hidden">
                     <img
@@ -141,6 +141,22 @@ const CaseStudy = () => {
                 </figure>
               ))}
             </div>}
+            {study.gallery.filter((g) => g.illustrative).map((g) => (
+              <figure key={g.src}>
+                <img
+                  src={g.src}
+                  alt={g.alt ?? g.caption}
+                  width={g.width}
+                  height={g.height}
+                  className="block w-full h-auto object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption className="mt-4 text-sm text-foreground/70 leading-relaxed">
+                  {g.caption}
+                </figcaption>
+              </figure>
+            ))}
             {study.gallery.filter((g) => g.enhanced).map((g) => (
               <figure key={g.src} className="mt-12 border border-foreground/15 bg-background">
                 <div className="p-4 flex justify-center">

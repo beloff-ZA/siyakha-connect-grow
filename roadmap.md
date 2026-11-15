@@ -1,5 +1,10 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## St Joseph’s case study — unpublished main preview
+- [x] Add confirmed factual entry, optimized supplied photo and explicitly illustrative full-width diagram; preserve existing projects and campaign.
+- [x] Add Education listing, sitemap and four-card 2×2 homepage selection.
+- [x] 75 focused / 383 full tests and automatic preview build passed; four desktop/mobile routes, images, Education filter and 2×2/stacked cards checked. Hosted image endpoints returned images; local image checks used those exact bytes. Existing Contact Siyakha link redirects from /contact to home, left unchanged under preservation constraint; no submissions or publication. Standalone build/typecheck and hosted-page layout not run.
+
 ## Tiger Brands case study — unpublished preview
 - [x] Add factual entry and supplied metadata-stripped boardroom/privacy-detail photos; keep all three latest projects.
 - [x] Verified three routes, commercial filter, homepage cards, scope/captions, contact links and desktop/mobile overflow; photo screenshots inspected using original asset bytes. 380 tests and automatic preview build passed; standalone typecheck/build and hosted-page checks not run.

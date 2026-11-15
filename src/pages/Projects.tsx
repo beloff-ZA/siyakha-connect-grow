@@ -5,13 +5,14 @@ import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { CASE_STUDIES } from "@/content/caseStudies";
+import { Button } from "@/components/ui/button";
 
-const CLIENT_TYPES = ["All", "Estates", "Commercial", "Schools", "Government"] as const;
+const CLIENT_TYPES = ["All", "Estates", "Commercial", "Education", "Government"] as const;
 const REGIONS = ["All", "South Africa", "GCC", "UK"] as const;
 
 function inferClientType(industry: string): string {
   const i = industry.toLowerCase();
-  if (i.includes("school") || i.includes("training") || i.includes("education")) return "Schools";
+  if (i.includes("school") || i.includes("training") || i.includes("education")) return "Education";
   if (i.includes("student") || i.includes("estate") || i.includes("residential")) return "Estates";
   if (i.includes("government") || i.includes("border")) return "Government";
   return "Commercial";
@@ -63,13 +64,16 @@ const Projects = () => {
               <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/50 mb-2">Client type</p>
               <div className="flex flex-wrap gap-2">
                 {CLIENT_TYPES.map((c) => (
-                  <button
+                  <Button
                     key={c}
+                    variant="outline"
+                    size="sm"
+                    aria-pressed={clientType === c}
                     onClick={() => setClientType(c)}
                     className={`px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] border ${clientType === c ? "bg-foreground text-background border-foreground" : "border-foreground/20 text-foreground/70 hover:text-foreground"}`}
                   >
                     {c}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -77,13 +81,16 @@ const Projects = () => {
               <p className="text-[10px] uppercase tracking-[0.24em] text-foreground/50 mb-2">Region</p>
               <div className="flex flex-wrap gap-2">
                 {REGIONS.map((r) => (
-                  <button
+                  <Button
                     key={r}
+                    variant="outline"
+                    size="sm"
+                    aria-pressed={region === r}
                     onClick={() => setRegion(r)}
                     className={`px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] border ${region === r ? "bg-foreground text-background border-foreground" : "border-foreground/20 text-foreground/70 hover:text-foreground"}`}
                   >
                     {r}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

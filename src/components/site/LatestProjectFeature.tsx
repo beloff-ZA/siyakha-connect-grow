@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
-import { getCaseStudy } from "@/content/caseStudies";
-
-const LATEST_SLUGS = ["tiger-brands-boardroom-technology", "sun-international-head-office", "capital-air-randburg"];
+import { getCaseStudy, LATEST_PROJECT_SLUGS } from "@/content/caseStudies";
 
 const LatestProjectFeature = () => {
-  const studies = LATEST_SLUGS.flatMap((slug) => {
+  const studies = LATEST_PROJECT_SLUGS.flatMap((slug) => {
     const study = getCaseStudy(slug);
     return study ? [study] : [];
   });
@@ -14,7 +12,7 @@ const LatestProjectFeature = () => {
     <section aria-labelledby="latest-project-heading" className="bg-background border-t border-foreground/10">
       <div className="container mx-auto px-6 lg:px-10 py-14 md:py-20">
         <h2 id="latest-project-heading" className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-8">Latest projects</h2>
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
         {studies.map((study) => (
         <Link
           key={study.slug}
