@@ -35,7 +35,7 @@ import campuskeyCommonArea from "@/assets/campuskey-common-area.webp.asset.json"
 import impalaHero from "@/assets/impala-rollout-privacy.webp.asset.json";
 import forumHero from "@/assets/angolan-mining-forum-event.webp.asset.json";
 import tctsHero from "@/assets/tcts-autobody-premises.webp.asset.json";
-import afroMuseHero from "@/assets/afro-muse-interior-enhanced.webp.asset.json";
+import afroMuseHero from "@/assets/afro-muse-interior-refined.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
