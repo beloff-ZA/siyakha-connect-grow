@@ -72,7 +72,9 @@ describe("confirmed project scope", () => {
     expect(study?.industry).toBe("Mining");
     expect(study?.year).toBeUndefined();
     expect(study?.equipment).toBeUndefined();
-    expect(study?.gallery).toBeUndefined();
+    expect(study?.gallery).toHaveLength(1);
+    expect(study?.gallery?.[0]?.src).toMatch(/\/impala-mine-team\.webp$/);
+    expect(study?.gallery?.[0]?.caption).toContain("field team on the mine");
     expect(study?.hero).toMatch(/\/impala-rollout-privacy\.webp$/);
     expect(study?.typeCover).toBeUndefined();
     expect(study?.results).toEqual([]);

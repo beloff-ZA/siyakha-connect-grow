@@ -39,6 +39,7 @@ import afroMuseHero from "@/assets/afro-muse-interior-refined.webp.asset.json";
 import maristSupermicroDelivery from "@/assets/marist-supermicro-server-delivery.webp.asset.json";
 import incoNasDelivery from "@/assets/inco-creative-nas-delivery.webp.asset.json";
 import incoNasUnit from "@/assets/inco-creative-nas-unit.webp.asset.json";
+import impalaMineTeam from "@/assets/impala-mine-team.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -179,6 +180,15 @@ export const CASE_STUDIES: CaseStudy[] = [
       scopeLabel: "Support scope",
       scopeMetric: { value: "1,000+", label: "Machines in the wider rollout project" },
     },
+    gallery: [
+      {
+        src: impalaMineTeam.url,
+        caption: "Siyakha field team on the mine · rollout support",
+        alt: "Four Siyakha field technicians in mine PPE on site during the rollout support project",
+        width: 1600,
+        height: 1200,
+      },
+    ],
   },
   {
     slug: "campuskey-port-elizabeth",
