@@ -114,9 +114,7 @@ describe("confirmed project scope", () => {
     expect(study?.factual?.scopeMetric).toBeUndefined();
     expect(study?.process).toEqual([]);
     expect(study?.results).toEqual([]);
-    expect(study?.gallery).toBeUndefined();
-    expect(study?.hero).toMatch(/\/campuskey-cable-management\.webp$/);
-    expect(JSON.stringify(study)).not.toMatch(/Fluke|certif|speed|performance|Radisson|CAT6A|CAT6 \/ CAT6A/i);
+    expect(JSON.stringify(study)).not.toMatch(/Fluke|certif|speed|performance|Radisson|CAT6A|CAT6 \/ CAT6A|interior.design|Wi-Fi installation/i);
     expect(getCaseStudy("exmile-student-accommodation")?.factual).toBeUndefined();
     expect(CASE_STUDIES.filter((s) => s.slug === "campuskey-port-elizabeth")).toHaveLength(1);
   });

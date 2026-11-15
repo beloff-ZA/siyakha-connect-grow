@@ -28,7 +28,9 @@ import nominationHero from "@/assets/nomination-italy-waterfront-storefront.webp
 import nominationLogo from "@/assets/nomination-official-logo.svg.asset.json";
 import catch22Hero from "@/assets/catch-22-exterior.webp.asset.json";
 import sapathHero from "@/assets/sapath-site-interior.webp.asset.json";
-import campuskeyHero from "@/assets/campuskey-cable-management.webp.asset.json";
+import campuskeyCable from "@/assets/campuskey-cable-management.webp.asset.json";
+import campuskeyHero from "@/assets/campuskey-building-exterior.webp.asset.json";
+import campuskeyCommonArea from "@/assets/campuskey-common-area.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -73,8 +75,8 @@ export const CASE_STUDIES: CaseStudy[] = [
     location: "Port Elizabeth",
     hero: campuskeyHero.url,
     heroPhoto: {
-      alt: "Cable runs secured along a cable tray at the CampusKey project, with no people or readable network labels",
-      caption: "Cable management from the CampusKey project",
+      alt: "Exterior of the CampusKey student accommodation building in Port Elizabeth",
+      caption: "CampusKey student accommodation, Port Elizabeth",
       width: 659,
       height: 878,
       portrait: true,
@@ -88,7 +90,24 @@ export const CASE_STUDIES: CaseStudy[] = [
     factual: {
       overview: "Working on behalf of Exmile, CampusKey’s connectivity partner, Siyakha Technology Solutions recabled the data environment and carried out major data-point cleanup and CAT6 cabling at CampusKey student accommodation in Port Elizabeth.",
       scope: ["Data environment recabling", "Major data-point cleanup", "CAT6 cabling"],
+      galleryLabel: "Site photographs",
     },
+    gallery: [
+      {
+        src: campuskeyCommonArea.url,
+        caption: "Communal area at the CampusKey site",
+        alt: "Empty communal seating area at the CampusKey site",
+        width: 1170,
+        height: 878,
+      },
+      {
+        src: campuskeyCable.url,
+        caption: "Cable management from the CampusKey project",
+        alt: "Cable runs secured along a cable tray at the CampusKey project, with no people or readable network labels",
+        width: 659,
+        height: 878,
+      },
+    ],
   },
   {
     slug: "sapath-network-infrastructure",
