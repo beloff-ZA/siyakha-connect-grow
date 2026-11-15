@@ -2,6 +2,31 @@ import { describe, expect, it } from "vitest";
 import { CASE_STUDIES, getCaseStudy, LATEST_PROJECT_SLUGS } from "@/content/caseStudies";
 
 describe("confirmed project scope", () => {
+  it("limits TCTS to the supplied business systems without invented product specifications or other services", () => {
+    const study = getCaseStudy("tcts-autobody-randburg");
+    expect(study?.services).toEqual(["VoIP", "Website", "Telephony", "Microsoft packages", "Support console to manage them"]);
+    expect(study?.factual?.scope).toEqual(study?.services);
+    expect(study?.location).toBe("Randburg");
+    expect(study?.year).toBeUndefined();
+    expect(study?.equipment).toBeUndefined();
+    expect(study?.results).toEqual([]);
+    expect(JSON.stringify(study)).not.toMatch(/CCTV|365|Office|Azure|repair work|building work|completed/i);
+    expect(CASE_STUDIES.filter(s => s.slug === "tcts-autobody-randburg")).toHaveLength(1);
+  });
+  it("keeps Afro Muse explicitly in progress with only the seven authorized scope items and no location or photograph", () => {
+    const study = getCaseStudy("afro-muse-hair-and-beauty");
+    expect(study?.status).toBe("Project in progress");
+    expect(study?.services).toEqual(["Guest Wi-Fi", "CCTV", "Website and custom booking system", "Switches", "NVRs", "Commercial display", "Fibre management"]);
+    expect(study?.factual?.scope).toEqual(study?.services);
+    expect(study?.industry).toBe("Beauty & Wellness");
+    expect(study?.location).toBe("");
+    expect(study?.year).toBeUndefined();
+    expect(study?.hero).toBe("");
+    expect(study?.typeCover).toBeDefined();
+    expect(study?.results).toEqual([]);
+    expect(JSON.stringify(study)).not.toMatch(/completed|deployed|operational|launched|live booking/i);
+    expect(CASE_STUDIES.filter(s => s.slug === "afro-muse-hair-and-beauty")).toHaveLength(1);
+  });
   it("limits the forum to formulation without implying a deployed platform, venue or event delivery services", () => {
     const study = getCaseStudy("angolan-mining-business-forum");
     expect(study?.location).toBe("");
@@ -64,9 +89,10 @@ describe("confirmed project scope", () => {
     expect(study?.beforeAfter).toBeUndefined();
   });
 
-  it("retains all ten recent projects with one St Joseph's entry", () => {
+  it("retains all twelve recent projects with one St Joseph's entry", () => {
     expect(CASE_STUDIES.filter((study) => study.slug === "st-josephs-marist-cape-town")).toHaveLength(1);
     expect(LATEST_PROJECT_SLUGS).toEqual([
+      "tcts-autobody-randburg", "afro-muse-hair-and-beauty",
       "angolan-mining-business-forum",
       "impala-platinum-laptop-rollout",
       "campuskey-port-elizabeth",

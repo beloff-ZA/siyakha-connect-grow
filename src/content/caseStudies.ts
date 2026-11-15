@@ -33,6 +33,7 @@ import campuskeyHero from "@/assets/campuskey-building-exterior.webp.asset.json"
 import campuskeyCommonArea from "@/assets/campuskey-common-area.webp.asset.json";
 import impalaHero from "@/assets/impala-rollout-privacy.webp.asset.json";
 import forumHero from "@/assets/angolan-mining-forum-event.webp.asset.json";
+import tctsHero from "@/assets/tcts-autobody-premises.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -41,6 +42,7 @@ export interface CaseStudy {
   industry: string;
   location: string;
   year?: string;
+  status?: "Project in progress";
   hero: string;
   typeCover?: { subtitle: string; caption: string };
   heroPhoto?: { alt: string; caption: string; width: number; height: number; portrait: boolean; preserveFullScene?: boolean };
@@ -55,7 +57,7 @@ export interface CaseStudy {
   quote?: { text: string; author: string };
   gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number; enhanced?: boolean }[];
   /** Fact-only entries: replaces problem/solution/process/results sections. */
-  factual?: { overview: string; scope: string[]; galleryLabel?: string; scopeMetric?: { value: number | string; label: string } };
+  factual?: { overview: string; scope: string[]; scopeLabel?: string; galleryLabel?: string; scopeMetric?: { value: number | string; label: string } };
   sequence?: {
     title: string;
     caption?: string;
@@ -70,6 +72,47 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "tcts-autobody-randburg",
+    client: "TCTS Autobody",
+    title: "TCTS Autobody: Connected Business Systems",
+    industry: "Automotive",
+    location: "Randburg",
+    hero: tctsHero.url,
+    heroPhoto: {
+      alt: "Privacy-edited photograph of the TCTS Autobody premises with identifying details obscured",
+      caption: "TCTS Autobody premises · identifying details obscured for privacy",
+      width: 1086,
+      height: 1448,
+      portrait: true,
+    },
+    summary: "Siyakha Technology Solutions worked on VoIP, a website, telephony, Microsoft packages and a support console to manage them for TCTS Autobody in Randburg.",
+    problem: "", solution: "", process: [], results: [],
+    services: ["VoIP", "Website", "Telephony", "Microsoft packages", "Support console to manage them"],
+    factual: {
+      overview: "Siyakha Technology Solutions worked on VoIP, a website, telephony, Microsoft packages and a support console to manage them for TCTS Autobody in Randburg.",
+      scope: ["VoIP", "Website", "Telephony", "Microsoft packages", "Support console to manage them"],
+      scopeLabel: "Project scope",
+    },
+  },
+  {
+    slug: "afro-muse-hair-and-beauty",
+    client: "Afro Muse Hair and Beauty",
+    title: "Afro Muse Hair and Beauty: Salon Technology",
+    industry: "Beauty & Wellness",
+    location: "",
+    status: "Project in progress",
+    hero: "",
+    typeCover: { subtitle: "Salon Technology", caption: "Afro Muse Hair and Beauty · typographic project cover" },
+    summary: "Siyakha Technology Solutions is working on a salon technology project for Afro Muse Hair and Beauty, covering guest Wi-Fi, CCTV, a website and custom booking system, switches, NVRs, a commercial display and fibre management.",
+    problem: "", solution: "", process: [], results: [],
+    services: ["Guest Wi-Fi", "CCTV", "Website and custom booking system", "Switches", "NVRs", "Commercial display", "Fibre management"],
+    factual: {
+      overview: "Siyakha Technology Solutions is working on a salon technology project for Afro Muse Hair and Beauty, covering guest Wi-Fi, CCTV, a website and custom booking system, switches, NVRs, a commercial display and fibre management.",
+      scope: ["Guest Wi-Fi", "CCTV", "Website and custom booking system", "Switches", "NVRs", "Commercial display", "Fibre management"],
+      scopeLabel: "Project scope · in progress",
+    },
+  },
   {
     slug: "angolan-mining-business-forum",
     client: "Angolan Mining Business Forum",
@@ -613,6 +656,8 @@ export function getCaseStudy(slug: string) {
 }
 
 export const LATEST_PROJECT_SLUGS = [
+  "tcts-autobody-randburg",
+  "afro-muse-hair-and-beauty",
   "angolan-mining-business-forum",
   "impala-platinum-laptop-rollout",
   "campuskey-port-elizabeth",

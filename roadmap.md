@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## TCTS Autobody and Afro Muse — final unpublished preview
+- [x] Added two factual entries, metadata-stripped supplied TCTS photo and Afro Muse native cover with explicit in-progress status, non-completion scope markers, listing/filters/sitemap and three-column desktop/two-column tablet/one-column mobile twelve-project presentation.
+- [x] All 399 tests and automatic preview build passed; twelve routes, existing attribution/photos, new filters/status and desktop/mobile layouts verified at 1280/390 widths. Local image QA uses exact asset bytes because unintercepted localhost CDN images are unavailable. Existing /contact CTA redirects home; preserved and reported, no submission sent. Published listing still has original six projects, preview adds twelve; original six content unchanged against 851ec2d, with no campaign/form/function changes. Exact published commit unavailable; pending automatic north-star metadata and generated preview auth storage changes remain untouched. Hosted-preview image/layout and standalone typecheck/build not run. Nothing deployed.
+
 ## Angolan Mining Business Forum — unpublished preview
 - [x] Added formulation-only factual project, optimized actual context photo, unspecified location, Events filter, static sitemap with no fabricated lastmod and ten recent projects.
 - [x] 18 focused / all 396 tests and automatic preview build passed. All ten routes, Events/region filtering, prior scopes/photos, paired desktop/mobile layouts and no overflow/page errors/rejected diagram requests verified at 1280/390 widths. Existing projects/campaign/backend/settings unchanged; no publication. Local image checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run.

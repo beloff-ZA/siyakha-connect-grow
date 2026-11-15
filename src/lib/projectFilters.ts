@@ -1,5 +1,7 @@
 export function inferClientType(industry: string): string {
   const i = industry.toLowerCase();
+  if (i.includes("beauty") || i.includes("wellness")) return "Beauty & Wellness";
+  if (i.includes("automotive")) return "Automotive";
   if (i.includes("event") || i.includes("conference")) return "Events";
   if (i.includes("mining")) return "Mining";
   if (i.includes("healthcare")) return "Healthcare";

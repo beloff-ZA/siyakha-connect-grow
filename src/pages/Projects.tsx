@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import ProjectTypeCover from "@/components/site/ProjectTypeCover";
 import { inferClientType, inferRegion } from "@/lib/projectFilters";
 
-const CLIENT_TYPES = ["All", "Estates", "Student Accommodation", "Commercial", "Retail", "Hospitality", "Healthcare", "Education", "Government", "Mining", "Events"] as const;
+const CLIENT_TYPES = ["All", "Estates", "Student Accommodation", "Commercial", "Retail", "Hospitality", "Healthcare", "Education", "Government", "Mining", "Events", "Automotive", "Beauty & Wellness"] as const;
 const REGIONS = ["All", "South Africa", "GCC", "UK"] as const;
 
 const Projects = () => {
@@ -108,6 +108,7 @@ const Projects = () => {
                       {s.title}
                     </div>
                     <p className="text-[13px] text-foreground/70 leading-relaxed flex-1">{s.summary}</p>
+                    {s.status && <p className="mt-3 text-sm font-semibold border-l-2 border-foreground pl-3">{s.status}</p>}
                     <div className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-foreground/70 group-hover:text-foreground">
                       Read case study <ArrowUpRight className="h-3.5 w-3.5" />
                     </div>

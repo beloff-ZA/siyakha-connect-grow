@@ -2,6 +2,11 @@ import { describe, expect, it } from "vitest";
 import { inferClientType, inferRegion } from "./projectFilters";
 
 describe("project filters", () => {
+  it("classifies the salon and autobody projects without inventing a salon location", () => {
+    expect(inferClientType("Beauty & Wellness")).toBe("Beauty & Wellness");
+    expect(inferClientType("Automotive")).toBe("Automotive");
+    expect(inferRegion("")).toBe("");
+  });
   it("leaves an unknown venue unassigned rather than claiming South Africa", () => {
     expect(inferRegion("")).toBe("");
     expect(inferRegion("  ")).toBe("");

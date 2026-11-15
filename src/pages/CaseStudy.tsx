@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import SiteSEO from "@/components/site/SiteSEO";
 import LeadMagnetDialog from "@/components/leads/LeadMagnetDialog";
 import { getCaseStudy } from "@/content/caseStudies";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Circle } from "lucide-react";
 import ProjectTypeCover from "@/components/site/ProjectTypeCover";
 
 const CaseStudy = () => {
@@ -59,6 +59,7 @@ const CaseStudy = () => {
           <p className="mt-4 font-display text-xl md:text-2xl font-extralight italic text-foreground/85 max-w-3xl">
             {study.title}
           </p>
+          {study.status && <p className="mt-6 border-l-2 border-foreground pl-4 text-sm font-semibold text-foreground">{study.status}</p>}
           <p className="mt-8 text-base md:text-lg text-foreground/75 leading-relaxed max-w-2xl">
             {study.summary}
           </p>
@@ -228,11 +229,11 @@ const CaseStudy = () => {
                 <p className="text-base md:text-lg text-foreground/80 leading-relaxed">{study.factual.overview}</p>
               </div>
               <div>
-                <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-6">Installation scope</p>
+                <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-6">{study.factual.scopeLabel ?? "Installation scope"}</p>
                 <ul className="space-y-4">
                   {study.factual.scope.map((r) => (
                     <li key={r} className="flex items-start gap-3 text-foreground/85 text-base md:text-lg">
-                      <CheckCircle2 className="w-5 h-5 mt-1 flex-shrink-0" strokeWidth={1.5} />
+                      {study.status ? <Circle className="w-5 h-5 mt-1 flex-shrink-0" strokeWidth={1.5} /> : <CheckCircle2 className="w-5 h-5 mt-1 flex-shrink-0" strokeWidth={1.5} />}
                       {r}
                     </li>
                   ))}
