@@ -13,7 +13,7 @@ import FaqBand from "@/components/site/FaqBand";
 import QualifyForm from "@/components/site/QualifyForm";
 import StickyContactBar from "@/components/site/StickyContactBar";
 import Footer from "@/components/Footer";
-import { buildLocalBusinessSchema } from "@/lib/seoSchema";
+import { buildLocalBusinessSchema, SERVICE_AREAS } from "@/lib/seoSchema";
 import { HOME_FAQS, buildFaqSchema } from "@/content/faqs";
 import { DIVISIONS } from "@/content/divisions";
 import { BRAND } from "@/lib/brand";
@@ -72,9 +72,7 @@ const Index = () => {
         addressCountry: "ZA",
       },
       areaServed: [
-        { "@type": "City", name: "Johannesburg" },
-        { "@type": "City", name: "Sandton" },
-        { "@type": "City", name: "Durban" },
+        ...SERVICE_AREAS.map(area => ({ "@type": "City", name: area.name })),
         { "@type": "AdministrativeArea", name: "Gauteng" },
         { "@type": "AdministrativeArea", name: "KwaZulu-Natal" },
         { "@type": "Country", name: "South Africa" },

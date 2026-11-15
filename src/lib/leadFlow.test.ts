@@ -286,7 +286,7 @@ describe("structured data", () => {
     expect(schema["@type"]).toBe("LocalBusiness");
     expect(schema.telephone).toBe("+27877239183");
     const areas = schema.areaServed.map((a) => a.name);
-    expect(areas).toEqual(["Johannesburg", "Sandton", "Durban"]);
+    expect(areas).toEqual(["Johannesburg", "Sandton", "Durban", "Richards Bay", "Empangeni", "Jozini", "Eshowe"]);
     // No fabricated reviews or ratings.
     expect(JSON.stringify(schema)).not.toContain("aggregateRating");
   });

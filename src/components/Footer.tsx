@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Wrench } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import { enquiryHref } from "@/lib/leadForm";
+import { SERVICE_COVERAGE_COPY } from "@/lib/seoSchema";
 
 
 const Footer = () => {
@@ -53,7 +54,10 @@ const Footer = () => {
             </p>
             <p className="text-muted-foreground max-w-md leading-relaxed">
               Managed IT, technology projects, commercial security, digital services and AI &
-              business-process solutions — Johannesburg, Sandton, Durban and KZN.
+              business-process solutions.
+            </p>
+            <p className="text-sm text-muted-foreground mt-3 max-w-md leading-relaxed">
+              {SERVICE_COVERAGE_COPY}
             </p>
             <p className="text-sm text-muted-foreground/80 mt-4 max-w-md leading-relaxed">
               {BRAND.ownerReplyLine}

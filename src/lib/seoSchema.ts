@@ -11,7 +11,13 @@ export const SERVICE_AREAS = [
   { name: "Johannesburg", region: "Gauteng" },
   { name: "Sandton", region: "Gauteng" },
   { name: "Durban", region: "KwaZulu-Natal" },
+  { name: "Richards Bay", region: "KwaZulu-Natal" },
+  { name: "Empangeni", region: "KwaZulu-Natal" },
+  { name: "Jozini", region: "KwaZulu-Natal" },
+  { name: "Eshowe", region: "KwaZulu-Natal" },
 ] as const;
+
+export const SERVICE_COVERAGE_COPY = "Serving Johannesburg and Sandton, plus KwaZulu-Natal including Durban, Richards Bay, Empangeni, Jozini and Eshowe, with national project delivery.";
 
 export function buildLocalBusinessSchema() {
   return {

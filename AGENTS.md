@@ -8,6 +8,7 @@
 - Optional case-study status is rendered on detail, listing and latest cards; in-progress projects cannot silently appear as completed work.
 - Opt-in `heroPhoto.preserveFullScene` renders approved full-scene photos at their native aspect ratio; other case-study photo framing stays unchanged.
 - Public project classification uses tested shared filter helpers; empty locations remain unassigned so unknown venues cannot inherit the legacy regional default.
+- Shared coverage copy and runtime areaServed schemas use the service-area definitions in seoSchema; this keeps enquiry/footer copy and service metadata aligned without creating branch records.
 
 - December photo quotes extend `submit-lead`, use bounded JSON/base64 and validated private `website-orders` uploads, and store the server-generated photo reference in the existing lead description; this avoids a second lead system or schema/security changes.
 - Campaign-only email routing and idempotency stay server-owned; public clients cannot choose recipients, URLs or storage paths, and provider acceptance is not delivery confirmation.

@@ -1,5 +1,6 @@
 import EnquiryForm from "./EnquiryForm";
 import { CONTACT } from "@/lib/contact";
+import { SERVICE_COVERAGE_COPY } from "@/lib/seoSchema";
 
 /**
  * "Talk to us" band on the homepage. The enquiry itself lives in EnquiryForm,
@@ -35,7 +36,7 @@ const QualifyForm = () => (
               · WhatsApp {CONTACT.whatsappDisplay}
             </p>
             <p className="text-background/50">
-              Serving Johannesburg &amp; Sandton and Durban &amp; KwaZulu-Natal, with national project delivery.
+              {SERVICE_COVERAGE_COPY}
             </p>
           </div>
         </div>

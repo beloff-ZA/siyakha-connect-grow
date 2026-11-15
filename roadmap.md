@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Confirmed KZN service coverage — authorized unpublished scope
+- [x] Add four confirmed KZN areas to shared homepage enquiry/footer coverage and relevant runtime/static areaServed data, retaining existing coverage; no branches, address, hours, map pins or city pages.
+- [x] All 418 tests and automatic preview build passed; desktop/mobile enquiry/footer copy inspected, four KZN areas present in every homepage business schema, no street address or automatic popup and one canonical retained. Prior project facts/images untouched; no submissions, backend changes or deployment. Live update waits for coordinator publication.
+
 ## Generic-shell canonical correction — coordinated unpublished SEO scope
 - [x] Remove only the hardcoded homepage canonical and two homepage hreflang tags from index.html; retain runtime Index/SiteSEO ownership and all other metadata/behavior.
 - [x] 14 focused / all 414 tests and automatic preview build passed. Browser verified exactly one correct https://siyakhatechnology.co.za canonical on all fourteen direct routes and project → homepage → projects transitions; initial shell contains neither canonical nor hreflang. Other metadata/behavior untouched; no deployment, changes reach live on next coordinator publish. Hosted crawler/per-page social-preview behavior and standalone build/typecheck not checked.
