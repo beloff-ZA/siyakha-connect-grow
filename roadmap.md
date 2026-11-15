@@ -108,3 +108,8 @@
 ## Notes
 - Additional works stay "Under review" until the office decides; no rates, costs or totals stored.
 - Every field update still requires timestamped photo evidence unless the office records an override reason.
+
+## Storage solutions showcase (done)
+- [x] New Inco Creative case study: scoped + supplied high-performance on-prem & cloud-accessible storage (UGREEN NASync DXP8800 Plus), fact-only, 2 supplied photos, sitemap entry
+- [x] Marist Brothers: added scoped+supplied Supermicro storage server (virtualised workloads) to summary/solution/services + delivery photo gallery
+- [x] 425 tests pass; pages verified desktop/mobile; CDN photos confirmed serving on preview

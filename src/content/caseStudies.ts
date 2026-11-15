@@ -36,6 +36,9 @@ import impalaHero from "@/assets/impala-rollout-privacy.webp.asset.json";
 import forumHero from "@/assets/angolan-mining-forum-event.webp.asset.json";
 import tctsHero from "@/assets/tcts-autobody-premises.webp.asset.json";
 import afroMuseHero from "@/assets/afro-muse-interior-refined.webp.asset.json";
+import maristSupermicroDelivery from "@/assets/marist-supermicro-server-delivery.webp.asset.json";
+import incoNasDelivery from "@/assets/inco-creative-nas-delivery.webp.asset.json";
+import incoNasUnit from "@/assets/inco-creative-nas-unit.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -629,6 +632,51 @@ export const CASE_STUDIES: CaseStudy[] = [
     },
   },
   {
+    slug: "inco-creative-storage",
+    client: "Inco Creative",
+    title: "Inco Creative: High-Performance Storage Solution",
+    industry: "Creative & Media",
+    location: "",
+    hero: incoNasDelivery.url,
+    heroPhoto: {
+      alt: "UGREEN NASync DXP8800 Plus storage unit in its box, supplied for Inco Creative",
+      caption: "Storage hardware supplied for Inco Creative",
+      width: 494,
+      height: 878,
+      portrait: true,
+    },
+    summary:
+      "Siyakha Technology Solutions scoped and supplied a high-performance on-prem and cloud-accessible storage solution for Inco Creative, a creative editing company that needs reliable content storage.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: [
+      "Storage solution scoping and supply",
+      "High-performance on-prem storage (UGREEN NASync DXP8800 Plus)",
+      "Cloud-accessible content storage",
+    ],
+    factual: {
+      overview:
+        "Siyakha Technology Solutions scoped and supplied a high-performance on-prem and cloud-accessible storage solution for Inco Creative, a creative editing company that needs the ability to store content. The supplied UGREEN NASync DXP8800 Plus gives the team high-performance on-prem storage with cloud-accessible access.",
+      scope: [
+        "Storage solution scoping and supply",
+        "High-performance on-prem storage (UGREEN NASync DXP8800 Plus)",
+        "Cloud-accessible content storage",
+      ],
+      scopeLabel: "Project scope",
+    },
+    gallery: [
+      {
+        src: incoNasUnit.url,
+        caption: "UGREEN NASync DXP8800 Plus · on-prem and cloud-accessible storage",
+        alt: "UGREEN NASync DXP8800 Plus eight-bay network storage unit",
+        width: 702,
+        height: 878,
+      },
+    ],
+  },
+  {
     slug: "marist-brothers-linmeyer",
     client: "Educational Facility Solutions",
     title: "Complete Technology Solutions for Primary & High Schools",
@@ -637,11 +685,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     year: "2024",
     hero: maristImg,
     summary:
-      "Deployment of structured classroom networking across 22 classrooms with centralised switching, improved internet performance and a foundation for digital learning.",
+      "Deployment of structured classroom networking across 22 classrooms with centralised switching, improved internet performance and a foundation for digital learning — plus a scoped and supplied high-performance on-prem and cloud-accessible storage server for virtualised workloads.",
     problem:
       "Classrooms relied on patchy Wi-Fi and ageing point-to-point cabling. Teachers couldn't trust connectivity for digital lessons, and the school had no centralised view of network performance or capacity to scale.",
     solution:
-      "Siyakha designed and deployed enterprise-grade structured cabling, terminated data points in every classroom and consolidated all switching into a single managed core — giving the school stable, fast, future-ready connectivity.",
+      "Siyakha designed and deployed enterprise-grade structured cabling, terminated data points in every classroom and consolidated all switching into a single managed core — giving the school stable, fast, future-ready connectivity. Siyakha also scoped and supplied a high-performance on-prem and cloud-accessible storage server, giving the school a platform for multiple virtual server setups and storage-demanding workloads.",
     process: [
       "On-site survey and cable-route design across 22 classrooms",
       "Cat6 structured cabling installed with cable trays and labelling",
@@ -661,6 +709,16 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Classroom Data Points",
       "Switch Installation",
       "Infrastructure Testing",
+      "On-Prem & Cloud-Accessible Storage Server",
+    ],
+    gallery: [
+      {
+        src: maristSupermicroDelivery.url,
+        caption: "Storage server hardware delivered · scoped and supplied for virtualised server and storage workloads",
+        alt: "Supermicro server hardware in delivery boxes, supplied for the school's virtualised server and storage platform",
+        width: 960,
+        height: 1280,
+      },
     ],
   },
 ];

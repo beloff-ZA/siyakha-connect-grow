@@ -225,4 +225,41 @@ describe("confirmed project scope", () => {
     expect(JSON.stringify(study)).not.toMatch(/Vincent|Pallotti|hospital|Wi-Fi|speedtest|certification/i);
     expect(CASE_STUDIES.filter((s) => s.slug === "sapath-network-infrastructure")).toHaveLength(1);
   });
+
+  it("records Inco Creative as a scoped-and-supplied storage solution without invented outcomes, dates or location", () => {
+    const study = getCaseStudy("inco-creative-storage");
+    expect(study?.client).toBe("Inco Creative");
+    expect(study?.industry).toBe("Creative & Media");
+    expect(study?.location).toBe("");
+    expect(study?.year).toBeUndefined();
+    expect(study?.status).toBeUndefined();
+    expect(study?.services).toEqual([
+      "Storage solution scoping and supply",
+      "High-performance on-prem storage (UGREEN NASync DXP8800 Plus)",
+      "Cloud-accessible content storage",
+    ]);
+    expect(study?.factual?.scope).toEqual(study?.services);
+    expect(study?.factual?.overview).toContain("scoped and supplied");
+    expect(study?.factual?.overview).toContain("creative editing company");
+    expect(study?.process).toEqual([]);
+    expect(study?.results).toEqual([]);
+    expect(study?.quote).toBeUndefined();
+    expect(study?.equipment).toBeUndefined();
+    expect(study?.clientIdentity).toBeUndefined();
+    expect(study?.hero).toMatch(/\/inco-creative-nas-delivery\.webp$/);
+    expect(study?.gallery).toHaveLength(1);
+    expect(study?.gallery?.[0]?.src).toMatch(/\/inco-creative-nas-unit\.webp$/);
+    expect(JSON.stringify(study)).not.toMatch(/completed|deployed|migrated|award|partner|endorse/i);
+    expect(CASE_STUDIES.filter((s) => s.slug === "inco-creative-storage")).toHaveLength(1);
+  });
+
+  it("adds the supplied Supermicro storage server to Marist Brothers without inventing outcomes", () => {
+    const study = getCaseStudy("marist-brothers-linmeyer");
+    expect(study?.services).toContain("On-Prem & Cloud-Accessible Storage Server");
+    expect(study?.solution).toContain("scoped and supplied a high-performance on-prem and cloud-accessible storage server");
+    expect(study?.solution).toContain("multiple virtual server setups");
+    expect(study?.gallery).toHaveLength(1);
+    expect(study?.gallery?.[0]?.src).toMatch(/\/marist-supermicro-server-delivery\.webp$/);
+    expect(JSON.stringify(study?.results)).not.toMatch(/storage|server|virtual/i);
+  });
 });
