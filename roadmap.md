@@ -1,6 +1,7 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
 ## Sun International public case study — unpublished preview
+- [x] Expand the same entry with confirmed team-delivered CCTV/data points, screens, boardrooms and Wi-Fi access points; 980 remains total network points only.
 - [x] Reuse factual case-study mode and metadata-stripped exterior photo; add listing and paired homepage cards.
 - [x] Verified both case studies, commercial filter, enquiry links and desktop/mobile presentation; 380 tests and automatic preview build passed (standalone typecheck/build not run).
 
