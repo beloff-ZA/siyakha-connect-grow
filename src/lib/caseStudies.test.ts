@@ -13,7 +13,7 @@ describe("confirmed project scope", () => {
     expect(JSON.stringify(study)).not.toMatch(/CCTV|365|Office|Azure|repair work|building work|completed/i);
     expect(CASE_STUDIES.filter(s => s.slug === "tcts-autobody-randburg")).toHaveLength(1);
   });
-  it("keeps Afro Muse explicitly in progress with only the seven authorized scope items and no location or photograph", () => {
+  it("keeps Afro Muse explicitly in progress with only seven authorized scope items and the supplied contextual photograph", () => {
     const study = getCaseStudy("afro-muse-hair-and-beauty");
     expect(study?.status).toBe("Project in progress");
     expect(study?.services).toEqual(["Guest Wi-Fi", "CCTV", "Website and custom booking system", "Switches", "NVRs", "Commercial display", "Fibre management"]);
@@ -21,8 +21,9 @@ describe("confirmed project scope", () => {
     expect(study?.industry).toBe("Beauty & Wellness");
     expect(study?.location).toBe("");
     expect(study?.year).toBeUndefined();
-    expect(study?.hero).toBe("");
-    expect(study?.typeCover).toBeDefined();
+    expect(study?.hero).toMatch(/\/afro-muse-in-progress-interior\.webp$/);
+    expect(study?.typeCover).toBeUndefined();
+    expect(study?.heroPhoto?.preserveFullScene).toBe(true);
     expect(study?.results).toEqual([]);
     expect(JSON.stringify(study)).not.toMatch(/completed|deployed|operational|launched|live booking/i);
     expect(CASE_STUDIES.filter(s => s.slug === "afro-muse-hair-and-beauty")).toHaveLength(1);

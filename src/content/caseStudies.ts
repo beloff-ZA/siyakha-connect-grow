@@ -34,6 +34,7 @@ import campuskeyCommonArea from "@/assets/campuskey-common-area.webp.asset.json"
 import impalaHero from "@/assets/impala-rollout-privacy.webp.asset.json";
 import forumHero from "@/assets/angolan-mining-forum-event.webp.asset.json";
 import tctsHero from "@/assets/tcts-autobody-premises.webp.asset.json";
+import afroMuseHero from "@/assets/afro-muse-in-progress-interior.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -102,8 +103,15 @@ export const CASE_STUDIES: CaseStudy[] = [
     industry: "Beauty & Wellness",
     location: "",
     status: "Project in progress",
-    hero: "",
-    typeCover: { subtitle: "Salon Technology", caption: "Afro Muse Hair and Beauty · typographic project cover" },
+    hero: afroMuseHero.url,
+    heroPhoto: {
+      alt: "Original contextual photograph of the empty Afro Muse Hair and Beauty salon interior during works",
+      caption: "Afro Muse Hair and Beauty interior · project in progress",
+      width: 1280,
+      height: 960,
+      portrait: false,
+      preserveFullScene: true,
+    },
     summary: "Siyakha Technology Solutions is working on a salon technology project for Afro Muse Hair and Beauty, covering guest Wi-Fi, CCTV, a website and custom booking system, switches, NVRs, a commercial display and fibre management.",
     problem: "", solution: "", process: [], results: [],
     services: ["Guest Wi-Fi", "CCTV", "Website and custom booking system", "Switches", "NVRs", "Commercial display", "Fibre management"],
