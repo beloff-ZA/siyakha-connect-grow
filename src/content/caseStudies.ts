@@ -19,6 +19,8 @@ import capitalAirWide from "@/assets/capital-air-exterior-wide.jpg.asset.json";
 import capitalAirInterior from "@/assets/capital-air-interior-wide.jpg.asset.json";
 import capitalAirCabinet from "@/assets/capital-air-cabinet-painted-wall.png.asset.json";
 import sunInternationalHero from "@/assets/sun-international-head-office.jpg.asset.json";
+import hikvisionLogo from "@/assets/hikvision-official-logo.svg.asset.json";
+import paradoxLogo from "@/assets/paradox-official-logo.png.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -35,6 +37,7 @@ export interface CaseStudy {
   process: string[];
   results: string[];
   services: string[];
+  equipment?: { name: string; logo: string; width: number; height: number; source: string }[];
   quote?: { text: string; author: string };
   gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number; enhanced?: boolean }[];
   /** Fact-only entries: replaces problem/solution/process/results sections. */
@@ -94,6 +97,10 @@ export const CASE_STUDIES: CaseStudy[] = [
     process: [],
     results: [],
     services: ["CCTV Installation", "Alarm Installation"],
+    equipment: [
+      { name: "Hikvision", logo: hikvisionLogo.url, width: 8082, height: 1024, source: "https://www.hikvision.com/en/" },
+      { name: "Paradox", logo: paradoxLogo.url, width: 2560, height: 291, source: "https://www.paradox.com/web/" },
+    ],
     factual: {
       overview:
         "Siyakha Technology Solutions has carried out a brand-new security installation for Capital Air in Randburg.",

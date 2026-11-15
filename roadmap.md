@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Capital Air equipment identities — unpublished preview
+- [x] Verify authentic manufacturer logos against official homepages and add Capital Air-only Equipment used display.
+- [x] Desktop/mobile logo screenshots inspected; Capital Air scope/caption and Sun International categories preserved; 56 focused tests and automatic preview build passed. Standalone typecheck/build and hosted-page verification not run; supplied Hikvision PDF blocked, official homepage logo used.
+
 ## Sun International public case study — unpublished preview
 - [x] Expand the same entry with confirmed team-delivered CCTV/data points, screens, boardrooms and Wi-Fi access points; 980 remains total network points only.
 - [x] Reuse factual case-study mode and metadata-stripped exterior photo; add listing and paired homepage cards.

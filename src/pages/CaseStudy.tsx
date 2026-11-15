@@ -225,6 +225,25 @@ const CaseStudy = () => {
                     </li>
                   ))}
                 </ul>
+                {study.equipment && (
+                  <div className="mt-10 border-t border-foreground/10 pt-6">
+                    <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-5">Equipment used</p>
+                    <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
+                      {study.equipment.map((equipment) => (
+                        <img
+                          key={equipment.name}
+                          src={equipment.logo}
+                          alt={`${equipment.name} logo`}
+                          width={equipment.width}
+                          height={equipment.height}
+                          className="block w-36 h-10 object-contain"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
