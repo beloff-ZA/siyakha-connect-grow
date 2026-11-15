@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Enquiry destination consistency sweep — unpublished preview
+- [x] Reviewed shared enquiryHref/hash scrolling, header/footer/home/sticky CTAs, service/division/industry/audience/capability/project links, Brand Wi-Fi local form anchors and submission handling. Active links conform; server/public references contain no obsolete contact route. Corrected eight obsolete links in five currently unused legacy banners, so reusing them cannot reintroduce the problem. Dormant SmartEstateHero has no mounted screen; existing local-anchor behavior unchanged.
+- [x] All 399 tests and automatic preview build passed; desktop/mobile actual visible links from managed IT, digital services, student accommodation, AI capability and project pages reach visible homepage enquiry fields, Brand Wi-Fi reaches its local form. Dormant banners checked in source only. No forms/backend/settings/records changed, submissions sent or deployment.
+
 ## Project enquiry CTA QA — unpublished preview
 - [x] Routed only factual-project contact CTA to /#enquiry using existing hash scrolling; actual clicks showed enquiry fields at 1280x1800 and 390x844/1800. /managed-it is an existing route and clicked through to Managed IT Services, so retained unchanged.
 - [x] Forum/TCTS use Project scope and Impala Support scope; all 399 tests and automatic preview build passed. All twelve project facts/images and in-progress salon unchanged. No form/backend/contact/unrelated-page changes, lead submissions or deployment.

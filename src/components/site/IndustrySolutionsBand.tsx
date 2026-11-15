@@ -28,14 +28,14 @@ const INDUSTRIES = [
     title: "Student Accommodation",
     body: "High-density Wi-Fi, access control, CCTV and smart-building infrastructure.",
     cta: "Accommodation Solutions",
-    to: "/contact",
+    to: "/#enquiry",
   },
   {
     icon: Wrench,
     title: "Panel Beating & Automotive",
     body: "Cloud systems, workstations, VoIP and operations support for busy workshops.",
     cta: "Automotive Solutions",
-    to: "/contact",
+    to: "/#enquiry",
   },
 ];
 

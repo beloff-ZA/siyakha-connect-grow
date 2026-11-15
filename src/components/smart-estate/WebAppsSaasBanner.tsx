@@ -53,14 +53,14 @@ const WebAppsSaasBanner = () => {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                to="/contact"
+                to="/#enquiry"
                 className="inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 text-xs uppercase tracking-[0.22em] hover:bg-foreground/90 transition-colors"
               >
                 <Rocket className="h-3.5 w-3.5" strokeWidth={1.5} />
                 Brief us on your app
               </Link>
               <Link
-                to="/contact"
+                to="/#enquiry"
                 className="inline-flex items-center gap-2 border border-border px-6 py-3 text-xs uppercase tracking-[0.22em] text-foreground hover:bg-secondary/40 transition-colors"
               >
                 <Code2 className="h-3.5 w-3.5" strokeWidth={1.5} />

@@ -82,7 +82,7 @@ const BespokeBanner = () => {
             {SERVICES.map(({ icon: Icon, label }) => (
               <Link
                 key={label}
-                to="/contact"
+                to="/#enquiry"
                 aria-label={label}
                 className="group bg-background hover:bg-foreground hover:text-background transition-colors p-5 md:p-6 flex flex-col items-center justify-center gap-3 min-h-[120px] text-center"
               >
@@ -101,7 +101,7 @@ const BespokeBanner = () => {
             {GLOBAL_SERVICES.map(({ icon: Icon, label }) => (
               <Link
                 key={label}
-                to="/contact"
+                to="/#enquiry"
                 aria-label={label}
                 className="group bg-background hover:bg-foreground hover:text-background transition-colors p-5 md:p-6 flex flex-col items-center justify-center gap-3 min-h-[120px] text-center"
               >

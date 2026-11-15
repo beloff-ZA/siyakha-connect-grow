@@ -52,7 +52,7 @@ const EvChargingBanner = () => {
                 ))}
               </div>
               <Link
-                to="/contact"
+                to="/#enquiry"
                 className="mt-10 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-foreground border-b border-foreground/40 hover:border-foreground pb-1"
               >
                 Request an EV charging quote

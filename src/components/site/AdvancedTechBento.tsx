@@ -170,7 +170,7 @@ const AdvancedTechBento = () => {
               </div>
             </div>
             <Link
-              to="/contact"
+              to="/#enquiry"
               className="inline-flex items-center gap-2 rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium hover:bg-primary-hover transition-colors self-start md:self-auto"
             >
               Request a stack <ArrowUpRight className="h-4 w-4" />
