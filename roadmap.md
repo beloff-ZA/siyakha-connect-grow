@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## SAPath — unpublished main preview
+- [x] Add four confirmed services, Cape Town/Healthcare identity, only the metadata-stripped safe ceiling crop, listing and static sitemap (no lastmod fallback exists).
+- [x] 11 focused / all 389 tests passed, automatic preview build OK. All seven routes, Healthcare/Hospitality/Retail filters, prior attribution, safe image/logo rendering and balanced lead + paired desktop rows/mobile stack passed at 1280/390 widths; no overflow, page errors or rejected-diagram requests. No hospital/equipment/result claims added. Local media checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run. No submissions, backend/settings changes or publication.
+
 ## Catch 22 — unpublished preview
 - [x] Add confirmed connectivity assistance and guest Wi-Fi testing scope, optimized metadata-stripped contextual exterior, Hospitality listing and static sitemap entry. Official website confirms the Table View address; sitemap contains no lastmod values or generation mechanism to repair.
 - [x] 10 focused tests and all 388 tests passed; automatic preview build OK. All six routes, Hospitality/Retail filters, exact Catch 22 summary, Tiger appointment, photo/logo rendering, two-column desktop and mobile stack passed at 1280/390 widths, without overflow/page errors or rejected-diagram requests. Local media checks use exact asset bytes; hosted-page layout and standalone build/typecheck not run. No submissions, backend changes or publication.

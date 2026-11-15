@@ -7,11 +7,12 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { CASE_STUDIES } from "@/content/caseStudies";
 import { Button } from "@/components/ui/button";
 
-const CLIENT_TYPES = ["All", "Estates", "Commercial", "Retail", "Hospitality", "Education", "Government"] as const;
+const CLIENT_TYPES = ["All", "Estates", "Commercial", "Retail", "Hospitality", "Healthcare", "Education", "Government"] as const;
 const REGIONS = ["All", "South Africa", "GCC", "UK"] as const;
 
 function inferClientType(industry: string): string {
   const i = industry.toLowerCase();
+  if (i.includes("healthcare")) return "Healthcare";
   if (i.includes("hospitality") || i.includes("restaurant")) return "Hospitality";
   if (i.includes("retail") || i.includes("franchise")) return "Retail";
   if (i.includes("school") || i.includes("training") || i.includes("education")) return "Education";

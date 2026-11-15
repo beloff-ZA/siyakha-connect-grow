@@ -32,9 +32,10 @@ describe("confirmed project scope", () => {
     expect(study?.beforeAfter).toBeUndefined();
   });
 
-  it("retains all six recent projects with one St Joseph's entry", () => {
+  it("retains all seven recent projects with one St Joseph's entry", () => {
     expect(CASE_STUDIES.filter((study) => study.slug === "st-josephs-marist-cape-town")).toHaveLength(1);
     expect(LATEST_PROJECT_SLUGS).toEqual([
+      "sapath-network-infrastructure",
       "catch-22-connectivity",
       "nomination-italy-waterfront",
       "st-josephs-marist-cape-town", "tiger-brands-boardroom-technology",
@@ -96,5 +97,25 @@ describe("confirmed project scope", () => {
     for (const slug of LATEST_PROJECT_SLUGS.filter((s) => s !== "tiger-brands-boardroom-technology")) {
       expect(JSON.stringify(getCaseStudy(slug))).not.toContain("Design Code Interior Designers");
     }
+  });
+
+  it("limits SAPath to the four confirmed services and Cape Town without hospital, equipment or results claims", () => {
+    const study = getCaseStudy("sapath-network-infrastructure");
+    expect(study?.client).toBe("SAPath");
+    expect(study?.location).toBe("Cape Town");
+    expect(study?.industry).toBe("Healthcare");
+    expect(study?.factual?.scope).toEqual(["Network infrastructure upgrade", "Recabling", "Data points", "Onsite field support"]);
+    expect(study?.services).toEqual(study?.factual?.scope);
+    expect(study?.year).toBeUndefined();
+    expect(study?.equipment).toBeUndefined();
+    expect(study?.clientIdentity).toBeUndefined();
+    expect(study?.quote).toBeUndefined();
+    expect(study?.factual?.scopeMetric).toBeUndefined();
+    expect(study?.process).toEqual([]);
+    expect(study?.results).toEqual([]);
+    expect(study?.gallery).toBeUndefined();
+    expect(study?.hero).toMatch(/\/sapath-site-interior\.webp$/);
+    expect(JSON.stringify(study)).not.toMatch(/Vincent|Pallotti|hospital|Wi-Fi|speedtest|certification/i);
+    expect(CASE_STUDIES.filter((s) => s.slug === "sapath-network-infrastructure")).toHaveLength(1);
   });
 });

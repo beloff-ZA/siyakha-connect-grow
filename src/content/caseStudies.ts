@@ -27,6 +27,7 @@ import stJosephHero from "@/assets/st-joseph-outdoor-installation.webp.asset.jso
 import nominationHero from "@/assets/nomination-italy-waterfront-storefront.webp.asset.json";
 import nominationLogo from "@/assets/nomination-official-logo.svg.asset.json";
 import catch22Hero from "@/assets/catch-22-exterior.webp.asset.json";
+import sapathHero from "@/assets/sapath-site-interior.webp.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -63,6 +64,31 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "sapath-network-infrastructure",
+    client: "SAPath",
+    title: "SAPath: Network Infrastructure & Field Support",
+    industry: "Healthcare",
+    location: "Cape Town",
+    hero: sapathHero.url,
+    heroPhoto: {
+      alt: "Architectural crop of ceiling panels and lighting inside the SAPath project site",
+      caption: "Site interior from the SAPath project",
+      width: 659,
+      height: 494,
+      portrait: false,
+    },
+    summary: "Siyakha Technology Solutions assisted SAPath laboratory in Cape Town with a network infrastructure upgrade, recabling, data points and onsite field support.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: ["Network infrastructure upgrade", "Recabling", "Data points", "Onsite field support"],
+    factual: {
+      overview: "Siyakha Technology Solutions assisted SAPath laboratory in Cape Town with a network infrastructure upgrade, recabling, data points and onsite field support.",
+      scope: ["Network infrastructure upgrade", "Recabling", "Data points", "Onsite field support"],
+    },
+  },
   {
     slug: "catch-22-connectivity",
     client: "Catch 22",
@@ -486,6 +512,7 @@ export function getCaseStudy(slug: string) {
 }
 
 export const LATEST_PROJECT_SLUGS = [
+  "sapath-network-infrastructure",
   "catch-22-connectivity",
   "nomination-italy-waterfront",
   "st-josephs-marist-cape-town",
