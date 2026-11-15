@@ -42,6 +42,16 @@ const CaseStudy = () => {
           <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-5">
             {["Case Study", study.industry, study.location, study.year].filter(Boolean).join(" · ")}
           </p>
+          {study.clientIdentity && (
+            <img
+              src={study.clientIdentity.logo}
+              alt={`${study.client} logo`}
+              width={study.clientIdentity.width}
+              height={study.clientIdentity.height}
+              className="block w-44 h-auto object-contain mb-8"
+              decoding="async"
+            />
+          )}
           <h1 className="font-display font-light text-4xl md:text-6xl tracking-[-0.02em] text-foreground leading-[1.05] max-w-4xl">
             {study.client}
           </h1>

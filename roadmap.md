@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Nomination Italy — unpublished preview
+- [x] Add factual Waterfront case study, approved storefront, official homepage SVG logo with exact source URL, Retail filter and sitemap.
+- [x] Retain previous four homepage projects with balanced lead card and paired rows/phone stack; 78 focused / 386 full tests and automatic preview build passed. All five routes, scope regressions, logo/photo, Retail filter and no-overflow/no-diagram checks passed at 1280/390 widths. Hosted image endpoints returned 200; local layout checks used exact asset bytes. Existing /contact destination unchanged; no submissions, backend changes or publication. Standalone build/typecheck and hosted-page layout not run.
+
 ## St Joseph’s case study — unpublished main preview
 - [x] Add confirmed factual entry and optimized supplied outdoor photo; preserve existing projects and campaign.
 - [x] Remove rejected St Joseph’s diagram, captions, section and asset pointer from current source; 5 focused / 383 full tests and automatic build passed. Desktop/mobile case study, homepage, listing and requests contain no diagram; actual photo retained. No publication or backend changes.

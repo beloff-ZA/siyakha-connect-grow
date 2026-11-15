@@ -13,11 +13,11 @@ const LatestProjectFeature = () => {
       <div className="container mx-auto px-6 lg:px-10 py-14 md:py-20">
         <h2 id="latest-project-heading" className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-8">Latest projects</h2>
         <div className="grid md:grid-cols-2 gap-6">
-        {studies.map((study) => (
+        {studies.map((study, index) => (
         <Link
           key={study.slug}
           to={`/case-studies/${study.slug}`}
-          className="group flex flex-col min-w-0 bg-background border border-foreground/15"
+          className={`group flex flex-col min-w-0 bg-background border border-foreground/15 ${index === 0 && studies.length % 2 === 1 ? "md:col-span-2 md:grid md:grid-cols-2" : ""}`}
         >
           <div className="aspect-[4/3] overflow-hidden bg-background">
             <img
@@ -27,7 +27,7 @@ const LatestProjectFeature = () => {
               height={study.heroPhoto?.height ?? 1536}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover"
+              className={`w-full h-full ${index === 0 && studies.length % 2 === 1 ? "object-contain" : "object-cover"}`}
             />
           </div>
           <div className="bg-background p-6 md:p-8 flex flex-col flex-1">

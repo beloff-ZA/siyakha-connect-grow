@@ -24,6 +24,8 @@ import paradoxLogo from "@/assets/paradox-official-logo.png.asset.json";
 import tigerBrandsHero from "@/assets/tiger-brands-boardroom.jpg.asset.json";
 import tigerBrandsDetail from "@/assets/tiger-brands-screen-privacy.jpg.asset.json";
 import stJosephHero from "@/assets/st-joseph-outdoor-installation.webp.asset.json";
+import nominationHero from "@/assets/nomination-italy-waterfront-storefront.webp.asset.json";
+import nominationLogo from "@/assets/nomination-official-logo.svg.asset.json";
 
 export interface CaseStudy {
   slug: string;
@@ -41,6 +43,7 @@ export interface CaseStudy {
   results: string[];
   services: string[];
   equipment?: { name: string; logo: string; width: number; height: number; source: string }[];
+  clientIdentity?: { logo: string; width: number; height: number; source: string };
   quote?: { text: string; author: string };
   gallery?: { src: string; caption: string; alt?: string; width?: number; height?: number; enhanced?: boolean }[];
   /** Fact-only entries: replaces problem/solution/process/results sections. */
@@ -59,6 +62,37 @@ export interface CaseStudy {
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "nomination-italy-waterfront",
+    client: "Nomination Italy",
+    title: "Nomination Italy: Field Support, Connectivity & VoIP",
+    industry: "Retail & Franchise",
+    location: "V&A Waterfront, Cape Town",
+    hero: nominationHero.url,
+    heroPhoto: {
+      alt: "Nomination Italy storefront at the V&A Waterfront, Cape Town, with genuine Nomination Italy signage and jewellery displays",
+      caption: "Nomination Italy storefront · V&A Waterfront, Cape Town",
+      width: 494,
+      height: 878,
+      portrait: true,
+    },
+    clientIdentity: {
+      logo: nominationLogo.url,
+      width: 546,
+      height: 175.5,
+      source: "https://www.nomination.com/static/version1794394945/frontend/Nomination/default/it_IT/images/logo.svg",
+    },
+    summary: "Siyakha Technology Solutions was appointed to provide on-ground field support, connectivity and VoIP setup for the Nomination Italy project at the V&A Waterfront, Cape Town.",
+    problem: "",
+    solution: "",
+    process: [],
+    results: [],
+    services: ["On-ground field support", "Connectivity setup", "VoIP setup"],
+    factual: {
+      overview: "Siyakha Technology Solutions was appointed to provide on-ground field support, connectivity and VoIP setup for the Nomination Italy project at the V&A Waterfront, Cape Town.",
+      scope: ["On-ground field support", "Connectivity setup", "VoIP setup"],
+    },
+  },
   {
     slug: "st-josephs-marist-cape-town",
     client: "St Joseph’s Marist Brothers",
@@ -426,6 +460,7 @@ export function getCaseStudy(slug: string) {
 }
 
 export const LATEST_PROJECT_SLUGS = [
+  "nomination-italy-waterfront",
   "st-josephs-marist-cape-town",
   "tiger-brands-boardroom-technology",
   "sun-international-head-office",
