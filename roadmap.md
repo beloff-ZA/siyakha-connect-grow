@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Municipal CBD Microsoft 365 support — unpublished
+- [x] Add one fact-only CallTech contractor project, four confirmed services including one month of support, unknown region, and native photo-free cover; preserve curated homepage projects and all other work.
+- [x] All 431 tests and automatic preview build passed. Desktop/mobile card, direct route, contractor attribution, four service badges, native cover/caption, photo-free Article schema, canonical, Government/unknown-region filtering and enquiry navigation verified; screenshots inspected with no overflow or page errors. Changes limited to new content, sitemap, tests and this checklist; no publication or backend changes. Standalone typecheck/build not run (preview harness owns these checks); hosted-preview checks not run.
+
 ## Public navigation and project services — current request
 - [x] Removed desktop/mobile Industries navigation only, preserved industry routes, displayed existing per-project services and clear client names, and extended only the confirmed TCTS scope with consolidated VoIP/telephony and genuine Google review strategy.
 - [x] All 427 tests and automatic preview build passed; desktop/mobile navigation, automotive filtering, nine TCTS badges, detail route, privacy caption, enquiry destination and industry route passed without overflow or page errors. Source scope inspected; no publication or backend changes. Standalone typecheck/build and hosted image rendering not checked (existing localhost CDN image limitation).

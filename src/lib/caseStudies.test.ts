@@ -1,7 +1,42 @@
 import { describe, expect, it } from "vitest";
 import { CASE_STUDIES, getCaseStudy, LATEST_PROJECT_SLUGS } from "@/content/caseStudies";
+import { inferClientType, inferRegion } from "./projectFilters";
 
 describe("confirmed project scope", () => {
+  it("adds one municipal contractor support entry without replacing curated homepage projects", () => {
+    const slug = "municipal-cbd-calltech-microsoft-365";
+    expect(CASE_STUDIES.filter(study => study.slug === slug)).toHaveLength(1);
+    expect(getCaseStudy(slug)?.client).toBe("Municipal CBD · CallTech");
+    expect(LATEST_PROJECT_SLUGS).not.toContain(slug);
+  });
+  it("keeps municipal support in Government with its unknown region unassigned", () => {
+    const study = getCaseStudy("municipal-cbd-calltech-microsoft-365");
+    expect(study).toBeDefined();
+    expect(study?.location).toBe("");
+    expect(inferClientType(study?.industry ?? "")).toBe("Government");
+    expect(inferRegion(study?.location ?? "")).toBe("");
+  });
+  it("limits municipal services to migration assistance and one month of user/file support", () => {
+    const study = getCaseStudy("municipal-cbd-calltech-microsoft-365");
+    expect(study?.services).toEqual(["Microsoft 365 migration support", "Multiple-user assistance", "One month of post-migration support", "File and document access/use checks"]);
+    expect(study?.factual?.scope).toEqual(study?.services);
+    expect(study?.factual?.scopeMetric).toBeUndefined();
+    expect(study?.year).toBeUndefined();
+    expect(study?.process).toEqual([]);
+    expect(study?.results).toEqual([]);
+    expect(study?.quote).toBeUndefined();
+    expect(study?.equipment).toBeUndefined();
+    expect(study?.clientIdentity).toBeUndefined();
+  });
+  it("keeps the municipal project photo-free until photography is supplied", () => {
+    const study = getCaseStudy("municipal-cbd-calltech-microsoft-365");
+    expect(study?.typeCover).toBeDefined();
+    expect(study?.hero).toBe("");
+    expect(study?.heroPhoto).toBeUndefined();
+    expect(study?.gallery).toBeUndefined();
+    expect(study?.sequence).toBeUndefined();
+    expect(study?.beforeAfter).toBeUndefined();
+  });
   it("keeps the existing retail entry as partner support without invented outcomes or dates", () => {
     const study = getCaseStudy("franchise-firewall-wifi-rollout");
     expect(CASE_STUDIES.filter(s => s.slug === "franchise-firewall-wifi-rollout")).toHaveLength(1);

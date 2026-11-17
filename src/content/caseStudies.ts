@@ -80,6 +80,26 @@ export interface CaseStudy {
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
+    slug: "municipal-cbd-calltech-microsoft-365",
+    client: "Municipal CBD · CallTech",
+    title: "Microsoft 365 Migration & Post-Migration Support",
+    industry: "Government",
+    location: "",
+    hero: "",
+    typeCover: {
+      subtitle: "Microsoft 365 · Migration & user support",
+      caption: "Project photography to follow",
+    },
+    summary: "Siyakha Technology Solutions worked as a contractor under CallTech on a municipality CBD Microsoft 365 migration project, assisting multiple users and providing one month of post-migration support to check access to and use of files and documents.",
+    problem: "", solution: "", process: [], results: [],
+    services: ["Microsoft 365 migration support", "Multiple-user assistance", "One month of post-migration support", "File and document access/use checks"],
+    factual: {
+      overview: "Siyakha Technology Solutions worked as a contractor under CallTech on a municipality CBD Microsoft 365 migration project. The support scope included assistance for multiple users and one month of post-migration support, checking that users could access and use their files and documents.",
+      scope: ["Microsoft 365 migration support", "Multiple-user assistance", "One month of post-migration support", "File and document access/use checks"],
+      scopeLabel: "Support scope",
+    },
+  },
+  {
     slug: "tcts-autobody-randburg",
     client: "TCTS Autobody",
     title: "TCTS Autobody: Connected Business Systems",
