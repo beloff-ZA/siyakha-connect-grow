@@ -64,7 +64,6 @@ const Footer = () => {
             </p>
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               <Link to="/services" className="hover:text-foreground transition-colors">Services</Link>
-              <Link to="/industries" className="hover:text-foreground transition-colors">Industries</Link>
               <Link to="/projects" className="hover:text-foreground transition-colors">Projects</Link>
               <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
               <Link to={enquiryHref("Managed IT Services")} className="hover:text-foreground transition-colors">Get Help</Link>
