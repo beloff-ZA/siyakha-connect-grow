@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { CASE_STUDIES } from "@/content/caseStudies";
 import { Button } from "@/components/ui/button";
 import ProjectTypeCover from "@/components/site/ProjectTypeCover";
+import ProjectServices from "@/components/site/ProjectServices";
 import ShareCaseStudy from "@/components/site/ShareCaseStudy";
 import { inferClientType, inferRegion } from "@/lib/projectFilters";
 
@@ -109,9 +110,11 @@ const Projects = () => {
                       {[inferClientType(s.industry), inferRegion(s.location)].filter(Boolean).join(" · ")}
                     </p>
                     <div className="font-display text-lg text-foreground tracking-tight leading-snug mb-3">
-                      {s.title}
+                      {s.client}
                     </div>
+                    <p className="text-sm text-foreground/80 leading-snug mb-3">{s.title}</p>
                     <p className="text-[13px] text-foreground/70 leading-relaxed flex-1">{s.summary}</p>
+                    <ProjectServices services={s.services} className="mt-4" />
                     {s.status && <p className="mt-3 text-sm font-semibold border-l-2 border-foreground pl-3">{s.status}</p>}
                     <div className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-foreground/70 group-hover:text-foreground">
                       Read case study <ArrowUpRight className="h-3.5 w-3.5" />

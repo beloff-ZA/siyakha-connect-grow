@@ -1,5 +1,9 @@
 # Roadmap — DIGICONNECT C/O SUN INTERNATIONAL site delivery
 
+## Public navigation and project services — current request
+- [x] Removed desktop/mobile Industries navigation only, preserved industry routes, displayed existing per-project services and clear client names, and extended only the confirmed TCTS scope with consolidated VoIP/telephony and genuine Google review strategy.
+- [x] All 427 tests and automatic preview build passed; desktop/mobile navigation, automotive filtering, nine TCTS badges, detail route, privacy caption, enquiry destination and industry route passed without overflow or page errors. Source scope inspected; no publication or backend changes. Standalone typecheck/build and hosted image rendering not checked (existing localhost CDN image limitation).
+
 ## National multi-site field support + Marist Brothers photos — requested before publish
 - [x] Named eXmile Technologies on the retail ICT-partner entry with the national multi-site field support narrative (firewall installs, maintenance → new connectivity installs); added two privacy-safe site photos. Excluded: unblurred exterior (plates/people), personal Google Maps timeline screenshot, interior with visible faces, low-resolution counter shot. Marist Brothers "Complete Technology Solutions for Primary & High Schools" confirmed on site, unchanged.
 - [x] All 423 tests passed; browser verified retail page (desktop + mobile), gallery images, Marist entry, no page errors. Publishing the whole queued scope.

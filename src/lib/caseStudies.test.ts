@@ -22,16 +22,24 @@ describe("confirmed project scope", () => {
     expect(study?.heroPhoto?.preserveFullScene).toBe(true);
     expect(study?.gallery?.[0]?.src).toBe(study?.hero);
   });
-  it("limits TCTS to the supplied business systems without invented product specifications or other services", () => {
+  it("limits TCTS to the confirmed expanded scope without invented product specifications or results", () => {
     const study = getCaseStudy("tcts-autobody-randburg");
-    expect(study?.services).toEqual(["VoIP", "Website", "Telephony", "Microsoft packages", "Support console to manage them"]);
+    expect(study?.services).toEqual(["VoIP & telephony", "Website", "Printing support", "Wi-Fi", "CCTV installation", "Microsoft packages", "Server cabinet maintenance", "Support console to manage them", "Google review strategy"]);
     expect(study?.factual?.scope).toEqual(study?.services);
+    expect(study?.hero).toMatch(/\/tcts-autobody-premises\.webp$/);
+    expect(study?.heroPhoto?.caption).toBe("TCTS Autobody premises · identifying details obscured for privacy");
     expect(study?.location).toBe("Randburg");
     expect(study?.year).toBeUndefined();
     expect(study?.equipment).toBeUndefined();
     expect(study?.results).toEqual([]);
-    expect(JSON.stringify(study)).not.toMatch(/CCTV|365|Office|Azure|repair work|building work|completed/i);
+    expect(JSON.stringify(study)).not.toMatch(/365|Office|Azure|repair work|building work|completed|guaranteed|five.star|review gains/i);
     expect(CASE_STUDIES.filter(s => s.slug === "tcts-autobody-randburg")).toHaveLength(1);
+  });
+  it("keeps the confirmed Google review strategy scoped to TCTS rather than other clients", () => {
+    expect(getCaseStudy("tcts-autobody-randburg")?.services).toContain("Google review strategy");
+    for (const study of CASE_STUDIES.filter(s => s.slug !== "tcts-autobody-randburg")) {
+      expect(study.services).not.toContain("Google review strategy");
+    }
   });
   it("keeps Afro Muse explicitly in progress with only seven authorized scope items and the supplied contextual photograph", () => {
     const study = getCaseStudy("afro-muse-hair-and-beauty");

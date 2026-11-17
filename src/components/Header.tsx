@@ -4,7 +4,6 @@ import LanguageToggle from "@/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
 import { ChevronDown, Menu, Phone } from "lucide-react";
 import { DIVISIONS } from "@/content/divisions";
-import { INDUSTRIES } from "@/content/industries";
 import { BRAND } from "@/lib/brand";
 import { enquiryHref } from "@/lib/leadForm";
 import CartDrawer from "@/components/shop/CartDrawer";
@@ -18,8 +17,6 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const serviceLinks = DIVISIONS.map((d) => ({ to: `/services/${d.slug}`, label: d.title }));
-
-  const industryLinks = INDUSTRIES.map((i) => ({ to: `/industries/${i.slug}`, label: i.label }));
 
   const companyLinks = [
     { to: "/about", label: "About" },
@@ -83,31 +80,6 @@ const Header = () => {
                       className="block px-4 py-2 text-xs uppercase tracking-[0.18em] text-foreground/55 hover:text-foreground hover:bg-muted transition-colors border-t border-border mt-1 pt-2"
                     >
                       All services
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative group">
-                <button className="flex items-center gap-1 text-[11px] uppercase tracking-[0.22em] text-foreground/75 hover:text-foreground transition-colors py-2">
-                  Industries <ChevronDown className="h-3 w-3" />
-                </button>
-                <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                  <div className="bg-background border border-border shadow-lg min-w-[280px] py-2">
-                    {industryLinks.map((l) => (
-                      <Link
-                        key={l.to}
-                        to={l.to}
-                        className="block px-4 py-2 text-xs uppercase tracking-[0.18em] text-foreground/75 hover:text-foreground hover:bg-muted transition-colors"
-                      >
-                        {l.label}
-                      </Link>
-                    ))}
-                    <Link
-                      to="/industries"
-                      className="block px-4 py-2 text-xs uppercase tracking-[0.18em] text-foreground/55 hover:text-foreground hover:bg-muted transition-colors border-t border-border mt-1 pt-2"
-                    >
-                      All industries
                     </Link>
                   </div>
                 </div>
@@ -204,19 +176,6 @@ const Header = () => {
                     <div className="space-y-2">
                       <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Services</p>
                       {serviceLinks.map((l) => (
-                        <Link
-                          key={l.to}
-                          to={l.to}
-                          onClick={() => setMenuOpen(false)}
-                          className="flex items-center min-h-[44px] text-sm uppercase tracking-[0.18em] text-foreground/80 hover:text-foreground transition-colors"
-                        >
-                          {l.label}
-                        </Link>
-                      ))}
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Industries</p>
-                      {industryLinks.map((l) => (
                         <Link
                           key={l.to}
                           to={l.to}

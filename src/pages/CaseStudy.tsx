@@ -6,6 +6,7 @@ import LeadMagnetDialog from "@/components/leads/LeadMagnetDialog";
 import { getCaseStudy } from "@/content/caseStudies";
 import { ArrowLeft, CheckCircle2, Circle } from "lucide-react";
 import ProjectTypeCover from "@/components/site/ProjectTypeCover";
+import ProjectServices from "@/components/site/ProjectServices";
 import ShareCaseStudy from "@/components/site/ShareCaseStudy";
 
 const CaseStudy = () => {
@@ -230,6 +231,7 @@ const CaseStudy = () => {
                   </div>
                 )}
                 <p className="text-base md:text-lg text-foreground/80 leading-relaxed">{study.factual.overview}</p>
+                <ProjectServices services={study.services} className="mt-6" />
               </div>
               <div>
                 <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/60 mb-6">{study.factual.scopeLabel ?? "Installation scope"}</p>
@@ -310,16 +312,7 @@ const CaseStudy = () => {
               <p className="mt-10 text-[11px] uppercase tracking-[0.24em] text-foreground/55 mb-3">
                 Services Included
               </p>
-              <div className="flex flex-wrap gap-2">
-                {study.services.map((s) => (
-                  <span
-                    key={s}
-                    className="text-[11px] uppercase tracking-[0.22em] text-foreground/75 border border-foreground/20 px-3 py-1.5"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
+              <ProjectServices services={study.services} />
             </div>
           </div>
         </div>
